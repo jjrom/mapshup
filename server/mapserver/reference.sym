@@ -1,0 +1,74 @@
+symbolset
+	 symbol
+		 name point2
+		 antialias FALSE
+		 filled true
+		 gap 0
+		 type VECTOR
+		 POINTS
+			 0 4
+			 0 5
+			 1 5
+			 1 4
+			 -99 -99
+			 4 0
+		 END
+	 end
+	 symbol
+		 name point1
+		 antialias FALSE
+		 filled TRUE
+		 type ELLIPSE
+		 POINTS
+			 1 1
+		 END
+	 end
+         symbol
+                name trans
+                type vector
+                points
+                    0 4
+                    0 5
+                    1 4
+                    1 5
+                    -99 -99
+                    4 0
+                end
+         end
+	 symbol
+		 name tinyline
+		 antialias FALSE
+		 filled FALSE
+		 gap 0
+		 type ELLIPSE
+		 POINTS 1 1 END
+	 end
+	 symbol
+		 name dash1010
+		 antialias FALSE
+		 filled FALSE
+		 gap 0
+		 type ELLIPSE
+		 POINTS 1 1 END
+		 STYLE 10 10 END
+	 end
+	 symbol
+		 name dash15
+		 antialias FALSE
+		 filled FALSE
+		 gap 0
+		 type ELLIPSE
+		 POINTS 1 1 END
+		 STYLE 1 5 END
+	 end
+	 symbol
+		 name dash22
+		 antialias FALSE
+		 filled FALSE
+		 gap 0
+		 type ELLIPSE
+		 POINTS 1 1 END
+		 STYLE 2 2 END
+	 end
+
+end	 

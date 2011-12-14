@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OTBProduct>
+    <identifier>A56473827453627485932</identifier>
+    <title>My product on Toulouse</title>
+    <description>This is a SPOT image of Toulouse</description>
+    <acquisition>2011-10-08T12:05:33</acquisition>
+    <type>XS</type>
+    <footprint>POLYGON((1.35136 43.4844,1.35136 43.6658,1.57671 43.6658,1.57671 43.4844,1.35136 43.4844))</footprint>
+    <location>
+        <town>Toulouse</town>
+        <country>France</country>
+    </location>
+    <archive>http://monserveur/product/A56473827453627485932</archive>
+    <metadata>http://monserveur/metadata/A56473827453627485932</metadata>
+    <wms>
+        <url>http://132.149.37.199/cgi-bin/mapserv?map=/var/www/full.map</url>
+        <layer>rgb_natural</layer>
+    </wms>
+</OTBProduct>

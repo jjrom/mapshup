@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.superbidon.com/superbidon" xmlns:superbidon="http://www.superbidon.com/superbidon" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" elementFormDefault="qualified" version="0.1">
+   <xsd:import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/2.1.2/feature.xsd"/>
+   <xsd:complexType name="DummySatelliteType">
+      <xsd:complexContent>
+         <xsd:extension base="gml:AbstractFeatureType">
+            <xsd:sequence>
+               <xsd:element name="dummyInformation" type="xsd:string" nillable="false" minOccurs="0" maxOccurs="1"/>
+            </xsd:sequence>
+         </xsd:extension>
+      </xsd:complexContent>
+   </xsd:complexType>
+   <xsd:element name="DummySatellite" type="superbidon:DummySatelliteType" substitutionGroup="gml:_Feature"/>
+   </xsd:schema>

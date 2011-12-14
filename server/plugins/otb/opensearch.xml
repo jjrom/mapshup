@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:geo="http://a9.com/-/opensearch/extensions/geo/1.0/">
+	<ShortName>OTB Products</ShortName>
+	<LongName>OTB Products catalog</LongName>
+	<Description>Catalog of products processed by the ORFEO Toolbox (OTB)</Description>
+	<Url type="application/json" template="http://localhost/mspsrv/plugins/otb/search.php?q={searchTerms}&amp;bbox={geo:box?}"/>
+</OpenSearchDescription>

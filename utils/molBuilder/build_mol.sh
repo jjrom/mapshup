@@ -1,0 +1,95 @@
+#!/bin/bash
+#
+# mapshup - Webmapping made easy
+#  http://mapshup.info
+# 
+#  Copyright Jérôme Gasperi, 2011.12.08
+# 
+#  jerome[dot]gasperi[at]gmail[dot]com
+# 
+#  This software is a computer program whose purpose is a webmapping application
+#  to display and manipulate geographical data.
+# 
+#  This software is governed by the CeCILL-B license under French law and
+#  abiding by the rules of distribution of free software.  You can  use,
+#  modify and/ or redistribute the software under the terms of the CeCILL-B
+#  license as circulated by CEA, CNRS and INRIA at the following URL
+#  "http://www.cecill.info".
+# 
+#  As a counterpart to the access to the source code and  rights to copy,
+#  modify and redistribute granted by the license, users are provided only
+#  with a limited warranty  and the software's author,  the holder of the
+#  economic rights,  and the successive licensors  have only  limited
+#  liability.
+# 
+#  In this respect, the user's attention is drawn to the risks associated
+#  with loading,  using,  modifying and/or developing or reproducing the
+#  software by the user in light of its specific status of free software,
+#  that may mean  that it is complicated to manipulate,  and  that  also
+#  therefore means  that it is reserved for developers  and  experienced
+#  professionals having in-depth computer knowledge. Users are therefore
+#  encouraged to load and test the software's suitability as regards their
+#  requirements in conditions enabling the security of their systems and/or
+#  data to be ensured and,  more generally, to use and operate it in the
+#  same conditions as regards security.
+# 
+#  The fact that you are presently reading this means that you have had
+#  knowledge of the CeCILL-B license and that you accept its terms.
+#
+if [ $# -lt 1 ]
+then
+        echo "###"
+        echo ""
+        echo " ### OpenLayers builder for mapshup client ### "
+        echo ""
+        echo "    Create a mol directory for OpenLayers <version>"
+        echo "    This script assumes that OpenLayers library is located OpenLayers/version/"
+        echo ""
+        echo "    Usage : $0 <version>"
+        echo ""
+        echo "###"
+        exit 0
+fi
+
+echo "Building mol for OpenLayers version $1"
+
+# First create mol
+here=`pwd`
+oldir=`echo OpenLayers/$1`
+moldir='mol'
+
+if [ ! -x $moldir ]
+then
+	echo ""
+	echo "Create directory $moldir..."
+	mkdir $moldir
+        mkdir $moldir/theme
+        mkdir $moldir/theme/default
+fi
+
+echo "Populating $moldir directory with theme directory..."
+cp -Rf $oldir/img $moldir/
+cp -Rf $oldir/theme/default/img $moldir/theme/default/
+cp -Rf $oldir/theme/default/style.tidy.css $moldir/theme/default
+cp -Rf $oldir/theme/default/google.tidy.css $moldir/theme/default
+cp -Rf addons/layer-switcher-maximize.png $moldir/img/
+cp -Rf addons/layer-switcher-minimize.png $moldir/img/
+
+echo "Clean $moldir directory..."
+rm -Rf $moldir/img/.svn
+rm -Rf $moldir/theme/default/img/.svn
+
+echo "Copying addons to OpenLayers directory..."
+cp -R addons/OL-OS $oldir/lib/
+
+echo "Building OpenLayers.js..."
+cd $oldir/build
+./build.py ../../../jOpenLayers_build.cfg
+cp OpenLayers.js ../../../mol/OpenLayers.js
+
+echo "Building OpenLayersMobile.js..."
+./build.py ../../../jOpenLayersMobile_build.cfg
+cp OpenLayers.js ../../../mol/OpenLayersMobile.js
+
+cd $here
+echo "Done !"

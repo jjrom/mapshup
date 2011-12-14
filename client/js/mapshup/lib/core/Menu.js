@@ -1,0 +1,352 @@
+/*
+ * mapshup - Webmapping made easy
+ * http://mapshup.info
+ *
+ * Copyright Jérôme Gasperi, 2011.12.08
+ *
+ * jerome[dot]gasperi[at]gmail[dot]com
+ *
+ * This software is a computer program whose purpose is a webmapping application
+ * to display and manipulate geographical data.
+ *
+ * This software is governed by the CeCILL-B license under French law and
+ * abiding by the rules of distribution of free software.  You can  use,
+ * modify and/ or redistribute the software under the terms of the CeCILL-B
+ * license as circulated by CEA, CNRS and INRIA at the following URL
+ * "http://www.cecill.info".
+ *
+ * As a counterpart to the access to the source code and  rights to copy,
+ * modify and redistribute granted by the license, users are provided only
+ * with a limited warranty  and the software's author,  the holder of the
+ * economic rights,  and the successive licensors  have only  limited
+ * liability.
+ *
+ * In this respect, the user's attention is drawn to the risks associated
+ * with loading,  using,  modifying and/or developing or reproducing the
+ * software by the user in light of its specific status of free software,
+ * that may mean  that it is complicated to manipulate,  and  that  also
+ * therefore means  that it is reserved for developers  and  experienced
+ * professionals having in-depth computer knowledge. Users are therefore
+ * encouraged to load and test the software's suitability as regards their
+ * requirements in conditions enabling the security of their systems and/or
+ * data to be ensured and,  more generally, to use and operate it in the
+ * same conditions as regards security.
+ *
+ * The fact that you are presently reading this means that you have had
+ * knowledge of the CeCILL-B license and that you accept its terms.
+ */
+
+/**
+ * mapshup contextual menu
+ */
+(function (msp) {
+
+    msp.Menu = function (limit) {
+
+        /*
+         * Only one Activity object instance is created
+         */
+        if (msp.Menu._o) {
+            return msp.Menu._o;
+        }
+        
+        /**
+         * Last mouse click is stored to display menu
+         */
+        this.lonLat = new OpenLayers.LonLat(0,0);
+
+        /**
+         * Check is menu is loaded
+         */
+        this.isLoaded = false;
+        
+        /**
+         * Menu items array
+         */
+        this.items = [];
+        
+        /**
+         * Menu is not displayed within the inner border of the map
+         * of a size of "limit" pixels (default is 0 pixels)
+         */
+        this.limit = limit || 0;
+        
+        /**
+         * Menu initialisation
+         *
+         * <div id="jMenu">
+         *      <div class="wrapper">
+         *          <ul></ul>
+         *      </div>
+         * </div>
+         */
+        this.init = function() {
+            
+            /*
+             * Variables initialisation
+             */
+            var scope = this;
+
+            /*
+             * menu is already initialized ? => do nothing
+             */
+            if (this.isLoaded) {
+                return this;
+            }
+
+            /*
+             * msp config says no menu
+             * Menu is considered to be loaded (isLoaded) but jMenu
+             * is not created. Thus hide() and show() function will do
+             * nothing
+             */
+            if (!msp.Config["general"].displayContextualMenu) {
+                this.isLoaded = true;
+                return this;
+            }
+
+            /*
+             * Create the jMenu div
+             */
+            msp.$map.append('<div id="menu"><div class="cross"><img src="'+msp.Util.getImgUrl("x.png")+'"</div></div>');
+            
+            /*
+             * Set jquery #menu reference
+             */
+            this.$m = $('#menu');
+            
+            /*
+             * Add "close" menu item
+             */
+            this.add([
+                /* Add "close" menu item */
+                {
+                    id:msp.Util.getId(),
+                    ic:"x.png",
+                    ti:"Close menu",
+                    cb:function(scope) {}
+                },
+                /* Add "zoom in" menu item */
+                {
+                    id:msp.Util.getId(),
+                    ic:"plus.png",
+                    ti:"Zoom here",
+                    cb:function(scope) {
+                        msp.Map.map.setCenter(scope.lonLat, msp.Map.map.getZoom() + 1);
+                    }
+                },
+                /* Add "zoom out" menu item */
+                {
+                    id:msp.Util.getId(),
+                    ic:"minus.png",
+                    ti:"Zoom out",
+                    cb:function(scope) {
+                        msp.Map.map.setCenter(scope.lonLat, Math.max(msp.Map.map.getZoom() - 1, msp.Map.lowestZoomLevel));
+                    }
+                }
+            ]);
+
+            /*
+             * Menu is successfully loaded
+             */
+            this.isLoaded = true;
+            
+            return this;
+
+        };
+        
+        /*
+         * Add an external item to the menu
+         * This function should be called by plugins
+         * that require additionnal item in the menu
+         * 
+         * @input items : array of menu items
+         * 
+         * Menu item structure :
+         * {
+         *      id: // identifier
+         *      ic: // icon url,
+         *      ti: // Displayed title
+         *      cb: // function to execute on click
+         * }
+         */
+        this.add = function(items) {
+            
+            if ($.isArray(items)) {
+                /*
+                 * Add new item
+                 */
+                for (var i = 0, l = items.length;i<l;i++) {
+                    this.items.push(items[i]);
+                }
+
+                /*
+                 * Recompute items position within the menu
+                 */
+                this.refresh();
+            }
+            
+        };
+        
+        /**
+         * Force menu to init
+         */
+        this.refresh = function() {
+            
+            /*
+             * Items are displayed on a circle.
+             * Position from above and below 60 degrees are forbidden
+             */
+            var i,
+                x,
+                y,
+                rad,
+                scope = this,
+                start = 45,
+                offsetX = 80,
+                angle = 180 - start,
+                left = true,
+                l = scope.items.length,
+                step = (4 * start) / l,
+                a = Math.sqrt(l) * 40,
+                b = 1.3 * a;
+            
+            /*
+             * Clean menu
+             */
+            $('.item', scope.$m).remove();
+           
+            for (i = 0, l; i < l; i++) {
+                (function(item, $m) {
+                
+                    /*
+                     * First item position is located at "2 * start" on the circle
+                     * Position between (start and 2*start) and (3*start and 4*start) are forbidden 
+                     */
+                    if (angle > start && angle < (180 - start)) {
+                        angle = 180 - start + angle;
+                        left = true;
+                    }
+                    else if (angle > (180 + start) && angle < (360 - start)) {
+                        angle = 180 - angle + step;
+                        left = false;
+                    }
+
+                    /*
+                     * Convert angle in radians
+                     */
+                    rad = (angle * Math.PI) / 180;
+
+                    if (left) {
+                        $m.append('<div class="item right shadow" id="'+item.id+'">'+msp.Util._(item.ti)+'&nbsp;<img class="middle" src="'+msp.Util.getImgUrl(item.ic)+'"/></div>');
+                        x = Math.cos(rad) * a - 200 + offsetX;
+                    }
+                    else {
+                        $m.append('<div class="item left shadow" id="'+item.id+'"><img class="middle" src="'+msp.Util.getImgUrl(item.ic)+'"/>&nbsp;'+msp.Util._(item.ti)+'</div>');
+                        x = Math.cos(rad) * a - offsetX;
+                    }
+
+                    y = Math.sin(rad) * b - 10;
+                    $('#'+item.id).click(function(){
+                        scope.hide();
+                        item.cb(scope);
+                        return false;
+                    }).css({
+                        'left': Math.round(x),
+                        'top': Math.round(y)
+                    });
+
+                    /*
+                     * Increment angle
+                     */ 
+                    angle = angle + step;
+                })(scope.items[i], scope.$m);
+            }
+
+        },
+
+        /**
+         * menu display function
+         * menu is entirely included inside the "#map" div
+         */
+        this.show = function() {
+
+            var x,
+            y;
+
+            /**
+             * menu is displayed at "pixel" position
+             * If pixel is not given as input, it is inferred
+             * from this.lonLat position (i.e. last click on #map div)
+             */
+            if (msp.Map.mouseClick) {
+
+                x = msp.Map.mouseClick.x;
+                y = msp.Map.mouseClick.y;
+
+                /**
+                 * Click on the border of the map are
+                 * note taken into account
+                 */
+                if (y < this.limit || y > (msp.$map.height() - this.limit) || x < this.limit || x > (msp.$map.width() - this.limit)) {
+                    this.$m.hide();
+                    return false;
+                }
+                this.lonLat = msp.Map.map.getLonLatFromPixel(msp.Map.mouseClick);
+            }
+            else {
+                return false;
+            }
+
+            /**
+             * menu is not loaded ? => initialize it
+             */
+            if (!this.isLoaded) {
+                this.init();
+            }
+
+            /**
+             * Show '#jMenu' at the right position
+             * within #map div
+             */
+            this.$m.css({
+                'left': x,
+                'top': y
+            }).show();
+
+            return true;
+        };
+        
+        /*
+         * Update menu position
+         */
+        this.updatePosition = function() {
+            var xy = msp.Map.map.getPixelFromLonLat(this.lonLat);
+            this.$m.css({
+                'left': xy.x,
+                'top': xy.y
+            });
+        };
+        
+
+        /**
+         * Hide menu
+         */
+        this.hide = function() {
+            this.$m.hide();
+        }
+        
+        /*
+         * Initialize object
+         */
+        this.init();
+        
+        /*
+         * Set unique instance
+         */
+        msp.Menu._o = this;
+        
+        return this;
+    };
+    
+})(window.msp);

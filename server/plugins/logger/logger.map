@@ -1,0 +1,285 @@
+    MAP
+    EXTENT -180.0 -90.0 180.0 90.0
+    MAXSIZE 4096
+    IMAGECOLOR 255 255 255
+    IMAGEQUALITY 100
+    SIZE 256 256
+    STATUS ON
+    UNITS DD
+    DEBUG 5
+    FONTSET "/Users/jrom/Documents/mapserver/fonts/font.list"
+    SYMBOLSET "/Users/jrom/Documents/mapserver/reference.sym"
+    CONFIG "MS_ENCRYPTION_KEY" "/Users/jrom/Documents/Devel/mapshup/svn/trunk/utils/ms_keygen.txt"
+    OUTPUTFORMAT
+        NAME "AGGPNG"
+        DRIVER "AGG/PNG"
+        EXTENSION "png"
+        MIMETYPE "image/png"
+        IMAGEMODE RGBA
+        TRANSPARENT ON
+        FORMATOPTION "TRANSPARENT=ON"
+    END
+    #OUTPUTFORMAT
+    #  NAME png
+    #  DRIVER "GD/PNG"
+    #  MIMETYPE "image/png"
+    #  IMAGEMODE RGBA
+    #  EXTENSION "png"
+    #  TRANSPARENT ON
+    #  FORMATOPTION "TRANSPARENT=ON"
+    #END
+    WEB
+      IMAGEPATH "/tmp/"
+      IMAGEURL "/"
+      METADATA
+        "wms_title"          "_msprowser Logger Server"
+        "wms_onlineresource" "http://localhost/cgi-bin/mapserv?map=/Users/jrom/Documents/Devel/mapshup/svn/trunk/src/server/plugins/logger/logger.map&"
+        "wms_srs"            "EPSG:4326 EPSG:3857"
+        "wms_feature_info_mime_type"    "text/html"
+      END
+    END
+    PROJECTION
+      "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs <>"
+    END
+    LAYER
+        NAME "countries"
+        #MINSCALEDENOM 5000000
+        CONNECTION "user={A57273CE20B3A67F} password={A57273CE20B3A67F59D6FC827F27F6B8} dbname=mapshup host=localhost port=5432"
+        CONNECTIONTYPE POSTGIS
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom FROM visitedcountries"
+        TYPE POLYGON
+        #TRANSPARENCY 50
+        class
+                 name "range_none"
+                 expression ([visitsnormalized] == 0)
+                 style
+                    width 0.5
+                    outlinecolor 225 225 225
+                 end
+         end
+        class
+                 name "range_0"
+                 expression ([visitsnormalized] >= 0 AND [visitsnormalized] < 10)
+                 color 222 215 219
+                 style
+                    width 0.5
+                    outlinecolor 225 225 225
+                 end
+         end
+         class
+                 name "range_1"
+                 expression ([visitsnormalized] >= 10 AND [visitsnormalized] < 20)
+                 color 225 194 198
+                 style
+                    width 0.5
+                    outlinecolor 225 225 225
+                 end
+         end
+         class
+                 name "range_2"
+                 expression ([visitsnormalized] >= 20 AND [visitsnormalized] < 30)
+                 color 228 173 177
+                 style
+                    width 0.5
+                    outlinecolor 225 225 225
+                 end
+         end
+         class
+                 name "range_3"
+                 expression ([visitsnormalized] >= 30 AND [visitsnormalized] < 40)
+                 color 231 152 156
+                 style
+                    width 0.5
+                    outlinecolor 225 225 225
+                 end
+         end
+         class
+                 name "range_4"
+                 expression ([visitsnormalized] >= 40 AND [visitsnormalized] < 50)
+                 color 234 131 135
+                 style
+                    width 0.5
+                    outlinecolor 225 225 225
+                 end
+         end
+         class
+                 name "range_5"
+                 expression ([visitsnormalized] >= 50 AND [visitsnormalized] < 60)
+                 color 237 110 114
+                 style
+                    width 0.5
+                    outlinecolor 225 225 225
+                 end
+         end
+         class
+                 name "range_6"
+                 expression ([visitsnormalized] >= 60 AND [visitsnormalized] < 70)
+                 color 240 89 93
+                 style
+                    width 0.5
+                    outlinecolor 225 225 225
+                 end
+         end
+         class
+                 name "range_7"
+                 expression ([visitsnormalized] >= 70 AND [visitsnormalized] < 80)
+                 color 243 68 72
+                 style
+                    width 0.5
+                    outlinecolor 225 225 225
+                 end
+         end
+         class
+                 name "range_8"
+                 expression ([visitsnormalized] >= 80 AND [visitsnormalized] < 90)
+                 color 246 47 51
+                 style
+                    width 0.5
+                    outlinecolor 225 225 225
+                 end
+         end
+         class
+                 name "range_9"
+                 expression ([visitsnormalized] >= 90 AND [visitsnormalized] <= 100)
+                 color 249 26 30
+                 style
+                    width 0.5
+                    outlinecolor 225 225 225
+                 end
+         end
+        PROJECTION
+            "proj=latlong"
+            "ellps=WGS84"
+            "datum=WGS84"
+        END
+    END
+    LAYER
+        NAME "countries_label"
+        #MINSCALEDENOM 5000000
+        CONNECTION "user={A57273CE20B3A67F} password={A57273CE20B3A67F59D6FC827F27F6B8} dbname=mapshup host=localhost port=5432"
+        CONNECTIONTYPE POSTGIS
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom FROM countries"
+        TYPE POLYGON
+        LABELITEM "visits"
+        CLASS
+            LABEL
+                antialias TRUE
+                color 255 255 255
+                angle auto
+                font arialbd
+                maxsize 256
+                minsize 4
+                outlinecolor 225 225 225
+                partials TRUE
+                position UC
+                size 10
+                type TRUETYPE
+            END
+        END
+        PROJECTION
+            "proj=latlong"
+            "ellps=WGS84"
+            "datum=WGS84"
+        END
+    END
+    LAYER
+        NAME "worldgrid"
+        CONNECTION "user={A57273CE20B3A67F} password={A57273CE20B3A67F59D6FC827F27F6B8} dbname=mapshup host=localhost port=5432"
+        CONNECTIONTYPE POSTGIS
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom FROM visitedworldgrid"
+        TYPE POLYGON
+        #TRANSPARENCY 50
+        class
+                 name "range_none"
+                 expression ([visitsnormalized] == 0)
+         end
+        class
+                 name "range_0"
+                 expression ([visitsnormalized] >= 0 AND [visitsnormalized] < 10)
+                 color 222 215 219
+         end
+         class
+                 name "range_1"
+                 expression ([visitsnormalized] >= 10 AND [visitsnormalized] < 20)
+                 color 225 194 198
+         end
+         class
+                 name "range_2"
+                 expression ([visitsnormalized] >= 20 AND [visitsnormalized] < 30)
+                 color 228 173 177
+         end
+         class
+                 name "range_3"
+                 expression ([visitsnormalized] >= 30 AND [visitsnormalized] < 40)
+                 color 231 152 156
+         end
+         class
+                 name "range_4"
+                 expression ([visitsnormalized] >= 40 AND [visitsnormalized] < 50)
+                 color 234 131 135
+         end
+         class
+                 name "range_5"
+                 expression ([visitsnormalized] >= 50 AND [visitsnormalized] < 60)
+                 color 237 110 114
+         end
+         class
+                 name "range_6"
+                 expression ([visitsnormalized] >= 60 AND [visitsnormalized] < 70)
+                 color 240 89 93
+         end
+         class
+                 name "range_7"
+                 expression ([visitsnormalized] >= 70 AND [visitsnormalized] < 80)
+                 color 243 68 72
+         end
+         class
+                 name "range_8"
+                 expression ([visitsnormalized] >= 80 AND [visitsnormalized] < 90)
+                 color 246 47 51
+         end
+         class
+                 name "range_9"
+                 expression ([visitsnormalized] >= 90 AND [visitsnormalized] <= 100)
+                 color 249 26 30
+         end
+        PROJECTION
+            "proj=latlong"
+            "ellps=WGS84"
+            "datum=WGS84"
+        END
+    END
+    LAYER
+        NAME "worldgridlabel"
+        GROUP "visit"
+        CONNECTION "user={A57273CE20B3A67F} password={A57273CE20B3A67F59D6FC827F27F6B8} dbname=mapshup host=localhost port=5432"
+        CONNECTIONTYPE POSTGIS
+        PROCESSING "CLOSE_CONNECTION=DEFER"
+        DATA "the_geom FROM worldgrid"
+        TYPE POLYGON
+        LABELITEM "visits"
+        CLASS
+            LABEL
+                antialias TRUE
+                color 255 255 255
+                angle auto
+                font arialbd
+                maxsize 256
+                minsize 4
+                outlinecolor 225 225 225
+                partials TRUE
+                position UC
+                size 10
+                type TRUETYPE
+            END
+        END
+        PROJECTION
+            "proj=latlong"
+            "ellps=WGS84"
+            "datum=WGS84"
+        END
+    END
+END

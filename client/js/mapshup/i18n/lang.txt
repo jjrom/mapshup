@@ -1,0 +1,184 @@
+AND
+Add
+Added
+Add a description
+Add layer
+Add to map
+Add quicklook to map
+An error occured during password generation. Registering is currently disable
+A password has been sent to your mailbox
+Area
+Available layers
+Backgrounds
+Bing Shaded
+Cancel
+Cannot add OpenSearch description
+Cannot zoom : this feature is outside authorized extent
+Catalog
+Catalogs
+Center
+Center map on one of the following countries
+Choose download format
+Choose the catalog type
+Checking
+Clear
+Click the mouse left button to define the measure point
+Click to zoom
+close
+Close
+Close menu
+Connector
+Data automatic detection
+Define a search area
+Delete
+Delete tab
+Description
+Distance
+Download
+Download in progress
+Download layer in CSV format
+Download layer in KML format
+Do you really want to remove layer
+Do you really want to remove this tab ?
+Draw layer
+Drawing mode
+Drop !
+Drop a file here
+Drop files or url on the map
+Elevation (m)
+Email
+Enter an url
+Enter text
+Entering 2D mode
+Entering 3D mode
+entities
+Error : cannot export layer
+Error : cannot perform action
+Error : cannot reproject this layer
+Error : cannot retrieve contexts
+Error : cannot save context
+Error : cannot save layer on server
+Error : email adress is already registered
+Error : file size is too big or extension is not allowed
+Error : Flash doesn't appear to be supported by your browser
+Error : Google Earth cannot be loaded
+Error : read error
+Error : registering is currently unavailable
+Error : this file type is not allowed
+Error performing GetCapabilities operation
+Error performing DescribeFeatureType operation
+Expected format is YYYY-MM-DDTHH:mm:ss for a single date or YYYY-MM-DDTHH:mm:ss/YYYY-MM-DDTHH:mm:ss for a date interval
+Expected format is lonmin,latmin,lonmax,latmax
+Flickr
+Get capabilities
+Get elevation profile
+Get feature info
+Go back to the start view
+Google libraries not loaded. Streetview is disabled
+Hi
+Hide
+Initializing 3D mode
+Information
+Item
+Layer
+Layer added
+Layer type detection
+Layer type detection in progess...
+layers
+Layers manager
+Line
+Load
+Load a context
+Loading
+Location not found
+Log in
+Log out
+Map context successfully saved
+Measure distance
+Modification mode
+My history
+My searches
+Navigation history
+No
+No description available
+No information available here
+No layers available
+No results
+No Streetview data around this point
+Normal/Fullscreen
+or
+OR
+Ooops ! Cannot load layer
+Opacity
+OpenStreetMap
+Overlays
+Page
+Password
+Pick a country
+Pick one layer in the list
+Photos
+Point
+Polygon
+Preview
+Quicklooks
+Quit
+Register
+Relief
+Remember me
+results
+Satellite
+Save
+Save this context
+Saving layer
+Search
+Search Area
+Search for media
+Search for related data
+Search for related images
+Search in
+Search in catalogs
+Search location name...
+Search parameters
+Searching
+Server error
+Set
+Share
+Show
+Show quicklook
+Size
+Somewhere
+Status
+Start tracking
+Stop tracking
+Streets
+Streetview
+Tags
+The layer cannot be saved
+this layer already exists. Do you want to replace it ?
+Time
+Title
+Toggle 2D/3D
+Toponyms
+Trends
+Type
+Upload file
+unknown
+Username
+Validate
+Videos
+Visits per country
+Waiting for additional info
+Where am I ?
+Wikipedia
+Wrong login/password - Connection refused
+WMS
+Yahoo! Streets
+Yes
+You are in drawing mode.
+You are in modification mode.
+You're not connected
+Youtube
+Zoom
+Zoom here
+Zoom out
+Zoom to extent

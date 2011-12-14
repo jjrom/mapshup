@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><wfs:FeatureCollection xmlns:superbidon="http://www.superbidon.com/superbidon" xmlns:gml="http://www.opengis.net/gml"
+xmlns:wfs="http://www.opengis.net/wfs" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:schemaLocation="http://www.superbidon.com/superbidon http://mauiprodwms.pdc.org:8080/wfscom.superbidon.wfs.Esrimap/PDC_Active_Hazards_WFS?request=describefeaturetype&amp;service=WFS&amp;version=1.0.0 http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd"> <gml:boundedBy>
+ <gml:Box srsName="EPSG:4326">
+<gml:coordinates> -179.999899999749,-66.8600000776844 179.999199991569,86.8564000004191</gml:coordinates>
+</gml:Box>
+</gml:boundedBy><gml:featureMember><superbidon:DummySatellite fid="DummySatellite.fid">
+    <superbidon:dummyInformation>This is a dummy satellite</superbidon:dummyInformation>
+<superbidon:shape.area>0</superbidon:shape.area>
+<superbidon:shape.len>0</superbidon:shape.len>
+<superbidon:_shape_><gml:MultiPoint srsName="EPSG:4326"><gml:pointMember><gml:Point srsName="EPSG:4326"><gml:coordinates>LON,LAT</gml:coordinates>
+</gml:Point>
+</gml:pointMember>
+</gml:MultiPoint>
+</superbidon:_shape_>
+</superbidon:DummySatellite>
+</gml:featureMember>
+</wfs:FeatureCollection>

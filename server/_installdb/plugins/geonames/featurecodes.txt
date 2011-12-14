@@ -1,0 +1,676 @@
+                      name                      
+------------------------------------------------
+ first-order administrative division
+ second-order administrative division
+ third-order administrative division
+ fourth-order administrative division
+ administrative division
+ leased area
+ political entity
+ dependent political entity
+ freely associated state
+ independent political entity
+ section of independent political entity
+ semi-independent political entity
+ parish
+ territory
+ zone
+ buffer zone
+ seaplane landing area
+ anchorage
+ bay
+ bays
+ bight(s)
+ bank(s)
+ stream bank
+ section of bank
+ bog(s)
+ icecap
+ channel
+ lake channel(s)
+ marine channel
+ navigation channel
+ confluence
+ canal
+ aqueduct
+ canal bend
+ drainage canal
+ irrigation canal
+ navigation canal(s)
+ abandoned canal
+ underground irrigation canal(s)
+ section of canal
+ cove(s)
+ tidal creek(s)
+ current
+ cutoff
+ dock(s)
+ docking basin
+ icecap dome
+ icecap depression
+ ditch
+ drainage ditch
+ irrigation ditch
+ ditch mouth(s)
+ estuary
+ fishing area
+ fjord
+ fjords
+ waterfall(s)
+ section of waterfall(s)
+ mud flat(s)
+ tidal flat(s)
+ glacier(s)
+ gulf
+ geyser
+ harbor(s)
+ section of harbor
+ inlet
+ former inlet
+ lake bed(s)
+ lagoon
+ lagoons
+ section of lagoon
+ lake
+ crater lake
+ intermittent lake
+ salt lake
+ intermittent salt lake
+ oxbow lake
+ intermittent oxbow lake
+ lakes
+ underground lake
+ crater lakes
+ intermittent lakes
+ salt lakes
+ intermittent salt lakes
+ section of lake
+ salt evaporation ponds
+ mangrove swamp
+ moor(s)
+ marsh(es)
+ salt marsh
+ narrows
+ ocean
+ overfalls
+ pond
+ intermittent pond
+ salt pond
+ intermittent salt pond(s)
+ ponds
+ fishponds
+ intermittent ponds
+ salt ponds
+ pool(s)
+ intermittent pool
+ reach
+ icecap ridge
+ roadstead
+ reef(s)
+ coral reef(s)
+ section of reef
+ rapids
+ reservoir(s)
+ intermittent reservoir
+ water tank
+ ravine(s)
+ sabkha(s)
+ sound
+ sea
+ shoal(s)
+ sill
+ spring(s)
+ sulphur spring(s)
+ hot spring(s)
+ stream
+ anabranch
+ stream bend
+ canalized stream
+ distributary(-ies)
+ headwaters
+ intermittent stream
+ section of intermittent stream
+ stream mouth(s)
+ abandoned watercourse
+ streams
+ lost river
+ section of stream
+ strait
+ swamp
+ irrigation system
+ canal tunnel
+ wadi
+ wadi bend
+ wadi junction
+ wadi mouth
+ wadies
+ section of wadi
+ whirlpool
+ well
+ abandoned well
+ salt mine(s)
+ wells
+ wetland
+ intermittent wetland
+ watercourse
+ waterhole(s)
+ agricultural colony
+ amusement park
+ area
+ drainage basin
+ petroleum basin
+ battlefield
+ clearing
+ common
+ concession area
+ coalfield
+ continent
+ coast
+ business center
+ housing development
+ field(s)
+ irrigated field(s)
+ gasfield
+ grazing area
+ gravel area
+ industrial area
+ arctic land
+ locality
+ military base
+ mining area
+ maneuver area
+ naval base
+ oasis(-es)
+ oilfield
+ peat cutting area
+ park
+ port
+ quicksand
+ republic
+ reserve
+ agricultural reserve
+ forest reserve
+ hunting reserve
+ nature reserve
+ palm tree reserve
+ reservation
+ wildlife reserve
+ region
+ economic region
+ lake region
+ artillery range
+ salt area
+ snowfield
+ tribal area
+ master source holdings list
+ populated place
+ seat of a first-order administrative division
+ seat of a second-order administrative division
+ seat of a third-order administrative division
+ seat of a fourth-order administrative division
+ capital of a political entity
+ farm village
+ seat of government of a political entity
+ populated locality
+ abandoned populated place
+ religious populated place
+ populated places
+ destroyed populated place
+ section of populated place
+ israeli settlement
+ causeway
+ former causeway
+ oil pipeline
+ promenade
+ portage
+ road
+ ancient road
+ road bend
+ road cut
+ road junction
+ railroad junction
+ railroad
+ abandoned railroad
+ caravan route
+ railroad yard
+ street
+ stock route
+ tunnel
+ natural tunnel
+ road tunnel
+ railroad tunnel
+ tunnels
+ trail
+ administrative facility
+ agricultural facility
+ airbase
+ airfield
+ heliport
+ airport
+ abandoned airfield
+ amphitheater
+ ancient site
+ arch
+ astronomical station
+ asylum
+ athletic field
+ automatic teller machine
+ bank
+ beacon
+ bridge
+ ruined bridge
+ building(s)
+ boundary marker
+ barracks
+ breakwater
+ baling station
+ boatyard
+ burial cave(s)
+ Bus Station
+ Bus Stop
+ cairn
+ cave(s)
+ Centre Continuous Learning
+ church
+ camp(s)
+ logging camp
+ labor camp
+ mining camp
+ oil camp
+ abandoned camp
+ refugee camp
+ cemetery
+ communication center
+ corral(s)
+ casino
+ castle
+ customs house
+ courthouse
+ atomic center
+ community center
+ facility center
+ medical center
+ religious center
+ space center
+ convent
+ dam
+ ruined dam
+ sub-surface dam
+ dairy
+ dry dock
+ dockyard
+ dike
+ fuel depot
+ estate(s)
+ banana plantation
+ cotton plantation
+ oil palm plantation
+ rubber plantation
+ sugar plantation
+ sisal plantation
+ tea plantation
+ section of estate
+ facility
+ foundry
+ farm
+ abandoned farm
+ farms
+ farmstead
+ fort
+ ferry
+ gate
+ garden(s)
+ guest house
+ gas-oil separator plant
+ grave
+ hermitage
+ halting place
+ house(s)
+ country house
+ hospital
+ clinic
+ dispensary
+ leprosarium
+ historical site
+ hotel
+ hut
+ huts
+ military installation
+ research institute
+ jetty
+ landing
+ leper colony
+ library
+ landfill
+ lock(s)
+ lighthouse
+ mall
+ marina
+ factory
+ brewery
+ cannery
+ copper works
+ limekiln
+ munitions plant
+ phosphate works
+ abandoned factory
+ sugar refinery
+ market
+ mill(s)
+ ore treatment plant
+ olive oil mill
+ sugar mill
+ former sugar mill
+ sawmill
+ windmill
+ water mill
+ mine(s)
+ gold mine(s)
+ coal mine(s)
+ chrome mine(s)
+ copper mine(s)
+ diatomite mine(s)
+ iron mine(s)
+ monument
+ nickel mine(s)
+ lead mine(s)
+ placer mine(s)
+ abandoned mine
+ quarry(-ies)
+ tin mine(s)
+ mole
+ mosque
+ mission
+ abandoned mission
+ monastery
+ metro station
+ museum
+ novitiate
+ nursery(-ies)
+ observation point
+ observatory
+ radio observatory
+ oil pipeline junction
+ abandoned oil well
+ oil refinery
+ tank farm
+ oil well
+ opera house
+ palace
+ pagoda
+ pier
+ parking lot
+ oil pumping station
+ water pumping station
+ post office
+ police post
+ abandoned police post
+ park gate
+ park headquarters
+ prison
+ reformatory
+ abandoned prison
+ power station
+ hydroelectric power station
+ border post
+ customs post
+ patrol post
+ pyramid
+ pyramids
+ quay
+ golf course
+ racetrack
+ restaurant
+ resthouse
+ rookery
+ religious site
+ retreat
+ ranch(es)
+ railroad siding
+ railroad signal
+ resort
+ railroad station
+ abandoned railroad station
+ railroad stop
+ abandoned railroad stop
+ ruin(s)
+ school
+ agricultural school
+ college
+ Driving School
+ Language School
+ military school
+ maritime school
+ technical school
+ State Exam Prep Centre
+ sheepfold
+ shrine
+ storehouse
+ sluice
+ sanatorium
+ spa
+ spillway
+ square
+ stable
+ stadium
+ scientific research base
+ coast guard station
+ experiment station
+ forest station
+ inspection station
+ meteorological station
+ radio station
+ satellite station
+ whaling station
+ steps
+ sewage treatment plant
+ theater
+ tomb(s)
+ temple(s)
+ cattle dipping tank
+ tower
+ transit terminal
+ triangulation station
+ oil pipeline terminal
+ Temp Work Office
+ postgrad & MBA
+ University Prep School
+ university
+ united states government establishment
+ veterinary facility
+ wall
+ ancient wall
+ weir(s)
+ wharf(-ves)
+ wreck
+ waterworks
+ free trade zone
+ zoo
+ asphalt lake
+ atoll(s)
+ bar
+ beach
+ beaches
+ badlands
+ boulder field
+ blowhole(s)
+ blowout(s)
+ bench
+ butte(s)
+ cape
+ cleft(s)
+ caldera
+ cliff(s)
+ canyon
+ cone(s)
+ corridor
+ cirque
+ cirques
+ crater(s)
+ cuesta(s)
+ delta
+ depression(s)
+ desert
+ dune(s)
+ divide
+ sandy desert
+ fan(s)
+ ford
+ fissure
+ gap
+ gorge(s)
+ headland
+ hill
+ hills
+ hammock(s)
+ rock desert
+ interfluve
+ island
+ artificial island
+ mangrove island
+ islands
+ land-tied island
+ section of island
+ isthmus
+ karst area
+ lava area
+ levee
+ mesa(s)
+ mound(s)
+ moraine
+ mountain
+ mountains
+ meander neck
+ nunatak
+ nunataks
+ pan
+ pans
+ pass
+ peninsula
+ section of peninsula
+ peak
+ peaks
+ plateau
+ section of plateau
+ polder
+ plain(s)
+ section of plain
+ promontory(-ies)
+ point
+ points
+ beach ridge
+ ridge(s)
+ stony desert
+ rock
+ rockfall
+ rocks
+ sand area
+ dry stream bed
+ escarpment
+ saddle
+ shore
+ sinkhole
+ slide
+ slope(s)
+ spit
+ spur(s)
+ talus slope
+ interdune trough(s)
+ terrace
+ upland
+ valley
+ hanging valley
+ valleys
+ section of valley
+ volcano
+ apron
+ arch
+ arrugado
+ borderland
+ banks
+ bench
+ bank
+ basin
+ cordillera
+ canyons
+ canyon
+ continental rise
+ deep
+ shelf edge
+ escarpment (or scarp)
+ fan
+ flat
+ fork
+ forks
+ fracture zone
+ furrow
+ gap
+ gully
+ hill
+ hills
+ hole
+ knoll
+ knolls
+ ledge
+ levee
+ median valley
+ mesa
+ mound
+ moat
+ mountains
+ mountain
+ peaks
+ peak
+ platform
+ plain
+ plateau
+ pinnacle
+ province
+ ravine
+ ridge
+ ridges
+ reefs
+ reef
+ rise
+ ramp
+ range
+ seachannel
+ seachannels
+ saddle
+ shelf
+ shoal
+ shoals
+ shelf valley
+ sill
+ slope
+ seamounts
+ seamount
+ spur
+ terrace
+ tablemounts (or guyots)
+ tablemount (or guyot)
+ tongue
+ trough
+ trench
+ valley
+ valleys
+ bush(es)
+ cultivated area
+ forest(s)
+ fossilized forest
+ grassland
+ coconut grove
+ olive grove
+ palm grove
+ pine grove
+ heath
+ meadow
+ orchard(s)
+ scrubland
+ tree(s)
+ tundra
+ vineyard
+ vineyards
+ not available
+(672 lignes)
+

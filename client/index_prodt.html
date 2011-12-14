@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>                    
+        <title>Webmapping made easy</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/> 
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <link rel="shortcut icon" href="./favicon.ico" />
+        <link rel="stylesheet" type="text/css" href="js/mol/theme/default/style.tidy.css" />
+        <link rel="stylesheet" type="text/css" href="js/mol/theme/default/google.tidy.css" />
+        <link rel="stylesheet" type="text/css" href="js/mapshup/theme/white/mapshupt.css" />
+        <link rel="stylesheet" type="text/css" href="js/mjquery/mjquery.css" />
+        <!-- Get rid of adress bar for i* devices
+        <script type="text/javascript">
+            var fixSize = function() {
+                window.scrollTo(0,0);
+                document.body.style.height = '100%';
+                if (!(/(iphone|ipod)/.test(navigator.userAgent.toLowerCase()))) {
+                    if (document.body.parentNode) {
+                        document.body.parentNode.style.height = '100%';
+                    }
+                }
+            };
+            setTimeout(fixSize, 700);
+            setTimeout(fixSize, 1500);
+        </script>
+         -->
+    </head>
+    <body>
+        <div class="wrapper">
+            <div id="wheader"><h1><a href="http://mapshup.info" target="_blank" title="mapshup.info" class="image"><img src="img/mapshuplogo.png" class="middle" title="Powered by mapshup"/>mapshup</a>|<a href="http://jrom.info"  target="_blank" class="image" title="Created by Jerome Gasperi"><img height="45px" src="img/jrom.png" class="middle"/></a></h1></div>
+            <div id="wcontainer" class="map">
+                <div id="mapcontainer">
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" src="js/mjquery/mjquery.js"></script>
+        <script type="text/javascript" src="js/mol/OpenLayersMobile.js"></script>
+        <script type="text/javascript" src="js/mapshup/mapshupt.js"></script>
+        <script type="text/javascript" src="js/mapshup/config/default.js"></script>
+        <script type="text/javascript" src="js/mapshup/config/touch.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                j_.load();
+            });
+        </script>
+    </body>
+</html>
