@@ -223,6 +223,26 @@
             return false;
             
         };
-    
+        
+         /*
+         * Return an array of the attributes to
+         * present in the brief view
+         * title is the name of the column to display
+         * value is the name of the feature attributes
+         */
+        this.getBriefAttributes = function() {
+            return [
+            {
+                title:'Preview',
+                value:'thumbnail'
+            },
+            {
+                title:'Identifier',
+                value:'identifier'
+            }
+            ];
+            
+        }
+        
     }
 })(window.msp);
