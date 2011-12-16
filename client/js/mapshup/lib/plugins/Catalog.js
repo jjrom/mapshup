@@ -668,16 +668,16 @@
                         for (j = 0, m = attributes.length; j < m; j++) {
                             a = layer.features[i].attributes[attributes[j].value];
                             if (attributes[j].title === "Preview") {
-                                html += '<td><img src="' + a + '" title=""/></td>'
+                                html += '<td><img src="' + (a ? a : msp.Util.getImgUrl('nodata.png')) + '"/></td>'
                             }
                             /*
                              * Identifier special case, strip out urn prefix
                              */
-                            else if (attributes[j].title === "Identifier") {
-                                html += '<td title="' + a + '">' + a.replace(/urn:ogc:def:EOP:/,"") + '</td>';
+                            else if (a && attributes[j].title === "Identifier") {
+                                html += '<td title="' + a + '">' + msp.Util.shorten(a.replace(/urn:ogc:def:EOP:/,""), 30) + '</td>';
                             }
                             else {
-                                html += '<td title="' + a + '">' + a + '</td>';
+                                html += '<td title="' + a + '">' + msp.Util.shorten(a, 30) + '</td>';
                             }
                         }
                         html += '</tr></tbody>';
