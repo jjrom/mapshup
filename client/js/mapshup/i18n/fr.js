@@ -34,6 +34,7 @@
     i["Delete"]="Supprimer";
     i["Delete tab"]="Supprimer un onglet";
     i["Description"]="Description";
+    i["Display full resolution product on map"]="Voir le produit pleine résolution sur la carte";
     i["Distance"]="Distance";
     i["Download"]="Télécharger";
     i["Download in progress"]="Téléchargement en cours";
