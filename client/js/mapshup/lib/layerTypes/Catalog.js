@@ -297,7 +297,7 @@
                          */
                         if (k === '_madd') {
                             id = msp.Util.getId();
-                            west.append('<br/><a href="#" class="center" id="'+id+'">'+v["title"]+'</a>');
+                            west.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._(v["title"])+'</a>');
                             (function(id,obj){
                                 $('#'+id).click(function(){
 
