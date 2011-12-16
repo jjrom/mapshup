@@ -284,13 +284,13 @@
                     else if (t === "object") {
 
                         /*
-                         * Special case for _jadd property
-                         * _jadd defines an action to add layer
+                         * Special case for _madd property
+                         * _madd defines an action to add layer
                          * and should contains to properties :
                          *  - title : action title to display
                          *  - layer : layer parameters
                          */
-                        if (k === '_jadd') {
+                        if (k === '_madd') {
                             id = msp.Util.getId();
                             east.append('<tr><td colspan="2"><a href="#" id="' + id + '">' + v["title"] + '</a></td></tr>');
                             (function(id,obj){
