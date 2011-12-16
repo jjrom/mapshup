@@ -629,7 +629,8 @@
                 table,
                 pid = msp.Util.getId(),
                 nid = msp.Util.getId(),
-                sc = layer["_msp"].searchContext;
+                sc = layer["_msp"].searchContext,
+                nbOfFeatures = layer.features.length;
 
                 /*
                  * Create the east side panel structure:
@@ -643,13 +644,9 @@
                 /*
                  * No results = show nothing
                  */
-                if (sc.totalResults === 0) {
+                if (nbOfFeatures === 0) {
                     return;
                 };
-
-                /*
-                 * Display result
-                 */
 
                 /*
                  * Initialize table container
@@ -665,7 +662,7 @@
                     /*
                      * Roll over features
                      */ 
-                    for (i = 0, l = layer.features.length; i < l; i++) {
+                    for (i = 0, nbOfFeatures; i < nbOfFeatures; i++) {
                         a = layer.features[i].attributes;
                         html += '<tr class="hover" idx="'+i+'">';
                         for (j = 0, m = attributes.length; j < m; j++) {
@@ -689,7 +686,7 @@
                     /*
                      * Set the footer with next/previous action
                      */
-                    html += '<tfoot><tr><td colspan="'+l+'"><a href="#" id="'+pid+'" class="hover">&larr;&nbsp</a> ' + sc.nextRecord + " " + msp.Util._("to") + " " + (sc.nextRecord + layer.features.length - 1) + " " + msp.Util._("on") + " " + sc.totalResults + ' <a href="#" id="'+nid+'" class="hover">&rarr;</a></td></tr></tfoot>';
+                    html += '<tfoot><tr><td colspan="'+l+'"><a href="#" id="'+pid+'" class="hover">&larr;&nbsp</a> ' + sc.nextRecord + " " + msp.Util._("to") + " " + (sc.nextRecord + nbOfFeatures - 1) + " " + msp.Util._("on") + " " + sc.totalResults + ' <a href="#" id="'+nid+'" class="hover">&rarr;</a></td></tr></tfoot>';
 
                     /*
                      * Populate the table results and make fixed headder

@@ -498,16 +498,6 @@
                     else {
 
                         /*
-                         * Set nextRecord new value
-                         */
-                        layer["_msp"].searchContext.nextRecord = nextRecord;
-
-                        /*
-                         * Update the totalResults value
-                         */
-                        layer["_msp"].searchContext.totalResults = data.totalResults || 0;
-
-                        /*
                          * Clean layer
                          */
                         layer.destroyFeatures();
@@ -550,6 +540,17 @@
                          * See msp.Map.loadContext for explanation
                          */
                         layer["_msp"].zoomOnAfterLoad = true;
+
+                        /*
+                         * Set nextRecord new value
+                         */
+                        layer["_msp"].searchContext.nextRecord = nextRecord;
+
+                        /*
+                         * Update the totalResults value
+                         * If data.totalResults is not set then set totalResults to the number of features
+                         */
+                        layer["_msp"].searchContext.totalResults = data.hasOwnProperty("totalResults") ? data.totalResults : features.length;
 
                         /*
                          * Finally tells callback function that the search was
