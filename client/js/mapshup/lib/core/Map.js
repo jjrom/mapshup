@@ -320,6 +320,9 @@
 
                 /** True : avoid zoomon on layer name click in LayersManager panel */
                 noZoomOn:msp.Util.getPropertyValue(layerDescription, "noZoomOn", false),
+                
+                /** True : for catalog layers, quicklook attached to feature results can be added as an image layer on the map  */
+                qlToMap:msp.Util.getPropertyValue(layerDescription, "qlToMap", true),
 
                 /** True : add refresh button in LayersManager panel */
                 refreshable:msp.Util.getPropertyValue(layerDescription, "refreshable", false),

@@ -217,11 +217,11 @@
                 /*
                  * Get a unique id for jquery click action
                  */
-                var $id1,
-                    id1 = msp.Util.getId(),
-                    id2 = msp.Util.getId();
+                var id2,
+                    $id1,
+                    id1 = msp.Util.getId();
 
-                west.append('<a id="'+id1+'" class="image" alt="'+msp.Util._("Show quicklook")+'" title="'+feature.attributes['identifier']+'" '+'href="'+feature.attributes['quicklook']+'"><img src="'+thumb+'" class="padded"></a><br/><a href="#" class="center" id="'+id2+'">'+msp.Util._('Add quicklook to map')+'</a>');
+                west.append('<a id="'+id1+'" class="image" alt="'+msp.Util._("Show quicklook")+'" title="'+feature.attributes['identifier']+'" '+'href="'+feature.attributes['quicklook']+'"><img src="'+thumb+'" class="padded"></a>');
 
                 /*
                  * Popup image
@@ -235,18 +235,23 @@
 
                 /*
                  * Add an action on "Add Quicklook to map" link
+                 * This action is added only if layer allow to display Quicklook on the map
                  */
-                $('#'+id2).click(function() {
-                    Map.addLayer({
-                        type:"Image",
-                        title:feature.attributes['identifier'],
-                        /* If removeBorderServiceUrl is defined => use it :) */
-                        url:msp.Config["general"].removeBlackBorderServiceUrl != null ? msp.Config["general"].removeBlackBorderServiceUrl + escape(feature.attributes['quicklook']) + msp.Util.abc : feature.attributes['quicklook'],
-                        bbox:feature.geometry.getBounds().toBBOX(),
-                        /* By default, quicklooks are added to the "Quicklooks" group */
-                        groupName:"Quicklooks"
+                if (layer["_msp"].qlToMap) {
+                    id2 = id2 = msp.Util.getId()
+                    west.append('<br/><a href="#" class="center" id="'+id2+'">'+msp.Util._('Add quicklook to map')+'</a>');
+                    $('#'+id2).click(function() {
+                        Map.addLayer({
+                            type:"Image",
+                            title:feature.attributes['identifier'],
+                            /* If removeBorderServiceUrl is defined => use it :) */
+                            url:msp.Config["general"].removeBlackBorderServiceUrl != null ? msp.Config["general"].removeBlackBorderServiceUrl + escape(feature.attributes['quicklook']) + msp.Util.abc : feature.attributes['quicklook'],
+                            bbox:feature.geometry.getBounds().toBBOX(),
+                            /* By default, quicklooks are added to the "Quicklooks" group */
+                            groupName:"Quicklooks"
+                        });
                     });
-                });
+                }
             }
 
             /*
