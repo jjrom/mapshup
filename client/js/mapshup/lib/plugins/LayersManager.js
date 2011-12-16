@@ -256,7 +256,7 @@
                 unique,
                 img,
                 fraction = 1 / this.options.opacitySteps,
-                content = '<div class="title">'+this.getTitle(layer)+'</div><div class="actions"></div>',
+                content = '<div class="title" title="'+msp.Util._(layer.name)+'">'+this.getTitle(layer)+'</div><div class="actions"></div>',
                 id = msp.Util.encode("lm"+layer["_msp"].mspID),
                 $id = $('#'+id)
                 scope = this;
