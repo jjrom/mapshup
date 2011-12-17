@@ -89,9 +89,9 @@ function loadQuicklook($resultFileURI, $operateur, $result = "") {
             }
         }
         $curl = curl_init();
-        // TODO : SPECIAL SISA ?? A virer durant recette en vol
+        
+        // Retrieve quicklooks
         $qlurl = $quicklookNode->nodeValue;
-        $qlurl = str_replace("ipu-catalog.pleiades.interne:80", "172.29.11.24:8080", $qlurl);
         curl_setopt($curl, CURLOPT_URL, $qlurl);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($curl, CURLOPT_HTTPHEADER, Array("REMOTE_USER: ".$operateur));
@@ -105,7 +105,6 @@ function loadQuicklook($resultFileURI, $operateur, $result = "") {
         
         // Quicklooks are streamed through the MSP_GETFILE_URL service 
         $ds->getElementsByTagName('fileName')->item(0)->nodeValue = MSP_GETFILE_URL.$dsid.".jpg&amp;stream=true";
-        //$ds->getElementsByTagName('fileName')->item(0)->nodeValue = "http://pfrwebserver.mg/IPUCatalog/jEOBrowser.current/tmp/".$dsid.".jpg";
         
     }
     return $doc->saveXML();
