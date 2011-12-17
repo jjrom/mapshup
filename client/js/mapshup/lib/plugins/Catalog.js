@@ -886,6 +886,19 @@
                              */
                             if (value === null) {
                                 value = tmpItem.value || "";
+                                
+                                /*
+                                 * if tmpItem.value is set then 
+                                 * initialize SearchContext object with this value
+                                 */
+                                if (tmpItem.value) {
+                                    sc.add({
+                                        id:tmpItem.id,
+                                        title:tmpItem.title,
+                                        value:tmpItem.value
+                                    });
+                                    tmpItem.value = "";
+                                }
                             }
 
                             /*
