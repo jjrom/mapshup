@@ -281,7 +281,7 @@
                      * Simple case : string
                      */
                     if (t === "string" && msp.Util.isUrl(v)) {
-                        east.append('<tr><td>' + msp.Util._(connector.metadataTranslator[k] || k) + '</td><td><a target="_blank" href="'+v+'">'+ msp.Util.shorten(v, 30) +'</a></td></tr>');
+                        east.append('<tr><td>' + msp.Util._(connector.metadataTranslator[k] || k) + '</td><td>&nbsp;</td><td><a target="_blank" href="'+v+'">'+ msp.Util.shorten(v, 30) +'</a></td></tr>');
                     }
                     /*
                      * Object case
@@ -378,19 +378,19 @@
                                 }
                                 else {
                                     for (kkk in v[kk]) {
-                                        d.append('<tr><td>' + msp.Util._(connector.metadataTranslator[kkk] || kkk) + '</td><td>' + v[kk][kkk] + '</td></tr>');
+                                        d.append('<tr><td>' + msp.Util._(connector.metadataTranslator[kkk] || kkk) + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
                                     }
                                 }
 
                             }
                             else {
-                                east.append('<tr><td>' + msp.Util._(connector.metadataTranslator[k] || k) + ' &rarr; ' + msp.Util._(connector.metadataTranslator[kk] || kk) + '</td><td>' + v[kk] + '</td></tr>');
+                                east.append('<tr><td>' + msp.Util._(connector.metadataTranslator[k] || k) + ' &rarr; ' + msp.Util._(connector.metadataTranslator[kk] || kk) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
                             }
                         }
 
                     }
                     else {
-                        east.append('<tr><td>' + msp.Util._(connector.metadataTranslator[k] || k) + '</td><td>' + v + '</td></tr>');
+                        east.append('<tr><td>' + msp.Util._(connector.metadataTranslator[k] || k) + '</td><td>&nbsp;</td><td>' + v + '</td></tr>');
                     }
                 }
             }
