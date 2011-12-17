@@ -253,14 +253,22 @@ function postRemoteData($url, $request, $setHeaders) {
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
         if ($setHeaders) {
-            curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-                'POST HTTP/1.0',
-                'Content-type: text/xml;charset="UTF-8"',
-                'Accept: text/xml',
-                'Cache-Control: no-cache',
-                'Pragma: no-cache',
-                'Expect: '
-            ));
+            
+            // if $setHeaders is a boolean then add default HTTPHEADERS
+            if (is_bool($setHeaders) === true) {
+                curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+                    'POST HTTP/1.0',
+                    'Content-type: text/xml;charset="UTF-8"',
+                    'Accept: text/xml',
+                    'Cache-Control: no-cache',
+                    'Pragma: no-cache',
+                    'Expect: '
+                ));
+            }
+            // if $setHeaders is an array then set HTTPHEADERS with $setHeaders content
+            else if (is_array($setHeaders) === true) {
+                curl_setopt($curl, CURLOPT_HTTPHEADER, $setHeaders);
+            }
         }
         curl_setopt($curl, CURLOPT_POSTFIELDS, $request);
         curl_setopt($curl, CURLOPT_POST, TRUE);
