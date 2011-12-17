@@ -131,11 +131,20 @@
                             /*
                              * Extract base url and KVP from the URLTemplate
                              */
-                            var parts = description.formats["GeoJSON"].URLTemplate.split("?"),
-                                url = parts[0]+"?",
-                                kvps = msp.Util.extractKVP(parts[1]),
-                                key;
-                            
+                            var j,
+                                k,
+                                key,
+                                kvps = "",
+                                parts = description.formats["GeoJSON"].URLTemplate.split("?"),
+                                // url is the first part of the URLTemplate i.e. everything before '?'
+                                url = parts[0]+"?";
+                                
+                                // Other kvps are the rest of the URLTemplate
+                                for (j = 1, k = parts.length; j < k; j++) {
+                                    kvps += "?"+parts[j];
+                                }
+                                kvps = msp.Util.extractKVP(kvps);
+                                
                             /*
                              * KVP analysis
                              * Non template parameters (i.e. parameter not containing a '{') are
@@ -145,13 +154,13 @@
                                 
                                 /* Non template parameter */
                                 if (kvps[key].indexOf('{') === -1) {
-                                    url += key + "=" + kvps[key];
+                                    url += key + "=" + kvps[key] + '&';
                                 }
                                 
                                 /*
                                  * If value = {time:start} add a date filter 
                                  */
-                                if (kvps[key].indexOf('time:start')) {
+                                if (kvps[key].indexOf('time:start') === 1) {
                                     self.filters.push({
                                         id:"startDate",
                                         title:msp.Util._("Date"),
