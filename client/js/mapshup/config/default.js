@@ -128,7 +128,7 @@
     /**
      * Remove black border service url.
      */
-    c["general"].removeBlackBorderServiceUrl = "/utilities/removeBorder.php?imageurl=";
+    //c["general"].removeBlackBorderServiceUrl = "/utilities/removeBorder.php?imageurl=";
 
     /**
      * Reprojection service url. Must be terminated by "?" or "&"
