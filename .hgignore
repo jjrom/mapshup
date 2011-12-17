@@ -1,2 +1,3 @@
 ^utils/molBuilder/OpenLayers$
 ^client/js/mapshup/config/__DEVEL__\.js$
+^server/plugins/cnes/phrcatalog/opensearch\.json$

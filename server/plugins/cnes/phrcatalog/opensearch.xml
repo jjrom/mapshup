@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+	xmlns:geo="http://a9.com/-/opensearch/extensions/geo/1.0/" xmlns:time="http://a9.com/-/opensearch/extensions/time/1.0/">
+	<ShortName>PHR Catalog search</ShortName>
+	<Description>Pleiades HR OpenSearch catalog search wrapper</Description>
+	<Tags>PHR</Tags>
+	<Contact>admin@phr.cnes.fr</Contact>
+	<Url type="application/json" template="http://localhost/mspsrv/plugins/cnes/phrcatalog/search.php?q={searchTerms}&amp;bbox={geo:box?}&amp;format=json&amp;startDate={time:start?}&amp;completionDate={time:stop?}&amp;DSID={phr:DSID?}&amp;catalogUrl={phr:catalogUrl?}&amp;operateur={phr:operateur?}&amp;archivingDate={phr:archivingDate?}" />
+	<Url type="application/json" rel="mspdesc" template="http://localhost/mspsrv/plugins/cnes/phrcatalog/opensearch.json" />
+	<LongName>SPIRIT OpenSearch catalog</LongName>
+	<Query role="example" searchTerms="observatory" />
+	<Attribution>CNES</Attribution>
+	<Language>en-us</Language>
+</OpenSearchDescription>
