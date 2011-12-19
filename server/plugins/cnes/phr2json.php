@@ -49,6 +49,9 @@ function toGeoJSON($resultFileURI) {
     $doc->load($resultFileURI);
     $rootName = strtolower(removeNamespace($doc->documentElement->nodeName));
 
+    /*
+     * Get the PHR type from XML file root name element
+     */
     $type = getPHRTypeFromRootName($rootName);
 
     /*
@@ -59,7 +62,20 @@ function toGeoJSON($resultFileURI) {
         'features' => array()
     );
 
-
+    /*
+     * 
+     * Pleiades Inventory Plan
+     * 
+     * Displayed geometry :
+     * 
+     *      STATION/PASS/DATASTRIP/CORNER/LATITUDE
+     *      STATION/PASS/DATASTRIP/CORNER/LONGITUDE
+     * 
+     * Displayed properties :
+     * 
+     *      STATION/PASS/DATASTRIP/OBMM_FILE_NUMBER
+     * 
+     */
     if ($type == "phr_inventory_plan") {
 
         $stations = $doc->getElementsByTagname('STATION');
@@ -107,45 +123,69 @@ function toGeoJSON($resultFileURI) {
                 }
             }
         }
-    } else if ($type == "phr_dimap_document") {
+    }
+   
+    /*
+     * 
+     * Pleiades Dimap Document
+     * 
+     * Displayed geometry :
+     * 
+     *      STATION/PASS/DATASTRIP/CORNER/LATITUDE
+     *      STATION/PASS/DATASTRIP/CORNER/LONGITUDE
+     * 
+     * Displayed properties :
+     * 
+     *      STATION/PASS/DATASTRIP/OBMM_FILE_NUMBER
+     * 
+     */
+    else if ($type == "phr_dimap_document") {
 
-        $scenes = $doc->getElementsByTagname('Scene');
-        foreach ($scenes as $scene) {
-            $scids = $scene->getElementsByTagname('SCENE_ID');
-            $vertices = $scene->getElementsByTagname('Vertex');
-            $poslist = '';
-            $isFirst = 1;
-            foreach ($vertices as $vertex) {
-                $latitude = $vertex->getElementsByTagName('LAT')->item(0)->nodeValue;
-                $longitude = $vertex->getElementsByTagName('LON')->item(0)->nodeValue;
-                $poslist .= $latitude . " " . $longitude . " ";
-                if ($isFirst == 1) {
-                    $latitude1 = $latitude;
-                    $longitude1 = $longitude;
-                    $isFirst = 0;
-                }
+        // Metadata info
+        $pl = $doc->getElementsByTagname('PROCESSING_LEVEL')->item(0);
+        $sp = $doc->getElementsByTagname('SPECTRAL_PROCESSING')->item(0);
+        
+        // Datastrip frame
+        $footprint = $doc->getElementsByTagname('Album_Footprint')->item(0);
+        
+        $vertices = $footprint->getElementsByTagname('Vertex');
+        $poslist = '';
+        $isFirst = 1;
+        foreach ($vertices as $vertex) {
+            $latitude = $vertex->getElementsByTagName('LAT')->item(0)->nodeValue;
+            $longitude = $vertex->getElementsByTagName('LON')->item(0)->nodeValue;
+            $poslist .= $latitude . " " . $longitude . " ";
+            if ($isFirst == 1) {
+                $latitude1 = $latitude;
+                $longitude1 = $longitude;
+                $isFirst = 0;
             }
-            $poslist .= $latitude1 . ' ' . $longitude1;
-
-            /**
-             * Add feature
-             */
-            $feature = array(
-                'type' => 'Feature',
-                'geometry' => posListToGeoJSONGeometry($poslist, LATLON),
-                'crs' => array(
-                    'type' => 'EPSG',
-                    'properties' => array('code' => '4326')
-                ),
-                'properties' => array(
-                    'identifier' => $scids->item(0)->nodeValue
-                )
-            );
-
-            // Add feature array to feature collection array
-            array_push($geojson['features'], $feature);
         }
-    } else if ($type == "mask") {
+        $poslist .= $latitude1 . ' ' . $longitude1;
+
+        /**
+         * Add feature
+         */
+        $feature = array(
+            'type' => 'Feature',
+            'geometry' => posListToGeoJSONGeometry($poslist, LATLON),
+            'crs' => array(
+                'type' => 'EPSG',
+                'properties' => array('code' => '4326')
+            ),
+            'properties' => array(
+                'identifier' => $doc->getElementsByTagname('DATASET_NAME')->item(0)->nodeValue,
+                'METADATA_PROFILE' => $pl ? $pl->item(0)->nodeValue : 'N/A',
+                'PROCESSING_LEVEL' => $sp ? $sp->item(0)->nodeValue : 'N/A'
+            )
+        );
+
+        // Add feature array to feature collection array
+        array_push($geojson['features'], $feature);
+        
+    }
+    
+    else if ($type == "mask" || $type == "overilluminationmask") {
 
         $masks = $doc->getElementsByTagname('MaskFeature');
         foreach ($masks as $mask) {
