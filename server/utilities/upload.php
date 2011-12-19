@@ -230,10 +230,10 @@ if (abcCheck($_REQUEST)) {
                                 /*
                                  * ...else normal work (TBC)
                                  */ else {
-                                    $type = getLayerTypeFromFile(MSP_UPLOAD_DIR . $fileName);
+                                    $infos = getLayerInfosFromFile(MSP_UPLOAD_DIR . $fileName);
                                 }
                             } else {
-                                $type = getLayerTypeFromFile(MSP_UPLOAD_DIR . $fileName);
+                                $infos = getLayerInfosFromFile(MSP_UPLOAD_DIR . $fileName);
                             }
                         }
                     }
@@ -254,9 +254,18 @@ if (abcCheck($_REQUEST)) {
              * Push items
              */
             $item = array(
-                'type' => $type,
+                'type' => $infos['type'],
                 'id' => $id
             );
+            
+            /*
+             * Infos keys/values
+             */
+            foreach(array_keys($infos) as $key) {
+                if ($infos[$key] != null) {
+                $item[$key] = $infos[$key];
+            }
+            }
             
             /*
              * File or url...need to choose :)

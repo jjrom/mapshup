@@ -1,4 +1,5 @@
 <?php
+
 /*
  * mapshup - Webmapping made easy
  * http://mapshup.info
@@ -50,74 +51,79 @@ function getExtension($fileName) {
 /**
  * Get mapshup layer title from an XML file
  */
-function getLayerInfoFromType($type, $doc) {
+function getLayerInfosFromType($type, $doc) {
 
-    $def = array(
-        'title' => '',
-        'description' => ''
+    $infos = array(
+        'type' => $type,
+        'title' => null,
+        'description' => null
     );
 
     /*
      * RSS
      */
     if ($type == "GeoRSS") {
-        return $def;
+        return $infos;
     }
 
     /*
      * GPX
      */
     if ($type == "GPX") {
-        return $def;
+        return $infos;
     }
 
     /*
      * Pleiades
      */
     if ($type == "Pleiades") {
-        return $def;
+        return getPHRInfos($doc);
     }
 
     /*
      * Sentinel
      */
     if ($type == "Sentinel") {
-        return $def;
+        return $infos;
     }
 
     /*
      * WMS
      */
     if ($type == "WMS") {
-        return $def;
+        return $infos;
     }
-    
+
     /*
      * WFS
      */
     if ($type == "WFS") {
-        return $def;
+        return $infos;
     }
-    
+
     /*
      * OpenSearch catalog
      */
     if ($type == "Catalog_OpenSearch") {
-        return array(
-        'title' => $doc->getElementsByTagName('ShortName')->item(0)->nodeValue,
-        'description' => $doc->getElementsByTagName('Description')->item(0)->nodeValue
-    );
+        $infos['title'] = $doc->getElementsByTagName('ShortName')->item(0)->nodeValue;
+        $infos['description'] = $doc->getElementsByTagName('Description')->item(0)->nodeValue;
+        return $infos;
     }
-    
-    return $def;
+
+    return $infos;
 }
 
 /**
  * Get mapshup layerType from file extension
  */
-function getLayerTypeFromFile($fileName) {
+function getLayerInfosFromFile($fileName) {
 
-    $type = MSP_UNKNOWN;
+    // Set default values
+    $infos = array(
+        'type' => MSP_UNKNOWN,
+        'title' => null,
+        'description' => null
+    );
 
     /*
      * get extension
@@ -144,11 +150,11 @@ function getLayerTypeFromFile($fileName) {
         $doc = new DOMDocument();
         $doc->load($fileName);
         $rootName = strtolower(removeNamespace($doc->documentElement->nodeName));
-
-        $type = getLayerTypeFromRootName($rootName);
+        $infos = getLayerInfosFromType(getLayerTypeFromRootName($rootName), $doc);
+        
     }
 
-    return $type;
+    return $infos;
 }
 
 /**
@@ -171,14 +177,14 @@ function getLayerTypeFromRootName($rootName) {
     if ($rootName == "gpx") {
         return "GPX";
     }
-    
+
     /*
      * OpenSearch
      */
     if ($rootName == "opensearchdescription") {
         return "Catalog_OpenSearch";
     }
-    
+
     /*
      * Pleiades
      */
@@ -238,6 +244,17 @@ function getPHRTypeFromRootName($rootName) {
     }
 
     return $type;
+}
+
+/**
+ * Get PHR file type from XML document rootName
+ */
+function getPHRInfos($doc) {
+    return array(
+        'type' => 'Pleiades',
+        'title' => $doc->getElementsByTagName('DATASET_NAME')->item(0)->nodeValue,
+        'description' => $doc->getElementsByTagName('METADATA_PROFILE')->item(0)->nodeValue
+    );
 }
 
 /**

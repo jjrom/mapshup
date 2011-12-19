@@ -85,7 +85,7 @@ if (abcCheck($_REQUEST) && $url != '') {
         $arr = getRemoteData($url . "&request=GetCapabilities", null, true);
     }
     // TODO
-    $urlNoParameters = NULL;
+    $urlNoParameters = null;
     
     /*
      * Extras array to pass extras information
@@ -157,7 +157,7 @@ if (abcCheck($_REQUEST) && $url != '') {
             $doc->load($tmpFile);
             $rootName = strtolower(removeNamespace($doc->documentElement->nodeName));
             $type = getLayerTypeFromRootName($rootName);
-            $infos = getLayerInfoFromType($type, $doc);
+            $infos = getLayerInfosFromType($type, $doc);
             
             /*
              * Catalog special case
@@ -178,14 +178,24 @@ if (abcCheck($_REQUEST) && $url != '') {
     }
 
     $json = array(
-        'url' => $urlNoParameters != NULL ? $urlNoParameters : $url,
+        'url' => $urlNoParameters != null ? $urlNoParameters : $url,
         'type' => $type,
-        'title' => $infos != NULL ? $infos['title'] : '',
-        'description' => $infos != NULL ? $infos['description'] : '',
         'id' => $id,
         'content_type' => $contentType,
         'extras' => $extras
     );
+    
+    /*
+     * Additionnal $infos keys/values
+     */
+    if ($infos != null) {
+        foreach(array_keys($infos) as $key) {
+            if ($infos[$key] != null) {
+                $item[$key] = $infos[$key];
+            }
+        
+        }
+    }
 
     echo json_encode($json);
 } else {
