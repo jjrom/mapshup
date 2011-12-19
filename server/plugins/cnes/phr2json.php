@@ -131,13 +131,20 @@ function toGeoJSON($resultFileURI) {
      * 
      * Displayed geometry :
      * 
-     *      STATION/PASS/DATASTRIP/CORNER/LATITUDE
-     *      STATION/PASS/DATASTRIP/CORNER/LONGITUDE
+     *      Data_Strip_Frame/Album_Footprint/Vertex
+     * 
+     *    ou
+     *      
+     *      Product_Frame/Dataset_Frame/Vertex
      * 
      * Displayed properties :
      * 
-     *      STATION/PASS/DATASTRIP/OBMM_FILE_NUMBER
-     * 
+     *      identifier : Dataset_Identification/DATASET_NAME
+     *      METADATA_PROFILE : Metadata_Identification/METADATA_PROFILE
+     *      PROCESSING_LEVEL : PROCESSING_LEVEL
+     *      SPECTRAL_PROCESSING : SPECTRAL_PROCESSING
+     *      GEOMETRY_PATH : Data_Strip_Frame/Album_Footprint/Vertex
+     *  
      */
     else if ($type == "phr_dimap_document") {
 
@@ -145,8 +152,19 @@ function toGeoJSON($resultFileURI) {
         $pl = $doc->getElementsByTagname('PROCESSING_LEVEL')->item(0);
         $sp = $doc->getElementsByTagname('SPECTRAL_PROCESSING')->item(0);
         
-        // Datastrip frame
-        $footprint = $doc->getElementsByTagname('Album_Footprint')->item(0);
+        // Metadata profile
+        $profile = $doc->getElementsByTagname('METADATA_PROFILE')->item(0)->nodeValue;
+        
+        // Footprint from Datastrip frame
+        if ($profile == "PHR_INVENTORY_INIT_LOC_DATA" || $profile == "PHR_INVENTORY_ALBUM_NCN_DATA" || $profile == "PHR_IMAGE_ARCHIVE_PRODUCT") {
+            $footprint = $doc->getElementsByTagname('Album_Footprint')->item(0);
+            $path = "Data_Strip_Frame/Album_Footprint/Vertex";
+        }
+        // Or footprint from 
+        else {
+            $footprint = $doc->getElementsByTagname('Dataset_Frame')->item(0);
+            $path = "Product_Frame/Dataset_Frame/Vertex";
+        }
         
         $vertices = $footprint->getElementsByTagname('Vertex');
         $poslist = '';
@@ -175,8 +193,10 @@ function toGeoJSON($resultFileURI) {
             ),
             'properties' => array(
                 'identifier' => $doc->getElementsByTagname('DATASET_NAME')->item(0)->nodeValue,
-                'METADATA_PROFILE' => $pl ? $pl->item(0)->nodeValue : 'N/A',
-                'PROCESSING_LEVEL' => $sp ? $sp->item(0)->nodeValue : 'N/A'
+                'METADATA_PROFILE' => $profile,
+                'PROCESSING_LEVEL' => $pl ? $pl->nodeValue : 'N/A',
+                'SPECTRAL_PROCESSING' => $sp ? $sp->nodeValue : 'N/A',
+                'GEOMETRY_PATH' => $path
             )
         );
 
