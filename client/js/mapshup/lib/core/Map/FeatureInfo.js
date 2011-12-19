@@ -482,7 +482,7 @@
                             else if (typeof value === "string" && msp.Util.isUrl(value)) {
                                 value = '<a target="_blank" href="'+value+'">'+msp.Util.shorten(value,40)+'</a>';
                             }
-                            html += '<tr><td>'+self.translate(key, feature)+'</td><td>'+value+'</td></tr>';
+                            html += '<tr><td>'+self.translate(key, feature)+'</td><td>&nbsp;</td><td>'+value+'</td></tr>';
                         }
                     }
                     
