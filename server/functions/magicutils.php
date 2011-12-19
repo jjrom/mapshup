@@ -219,14 +219,14 @@ function getOGCTypeFromRootName($rootName) {
 
     $type = MSP_UNKNOWN;
 
-    if ($rootName == "wfs_capabilities") {
+    if ($rootName === "wfs_capabilities") {
         $type = "WFS";
     }
     /*
      * WMS 1.1.0 => root element = WMT_MS_Capabilities
      * WMS 1.3.0 => root element = WMS_Capabilities
      *
-     */ else if ($rootName == "wms_capabilities" || $rootName == "wmt_ms_capabilities") {
+     */ else if ($rootName === "wms_capabilities" || $rootName === "wmt_ms_capabilities") {
         $type = "WMS";
     }
     return $type;
@@ -238,10 +238,29 @@ function getOGCTypeFromRootName($rootName) {
 function getPHRTypeFromRootName($rootName) {
 
     $type = MSP_UNKNOWN;
-
-    if ($rootName == "phr_inventory_plan" || $rootName == "phr_dimap_document" || $rootName == "mask") {
-        $type = $rootName;
+    
+    /*
+     * Valid Pleiades root names
+     */
+    $rootNames = array(
+        "geo_phr_command_file",
+        "init_loc_prod_command_file",
+        "phr_dimap_document",
+        "phr_inventory_plan",
+        "phr_ip_request",
+        "mask"
+        );
+    reset($rootNames);
+    
+    /*
+     * Check if input rootName is a valid Pleiades rootName
+     */
+    foreach($rootNames as $v) {
+        if ($v === $rootName) {
+            return $rootName;
+        }
     }
+    
 
     return $type;
 }

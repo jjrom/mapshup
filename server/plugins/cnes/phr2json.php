@@ -205,6 +205,114 @@ function toGeoJSON($resultFileURI) {
         
     }
     
+    /*
+     * 
+     * Pleiades IP Request
+     * 
+     * Displayed geometry :
+     * 
+     *      PRODUCT_ROI/POLYGON
+     * 
+     * Displayed properties :
+     * 
+     */
+    else if ($type == "phr_ip_request") {
+        
+        // Check geometry availability
+        $roi = $doc->getElementsByTagname('PRODUCT_ROI')->item(0);   
+        if($roi) {
+            
+            /*
+             * Add feature
+             */
+            $feature = array(
+                'type' => 'Feature',
+                'geometry' => posListToGeoJSONGeometry($roi->getElementsByTagname('POLYGON')->item(0)->nodeValue, LATLON),
+                'crs' => array(
+                    'type' => 'EPSG',
+                    'properties' => array('code' => '4326')
+                ),
+                'properties' => array(
+                    'identifier' => strtoupper($type)
+                )
+            );
+            
+        }
+        else {
+            $geojson = array(
+                'error' => array(
+                    'message' => 'Error: no ROI defined'
+                )
+            );
+        }
+
+        // Add feature array to feature collection array
+        array_push($geojson['features'], $feature);
+        
+        return json_encode($geojson);
+    }
+    
+    /*
+     * 
+     * Pleiades GEO_PHR command file or INIT_LOC_PROD command file
+     * 
+     * Displayed geometry :
+     * 
+     *      ORDER_DESCRIPTION/PRODUCT_ROI/POLYGON
+     * 
+     * Displayed properties :
+     * 
+     */
+    else if ($type === "geo_phr_command_file" || $type === "init_loc_prod_command_file") {
+        
+        // Check geometry availability
+        $roi = $doc->getElementsByTagname('PRODUCT_ROI')->item(0);   
+        if($roi) {
+            
+            /*
+             * Add feature
+             */
+            $feature = array(
+                'type' => 'Feature',
+                'geometry' => posListToGeoJSONGeometry($roi->getElementsByTagname('POLYGON')->item(0)->nodeValue, LATLON),
+                'crs' => array(
+                    'type' => 'EPSG',
+                    'properties' => array('code' => '4326')
+                ),
+                'properties' => array(
+                    'identifier' => strtoupper($type)
+                )
+            );
+            
+        }
+        else {
+            $geojson = array(
+                'error' => array(
+                    'message' => 'Error: no ROI defined'
+                )
+            );
+        }
+
+        // Add feature array to feature collection array
+        array_push($geojson['features'], $feature);
+        
+        
+        return json_encode($geojson);
+    }
+    
+    /*
+     * 
+     * Pleiades Mask
+     * 
+     * Displayed geometry :
+     * 
+     *      MaskFeature exterior and interiors
+     * 
+     * Displayed properties :
+     * 
+     *      identifier + hole number
+     *  
+     */
     else if ($type == "mask" || $type == "overilluminationmask") {
 
         $masks = $doc->getElementsByTagname('MaskFeature');
