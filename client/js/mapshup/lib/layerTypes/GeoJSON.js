@@ -110,28 +110,37 @@
                 success:function(data) {
 
                     /*
-                     * By default, GeoJSON stream is assume to be in EPSG:4326 projection
-                     * unless srs is specified in EPSG:3857 or EPSG:900913
+                     * First check if there is no error
+                     * Otherwise, display results
                      */
-                    if (layerDescription.srs === "EPSG:3857" || layerDescription.srs === "EPSG:900913") {
-                        this.layer.addFeatures(new OpenLayers.Format.GeoJSON().read(data));
+                    if (data.error) {
+                        msp.Util.message(newLayer.name + " : " + data.error["message"], -1);
                     }
                     else {
-                        this.layer.addFeatures(new OpenLayers.Format.GeoJSON({
-                            internalProjection:Map.map.projection,
-                            externalProjection:Map.epsg4326
-                        }).read(data));
-                    }
+                        /*
+                         * By default, GeoJSON stream is assume to be in EPSG:4326 projection
+                         * unless srs is specified in EPSG:3857 or EPSG:900913
+                         */
+                        if (layerDescription.srs === "EPSG:3857" || layerDescription.srs === "EPSG:900913") {
+                            this.layer.addFeatures(new OpenLayers.Format.GeoJSON().read(data));
+                        }
+                        else {
+                            this.layer.addFeatures(new OpenLayers.Format.GeoJSON({
+                                internalProjection:Map.map.projection,
+                                externalProjection:Map.epsg4326
+                            }).read(data));
+                        }
 
-                    /*
-                     * Zoom on layer after load
-                     */
-                    Map.Util.zoomOnAfterLoad(this.layer);
-                   
-                    /*
-                     * Reindex layer
-                     */
-                    Map.Util.updateIndex(this.layer);
+                        /*
+                         * Zoom on layer after load
+                         */
+                        Map.Util.zoomOnAfterLoad(this.layer);
+
+                        /*
+                         * Reindex layer
+                         */
+                        Map.Util.updateIndex(this.layer);
+                    }
 
                 }
             });
