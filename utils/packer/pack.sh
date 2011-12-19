@@ -115,8 +115,8 @@ then
             cat $EXPORTDIR/index_prodt.html | sed s/__DEVEL__\.js/$CONFIG_FILE/g > $TARGET/indext.html
         else
             # Copy index*.html files
-            cat $EXPORTDIR/index.html | grep -v "__DEVEL__\.js" > $TARGET/index.html
-            cat $EXPORTDIR/indext.html | grep -v "__DEVEL__\.js" > $TARGET/indext.html
+            cat $EXPORTDIR/index_prod.html | grep -v "__DEVEL__\.js" > $TARGET/index.html
+            cat $EXPORTDIR/index_prodt.html | grep -v "__DEVEL__\.js" > $TARGET/indext.html
         fi
         
         /bin/cp -Rf $EXPORTDIR/blank.html $TARGET/
