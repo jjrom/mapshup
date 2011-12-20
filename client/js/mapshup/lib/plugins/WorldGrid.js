@@ -68,7 +68,7 @@
             msp.Map.map.addControl(new OpenLayers.Control.Graticule({
                 id:"__CONTROL_WORLDGRID__",
                 displayInLayerSwitcher:false,
-                intervals:self.options.intervals || [45, 30, 20, 10, 5, 2, 1],
+                intervals:self.options.intervals || [45, 30, 20, 10, 5, 1],
                 lineSymbolizer:{
                     strokeWidth: self.options.strokeWidth || 1,
                     strokeColor: self.options.strokeColor || '#AAAAAA'
