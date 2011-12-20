@@ -266,7 +266,7 @@ function toGeoJSON($resultFileURI) {
     else if ($type === "geo_phr_command_file" || $type === "init_loc_prod_command_file") {
         
         // Check geometry availability
-        $roi = $doc->getElementsByTagname('PRODUCT_ROI')->item(0);   
+        $roi = $doc->getElementsByTagname('POLYGON')->item(0);   
         if($roi) {
             
             /*
@@ -274,7 +274,7 @@ function toGeoJSON($resultFileURI) {
              */
             $feature = array(
                 'type' => 'Feature',
-                'geometry' => posListToGeoJSONGeometry($roi->getElementsByTagname('POLYGON')->item(0)->nodeValue, LATLON),
+                'geometry' => posListToGeoJSONGeometry($roi->nodeValue, LATLON),
                 'crs' => array(
                     'type' => 'EPSG',
                     'properties' => array('code' => '4326')
