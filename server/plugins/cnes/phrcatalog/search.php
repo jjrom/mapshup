@@ -170,7 +170,7 @@ function outputToGeoJSON($resultFileURI, $nbOfResults) {
          */
         $feature = array(
             'type' => 'Feature',
-            'geometry' => posListToGeoJSONGeometry($posList, LONLAT),
+            'geometry' => posListToGeoJSONGeometry($posList, LATLON),
             'properties' => $properties
         );
 

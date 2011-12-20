@@ -131,6 +131,9 @@ if (abcCheck($_REQUEST)) {
             $error = null;
             $ignore = false;
             $remove = false;
+            $infos = array(
+                'type'=>MSP_UNKNOWN
+            );
 
             /*
              * Files are stored under MSP_UPLOAD_DIR
@@ -263,8 +266,8 @@ if (abcCheck($_REQUEST)) {
              */
             foreach(array_keys($infos) as $key) {
                 if ($infos[$key] != null) {
-                $item[$key] = $infos[$key];
-            }
+                    $item[$key] = $infos[$key];
+                }
             }
             
             /*
