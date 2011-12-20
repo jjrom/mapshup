@@ -547,4 +547,4 @@
         return this.init();
       
     };
-})(window.msp)
+})(window.msp);

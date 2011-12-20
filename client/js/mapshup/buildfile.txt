@@ -49,7 +49,7 @@ lib/layerTypes/WMS.js
 lib/layerTypes/Wikipedia.js
 lib/layerTypes/Youtube.js
 
-lib/plugins/BackgroundsManager.js
+#lib/plugins/BackgroundsManager.js
 lib/plugins/Catalog.js
 lib/plugins/Catalog/CSWEOCharter.js
 lib/plugins/Catalog/CSWISO.js

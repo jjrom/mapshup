@@ -220,4 +220,4 @@
             return this.layersManagerMenuItems;
         }
     }
-})(window.msp)
+})(window.msp);
