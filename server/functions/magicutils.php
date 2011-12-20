@@ -119,30 +119,26 @@ function getLayerInfosFromType($type, $doc) {
 function getLayerInfosFromFile($fileName) {
 
     // Set default values
-    $infos = array(
-        'type' => MSP_UNKNOWN,
-        'title' => null,
-        'description' => null
-    );
+    $type = MSP_UNKNOWN;
 
     /*
      * get extension
      */
     $ext = strtolower(getExtension($fileName));
-
+    
     /*
      * KML
      */
-    if ($ext == "kml") {
+    if ($ext === "kml") {
         $type = "KML";
-    } else if ($ext == "gpx") {
+    } else if ($ext === "gpx") {
         $type = "GPX";
-    } else if ($ext == "jpeg" || $ext == "gif" || $ext == "jpg" || $ext == "png") {
+    } else if ($ext === "jpeg" || $ext === "gif" || $ext === "jpg" || $ext === "png") {
         $type = "Image";
     }
     /*
      * XML
-     */ else if ($ext == "xml" || $ext == "gml") {
+     */ else if ($ext === "xml" || $ext === "gml") {
 
         /*
          * Load XML document
@@ -150,9 +146,15 @@ function getLayerInfosFromFile($fileName) {
         $doc = new DOMDocument();
         $doc->load($fileName);
         $rootName = strtolower(removeNamespace($doc->documentElement->nodeName));
-        $infos = getLayerInfosFromType(getLayerTypeFromRootName($rootName), $doc);
-        
+        return getLayerInfosFromType(getLayerTypeFromRootName($rootName), $doc);
     }
+    
+    // Set default values
+    $infos = array(
+        'type' => $type,
+        'title' => null,
+        'description' => null
+    );
 
     return $infos;
 }
