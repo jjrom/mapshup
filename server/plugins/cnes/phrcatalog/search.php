@@ -305,9 +305,7 @@ if ($nbOfFilters > 1) {
 }
 $request .= '</ogc:Filter></wfs:Query></wfs:GetFeature>';
 
-
 // Send HITS request
-// TODO : curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST"); ???
 $theData = postRemoteData($url, $requestHits . $request, Array("REMOTE_USER: " . $operateur, "Content-Type: text/xml"));
 
 // Store request and response
@@ -319,10 +317,7 @@ $hitsFileURI = saveFile($theData, MSP_UPLOAD_DIR . "csw_" . $tmp . "_response.xm
 $nbOfResults = getNbOfResults($hitsFileURI);
 
 // Send RESULTS request
-// TODO : curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST"); ???
 $theData = postRemoteData($url, $requestResults . $request, Array("REMOTE_USER: " . $operateur, "Content-Type: text/xml"));
-$array = array("http://catalog/services/userservices");
-$theData = str_replace($array, $url, $theData);
 
 // Store request and response
 $tmp = createPassword(10);
@@ -334,9 +329,6 @@ $error = OWSExceptionToJSON($resultFileURI);
 if ($error) {
     echo $error;
 } else {
-
-    // Hack : to avoid security issue on the browser we load the quicklook from the server and store it locally
-    $theData = loadQuicklook($resultFileURI, $operateur);
 
     // Stream result
     echo outputToGeoJSON($resultFileURI, $nbOfResults);
