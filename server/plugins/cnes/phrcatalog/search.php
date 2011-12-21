@@ -161,10 +161,15 @@ function outputToGeoJSON($resultFileURI, $nbOfResults) {
         $properties["orbitNumber"] = $dataObject->getElementsByTagName('orbitNumber')->item(0)->nodeValue;
         $properties["cloudCoverPercentage"] = $dataObject->getElementsByTagName('cloudCoverPercentage')->item(0)->nodeValue;
         $properties["archivingCenter"] = $dataObject->getElementsByTagName('archivingCenter')->item(0)->nodeValue;
-        $properties["quicklook"] = $dataObject->getElementsByTagName('fileName')->item(0)->nodeValue;
-        $properties["thumbnail"] = $dataObject->getElementsByTagName('fileName')->item(0)->nodeValue;
         $posList = $dataObject->getElementsByTagName('posList')->item(0)->nodeValue;
-
+        
+        // Album, quicklook and thumbnails
+        $browses = $dataObject->getElementsByTagName('BrowseInformation');
+        foreach ($browses as $browse) {
+            $type = $browse->getElementsByTagName('type')->item(0)->nodeValue;
+            $properties[strtolower($type)] = $browse->getElementsByTagName('fileName')->item(0)->nodeValue;
+        }
+        
         /*
          * Add feature
          */
