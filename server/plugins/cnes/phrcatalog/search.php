@@ -235,8 +235,6 @@ if (isset($_REQUEST['bbox']) && $_REQUEST['bbox'] != "") {
 
 // $dates is an array of two dates (startDate and completionDate) that are retrieved from startDate interval
 $dates = getDatesFromInterval($_REQUEST["startDate"]);
-$startDate = $dates->startDate;
-$completionDate = $dates->completionDate;
 
 // Archiving date
 $archivingDate = isset($_REQUEST["archivingDate"]) ? addTimeToDate($_REQUEST["archivingDate"]) : NULL;
@@ -253,10 +251,10 @@ if ($DSID) {
 }
 
 // Compute number of filters (used to determine if a <ogc:And> property is needed)
-if ($startDate) {
+if ($dates["startDate"]) {
     $nbOfFilters++;
 }
-if ($completionDate) {
+if ($dates["completionDate"]) {
     $nbOfFilters++;
 }
 if ($archivingDate) {
@@ -278,17 +276,17 @@ if ($useGeo == 1) {
     $request .= '</gml:LinearRing></gml:exterior></gml:Polygon></ogc:Intersects>';
 }
 
-if ($startDate) {
+if ($dates["startDate"]) {
     $request .= '<ogc:PropertyIsGreaterThanOrEqualTo>';
     $request .= '<ogc:PropertyName>hma:startDate</ogc:PropertyName>';
-    $request .= '<ogc:Literal>' . $startDate . '.0Z</ogc:Literal>';
+    $request .= '<ogc:Literal>' . $dates["startDate"] . '.0Z</ogc:Literal>';
     $request .= '</ogc:PropertyIsGreaterThanOrEqualTo>';
 }
 
-if ($completionDate) {
+if ($dates["completionDate"]) {
     $request .= '<ogc:PropertyIsLessThanOrEqualTo>';
     $request .= '<ogc:PropertyName>hma:completionDate</ogc:PropertyName>';
-    $request .= '<ogc:Literal>' . $completionDate . '.0Z</ogc:Literal>';
+    $request .= '<ogc:Literal>' . $dates["completionDate"] . '.0Z</ogc:Literal>';
     $request .= '</ogc:PropertyIsLessThanOrEqualTo>';
 }
 
