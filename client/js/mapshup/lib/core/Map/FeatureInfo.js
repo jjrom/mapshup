@@ -165,43 +165,7 @@
             /*
              * Store featureInfo height
              */
-            this.height = this.$d.height();
-            
-            /*
-             * Map move ?
-             * Update position
-             */
-            Map.map.events.register('move', Map.map, function(){
-                Map.featureInfo.updatePosition();
-            });
-             
-        },
-
-        /**
-         * Update css position
-         */
-        updatePosition: function() {
-            
-            var xy,
-                self = this;
-            
-            /*
-             * No selected feature, no need of position update
-             */
-            if (self.selected && self.selected.geometry) {
-
-                /*
-                 * Update css top/left property depending on
-                 * selected location on map
-                 */
-                xy = Map.map.getPixelFromLonLat(self.selected.geometry.getBounds().getCenterLonLat());
-                self.$d.css({
-                    'left':xy.x - (3 * self.$d.width() / 4),
-                    'top':xy.y - self.$d.height() - 10
-                });
-               
-            }
-
+            this.height = this.$d.height();  
         },
 
         /**
@@ -518,58 +482,10 @@
             }
             
             /*
-             * Only show feature info is a feature is selected
+             * Only show feature info if a feature is selected
              */
             if (this.selected && this.selected.geometry) {
-                
-                /*
-                 * If needed, centers the map view to completely include featureinfo
-                 */
-                var centerX = msp.$map.width() / 2,
-                centerY = msp.$map.height() / 2,
-                recenter = false,
-                borderOffset = 50, // Border offset in pixels
-                offsetY = this.$d.offset().top + borderOffset,
-                offsetX = this.$d.offset().left + borderOffset;
-                
                 msp.Util.show(this.$d);
-
-                /*
-                 * Update featureinfo position
-                 */
-                this.updatePosition();
-
-                /*
-                 * featureinfo is too top
-                 */
-                if (offsetY > 0) {
-                    centerY = centerY - offsetY;
-                    recenter = true;
-                }
-
-                /*
-                 * featureinfo is too left
-                 */
-                if (offsetX > 0) {
-                    centerX = centerX - offsetX;
-                    recenter = true;
-                }
-
-                /*
-                 * featureinfo is too right
-                 */
-                offsetX = msp.$map.width() - this.$d.offset().left - this.$d.width() - borderOffset;
-                if (offsetX < 0) {
-                    centerX = centerX - offsetX;
-                    recenter = true;
-                }
-                /*
-                 * map view should be recentered
-                 */
-                if (recenter) {
-                    Map.setCenter(Map.map.getLonLatFromPixel(new OpenLayers.Pixel(centerX, centerY)));
-                }
-                
             }
         },
 

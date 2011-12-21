@@ -670,6 +670,8 @@ input {
     position:absolute;
     width:500px;
     height:250px;
+    top:15px;
+    right:50px;
     margin-left:auto;
     margin-right:auto;
     padding:0px;
