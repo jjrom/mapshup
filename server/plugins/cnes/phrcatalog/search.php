@@ -121,11 +121,18 @@ function outputToGeoJSON($resultFileURI, $nbOfResults) {
     // Load the GetFeature result document
     $doc = new DOMDocument();
     $doc->load($resultFileURI);
+    
+    /*
+     * Initialiaze GeoJSON
+     */
+    $geojson = array(
+        'type' => 'FeatureCollection',
+        'totalResults' => $nbOfResults,
+        'features' => array()
+    );
 
-    // Get the DataStrip root element
-    $dataObjects = $doc->getElementsByTagname('DataStrip');
-
-    if ($dataObjects->item(0) === null) {
+    // Check root element
+    if ($doc->getElementsByTagname('FeatureCollection')->item(0) === null) {
 
         /*
          * Send an error
@@ -138,14 +145,8 @@ function outputToGeoJSON($resultFileURI, $nbOfResults) {
         return json_encode($geojson);
     }
 
-    /*
-     * Initialiaze GeoJSON
-     */
-    $geojson = array(
-        'type' => 'FeatureCollection',
-        'totalResults' => $nbOfResults,
-        'features' => array()
-    );
+    // Get the DataStrip root element
+    $dataObjects = $doc->getElementsByTagname('DataStrip');
 
     // Roll over each feature
     foreach ($dataObjects as $dataObject) {
@@ -238,7 +239,7 @@ $startDate = $dates->startDate;
 $completionDate = $dates->completionDate;
 
 // Archiving date
-$archivingDate = isset($_REQUEST["archivingDate"]) ? $_REQUEST["archivingDate"] : NULL;
+$archivingDate = isset($_REQUEST["archivingDate"]) ? addTimeToDate($_REQUEST["archivingDate"]) : NULL;
 
 // Datastrip ID
 $DSID = isset($_REQUEST["DSID"]) ? $_REQUEST["DSID"] : NULL;
