@@ -956,6 +956,11 @@
             _config.mapOptions.theme = null;
             
             /*
+             * Set featureInfo reference
+             */
+            self.featureInfo = new msp.Map.FeatureInfo();
+            
+            /*
              * Set initialLocation
              */
             self.initialLocation = _config["general"].initialLocation;

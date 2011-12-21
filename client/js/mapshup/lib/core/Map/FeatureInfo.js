@@ -37,23 +37,51 @@
  */
 
 /**
- * Define msp.Map events
+ * Define FeatureInfo object
  */
-(function (msp, Map) {
+(function (msp) {
     
-    Map.featureInfo =  {
- 
+    msp.Map.FeatureInfo = function() {
+
+        /*
+         * Only one FeatureInfo object instance is created
+         */
+        if (msp.Map.FeatureInfo._o) {
+            return msp.Map.FeatureInfo._o;
+        }
+        
         /**
          * Current selected feature
          */
-        selected:null,
+        this.selected = null;
+        
+        /**
+         * Initialization
+         */
+        this.init = function() {
 
+            
+            /*
+             * Add #featureinfo to the DOM
+             */
+            this.$d = msp.Util.$$("#featureinfo", msp.$map);
+            
+            /*
+             * Store featureInfo height
+             */
+            this.height = this.$d.height();
+            
+            return this;
+            
+        };
+        
+        
         /**
          * Unselect all feature
          */
-        clear: function() {
+        this.clear = function() {
 
-            var c = Map.Util.getControlById("__CONTROL_SELECT__");
+            var c = msp.Map.Util.getControlById("__CONTROL_SELECT__");
             
             /*
              * The cluster nightmare
@@ -72,14 +100,14 @@
             
             this.unselect(null);
             
-        },
+        };
 
         /**
          * Return feature title if it's defined within layerDescription.featureInfo.title property
          *
          * @input {OpenLayers.Feature} feature : input feature
          */
-        getTitle:function(feature) {
+        this.getTitle = function(feature) {
 
             /*
              * Paranoid mode
@@ -107,7 +135,7 @@
              */
             return feature.attributes["name"] || feature.attributes["title"] || msp.Util.shorten(feature.attributes["identifier"],40,true) || msp.Util.shorten(feature.id, 40, true) || "";
 
-        },
+        };
 
         /*
          * Translate input key into its "human readable" equivalent defined in layerDescription.featureInfo.keys array
@@ -115,7 +143,7 @@
          * @input {String} key : key to translate
          * @input {OpenLayers.Feature} feature : feature reference
          */
-        translate:function(key, feature) {
+        this.translate = function(key, feature) {
 
             /*
              * Paranoid mode
@@ -150,24 +178,9 @@
              * In any case returns a i18n translated string
              */
             return msp.Util._(key);
-        },
+        };
 
-        /**
-         * Initialization
-         */
-        init: function() {
-
-            /*
-             * Add #featureinfo to the DOM
-             */
-            this.$d = msp.Util.$$("#featureinfo", msp.$map);
-            
-            /*
-             * Store featureInfo height
-             */
-            this.height = this.$d.height();  
-        },
-
+        
         /**
          * Select feature and get its information
          * Called by "onfeatureselect" events
@@ -178,7 +191,7 @@
          *                This attribute is set to true by Catalog plugins
          *                when feature is selected by clicking on the search result panel
          */
-        select: function(feature, _force) {
+        this.select = function(feature, _force) {
 
             var i,
                 bounds,
@@ -212,7 +225,7 @@
                     /*
                      * Zoom on the cluster bounds
                      */
-                    Map.map.zoomToExtent(bounds);
+                    msp.Map.map.zoomToExtent(bounds);
 
                     return false;
                     
@@ -224,17 +237,17 @@
              * and the feature is not completely include within the current map view,
              * then it is unselected and the menu it displayed instead
              */
-            if (!force && !Map.map.getExtent().containsBounds(feature.geometry.getBounds())) {
+            if (!force && !msp.Map.map.getExtent().containsBounds(feature.geometry.getBounds())) {
 
                 /*
                   * Unselect feature
                   */
-                Map.Util.getControlById("__CONTROL_SELECT__").unselect(feature);
+                msp.Map.Util.getControlById("__CONTROL_SELECT__").unselect(feature);
                 
                 /*
                  * Display the menu
                  */
-                Map.mouseClick = Map.mousePosition.clone();
+                msp.Map.mouseClick = msp.Map.mousePosition.clone();
                 msp.menu.show();
                 
                 return false;
@@ -248,7 +261,7 @@
             /*
              * Set the current selected object
              */
-            Map.featureInfo.selected = feature;
+            msp.Map.featureInfo.selected = feature;
 
             /*
              * Get featureType
@@ -259,7 +272,7 @@
              * If layerType.resolvedUrlAttributeName is set,
              * display feature info within an iframe
              */
-            if (Map.layerTypes[featureType].resolvedUrlAttributeName) {
+            if (msp.Map.layerTypes[featureType].resolvedUrlAttributeName) {
                 
                 var btn,
                     pn = new msp.Panel('s'), // Create new South panel
@@ -269,7 +282,7 @@
                 /*
                  * Set container content
                  */
-                ctn.$d.html('<div id="'+msp.Util.getId()+'" style="height:'+pn.getInnerDimension().h+'px;"><iframe class="frame" src="'+feature.attributes[Map.layerTypes[featureType].resolvedUrlAttributeName]+'" width="100%" height="100%"></iframe></div>')
+                ctn.$d.html('<div id="'+msp.Util.getId()+'" style="height:'+pn.getInnerDimension().h+'px;"><iframe class="frame" src="'+feature.attributes[msp.Map.layerTypes[featureType].resolvedUrlAttributeName]+'" width="100%" height="100%"></iframe></div>')
                 msp.activity.show();
                 $('.frame', ctn.$d).load(function() {
                     msp.activity.hide();
@@ -401,7 +414,7 @@
                  * through the [layerTypeDescriptor].featureDescription(feature,div)
                  * function
                  */
-                if ((layerType = Map.layerTypes[featureType])) {
+                if ((layerType = msp.Map.layerTypes[featureType])) {
                     if (typeof layerType.appendDescription === "function" ) {
                         layerType.appendDescription(feature, b);
                         typeIsUnknown = false;
@@ -460,12 +473,12 @@
                 
             }
             return true;
-        },
+        };
         
         /**
          * Show the featureInfo popup on top of the selected feature
          */
-        show: function() {
+        this.show = function() {
             
             /*
              * Remove sheader if empty
@@ -487,13 +500,13 @@
             if (this.selected && this.selected.geometry) {
                 msp.Util.show(this.$d);
             }
-        },
+        };
 
         /**
          * Unselect feature and clear information
          * Called by "onfeatureunselect" events
          */
-        unselect: function(feature) {
+        this.unselect = function(feature) {
             
             /*
              * Always hide menu on unselect
@@ -505,19 +518,24 @@
              */
             this.$d.hide();
             
-            Map.featureInfo.selected = null;
-        },
+            msp.Map.featureInfo.selected = null;
+        };
 
         /**
          * Zoom map on selected feature
          */
-        zoomOn: function() {
-            if (Map.featureInfo.selected && Map.featureInfo.selected.geometry) {
-                Map.zoomTo(Map.featureInfo.selected.geometry.getBounds());
+        this.zoomOn = function() {
+            if (msp.Map.featureInfo.selected && msp.Map.featureInfo.selected.geometry) {
+                msp.Map.zoomTo(msp.Map.featureInfo.selected.geometry.getBounds());
             }
         }
-        
+     
+        /*
+         * Create unique object instance
+         */
+        msp.Map.FeatureInfo._o = this;
 
+        return this;
     }
     
-})(window.msp, window.msp.Map);
+})(window.msp);
