@@ -98,7 +98,7 @@
             /*
              * User can define is own title with layerDescription.featureInfo.title property
              */
-            if (feature.layer["_msp"] && feature.layer["_msp"].layerDescription.featureInfo) {
+            if (feature.layer["_msp"].layerDescription.featureInfo && feature.layer["_msp"].layerDescription.featureInfo.title) {
                 return msp.Util.replaceKeys(feature.layer["_msp"].layerDescription.featureInfo.title, feature.attributes);
             }
 
