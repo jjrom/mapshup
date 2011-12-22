@@ -1,4 +1,5 @@
 <?php
+
 /*
  * mapshup - Webmapping made easy
  * http://mapshup.info
@@ -43,6 +44,7 @@ include_once '../../functions/magicutils.php';
 include_once '../../functions/geometry.php';
 
 /* ======================== FUNCTIONS =========================== */
+
 function toGeoJSON($resultFileURI) {
 
     $doc = new DOMDocument();
@@ -124,7 +126,7 @@ function toGeoJSON($resultFileURI) {
             }
         }
     }
-   
+
     /*
      * 
      * Pleiades Dimap Document
@@ -145,16 +147,15 @@ function toGeoJSON($resultFileURI) {
      *      SPECTRAL_PROCESSING : SPECTRAL_PROCESSING
      *      GEOMETRY_PATH : Data_Strip_Frame/Album_Footprint/Vertex
      *  
-     */
-    else if ($type == "phr_dimap_document") {
+     */ else if ($type == "phr_dimap_document") {
 
         // Metadata info
         $pl = $doc->getElementsByTagname('PROCESSING_LEVEL')->item(0);
         $sp = $doc->getElementsByTagname('SPECTRAL_PROCESSING')->item(0);
-        
+
         // Metadata profile
         $profile = $doc->getElementsByTagname('METADATA_PROFILE')->item(0)->nodeValue;
-        
+
         // Footprint from Datastrip frame
         if ($profile == "PHR_INVENTORY_INIT_LOC_DATA" || $profile == "PHR_INVENTORY_ALBUM_NCN_DATA" || $profile == "PHR_IMAGE_ARCHIVE_PRODUCT") {
             $footprint = $doc->getElementsByTagname('Album_Footprint')->item(0);
@@ -165,7 +166,7 @@ function toGeoJSON($resultFileURI) {
             $footprint = $doc->getElementsByTagname('Dataset_Frame')->item(0);
             $path = "Product_Frame/Dataset_Frame/Vertex";
         }
-        
+
         $vertices = $footprint->getElementsByTagname('Vertex');
         $poslist = '';
         $isFirst = 1;
@@ -202,9 +203,8 @@ function toGeoJSON($resultFileURI) {
 
         // Add feature array to feature collection array
         array_push($geojson['features'], $feature);
-        
     }
-    
+
     /*
      * 
      * Pleiades IP Request
@@ -215,13 +215,12 @@ function toGeoJSON($resultFileURI) {
      * 
      * Displayed properties :
      * 
-     */
-    else if ($type == "phr_ip_request") {
-        
+     */ else if ($type == "phr_ip_request") {
+
         // Check geometry availability
-        $roi = $doc->getElementsByTagname('PRODUCT_ROI')->item(0);   
-        if($roi) {
-            
+        $roi = $doc->getElementsByTagname('PRODUCT_ROI')->item(0);
+        if ($roi) {
+
             /*
              * Add feature
              */
@@ -236,9 +235,7 @@ function toGeoJSON($resultFileURI) {
                     'identifier' => strtoupper($type)
                 )
             );
-            
-        }
-        else {
+        } else {
             $geojson = array(
                 'error' => array(
                     'message' => 'Error: no ROI defined'
@@ -248,10 +245,10 @@ function toGeoJSON($resultFileURI) {
 
         // Add feature array to feature collection array
         array_push($geojson['features'], $feature);
-        
+
         return json_encode($geojson);
     }
-    
+
     /*
      * 
      * Pleiades GEO_PHR command file or INIT_LOC_PROD command file
@@ -262,13 +259,12 @@ function toGeoJSON($resultFileURI) {
      * 
      * Displayed properties :
      * 
-     */
-    else if ($type === "geo_phr_command_file" || $type === "init_loc_prod_command_file") {
-        
+     */ else if ($type === "geo_phr_command_file" || $type === "init_loc_prod_command_file") {
+
         // Check geometry availability
-        $roi = $doc->getElementsByTagname('POLYGON')->item(0);   
-        if($roi) {
-            
+        $roi = $doc->getElementsByTagname('POLYGON')->item(0);
+        if ($roi) {
+
             /*
              * Add feature
              */
@@ -283,9 +279,7 @@ function toGeoJSON($resultFileURI) {
                     'identifier' => strtoupper($type)
                 )
             );
-            
-        }
-        else {
+        } else {
             $geojson = array(
                 'error' => array(
                     'message' => 'Error: no ROI defined'
@@ -295,11 +289,11 @@ function toGeoJSON($resultFileURI) {
 
         // Add feature array to feature collection array
         array_push($geojson['features'], $feature);
-        
-        
+
+
         return json_encode($geojson);
     }
-    
+
     /*
      * 
      * Pleiades Mask
@@ -312,23 +306,21 @@ function toGeoJSON($resultFileURI) {
      * 
      *      identifier + hole number
      *  
-     */
-    else if ($type == "mask" || $type == "overilluminationmask") {
+     */ else if ($type == "mask" || $type == "overilluminationmask") {
 
         // First check if input file is a Mask or an OverIlluminationMask
         $masks = $doc->getElementsByTagname('MaskFeature');
-        
-	// No MaskFeature, try OverIllumination
-	if ($masks->item(0) === null) {
-		$masks = $doc->getElementsByTagname('OverIllumination');
-		
-		// No OverIllumination - do nothing
-		if ($masks->item(0) === null) {
-			return "";
-		}
-		
-	}
-        
+
+        // No MaskFeature, try OverIllumination
+        if ($masks->item(0) === null) {
+            $masks = $doc->getElementsByTagname('OverIllumination');
+
+            // No OverIllumination - do nothing
+            if ($masks->item(0) === null) {
+                return "";
+            }
+        }
+
         foreach ($masks as $mask) {
             $id = $mask->getAttribute('gml:id');
             $exterior = $mask->getElementsByTagName('exterior')->item(0);
@@ -372,13 +364,13 @@ function toGeoJSON($resultFileURI) {
 
                 // Add feature array to feature collection array
                 array_push($geojson['features'], $feature);
-
             }
         }
     }
 
     return json_encode($geojson);
 }
+
 /* ============================ END FUNCTIONS ======================== */
 
 /**
