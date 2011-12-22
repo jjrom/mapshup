@@ -247,10 +247,11 @@ function getPHRTypeFromRootName($rootName) {
     $rootNames = array(
         "geo_phr_command_file",
         "init_loc_prod_command_file",
+        "mask",
+        "overilluminationmask",
         "phr_dimap_document",
         "phr_inventory_plan",
-        "phr_ip_request",
-        "mask"
+        "phr_ip_request"
         );
     reset($rootNames);
     

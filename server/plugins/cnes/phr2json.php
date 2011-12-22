@@ -315,7 +315,20 @@ function toGeoJSON($resultFileURI) {
      */
     else if ($type == "mask" || $type == "overilluminationmask") {
 
+        // First check if input file is a Mask or an OverIlluminationMask
         $masks = $doc->getElementsByTagname('MaskFeature');
+        
+	// No MaskFeature, try OverIllumination
+	if ($masks->item(0) === null) {
+		$masks = $doc->getElementsByTagname('OverIllumination');
+		
+		// No OverIllumination - do nothing
+		if ($masks->item(0) === null) {
+			return "";
+		}
+		
+	}
+        
         foreach ($masks as $mask) {
             $id = $mask->getAttribute('gml:id');
             $exterior = $mask->getElementsByTagName('exterior')->item(0);
