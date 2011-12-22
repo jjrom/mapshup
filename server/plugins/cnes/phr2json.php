@@ -120,9 +120,10 @@ function toGeoJSON($resultFileURI) {
                         ),
                         'properties' => array(
                             'identifier' => $dsids->item(0)->nodeValue . " (orbit " . $orbit . " : " . $dstype . ")",
-                            'ORBIT_NUMBER' => $orbit,
+                            'DOWNLINK_ORBIT_NUMBER' => $orbit,
                             'INV_URGENCE' => $urgence,
-                            'DATASTRIP_TYPE' => $dstype
+                            'DATASTRIP_TYPE' => $dstype,
+                            'DOWNLINK_START' => $pass->getElementsByTagName('DATES')->item(0)->getElementsByTagName('START')->item(0)->nodeValue
                         )   
                     );
 
