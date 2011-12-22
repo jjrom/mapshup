@@ -85,9 +85,12 @@ function toGeoJSON($resultFileURI) {
         foreach ($stations as $station) {
             $passes = $station->getElementsByTagname('PASS');
             foreach ($passes as $pass) {
+                $orbit = $pass->getElementsByTagname('ORBIT_NUMBER')->item(0)->nodeValue;
                 $Features = $pass->getElementsByTagname('DATASTRIP');
                 foreach ($Features as $datastrip) {
                     $dsids = $datastrip->getElementsByTagName('OBMM_FILE_NUMBER');
+                    $urgence = $datastrip->getElementsByTagName('INV_URGENCE')->item(0)->nodeValue;
+                    $dstype = $datastrip->getElementsByTagName('DATASTRIP_TYPE')->item(0)->nodeValue;
                     $corners = $datastrip->getElementsByTagName('CORNER');
                     $poslist = '';
                     $isFirst = 1;
@@ -116,8 +119,11 @@ function toGeoJSON($resultFileURI) {
                             'properties' => array('code' => '4326')
                         ),
                         'properties' => array(
-                            'identifier' => $dsids->item(0)->nodeValue
-                        )
+                            'identifier' => $dsids->item(0)->nodeValue . " (orbit " . $orbit . " : " . $dstype . ")",
+                            'ORBIT_NUMBER' => $orbit,
+                            'INV_URGENCE' => $urgence,
+                            'DATASTRIP_TYPE' => $dstype
+                        )   
                     );
 
                     // Add feature array to feature collection array
