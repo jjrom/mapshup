@@ -190,24 +190,24 @@
              *   </div>
              *      
              */
-            div.append('<div id="fimain" class="noflw"><div class="west"></div><div class="east"><div class="noflw"><table></table></div></div></div>');
+            div.html('<div id="fimain" class="noflw"><div class="thumb block"></div><div class="info block"><div class="noflw"><table></table></div></div></div>');
               
             /*
              * Set variable and references
              */
-            var west = $('.west', div),
-            east = $('.east table', div),
-            sheader = $('.sheader', div.parent()),
-            v,
-            t,
-            id,
-            $id,
-            i,
-            l,
-            k,
-            kk,
-            thumb = feature.attributes['thumbnail'] || feature.attributes['quicklook'] || null,
-            kkk;
+            var $thumb = $('.thumb', div),
+                $info = $('.info table', div),
+                sheader = $('.sheader', div.parent()),
+                v,
+                t,
+                id,
+                $id,
+                i,
+                l,
+                k,
+                kk,
+                thumb = feature.attributes['thumbnail'] || feature.attributes['quicklook'] || null,
+                kkk;
 
             /*
              * Set thumbnail in west panel
@@ -221,7 +221,7 @@
                     $id1,
                     id1 = msp.Util.getId();
 
-                west.append('<a id="'+id1+'" class="image" alt="'+msp.Util._("Show quicklook")+'" title="'+feature.attributes['identifier']+'" '+'href="'+feature.attributes['quicklook']+'"><img src="'+thumb+'" class="padded"></a>');
+                $thumb.append('<a id="'+id1+'" class="image" alt="'+msp.Util._("Show quicklook")+'" title="'+feature.attributes['identifier']+'" '+'href="'+feature.attributes['quicklook']+'"><img src="'+thumb+'" class="padded"></a>');
 
                 /*
                  * Popup image
@@ -239,7 +239,7 @@
                  */
                 if (layer["_msp"].qlToMap) {
                     id2 = id2 = msp.Util.getId()
-                    west.append('<br/><a href="#" class="center" id="'+id2+'">'+msp.Util._('Add quicklook to map')+'</a>');
+                    $thumb.append('<br/><a href="#" class="center" id="'+id2+'">'+msp.Util._('Add quicklook to map')+'</a>');
                     $('#'+id2).click(function() {
                         Map.addLayer({
                             type:"Image",
@@ -281,7 +281,7 @@
                      * Simple case : string
                      */
                     if (t === "string" && msp.Util.isUrl(v)) {
-                        east.append('<tr><td>' + msp.Util._(connector.metadataTranslator[k] || k) + '</td><td>&nbsp;</td><td><a target="_blank" href="'+v+'">'+ msp.Util.shorten(v, 30) +'</a></td></tr>');
+                        $info.append('<tr><td>' + msp.Util._(connector.metadataTranslator[k] || k) + '</td><td>&nbsp;</td><td><a target="_blank" href="'+v+'">'+ msp.Util.shorten(v, 30) +'</a></td></tr>');
                     }
                     /*
                      * Object case
@@ -297,7 +297,7 @@
                          */
                         if (k === '_madd') {
                             id = msp.Util.getId();
-                            west.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._(v["title"])+'</a>');
+                            $thumb.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._(v["title"])+'</a>');
                             (function(id,obj){
                                 $('#'+id).click(function(){
 
@@ -336,7 +336,7 @@
                                 if (kk === 'photo') {
                                     for (i = 0, l = v[kk].length; i < l; i++) {
                                         id = msp.Util.getId();
-                                        west.append('<a href="'+v[kk][i]["url"]+'" title="'+v[kk][i]["name"]+'" id="'+id+'"><img height="50px" width="50px" src="'+v[kk][i]["url"]+'"/></a>');
+                                        $thumb.append('<a href="'+v[kk][i]["url"]+'" title="'+v[kk][i]["name"]+'" id="'+id+'"><img height="50px" width="50px" src="'+v[kk][i]["url"]+'"/></a>');
                                         /*
                                          * Popup image
                                          */
@@ -384,13 +384,13 @@
 
                             }
                             else {
-                                east.append('<tr><td>' + msp.Util._(connector.metadataTranslator[k] || k) + ' &rarr; ' + msp.Util._(connector.metadataTranslator[kk] || kk) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
+                                $info.append('<tr><td>' + msp.Util._(connector.metadataTranslator[k] || k) + ' &rarr; ' + msp.Util._(connector.metadataTranslator[kk] || kk) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
                             }
                         }
 
                     }
                     else {
-                        east.append('<tr><td>' + msp.Util._(connector.metadataTranslator[k] || k) + '</td><td>&nbsp;</td><td>' + v + '</td></tr>');
+                        $info.append('<tr><td>' + msp.Util._(connector.metadataTranslator[k] || k) + '</td><td>&nbsp;</td><td>' + v + '</td></tr>');
                     }
                 }
             }

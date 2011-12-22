@@ -956,11 +956,6 @@
             _config.mapOptions.theme = null;
             
             /*
-             * Set featureInfo reference
-             */
-            self.featureInfo = new msp.Map.FeatureInfo();
-            
-            /*
              * Set initialLocation
              */
             self.initialLocation = _config["general"].initialLocation;
@@ -1015,15 +1010,15 @@
                 displayInLayerSwitcher:false
             }));
 
-            /**
-             * Initialize jFeatureInfo
-             */
-            self.featureInfo.init();
-            
             /*
              * Create an events object
              */
             self.events = new self.Events(self);
+            
+            /*
+             * Initialize featureInfo
+             */
+            self.featureInfo = new self.FeatureInfo();
             
             /*
              * Update menu position on map move

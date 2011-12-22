@@ -41,7 +41,7 @@
  */
 (function (msp) {
     
-    msp.Map.FeatureInfo = function() {
+    msp.Map.FeatureInfo = function(options) {
 
         /*
          * Only one FeatureInfo object instance is created
@@ -58,20 +58,59 @@
         /**
          * Initialization
          */
-        this.init = function() {
+        this.init = function(options) {
 
+            var self = this;
             
             /*
-             * Add #featureinfo to the DOM
+             * Init options
              */
-            this.$d = msp.Util.$$("#featureinfo", msp.$map);
+            self.options = options || {};
+
+            /*
+             * By default, feature information is displayed wihtin
+             * a North East vertical panel
+             */
+            $.extend(self.options,
+            {
+                position:self.options.position || 'ne',
+                orientation:self.options.orientation || 'v'
+            }
+            );
+
+            /*
+             * NorthEast Toolbar triggering East panel 
+             */
+            self.pn = new msp.Panel('e');
+            self.btn = new msp.Button({
+                tb:new msp.Toolbar(self.options.position, self.options.orientation),
+                icon:"info.png",
+                tt:"Feature information",
+                container:self.pn.add(),
+                activable:true,
+                scope:self
+            });
             
             /*
-             * Store featureInfo height
+             * Set the panel container content with the following html structure
+             * 
+             * <div id="..." class="pfi">
+             *      <div class="header"></div>
+             *      <div class="actions"></div>
+             *      <div class="body expdbl">
+             *      </div>
+             * </div>
              */
-            this.height = this.$d.height();
-            
-            return this;
+            self.btn.container.$d.html('<div id="'+msp.Util.getId()+'" style="width:'+self.pn.getInnerDimension().w+'px;" class="pfi"><div class="header">'+msp.Util._("Feature information")+'</div><div class="actions block"></div><div class="body block expdbl"></div>');
+
+            /*
+             * Set references
+             */
+            self.btn.$a = $('.actions', self.btn.container.$d); // Actions
+            self.btn.$b = $('.body', self.btn.container.$d); // Body
+            self.btn.$h = $('.header', self.btn.container.$d); // Header
+
+            return self;            
             
         };
         
@@ -179,8 +218,143 @@
              */
             return msp.Util._(key);
         };
-
         
+        /**
+         * Set $a html content
+         */
+        this.setActions = function(feature) {
+            
+            var id,
+                self = this,
+                fi = feature.layer["_msp"].layerDescription.featureInfo;
+                    
+            /*
+             * Set "zoom on feature" action
+             */
+            self.btn.$a.html('<span class="zoom" jtitle="'+msp.Util._("Zoom to extent")+'">zoom</span>');
+            $('.zoom', self.btn.$a).click(function() {
+                self.zoomOn();
+                return false;
+            });
+            msp.tooltip.add($('.zoom', self.btn.$a), 'n'); // Add tooltips
+
+
+            /*
+             * If a layerDescription.featureInfo.action, add an action button
+             */
+            if (fi && fi.action) {
+
+                /*
+                 * The action is added only if javascript property is a valid function
+                 */
+                if (typeof fi.action.callback === "function") {
+
+                    id = msp.Util.getId();
+
+                    /*
+                     * Add the action button
+                     */
+                    self.btn.$a.append('<span id="'+id+'" jtitle="'+msp.Util._(fi.action["title"])+'">'+fi.action["cssClass"]+'</span>');
+
+                    /*
+                     * Dedicated action
+                     */
+                    (function($id, feature, action) {
+                        $id.click(function() {
+                            action(feature);
+                            return false;
+                        });
+
+                        /*
+                         * Add tooltip
+                         */
+                        msp.tooltip.add($id, 'w');
+
+                    })($('#'+id), feature, fi.action["callback"]);
+
+                }
+
+            }
+
+        };
+        
+        /**
+         * Set $b html content
+         */
+        this.setBody = function(feature) {
+            
+            var layerType,
+                value,
+                key,
+                html = "",
+                self = this,
+                typeIsUnknown = true;
+
+            /*
+             * Roll over layer types to detect layer features that should be
+             * displayed using a dedicated appendDescription function
+             */
+            if ((layerType = msp.Map.layerTypes[feature.layer["_msp"].layerDescription["type"]])) {
+                if (typeof layerType.appendDescription === "function" ) {
+                    layerType.appendDescription(feature, self.btn.$b);
+                    typeIsUnknown = false;
+                }
+            }
+
+            /*
+             * If feature type is unknown, use default display
+             * 
+             * Two cases :
+             *  - feature get a 'thumbnail' property -> add two independant blocks
+             *  - feature does not get a 'thumbnail' property -> add one block
+             *  
+             * In both case, key/value are displayed within a <table>
+             * 
+             *      <div class="thumb block"></div>
+             *      <div class="info block"></div>
+             * 
+             * 
+             */
+            if (typeIsUnknown) {
+                
+                /*
+                 * Check for thumbnail
+                 */
+                if (feature.attributes.hasOwnProperty('thumbnail')) {
+                    self.btn.$b.html('<div class="block thumb"><img src="'+feature.attributes['thumbnail']+'" class="padded"/></div><div class="info block"><div class="padded"><table></table></div></div>');
+                }
+                else{ 
+                    self.btn.$b.html('<table></table>');
+                }
+                for(key in feature.attributes) {
+                    if (key === 'name' || key === 'title' || key === 'icon' || key === 'thumbnail' || key === 'quicklook') {
+                        continue;
+                    }
+                    value = feature.attributes[key];
+                    if (value) {
+                        if (value instanceof Object) {
+                            value = value.toString();
+                        }
+                        else if (typeof value === "string" && msp.Util.isUrl(value)) {
+                            value = '<a target="_blank" href="'+value+'">'+msp.Util.shorten(value,40)+'</a>';
+                        }
+                        html += '<tr><td>'+self.translate(key, feature)+'</td><td>&nbsp;</td><td>'+value+'</td></tr>';
+                    }
+                }
+
+                $('table', self.btn.$b).append(html);
+            }
+            
+        };
+        
+        /**
+         * Set $h html content
+         */
+        this.setHeader = function(feature) {
+            var title = this.getTitle(feature);
+            this.btn.$h.attr('title',feature.layer.name + ' | ' + title).html(msp.Util.shorten(title, 50));    
+        };
+
         /**
          * Select feature and get its information
          * Called by "onfeatureselect" events
@@ -262,17 +436,12 @@
              * Set the current selected object
              */
             msp.Map.featureInfo.selected = feature;
-
-            /*
-             * Get featureType
-             */
-            var featureType = feature.layer["_msp"].layerDescription ? feature.layer["_msp"].layerDescription.type : null;
-            
+ 
             /*
              * If layerType.resolvedUrlAttributeName is set,
              * display feature info within an iframe
              */
-            if (msp.Map.layerTypes[featureType].resolvedUrlAttributeName) {
+            if (msp.Map.layerTypes[feature.layer["_msp"].layerDescription["type"]].resolvedUrlAttributeName) {
                 
                 var btn,
                     pn = new msp.Panel('s'), // Create new South panel
@@ -315,156 +484,19 @@
             else {
 
                 /*
-                 * Display depends on featureType.
-                 * Div structure is as follow :
-                 * <body>
-                 *      [...]
-                 *      <div id="featureinfo" class="hideOnGE">
-                 *          <div class="act actne icnclose"</div>
-                 *          <div class="act actsw icnzoom"</div>
-                 *          <div class="content shadow">
-                 *              <div class="header">
-                 *                  <span class="title">.....</span>
-                 *              </div>
-                 *              <div class="sheader">
-                 *              <div class="body">
-                 *                  [...]
-                 *              </div>
-                 *          </div>
-                 *          <div a class="act ..."></div> // Optional
-                 *      </div>
-                 *      [...]
-                 * </body>
+                 * Set header for feature
                  */
-                self.$d.html('<div class="act actsw icnzoom"  jtitle="'+msp.Util._("Zoom to extent")+'"></div><div class="content shadow"></div>');
-
-                msp.Util.addCloseButton(self.$d, function(){
-                    self.clear()
-                });
-
-                var fi = feature.layer["_msp"].layerDescription.featureInfo;
-            
-                /*
-                 * If a layerDescription.featureInfo.action, add an action button
-                 */
-                if (fi && fi.action) {
-
-                    /*
-                     * The action is added only if javascript property is a valid function
-                     */
-                    if (typeof fi.action.callback === "function") {
-
-                        var id = msp.Util.getId();
-                        /*
-                         * Add the action button
-                         */
-                        self.$d.append('<div id="'+id+'" class="act '+fi.action["cssClass"]+'" jtitle="'+msp.Util._(fi.action["title"])+'"></div>');
-
-                        /*
-                         * Dedicated action
-                         */
-                        (function($id, feature, action) {
-                            $id.click(function() {
-                                action(feature);
-                                return false;
-                            });
-                            
-                            /*
-                             * Add tooltip
-                             */
-                            msp.tooltip.add($id, 'w');
-
-                        })($('#'+id), feature, fi.action["callback"]);
-                        
-                    }
-
-                }
-
-                /*
-                 * Zoom on feature
-                 */
-                $('.icnzoom', self.$d).click(function() {
-                    self.zoomOn();
-                    return false;
-                });
-
-                /*
-                 * Add tooltips
-                 */
-                msp.tooltip.add($('.icnclose', self.$d), 'w');
-                msp.tooltip.add($('.icnzoom', self.$d), 'n');
-                
-                var div = $('.content',self.$d),
-                    title = self.getTitle(feature),
-                    typeIsUnknown = true,
-                    layerType;
-
-                /*
-                 * Initialize Header
-                 */
-                div.append('<div class="header" title="'+ feature.layer.name + ' | ' + title +'">' + msp.Util.shorten(title, 50) + '&nbsp;&nbsp;&nbsp;</div><div class="sheader"></div><div class="body"></div>');
+                self.setHeader(feature);
                 
                 /*
-                 * Get body reference 
+                 * Set actions for feature
                  */
-                var b = $('.body', div);
+                self.setActions(feature);
                 
                 /*
-                 * Each layer type know how to display is own description
-                 * through the [layerTypeDescriptor].featureDescription(feature,div)
-                 * function
+                 * Set body for feature
                  */
-                if ((layerType = msp.Map.layerTypes[featureType])) {
-                    if (typeof layerType.appendDescription === "function" ) {
-                        layerType.appendDescription(feature, b);
-                        typeIsUnknown = false;
-                    }
-                }
-
-                /*
-                 * If feature type is unknown, use default display
-                 * 
-                 * Two cases :
-                 *  - feature get a 'thumbnail' property -> add two
-                 *  subpanels west and east with thumbnail on west and
-                 *  other properties in a <table> on east
-                 *  - feature does not get a 'thumbnail' property ->
-                 *  properties are displayed within a <table> in a single panel
-                 * 
-                 */
-                if (typeIsUnknown) {
-                    
-                    var value,
-                    key,
-                    html = "";
-                        
-                    /*
-                     * Check for thumbnail
-                     */
-                    if (feature.attributes.hasOwnProperty('thumbnail')) {
-                        b.append('<div class="west"><img src="'+feature.attributes['thumbnail']+'" class="padded"/></div><div class="east"><div class="padded"><table></table></div></div>');
-                    }
-                    else{ 
-                        b.append('<table></table>');
-                    }
-                    for(key in feature.attributes) {
-                        if (key === 'name' || key === 'title' || key === 'icon' || key === 'thumbnail' || key === 'quicklook') {
-                            continue;
-                        }
-                        value = feature.attributes[key];
-                        if (value) {
-                            if (value instanceof Object) {
-                                value = value.toString();
-                            }
-                            else if (typeof value === "string" && msp.Util.isUrl(value)) {
-                                value = '<a target="_blank" href="'+value+'">'+msp.Util.shorten(value,40)+'</a>';
-                            }
-                            html += '<tr><td>'+self.translate(key, feature)+'</td><td>&nbsp;</td><td>'+value+'</td></tr>';
-                        }
-                    }
-                    
-                    $('table', div).append(html);
-                }
+                self.setBody(feature);
 
                 /*
                  * Display feature information within #featureinfo div
@@ -483,17 +515,10 @@
             /*
              * Remove sheader if empty
              */
-            var sheader = $('.sheader', this.$d);
+            var sheader = $('.sheader', this.btn.$b);
             if (sheader.is(':empty')) {
-                this.$d.css('height', this.height);
-                $('.content', this.$d).css('height', this.height - 1);
                 sheader.remove();
             }
-            else {
-                this.$d.css('height', this.height + sheader.height());
-                $('.content', this.$d).css('height', this.height + sheader.height() - 1);
-            }
-            
             /*
              * Only show feature info if a feature is selected
              */
@@ -512,11 +537,6 @@
              * Always hide menu on unselect
              */
             msp.menu.hide();
-
-            /*
-             * Hide '#featureinfo'
-             */
-            this.$d.hide();
             
             msp.Map.featureInfo.selected = null;
         };
@@ -535,7 +555,7 @@
          */
         msp.Map.FeatureInfo._o = this;
 
-        return this;
+        return this.init(options);
     }
     
 })(window.msp);
