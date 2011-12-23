@@ -196,16 +196,15 @@
 
             var c,
                 i,
-                l,
-                fi = feature.layer["_msp"].layerDescription.featureInfo;
+                l;
             
             /*
              * If feature layer got a searchContext then use the connector
              * metadataTranslator array to translate the key
              */
-            c = feature.layer["_msp"].searchContext.connector;
-            if (c) {
-                return msp.Util._(c.metadataTranslator[key] || key);
+            c = feature.layer["_msp"].searchContext;
+            if (c && c.connector) {
+                return msp.Util._(c.connector.metadataTranslator[key] || key);
             }
             
             /*
