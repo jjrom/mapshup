@@ -634,7 +634,7 @@
          */
         this.setHeader = function(feature) {
             var title = this.getTitle(feature);
-            this.$h.attr('title',feature.layer.name + ' | ' + title).html(msp.Util.shorten(title, 50));    
+            this.$h.attr('title',feature.layer.name + ' | ' + title).html(msp.Util.shorten(title, 25));    
         };
 
         /**
