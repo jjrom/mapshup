@@ -137,7 +137,7 @@
             div.append('<div align="center"><img src="'+feature.attributes['thumbnail']+'"/></div>');
         },
 
-        appendDescription: function(feature, $d) {
+        setFeatureInfoBody: function(feature, $d) {
 
             /*
              * Construct an embeded youtube object

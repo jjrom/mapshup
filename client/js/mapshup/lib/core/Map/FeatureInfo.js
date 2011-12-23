@@ -377,11 +377,11 @@
             
             /*
              * Roll over layer types to detect layer features that should be
-             * displayed using a dedicated appendDescription function
+             * displayed using a dedicated setFeatureInfoBody function
              */
             if ((layerType = msp.Map.layerTypes[feature.layer["_msp"].layerDescription["type"]])) {
-                if (typeof layerType.appendDescription === "function" ) {
-                    layerType.appendDescription(feature, self.$b);
+                if (typeof layerType.setFeatureInfoBody === "function" ) {
+                    layerType.setFeatureInfoBody(feature, self.$b);
                     typeIsUnknown = false;
                 }
             }

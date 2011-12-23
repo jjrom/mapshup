@@ -176,7 +176,7 @@
 
         },
 
-        appendDescription: function(feature, $d) {
+        setFeatureInfoBody: function(feature, $d) {
 
             var i,l,tags,$tags;
             
