@@ -750,6 +750,24 @@
                     title:self.getTitle(feature),
                     container:ctn,
                     close:true,
+                    onclose:function(btn) {
+                        
+                        /*
+                         * Unselect feature with the _triggered trick to avoid display
+                         * of menu when unselect the feature
+                         */
+                        if (btn.feature) {
+                            msp.Map.featureInfo._triggered = true;
+                            msp.Map.Util.getControlById("__CONTROL_SELECT__").unselect(btn.feature);
+                            msp.Map.featureInfo._triggered = false;
+                        }
+                        
+                        /*
+                         * Hide activity
+                         */
+                        msp.activity.hide();
+                        
+                    },
                     activable:true,
                     scope:self,
                     actions:[
@@ -759,7 +777,10 @@
                                 msp.Map.zoomTo(extent);
                             }
                         }
-                    ]
+                    ],
+                    e:{
+                        feature:feature
+                    }
                 });
                 
                 btn.trigger();
