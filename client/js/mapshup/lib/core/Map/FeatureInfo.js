@@ -642,18 +642,26 @@
          * Called by "onfeatureselect" events
          * 
          * @input feature : 
-         * @input force : if true select the feature even if it is not
-         *                completely visible in the map extent.
-         *                This attribute is set to true by Catalog plugins
-         *                when feature is selected by clicking on the search result panel
+         * @input _triggered : if true the feature selection has been triggered
+         *                     automatically and not by a user click
+         *                     This attribute is set to true by Catalog plugins
+         *                     when feature is selected by clicking on the search result panel
          */
-        this.select = function(feature, _force) {
+        this.select = function(feature, _triggered) {
 
             var i,
                 bounds,
                 length,
-                force = _force || false,
                 self = this;
+            
+            /*
+             * This is a bit tricky...
+             * If _force is set to true, then global _force
+             */
+            if (_triggered) {
+                self._triggered = true;
+                return msp.Map.Util.getControlById("__CONTROL_SELECT__").select(feature);
+            }
             
             /*
              * If feature is a cluster, the map is zoomed on the cluster
@@ -687,33 +695,21 @@
                     
                 }
             }
-
+            
             /*
-             * If select is not forced (i.e. input 'force' parameter set to false)
-             * and the feature is not completely include within the current map view,
-             * then it is unselected and the menu it displayed instead
+             * Display the menu only if select is not triggered programatically
+             * and id the feature is a polygon
              */
-            if (!force && !msp.Map.map.getExtent().containsBounds(feature.geometry.getBounds())) {
-
-                /*
-                  * Unselect feature
-                  */
-                msp.Map.Util.getControlById("__CONTROL_SELECT__").unselect(feature);
-                
-                /*
-                 * Display the menu
-                 */
+            if (!self._triggered && feature.geometry["CLASS_NAME"] === 'OpenLayers.Geometry.Polygon') {
                 msp.Map.mouseClick = msp.Map.mousePosition.clone();
                 msp.menu.show();
-                
-                return false;
             }
-
+            
             /*
-             * Always hide menu on select
+             * Set _triggered to false (see trick above)
              */
-            msp.menu.hide();
-
+            self._triggered = false;
+            
             /*
              * Set the current selected object
              */
@@ -820,9 +816,15 @@
         this.unselect = function(feature) {
            
             /*
-             * Always hide menu on unselect
+             * If feature is a polygon, show menu
              */
-            msp.menu.hide();
+            if (feature.geometry["CLASS_NAME"] === 'OpenLayers.Geometry.Polygon') {
+                msp.Map.mouseClick = msp.Map.mousePosition.clone();
+                msp.menu.show();
+            }
+            else {
+                msp.menu.hide();
+            }
             
             msp.Map.featureInfo.selected = null;
         };
