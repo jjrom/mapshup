@@ -84,7 +84,7 @@
             self.pn = new msp.Panel('e');
             self.btn = new msp.Button({
                 tb:new msp.Toolbar(self.options.position, self.options.orientation),
-                icon:"info.png",
+                icon:"fiinfo.png",
                 tt:"Feature information",
                 container:self.pn.add(),
                 activable:true,
