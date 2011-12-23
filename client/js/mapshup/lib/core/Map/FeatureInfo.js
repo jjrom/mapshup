@@ -652,6 +652,7 @@
                 i,
                 bounds,
                 length,
+                ran,
                 self = this;
             
             /*
@@ -723,7 +724,8 @@
              * If layerType.resolvedUrlAttributeName is set,
              * display feature info within an iframe
              */
-            if (msp.Map.layerTypes[feature.layer["_msp"].layerDescription["type"]].resolvedUrlAttributeName) {
+            ran = msp.Map.layerTypes[feature.layer["_msp"].layerDescription["type"]].resolvedUrlAttributeName;
+            if (ran) {
                 
                 var btn,
                     pn = new msp.Panel('s'), // Create new South panel
@@ -733,7 +735,7 @@
                 /*
                  * Set container content
                  */
-                ctn.$d.html('<div id="'+msp.Util.getId()+'" style="height:'+pn.getInnerDimension().h+'px;"><iframe class="frame" src="'+feature.attributes[msp.Map.layerTypes[featureType].resolvedUrlAttributeName]+'" width="100%" height="100%"></iframe></div>')
+                ctn.$d.html('<div id="'+msp.Util.getId()+'" style="height:'+pn.getInnerDimension().h+'px;"><iframe class="frame" src="'+feature.attributes[ran]+'" width="100%" height="100%"></iframe></div>')
                 msp.activity.show();
                 $('.frame', ctn.$d).load(function() {
                     msp.activity.hide();
