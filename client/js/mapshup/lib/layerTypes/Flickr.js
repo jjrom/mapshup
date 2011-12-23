@@ -176,21 +176,23 @@
 
         },
 
-        appendDescription: function(feature, div) {
+        appendDescription: function(feature, $d) {
 
+            var i,l,tags,$tags;
+            
             /*
              * Photo page url :
              *      http://www.flickr.com/photos/{user-id}/{photo-id}
              *
              * (see http://www.flickr.com/services/api/misc.urls.html)
              */
-            div.append('<div class="west"><a target="_blank" href="http://www.flickr.com/photos/'+feature.attributes['owner']+'/'+feature.attributes['identifier']+'" class="image"><img src="'+feature.attributes['thumbnail']+'" class="padded"/></a></div><div class="east"><div class="padded">'+feature.attributes['description']+'<br/><div class="tags"></div></div></div>');
-            var tagsdiv = $('.tags', div);
+            $d.append('<div class="thumb"><a target="_blank" href="http://www.flickr.com/photos/'+feature.attributes['owner']+'/'+feature.attributes['identifier']+'" class="image"><img src="'+feature.attributes['thumbnail']+'" class="padded"/></a></div><div class="info">'+feature.attributes['description']+'<br/><div class="tags"></div></div>');
+            $tags = $('.tags', $d);
             if (feature.attributes["tags"]) {
-                var tags = feature.attributes["tags"].split(' ');
-                for (var i = 0, l = tags.length ; i < l; i++) {
+                tags = feature.attributes["tags"].split(' ');
+                for (i = 0, l = tags.length ; i < l; i++) {
                     (function(tag) {
-                        tagsdiv.append('<a href="#" id="t_'+tag+'">'+tag+'</a> ');
+                        $tags.append('<a href="#" id="t_'+tag+'">'+tag+'</a> ');
                         $('#t_' + tag).click(function(){
                             Map.addLayer({
                                 type:"Flickr",

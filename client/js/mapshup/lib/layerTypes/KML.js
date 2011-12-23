@@ -121,8 +121,8 @@
 
         },
 
-        appendDescription: function(feature, div) {
-            div.append(feature.attributes["description"]);
+        appendDescription: function(feature, $d) {
+            $d.append('<div class="info">'+feature.attributes["description"]+'</div>');
         }
     }
 

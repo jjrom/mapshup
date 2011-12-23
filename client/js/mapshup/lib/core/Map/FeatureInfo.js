@@ -101,15 +101,17 @@
              *      </div>
              * </div>
              */
-            self.btn.container.$d.html('<div id="'+msp.Util.getId()+'" style="width:'+self.pn.getInnerDimension().w+'px;" class="pfi"><div class="header">'+msp.Util._("Feature information")+'</div><div class="actions block"></div><div class="body block expdbl"></div>');
+            self.btn.container.$d.html('<div id="'+msp.Util.getId()+'" style="width:'+self.pn.getInnerDimension().w+'px;" class="pfi"><div class="header">'+msp.Util._("Feature information")+'</div><div class="actions block"></div><div class="tabs"></div><div class="body block expdbl"></div>');
 
             /*
              * Set references
              */
-            self.btn.$a = $('.actions', self.btn.container.$d); // Actions
-            self.btn.$b = $('.body', self.btn.container.$d); // Body
-            self.btn.$h = $('.header', self.btn.container.$d); // Header
-
+            self.$a = $('.actions', self.btn.container.$d); // Actions
+            self.$t = $('.tabs', self.btn.container.$d); // Tabs
+            self.$b = $('.body', self.btn.container.$d); // Body
+            self.$h = $('.header', self.btn.container.$d); // Header
+            self.$d = $('.pfi', self.btn.container.$d); // Parent div
+            
             return self;            
             
         };
@@ -184,6 +186,7 @@
          */
         this.translate = function(key, feature) {
 
+                
             /*
              * Paranoid mode
              */
@@ -191,6 +194,20 @@
                 return msp.Util._(key);
             }
 
+            var c,
+                i,
+                l,
+                fi = feature.layer["_msp"].layerDescription.featureInfo;
+            
+            /*
+             * If feature layer got a searchContext then use the connector
+             * metadataTranslator array to translate the key
+             */
+            c = feature.layer["_msp"].searchContext.connector;
+            if (c) {
+                return msp.Util._(c.metadataTranslator[key] || key);
+            }
+            
             /*
              * Check if keys array is defined
              */
@@ -200,7 +217,7 @@
                  * Roll over the featureInfo.keys array.
                  * This array contains a list of {key:, value:} objects
                  */
-                for (var i = 0, l = feature.layer["_msp"].layerDescription.featureInfo.keys.length; i < l; i++) {
+                for (i = 0, l = feature.layer["_msp"].layerDescription.featureInfo.keys.length; i < l; i++) {
 
                     /*
                      * If key is found in array, get the corresponding value and exist the loop
@@ -224,21 +241,33 @@
          */
         this.setActions = function(feature) {
             
-            var id,
+            var a,
+                d,
+                i,
+                l,
+                connector,
                 self = this,
+                actions = [],
                 fi = feature.layer["_msp"].layerDescription.featureInfo;
-                    
+            
             /*
-             * Set "zoom on feature" action
+             * Clear actions
              */
-            self.btn.$a.html('<span class="zoom" jtitle="'+msp.Util._("Zoom to extent")+'">zoom</span>');
-            $('.zoom', self.btn.$a).click(function() {
-                self.zoomOn();
-                return false;
+            self.$a.empty();
+            
+            /*
+             * Add "zoom on feature" action
+             */
+            actions.push({
+                id:msp.Util.getId(),
+                icon:"plus.png",
+                title:"Zoom to extent",
+                callback:function(a, f) {
+                    self.zoomOn();
+                    return false;
+                }
             });
-            msp.tooltip.add($('.zoom', self.btn.$a), 'n'); // Add tooltips
-
-
+                    
             /*
              * If a layerDescription.featureInfo.action, add an action button
              */
@@ -249,31 +278,82 @@
                  */
                 if (typeof fi.action.callback === "function") {
 
-                    id = msp.Util.getId();
-
                     /*
-                     * Add the action button
+                     * Add feature action
                      */
-                    self.btn.$a.append('<span id="'+id+'" jtitle="'+msp.Util._(fi.action["title"])+'">'+fi.action["cssClass"]+'</span>');
-
-                    /*
-                     * Dedicated action
-                     */
-                    (function($id, feature, action) {
-                        $id.click(function() {
-                            action(feature);
+                    actions.push({
+                        id:msp.Util.getId(),
+                        icon:fi.action["icon"],
+                        title:fi.action["title"],
+                        callback:function(a, f) {
+                            fi.action.callback(a, f);
                             return false;
-                        });
+                        }
+                    });
+                    
+                }
 
-                        /*
-                         * Add tooltip
-                         */
-                        msp.tooltip.add($id, 'w');
+            }
 
-                    })($('#'+id), feature, fi.action["callback"]);
+            /*
+             * If feature layer got a searchContext, set actions defined within its connector
+             */
+            if (feature.layer["_msp"].searchContext) {
+
+                connector = feature.layer["_msp"].searchContext.connector;
+                
+                if (connector.action) {                    
+                
+                    /*
+                     * Add feature action
+                     */
+                    actions.push({
+                        id:msp.Util.getId(),
+                        icon:fi.action["icon"],
+                        title:fi.action["title"],
+                        sla:typeof connector.action.sla === "function" ? connector.action.sla : null,
+                        callback:function(a, f) {
+                            
+                            /*
+                             * If an href was set with sla function, resolve href
+                             * Otherwise trigger callback
+                             */
+                            if (typeof connector.action.callback === "function") {
+                                if (a.attr("href") === "#") {
+                                    connector.action.callback(a, f);
+                                    return false;
+                                }
+                                return true;
+                            }
+                            return false;
+                        }
+                    });
 
                 }
 
+            }
+            
+            /*
+             * Set actions
+             */
+            for (i = 0, l = actions.length;i < l; i++) {
+                a = actions[i];
+                self.$a.append('<a href="#" id="'+a.id+'" jtitle="'+msp.Util._(a.title)+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/></a>');
+                d = $('#'+a.id);
+                msp.tooltip.add(d, 'n');
+                (function(d,a,f){
+                    d.click(function() {
+                        return a.callback(a,f);
+                    })
+                })(d,a,feature);
+                
+                /*
+                 * The "sla" function can be used to set href
+                 */
+                if (a.sla) {
+                    a.sla(d, feature);
+                }
+                
             }
 
         };
@@ -283,20 +363,25 @@
          */
         this.setBody = function(feature) {
             
-            var layerType,
-                value,
-                key,
-                html = "",
+            var $info,
+                layerType,
                 self = this,
-                typeIsUnknown = true;
+                typeIsUnknown = true,
+                // Thumbnail of quicklook attributes
+                thumb = feature.attributes['thumbnail'] || feature.attributes['quicklook'] || null;
 
+            /*
+             * Clean body
+             */
+            self.$b.empty();
+            
             /*
              * Roll over layer types to detect layer features that should be
              * displayed using a dedicated appendDescription function
              */
             if ((layerType = msp.Map.layerTypes[feature.layer["_msp"].layerDescription["type"]])) {
                 if (typeof layerType.appendDescription === "function" ) {
-                    layerType.appendDescription(feature, self.btn.$b);
+                    layerType.appendDescription(feature, self.$b);
                     typeIsUnknown = false;
                 }
             }
@@ -310,39 +395,236 @@
              *  
              * In both case, key/value are displayed within a <table>
              * 
-             *      <div class="thumb block"></div>
-             *      <div class="info block"></div>
+             *      <div class="thumb"></div>
+             *      <div class="info"></div>
              * 
              * 
              */
             if (typeIsUnknown) {
                 
                 /*
-                 * Check for thumbnail
+                 * Initialize $b content
                  */
-                if (feature.attributes.hasOwnProperty('thumbnail')) {
-                    self.btn.$b.html('<div class="block thumb"><img src="'+feature.attributes['thumbnail']+'" class="padded"/></div><div class="info block"><div class="padded"><table></table></div></div>');
+                self.$b.html('<div class="info"><table></table></div>');
+                $info = $('.info', self.$b);
+                
+                /*
+                 * Display thumbnail
+                 */
+                if (thumb) {
+                    
+                    /*
+                     * Add a thumb div container
+                     */
+                    self.$b.prepend('<div class="thumb"></div>');
+                    
+                    /*
+                     * Get a unique id for jquery click action
+                     */
+                    var id,
+                        content = '<img src="'+thumb+'" class="padded">',
+                        $thumb = $('.thumb', self.$b);
+                    
+                    /*
+                     * Display quicklook on popup if defined
+                     */
+                    if (feature.attributes.hasOwnProperty('quicklook')) {
+                        
+                        id = msp.Util.getId();
+                        $thumb.html('<a id="'+id+'" class="image" alt="'+msp.Util._("Show quicklook")+'" title="'+feature.attributes['identifier']+'" '+'href="'+feature.attributes['quicklook']+'">'+content+'</a>');
+                        
+                        /*
+                         * Popup image
+                         */
+                        $('#'+id).click(function() {
+                            var $t = $(this);
+                            msp.Util.showPopupImage($t.attr('href'), $t.attr('title'));
+                            return false;
+                        });
+                        
+                    }
+                    /*
+                     * No quicklook, only display thumbnail
+                     */
+                    else {
+                        $thumb.html(content);
+                    }
+                    
+                    /*
+                     * Add an action on "Add Quicklook to map" link
+                     * This action is added only if layer allow to display Quicklook on the map
+                     */
+                    if (feature.layer["_msp"].qlToMap) {
+                        id = msp.Util.getId()
+                        $thumb.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._('Add quicklook to map')+'</a>');
+                        $('#'+id).click(function() {
+                            Map.addLayer({
+                                type:"Image",
+                                title:feature.attributes['identifier'],
+                                /* If removeBorderServiceUrl is defined => use it :) */
+                                url:msp.Config["general"].removeBlackBorderServiceUrl != null ? msp.Config["general"].removeBlackBorderServiceUrl + escape(feature.attributes['quicklook']) + msp.Util.abc : feature.attributes['quicklook'],
+                                bbox:feature.geometry.getBounds().toBBOX(),
+                                /* By default, quicklooks are added to the "Quicklooks" group */
+                                groupName:"Quicklooks"
+                            });
+                        });
+                    }
+                    
                 }
-                else{ 
-                    self.btn.$b.html('<table></table>');
-                }
-                for(key in feature.attributes) {
-                    if (key === 'name' || key === 'title' || key === 'icon' || key === 'thumbnail' || key === 'quicklook') {
+                
+                
+                /*
+                 * Set variable and references
+                 */
+                var d,v,t,$id,i,l,k,kk,kkk;
+
+                /*
+                 * Roll over attributes  
+                 */   
+                for (k in feature.attributes) {
+
+                    /*
+                     * Special keywords
+                     */
+                    if (k === 'identifier' || k === 'icon' || k === 'thumbnail' || k === 'quicklook') {
                         continue;
                     }
-                    value = feature.attributes[key];
-                    if (value) {
-                        if (value instanceof Object) {
-                            value = value.toString();
+
+                    /*
+                     * Get key value
+                     */
+                    if((v = feature.attributes[k])) {
+
+                        /*
+                         * Check type
+                         */
+                        t = typeof v;
+
+                        /*
+                         * Simple case : string
+                         */
+                        if (t === "string" && msp.Util.isUrl(v)) {
+                            $info.append('<tr><td>' + self.translate(k, feature) + '</td><td>&nbsp;</td><td><a target="_blank" href="'+v+'">'+ msp.Util.shorten(v, 30) +'</a></td></tr>');
                         }
-                        else if (typeof value === "string" && msp.Util.isUrl(value)) {
-                            value = '<a target="_blank" href="'+value+'">'+msp.Util.shorten(value,40)+'</a>';
+                        /*
+                         * Object case
+                         */
+                        else if (t === "object") {
+
+                            /*
+                             * Special case for _madd property
+                             * _madd defines an action to add layer
+                             * and should contains to properties :
+                             *  - title : action title to display
+                             *  - layer : layer parameters
+                             */
+                            if (k === '_madd') {
+                                id = msp.Util.getId();
+                                $thumb.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._(v["title"])+'</a>');
+                                (function(id,obj){
+                                    $('#'+id).click(function(){
+
+                                        /*
+                                         * Do not zoom on layer after load
+                                         */
+                                        if (obj) {
+                                            obj.zoomOnAfterLoad = false;
+                                        }
+
+                                        /*
+                                         * Add layer obj
+                                         */
+                                        Map.addLayer(obj);
+                                        return false;
+                                    });
+                                })(id,v["layer"]);
+                                continue;
+                            }
+
+                            /*
+                             * Roll over properties name
+                             */
+                            for (kk in v) {
+
+                                /*
+                                 * Check type : if object => create a new tab
+                                 */
+                                if (typeof v[kk] === "object") {
+
+                                    /*
+                                     * Special case for photos array
+                                     * No tab is created but instead a photo gallery
+                                     * is displayed within the west panel
+                                     */
+                                    if (kk === 'photo') {
+                                        for (i = 0, l = v[kk].length; i < l; i++) {
+                                            id = msp.Util.getId();
+                                            $thumb.append('<a href="'+v[kk][i]["url"]+'" title="'+v[kk][i]["name"]+'" id="'+id+'"><img height="50px" width="50px" src="'+v[kk][i]["url"]+'"/></a>');
+                                            /*
+                                             * Popup image
+                                             */
+                                            $id = $('#'+id);
+                                            $id.click(function() {
+                                                msp.Util.showPopupImage($id.attr('href'), $id.attr('title'));
+                                                return false;
+                                            });
+                                        }
+                                        continue;
+                                    }
+
+                                    /*
+                                     * Create a tab container eate it
+                                     * 
+                                     */
+                                    id = msp.Util.getId() ;
+                                    
+                                    if (self.$t.is(':empty')) {
+                                        self.$t.html('<div id="fitabs"><ul><li><a href="#fimain">'+msp.Util._("Description")+'</a></li></ul></div>');
+                                    }
+                                    $('ul', self.$t).append('<li><a href="#' + id + '">' + msp.Util._(kk) + '</a></li>');
+
+                                    /*
+                                     * Create a specific tab
+                                     */
+                                    self.$d.append('<div id="'+id+'" class="noflw"><table></table></div>');
+
+                                    /*
+                                     * Table reference
+                                     */
+                                    d = $('table', $('#'+id));
+
+                                    /*
+                                     * Special case for videos
+                                     */
+                                    if (kk === "video" || kk === "audio") {
+                                        for (i = 0, l = v[kk].length; i < l; i++) {
+                                            d.append('<tr><td><a href="'+v[kk][i]["url"]+'">' + v[kk][i]["name"] + '</a></td></tr>');
+                                        }
+                                    }
+                                    else {
+                                        for (kkk in v[kk]) {
+                                            d.append('<tr><td>' + self.translate(kkk, feature) + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
+                                        }
+                                    }
+
+                                }
+                                else {
+                                    $info.append('<tr><td>' + self.translate(k, feature) + ' &rarr; ' + self.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
+                                }
+                            }
+
                         }
-                        html += '<tr><td>'+self.translate(key, feature)+'</td><td>&nbsp;</td><td>'+value+'</td></tr>';
+                        else {
+                            $info.append('<tr><td>' + self.translate(k, feature) + '</td><td>&nbsp;</td><td>' + v + '</td></tr>');
+                        }
                     }
                 }
 
-                $('table', self.btn.$b).append(html);
+                /*
+                 * Set the tabs if any
+                 */
+                $("#fitabs ul").idTabs(); 
+
             }
             
         };
@@ -352,7 +634,7 @@
          */
         this.setHeader = function(feature) {
             var title = this.getTitle(feature);
-            this.btn.$h.attr('title',feature.layer.name + ' | ' + title).html(msp.Util.shorten(title, 50));    
+            this.$h.attr('title',feature.layer.name + ' | ' + title).html(msp.Util.shorten(title, 50));    
         };
 
         /**
@@ -458,7 +740,7 @@
                 });
 
                 /*
-                 * Register open elevation action within Toolbar South south toolbar
+                 * Register action within Toolbar South south toolbar
                  */
                 btn = new msp.Button({
                     tt:self.getTitle(feature),
@@ -482,7 +764,7 @@
                 
             }
             else {
-
+                
                 /*
                  * Set header for feature
                  */
@@ -499,7 +781,7 @@
                 self.setBody(feature);
 
                 /*
-                 * Display feature information within #featureinfo div
+                 * Display feature information
                  */
                 self.show();
                 
@@ -512,19 +794,23 @@
          */
         this.show = function() {
             
+            var self = this;
+            
             /*
-             * Remove sheader if empty
+             * Activate layer button
              */
-            var sheader = $('.sheader', this.btn.$b);
-            if (sheader.is(':empty')) {
-                sheader.remove();
-            }
+            self.btn.activate(true);
+
             /*
-             * Only show feature info if a feature is selected
+             * Show panel content
              */
-            if (this.selected && this.selected.geometry) {
-                msp.Util.show(this.$d);
-            }
+            self.btn.container.pn.show(self.btn.container);
+            
+            /*
+             * Hide tabs if empty
+             */
+            self.$t.is(':empty') ? self.$t.hide() : self.$t.show();
+            
         };
 
         /**
@@ -532,7 +818,7 @@
          * Called by "onfeatureunselect" events
          */
         this.unselect = function(feature) {
-            
+           
             /*
              * Always hide menu on unselect
              */

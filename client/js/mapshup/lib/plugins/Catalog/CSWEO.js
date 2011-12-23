@@ -103,9 +103,9 @@
          * Add an additional action on featureInfo window
          */
         this.action = {
-            title:"GetRepositoryItem",
-            cssClass:"actse icndownload",
-            setLinkAttributes:function(a, feature) {
+            title:"Download Metadata file",
+            icon:"download.png",
+            sla:function(a, feature) {
                 if (feature && feature["attributes"]) {
                     a.attr("target", "_blank").attr("href", msp.Util.repareUrl(feature.layer["_msp"].layerDescription["url"])+'REQUEST=GetRepositoryItem&id='+feature["attributes"].identifier);
                 }

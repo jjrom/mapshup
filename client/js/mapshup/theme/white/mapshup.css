@@ -664,77 +664,47 @@ input {
 }
 
 /**
- * featureinfo
+ * FeatureInfo panel
 */
-#featureinfo  {
-    position:absolute;
-    width:500px;
-    height:250px;
-    top:15px;
-    right:50px;
-    margin-left:auto;
-    margin-right:auto;
-    padding:0px;
-    display:none;
-    z-index:10150;
+.pfi .actions {
+    text-align: center;
+    padding:5px;
 }
-#featureinfo .content {
-    height:249px;
-    width:100%;
-    overflow:hidden;
-    font-size:0.8em;
-    background-color:transparent;
+.pfi .actions a {
+    padding:7px;
 }
-#featureinfo .header {
-    height:30px;
-    line-height:30px;
-    text-transform:uppercase;
-    color:#fff;
-    background-color:#000;
-    text-align:right;
+.pfi .info {
+    padding:5px;
+    margin-bottom:5px;
 }
-#featureinfo .body {
-    height:219px;
-    text-align:justify;
-    background-color:#fff;
-    overflow:auto;
-    padding: 0px 10px 10px 5px;
+.pfi .thumb {
+    text-align: center;
+    padding:5px;
+    margin-bottom:5px;
 }
-#featureinfo .body .west {
-    float:left;
-    text-align:center;
-    overflow:hidden;
-    width:200px;
-    height:100%;
+.pfi .thumb img {
+    max-height:200px;
 }
-#featureinfo .body img {
-    max-height:150px;
-}
-#featureinfo .body .east {
-    float:right;
-    width:280px;
-    height:100%;
-}
-#featureinfo .sheader {
+.pfi .sheader {
     height:30px;
     line-height:30px;
     text-transform:uppercase;
     background-color:#fff;
 }
-#featureinfo .sheader ul {
+.pfi .sheader ul {
     height:30px;
     width:auto;
 }
-#featureinfo .sheader li {
+.pfi .sheader li {
     list-style:none;
     float:left;
 }
-#featureinfo td {
+.pfi td {
     padding:5px 0px;
     border-top: 1px solid #ccc;
 }
 
-#featureinfo tr:nth-child(even) {
+.pfi tr:nth-child(even) {
     background: rgb(244, 244, 244);
 }
 
