@@ -649,7 +649,8 @@
          */
         this.select = function(feature, _triggered) {
 
-            var i,
+            var c,
+                i,
                 bounds,
                 length,
                 self = this;
@@ -660,7 +661,11 @@
              */
             if (_triggered) {
                 self._triggered = true;
-                return msp.Map.Util.getControlById("__CONTROL_SELECT__").select(feature);
+                c = msp.Map.Util.getControlById("__CONTROL_SELECT__");
+                if (self.selected) {
+                    c.unselect(self.selected);
+                }
+                return c.select(feature);
             }
             
             /*
@@ -814,11 +819,11 @@
          * Called by "onfeatureunselect" events
          */
         this.unselect = function(feature) {
-           
+            
             /*
              * If feature is a polygon, show menu
              */
-            if (feature.geometry["CLASS_NAME"] === 'OpenLayers.Geometry.Polygon') {
+            if (!this._triggered && feature.geometry["CLASS_NAME"] === 'OpenLayers.Geometry.Polygon') {
                 msp.Map.mouseClick = msp.Map.mousePosition.clone();
                 msp.menu.show();
             }
