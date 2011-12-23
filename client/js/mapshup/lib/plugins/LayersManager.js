@@ -248,6 +248,10 @@
          */
         this.update = function(layer) {
             
+            if (!layer) {
+                return;
+            }
+            
             var actions,
                 c,
                 i,
@@ -256,7 +260,7 @@
                 unique,
                 img,
                 fraction = 1 / this.options.opacitySteps,
-                content = '<div class="title" title="'+msp.Util._(layer.name)+'">'+this.getTitle(layer)+'</div><div class="actions"></div>',
+                content = '<div class="title" title="'+msp.Util._(layer.name)+'"><img class="icn" src="'+(layer["_msp"].isLoaded ? layer["_msp"].icon : msp.Util.getImgUrl("loading.gif"))+'"/> ' + msp.Util.shorten(msp.Util._(layer.name),30) +'</div><div class="actions"></div>',
                 id = msp.Util.encode("lm"+layer["_msp"].mspID),
                 $id = $('#'+id)
                 scope = this;
@@ -521,13 +525,6 @@
          */
         this.remove = function(layer) {
             $('#'+msp.Util.encode("lm"+layer["_msp"].mspID)).remove();
-        };
-        
-        /*
-         * Return the title for a layer
-         */
-        this.getTitle = function(layer) {
-            return layer ? '<img class="icn" src="'+(layer["_msp"].isLoaded ? layer["_msp"].icon : msp.Util.getImgUrl("loading.gif"))+'"/> ' + msp.Util.shorten(msp.Util._(layer.name),30) : "";
         };
         
         /*

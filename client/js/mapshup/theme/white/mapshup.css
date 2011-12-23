@@ -660,6 +660,7 @@ input {
     background-color:yellowgreen;
     width:250px;
     padding:10px;
+    overflow:hidden;
     z-index:10000;
 }
 

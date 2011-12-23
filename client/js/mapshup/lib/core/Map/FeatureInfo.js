@@ -174,7 +174,7 @@
             /*
              * Otherwise returns name or title or identifier or id
              */
-            return feature.attributes["name"] || feature.attributes["title"] || msp.Util.shorten(feature.attributes["identifier"],40,true) || msp.Util.shorten(feature.id, 40, true) || "";
+            return feature.attributes["name"] || feature.attributes["title"] || feature.attributes["identifier"] || feature.id || "";
 
         };
 

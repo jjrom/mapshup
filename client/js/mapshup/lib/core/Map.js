@@ -1200,8 +1200,7 @@
                                 /*
                                  * Title is first 'name' or 'title' or 'identifier' or 'id'
                                  */
-                                var title = msp.Map.featureInfo.getTitle(e.feature);
-                                self.$featureHilite.html(title).show();
+                                self.$featureHilite.html(msp.Map.featureInfo.getTitle(e.feature)).show();
 
                             }
 
