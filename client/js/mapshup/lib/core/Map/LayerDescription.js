@@ -187,20 +187,9 @@
          */
         this.getStyleMap =  function() {
 
-            /*
-             * Determines if point must be represented by an icon
-             */
-            var icon = null;
-            
-            /*
-             * obj reference
-             */
-            var obj = this.obj;
-
-            /*
-             * Set opacity - 0.4 by default
-             */
-            var opacity = obj.opacity || 0.4;
+            var icon = null, // Determines if point must be represented by an icon
+                obj = this.obj, // Object reference
+                opacity = obj.opacity || 0.4; // Set opacity - 0.4 by default
 
             /*
              * Features got a 'icon' attribute => use it as symbol
@@ -319,7 +308,7 @@
                 "select": icon ? {
                     pointRadius:30
                 } : {
-                    strokeColor:"#000000",
+                    strokeColor:"#ffff00",
                     strokeWidth:3,
                     fillOpacity: opacity <= 0.9 ? opacity + 0.1 : opacity - 0.1
                 }
