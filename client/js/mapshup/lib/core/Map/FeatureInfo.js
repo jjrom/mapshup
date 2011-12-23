@@ -458,7 +458,7 @@
                         id = msp.Util.getId()
                         $thumb.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._('Add quicklook to map')+'</a>');
                         $('#'+id).click(function() {
-                            Map.addLayer({
+                            msp.Map.addLayer({
                                 type:"Image",
                                 title:feature.attributes['identifier'],
                                 /* If removeBorderServiceUrl is defined => use it :) */
@@ -534,7 +534,7 @@
                                         /*
                                          * Add layer obj
                                          */
-                                        Map.addLayer(obj);
+                                        msp.Map.addLayer(obj);
                                         return false;
                                     });
                                 })(id,v["layer"]);
