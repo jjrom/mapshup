@@ -188,19 +188,19 @@
             msp.Map.events.register("resizeend", this, function(scope){
                 
                 /*
-                 * For North and South panels, the width of the panel is the width of the map
+                 * !! For North and South panels, the width of the panel is the width of the container
                  */
                 if (msp.Panel._onp) {
-                    msp.Panel._onp.$d.width(msp.$map.width());
+                    msp.Panel._onp.$d.width(msp.$container.width());
                 }
                 if (msp.Panel._osp) {
-                    msp.Panel._osp.$d.width(msp.$map.width());
+                    msp.Panel._osp.$d.width(msp.$container.width());
                 }
                 /*
-                 * For East and West panels, the height of the panel is the height of the whole container
+                 * !! For East and West panels, the height of the panel is the height of the map
                  */
                 if (msp.Panel._oep) {
-                    msp.Panel._oep.$d.height(msp.$container.height());
+                    msp.Panel._oep.$d.height(msp.$map.height());
                     
                     /*
                      * Object with an 'expdbl' class have their height constrain
@@ -213,7 +213,7 @@
                     
                 }
                 if (msp.Panel._owp) {
-                    msp.Panel._owp.$d.height(msp.$container.height());
+                    msp.Panel._owp.$d.height(msp.$map.height());
                 }
             });
                 
