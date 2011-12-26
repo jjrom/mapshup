@@ -101,7 +101,7 @@
              *      </div>
              * </div>
              */
-            self.btn.container.$d.html('<div id="'+msp.Util.getId()+'" style="width:'+self.pn.getInnerDimension().w+'px;" class="pfi"><div class="header">'+msp.Util._("Feature information")+'</div><div class="actions block"></div><div class="tabs"></div><div class="body block expdbl"></div>');
+            self.btn.container.$d.html('<div id="'+msp.Util.getId()+'" style="width:'+self.pn.getInnerDimension().w+'px;" class="pfi"><div class="header">'+msp.Util._("Feature information")+'</div><div class="actions block"></div><div class="tabs"></div><div class="body expdbl"></div>');
 
             /*
              * Set references
