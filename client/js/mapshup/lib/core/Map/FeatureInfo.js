@@ -95,13 +95,12 @@
              * Set the panel container content with the following html structure
              * 
              * <div id="..." class="pfi">
-             *      <div class="header"></div>
-             *      <div class="actions"></div>
+             *      <div class="header"><div class="title"></div><div class="actions"></div></div>
              *      <div class="body expdbl">
              *      </div>
              * </div>
              */
-            self.btn.container.$d.html('<div id="'+msp.Util.getId()+'" style="width:'+self.pn.getInnerDimension().w+'px;" class="pfi"><div class="header">'+msp.Util._("Feature information")+'</div><div class="actions block"></div><div class="tabs"></div><div class="body expdbl"></div>');
+            self.btn.container.$d.html('<div id="'+msp.Util.getId()+'" style="width:'+self.pn.getInnerDimension().w+'px;" class="pfi"><div class="header"><div class="title">'+msp.Util._("Feature information")+'</div><div class="actions"></div></div><div class="tabs"></div><div class="body expdbl"></div>');
 
             /*
              * Set references
@@ -111,6 +110,12 @@
             self.$b = $('.body', self.btn.container.$d); // Body
             self.$h = $('.header', self.btn.container.$d); // Header
             self.$d = $('.pfi', self.btn.container.$d); // Parent div
+            
+            /*
+             * On init, "information" button is hidden
+             * (nothing selected)
+             */
+            self.btn.$d.hide();
             
             return self;            
             
@@ -634,7 +639,7 @@
          */
         this.setHeader = function(feature) {
             var title = this.getTitle(feature);
-            this.$h.attr('title',feature.layer.name + ' | ' + title).html(msp.Util.shorten(title, 25));    
+            $('.title', this.$h).attr('title',feature.layer.name + ' | ' + title).html(msp.Util.shorten(title, 25));    
         };
 
         /**
@@ -814,7 +819,7 @@
         };
         
         /**
-         * Show the featureInfo popup on top of the selected feature
+         * Show feature info panel
          */
         this.show = function() {
             
@@ -834,6 +839,11 @@
              * Hide tabs if empty
              */
             self.$t.is(':empty') ? self.$t.hide() : self.$t.show();
+            
+            /*
+             * Show button
+             */
+            self.btn.$d.show();
             
         };
 
@@ -855,6 +865,7 @@
             }
             
             msp.Map.featureInfo.selected = null;
+            
         };
 
         /**
