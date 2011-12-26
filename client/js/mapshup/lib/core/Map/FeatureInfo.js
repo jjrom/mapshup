@@ -199,16 +199,8 @@
                 l;
             
             /*
-             * If feature layer got a searchContext then use the connector
-             * metadataTranslator array to translate the key
-             */
-            c = feature.layer["_msp"].searchContext;
-            if (c && c.connector) {
-                return msp.Util._(c.connector.metadataTranslator[key] || key);
-            }
-            
-            /*
              * Check if keys array is defined
+             * This array has preseance to everything else
              */
             if (feature.layer["_msp"].layerDescription.featureInfo && typeof feature.layer["_msp"].layerDescription.featureInfo.keys) {
 
@@ -227,6 +219,15 @@
                     }
                 }
                 
+            }
+            
+            /*
+             * If feature layer got a searchContext then use the connector
+             * metadataTranslator array to translate the key
+             */
+            c = feature.layer["_msp"].searchContext;
+            if (c && c.connector) {
+                return msp.Util._(c.connector.metadataTranslator[key] || key);
             }
 
             /*
