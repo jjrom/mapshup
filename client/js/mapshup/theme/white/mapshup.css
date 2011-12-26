@@ -677,6 +677,7 @@ input {
 .pfi .info {
     padding:5px;
     margin-bottom:5px;
+    font-size:0.7em;
 }
 .pfi .thumb {
     text-align: center;
