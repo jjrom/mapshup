@@ -503,7 +503,7 @@
                          * Simple case : string
                          */
                         if (t === "string" && msp.Util.isUrl(v)) {
-                            $info.append('<tr><td>' + self.translate(k, feature) + '</td><td>&nbsp;</td><td><a target="_blank" href="'+v+'">'+ msp.Util.shorten(v, 30) +'</a></td></tr>');
+                            $info.append('<tr><td>' + self.translate(k, feature) + '</td><td>&nbsp;</td><td><a target="_blank" title="'+v+'" href="'+v+'">'+ msp.Util._("Click to see") +'</a></td></tr>');
                         }
                         /*
                          * Object case

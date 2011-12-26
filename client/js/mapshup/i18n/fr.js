@@ -24,6 +24,7 @@
     i["Choose the catalog type"]="Choix du type de catalogue";
     i["Clear"]="Effacer";
     i["Click the mouse left button to define the measure point"]="Cliquez sur le bouton gauche de la souris pour définir le point de mesure";
+    i["Click to see"]="Cliquer pour voir";
     i["Click to zoom"]="Cliquer pour zoomer";
     i["close"]="fermer";
     i["Close"]="Fermer";

@@ -23,6 +23,7 @@ Choose the catalog type
 Checking
 Clear
 Click the mouse left button to define the measure point
+Click to see
 Click to zoom
 close
 Close
