@@ -431,7 +431,7 @@
                     if (feature.attributes.hasOwnProperty('quicklook')) {
                         
                         id = msp.Util.getId();
-                        $thumb.html('<a id="'+id+'" class="image" alt="'+msp.Util._("Show quicklook")+'" title="'+feature.attributes['identifier']+'" '+'href="'+feature.attributes['quicklook']+'">'+content+'</a>');
+                        $thumb.html('<a id="'+id+'" class="image" title="'+msp.Util._("Show quicklook")+'" href="'+feature.attributes['quicklook']+'">'+content+'</a>');
                         
                         /*
                          * Popup image
