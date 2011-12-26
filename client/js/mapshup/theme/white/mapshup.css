@@ -352,9 +352,8 @@ input {
 .pn .header {
     text-transform:uppercase;
     font-size:1.3em;
-    height:50px;
     text-align: center;
-    line-height:50px;
+    padding:5px 0px;
     color:#000;
 }
 .pn .expdbl {
