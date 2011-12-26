@@ -171,6 +171,15 @@ function outputToGeoJSON($resultFileURI, $nbOfResults) {
             $properties[strtolower($type)] = $browse->getElementsByTagName('fileName')->item(0)->nodeValue;
         }
         
+        // Masks
+        $masks = $dataObject->getElementsByTagName('MaskInformation');
+        foreach ($masks as $mask) {
+            $type = $mask->getElementsByTagName('type')->item(0)->nodeValue;
+            if ($mask->getElementsByTagName('referenceSystemIdentifier')->item(0)->nodeValue === "4326") {
+                $properties[strtolower($type)] = $mask->getElementsByTagName('fileName')->item(0)->nodeValue;
+            }
+        }
+        
         /*
          * Add feature
          */
@@ -262,7 +271,7 @@ if ($archivingDate) {
 }
 
 // Prepare REQUEST
-$requestResults = '<wfs:GetFeature outputFormat="text/xml; subtype=gml/3.1.1" service="WFS" version="1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:ohr="http://earth.esa.int/ohr" xmlns:hma="http://earth.esa.int/hma" xmlns:phr="http://hma.cnes.fr/phr" xmlns:wfs="http://www.opengis.net/wfs" resultType="results" traverseXlinkDepth="0" cursor="' . $cursor . '" maxFeatures="' . $maxResults . '">';
+$requestResults = '<wfs:GetFeature outputFormat="text/xml; subtype=gml/3.1.1" service="WFS" version="1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:ohr="http://earth.esa.int/ohr" xmlns:hma="http://earth.esa.int/hma" xmlns:phr="http://hma.cnes.fr/phr" xmlns:wfs="http://www.opengis.net/wfs" resultType="results" presentation="full" traverseXlinkDepth="0" cursor="' . $cursor . '" maxFeatures="' . $maxResults . '">';
 $requestHits = '<wfs:GetFeature outputFormat="text/xml; subtype=gml/3.1.1" service="WFS" version="1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:gml="http://www.opengis.net/gml" xmlns:ogc="http://www.opengis.net/ogc" xmlns:ows="http://www.opengis.net/ows" xmlns:ohr="http://earth.esa.int/ohr" xmlns:hma="http://earth.esa.int/hma" xmlns:phr="http://hma.cnes.fr/phr" xmlns:wfs="http://www.opengis.net/wfs" resultType="hits" traverseXlinkDepth="0">';
 
 $request = '<wfs:Query typeName="phr:DataStrip"><ogc:Filter>';
