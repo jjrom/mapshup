@@ -662,6 +662,11 @@
                 self = this;
             
             /*
+             * Set select time (see unselect function)
+             */
+            self._tse = (new Date()).getTime();
+            
+            /*
              * This is a bit tricky...
              * If _force is set to true, then global _force
              */
@@ -853,6 +858,13 @@
          */
         this.unselect = function(feature) {
             
+            var self = this;
+            
+            /*
+             * Set unselect time
+             */
+            self._tun = (new Date()).getTime();
+            
             /*
              * If feature is a polygon, show menu
              */
@@ -865,6 +877,37 @@
             }
             
             msp.Map.featureInfo.selected = null;
+            
+            /*
+             * This is really and awfully tricky...
+             * If user select another feature, the current feature is unselected
+             * before the new one is selected.
+             * Thus, we should close the panel if and only if the unselect is a 
+             * true unselect and not an unselect due to a new select.
+             * This is done by delaying the panel closing to a time superior to
+             * the delay between an unselect/select sequence
+             */
+            setTimeout(function(){
+                 
+                if (self._tun - self._tse > 0) {
+                    
+                    /*
+                     * Activate layer button
+                     */
+                    self.btn.activate(false);
+
+                    /*
+                     * Show panel content
+                     */
+                    self.btn.container.pn.hide(self.btn.container);
+
+                    /*
+                     * Show button
+                     */
+                    self.btn.$d.hide();
+                }
+                
+            }, 100);
             
         };
 
