@@ -713,13 +713,9 @@
             }
             
             /*
-             * Display the menu only if select is not triggered programatically
-             * and id the feature is a polygon
+             * Hide menu
              */
-            if (!self._triggered && feature.geometry["CLASS_NAME"] === 'OpenLayers.Geometry.Polygon') {
-                msp.Map.mouseClick = msp.Map.mousePosition.clone();
-                msp.menu.show();
-            }
+            msp.menu.hide();
             
             /*
              * Set _triggered to false (see trick above)
@@ -866,15 +862,9 @@
             self._tun = (new Date()).getTime();
             
             /*
-             * If feature is a polygon, show menu
+             * Hide menu
              */
-            if (!this._triggered && feature.geometry["CLASS_NAME"] === 'OpenLayers.Geometry.Polygon') {
-                msp.Map.mouseClick = msp.Map.mousePosition.clone();
-                msp.menu.show();
-            }
-            else {
-                msp.menu.hide();
-            }
+            msp.menu.hide();
             
             msp.Map.featureInfo.selected = null;
             
