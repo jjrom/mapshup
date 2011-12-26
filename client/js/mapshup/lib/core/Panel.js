@@ -234,16 +234,16 @@
         this.add = function() {
             
             var id = msp.Util.getId(),
-                /* Panel inner padding depends on Panel position */
-                padding = (this.position === 'n' || this.position === 's') ? this.padding.top+'px 0px '+this.padding.bottom+'px 0px' : '0px '+this.padding.right+'px 0px '+this.padding.left+'px',
-                item = {
-                    id:id,
-                    pn:this,
-                    $d:msp.Util.$$('#'+id, this.$d).css({
-                        'display':'none',
-                        'padding':padding
-                    }) // by default newly created div is not visible
-                }
+            /* Panel inner padding depends on Panel position */
+            padding = (this.position === 'n' || this.position === 's') ? this.padding.top+'px 0px '+this.padding.bottom+'px 0px' : '0px '+this.padding.right+'px 0px '+this.padding.left+'px',
+            item = {
+                id:id,
+                pn:this,
+                $d:msp.Util.$$('#'+id, this.$d).css({
+                    'display':'none',
+                    'padding':padding
+                }) // by default newly created div is not visible
+            }
                 
             /*
              * If panel is East or West, force a height to 100%
@@ -301,44 +301,56 @@
         this.animate = function(action, btn) {
             
             var lon,
-                lat,
-                mc = msp.$map.parent(), // msp.$map container reference
-                extent = msp.Map.map.getExtent(), // Original extent before fire animation
-                w = action === 'show' ? mc.width() - this.w : mc.width() + this.w, // msp.$map container width after animation
-                h = action === 'show' ? mc.height() - this.h : mc.height() + this.h, // msp.$map container width after animation
-                fcpl = function(){
-                    msp.Map.map.setCenter(new OpenLayers.LonLat(lon, lat), msp.Map.map.getZoom());
-                    msp.events.trigger('resizeend');
-                    if (btn) {
-                        if (action === "show" && typeof btn.onshow === "function") {
-                            btn.onshow(btn.scope, btn);
-                        }
-                        else if (action === "hide" && typeof btn.onhide === "function") {
-                            btn.onhide(btn.scope, btn);
-                        }
+            lat,
+            mc = msp.$map.parent(), // msp.$map container reference
+            extent = msp.Map.map.getExtent(), // Original extent before fire animation
+            w = action === 'show' ? mc.width() - this.w : mc.width() + this.w, // msp.$map container width after animation
+            h = action === 'show' ? mc.height() - this.h : mc.height() + this.h, // msp.$map container width after animation
+            self = this,
+            fcpl = function(){
+                msp.Map.map.setCenter(new OpenLayers.LonLat(lon, lat), msp.Map.map.getZoom());
+                msp.events.trigger('resizeend');
+                self.running = false;
+                if (btn) {
+                    if (action === "show" && typeof btn.onshow === "function") {
+                        btn.onshow(btn.scope, btn);
                     }
-                };
+                    else if (action === "hide" && typeof btn.onhide === "function") {
+                        btn.onhide(btn.scope, btn);
+                    }
+                }
+            };
+                
+            /*
+             * If an animation is running do nothing
+             */
+            if (self.running) {
+                return false;
+            }
+            else {
+                self.running = true;
+            }
             
             /*
              * East panel
              */
-            if (this.position === 'e') {
+            if (self.position === 'e') {
                 
                 lon = (((w * (extent.right - extent.left)) / msp.$map.width()) + (2 * extent.left)) / 2;
                 lat = (extent.top + extent.bottom) / 2;
                 
                 
                 if (action === 'show') {
-                    this.$d.animate({
-                        right:parseInt(this.$d.css('right'),10) === 0 ? -this.$d.outerWidth() : 0
+                    self.$d.animate({
+                        right:parseInt(self.$d.css('right'),10) === 0 ? -self.$d.outerWidth() : 0
                     }, 'slow');
                     mc.animate({
                         width:parseInt(mc.css('width'),10) ===  w ? -mc.outerWidth() : w
                     },'slow',fcpl);
                 }
                 else {
-                    this.$d.animate({
-                        right:parseInt(this.$d.css('right'),10) === -this.w ? this.$d.outerWidth() : -this.w
+                    self.$d.animate({
+                        right:parseInt(self.$d.css('right'),10) === -self.w ? self.$d.outerWidth() : -self.w
                     }, 'slow');
                     mc.animate({
                         width:parseInt(mc.css('width'),10) === w ? mc.outerWidth() : w
@@ -350,22 +362,22 @@
             /*
              * South Panel
              */
-            else if (this.position === 's') {
+            else if (self.position === 's') {
                 
                 lon = (extent.right + extent.left) / 2;
                 lat = (((h * (extent.bottom - extent.top)) / msp.$map.height()) + (2 * extent.top)) / 2;
                 
                 if (action === 'show') {
-                    this.$d.animate({
-                        bottom:parseInt(this.$d.css('bottom'),10) === 0 ? -this.$d.outerHeight() : 0
+                    self.$d.animate({
+                        bottom:parseInt(self.$d.css('bottom'),10) === 0 ? -self.$d.outerHeight() : 0
                     }, 'slow');
                     mc.animate({
                         height:parseInt(mc.css('height'),10) ===  h ? -mc.outerHeight() : h
                     },'slow',fcpl);
                 }
                 else {
-                    this.$d.animate({
-                        bottom:parseInt(this.$d.css('bottom'),10) === -this.h ? this.$d.outerHeight() : -this.h
+                    self.$d.animate({
+                        bottom:parseInt(self.$d.css('bottom'),10) === -self.h ? self.$d.outerHeight() : -self.h
                     }, 'slow');
                     mc.animate({
                         height:parseInt(mc.css('height'),10) === h ? mc.outerHeight() : h
@@ -373,7 +385,8 @@
                 }
             }
            
-            
+            return true;
+           
         };
 
         /*
