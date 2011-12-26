@@ -163,53 +163,113 @@ function toGeoJSON($resultFileURI) {
         // Metadata profile
         $profile = $doc->getElementsByTagname('METADATA_PROFILE')->item(0)->nodeValue;
 
-        // Footprint from Datastrip frame
+        // Default is full product (no swaths)
+        $swaths = null;
+        
+        // Footprint from Album_Footprint
         if ($profile == "PHR_INVENTORY_INIT_LOC_DATA" || $profile == "PHR_INVENTORY_ALBUM_NCN_DATA" || $profile == "PHR_IMAGE_ARCHIVE_PRODUCT") {
             $footprint = $doc->getElementsByTagname('Album_Footprint')->item(0);
             $path = "Data_Strip_Frame/Album_Footprint/Vertex";
         }
-        // Or footprint from 
+        // or footprint from Dataset_Frame
         else {
             $footprint = $doc->getElementsByTagname('Dataset_Frame')->item(0);
             $path = "Product_Frame/Dataset_Frame/Vertex";
-        }
-
-        $vertices = $footprint->getElementsByTagname('Vertex');
-        $poslist = '';
-        $isFirst = 1;
-        foreach ($vertices as $vertex) {
-            $latitude = $vertex->getElementsByTagName('LAT')->item(0)->nodeValue;
-            $longitude = $vertex->getElementsByTagName('LON')->item(0)->nodeValue;
-            $poslist .= $latitude . " " . $longitude . " ";
-            if ($isFirst == 1) {
-                $latitude1 = $latitude;
-                $longitude1 = $longitude;
-                $isFirst = 0;
+            
+            $swaths = $footprint->getElementsByTagname('Array_Frame');
+            // Multiple swath defined ?
+            if ($swaths->item(0)) {
+                $path = "Product_Frame/Dataset_Frame/Array_Frame/Vertex";
             }
+            
         }
-        $poslist .= $latitude1 . ' ' . $longitude1;
 
-        /**
-         * Add feature
-         */
-        $feature = array(
-            'type' => 'Feature',
-            'geometry' => posListToGeoJSONGeometry($poslist, LATLON),
-            'crs' => array(
-                'type' => 'EPSG',
-                'properties' => array('code' => '4326')
-            ),
-            'properties' => array(
-                'identifier' => $doc->getElementsByTagname('DATASET_NAME')->item(0)->nodeValue,
-                'METADATA_PROFILE' => $profile,
-                'PROCESSING_LEVEL' => $pl ? $pl->nodeValue : 'N/A',
-                'SPECTRAL_PROCESSING' => $sp ? $sp->nodeValue : 'N/A',
-                'GEOMETRY_PATH' => $path
-            )
-        );
+        if ($swaths->item(0)) {
+            
+            foreach ($swaths as $swath) {
+                $vertices = $swath->getElementsByTagname('Vertex');
+                $poslist = '';
+                $isFirst = 1;
+                foreach ($vertices as $vertex) {
+                    $latitude = $vertex->getElementsByTagName('LAT')->item(0)->nodeValue;
+                    $longitude = $vertex->getElementsByTagName('LON')->item(0)->nodeValue;
+                    $poslist .= $latitude . " " . $longitude . " ";
+                    if ($isFirst == 1) {
+                        $latitude1 = $latitude;
+                        $longitude1 = $longitude;
+                        $isFirst = 0;
+                    }
+                }
+                $poslist .= $latitude1 . ' ' . $longitude1;
 
-        // Add feature array to feature collection array
-        array_push($geojson['features'], $feature);
+                /**
+                 * Add feature
+                 */
+                $feature = array(
+                    'type' => 'Feature',
+                    'geometry' => posListToGeoJSONGeometry($poslist, LATLON),
+                    'crs' => array(
+                        'type' => 'EPSG',
+                        'properties' => array('code' => '4326')
+                    ),
+                    'properties' => array(
+                        'identifier' => $doc->getElementsByTagname('DATASET_NAME')->item(0)->nodeValue,
+                        'METADATA_PROFILE' => $profile,
+                        'PROCESSING_LEVEL' => $pl ? $pl->nodeValue : 'N/A',
+                        'SPECTRAL_PROCESSING' => $sp ? $sp->nodeValue : 'N/A',
+                        'GEOMETRY_PATH' => $path,
+                        'BAND_ID' => $footprint->getElementsByTagname('BAND_ID')->item(0)->nodeValue,
+                        'SUBSWATH_NUMBER' => $swath->getElementsByTagname('SUBSWATH_NUMBER')->item(0)->nodeValue,
+                        'ARRAY_ID' => $swath->getElementsByTagname('ARRAY_ID')->item(0)->nodeValue
+                    )
+                );
+                
+                // Add feature array to feature collection array
+                array_push($geojson['features'], $feature);
+        
+            }
+            
+        }
+        else {
+            $vertices = $footprint->getElementsByTagname('Vertex');
+            $poslist = '';
+            $isFirst = 1;
+            foreach ($vertices as $vertex) {
+                $latitude = $vertex->getElementsByTagName('LAT')->item(0)->nodeValue;
+                $longitude = $vertex->getElementsByTagName('LON')->item(0)->nodeValue;
+                $poslist .= $latitude . " " . $longitude . " ";
+                if ($isFirst == 1) {
+                    $latitude1 = $latitude;
+                    $longitude1 = $longitude;
+                    $isFirst = 0;
+                }
+            }
+            $poslist .= $latitude1 . ' ' . $longitude1;
+
+            /**
+             * Add feature
+             */
+            $feature = array(
+                'type' => 'Feature',
+                'geometry' => posListToGeoJSONGeometry($poslist, LATLON),
+                'crs' => array(
+                    'type' => 'EPSG',
+                    'properties' => array('code' => '4326')
+                ),
+                'properties' => array(
+                    'identifier' => $doc->getElementsByTagname('DATASET_NAME')->item(0)->nodeValue,
+                    'METADATA_PROFILE' => $profile,
+                    'PROCESSING_LEVEL' => $pl ? $pl->nodeValue : 'N/A',
+                    'SPECTRAL_PROCESSING' => $sp ? $sp->nodeValue : 'N/A',
+                    'GEOMETRY_PATH' => $path
+                )
+            );
+            
+            // Add feature array to feature collection array
+            array_push($geojson['features'], $feature);
+
+        }
+        
     }
 
     /*
