@@ -67,11 +67,11 @@
             {
                 isBaseLayer:true,
                 sphericalMercator:true,
-                numZoomLevels:msp.Util.getPropertyValue(options, "numZoomLevels", msp.Map.map.getNumZoomLevels()),
+                numZoomLevels:msp.Util.getPropertyValue(layerDescription, "numZoomLevels", msp.Map.map.getNumZoomLevels()),
                 transitionEffect:'resize'
             }
             );
-
+                
             /*
              * selectable cannot be overriden
              */
