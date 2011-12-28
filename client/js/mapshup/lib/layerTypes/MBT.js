@@ -50,7 +50,8 @@
          * layerDescription = {
          *       type:'MBT',
          *       title:,
-         *       t:
+         *       t:,
+         *       numZoomLevels: // optional
          *  };
          */
         add: function(layerDescription, options) {
@@ -66,7 +67,7 @@
             {
                 isBaseLayer:true,
                 sphericalMercator:true,
-                numZoomLevels:msp.Map.map.getNumZoomLevels(), // Set zoom level to map zoom level
+                numZoomLevels:msp.Util.getPropertyValue(options, "numZoomLevels", msp.Map.map.getNumZoomLevels()),
                 transitionEffect:'resize'
             }
             );

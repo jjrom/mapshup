@@ -63,7 +63,7 @@
             {
                 buffer:0,
                 isBaseLayer:true,
-                numZoomLevels: msp.Util.getPropertyValue(options, "numZoomLevels", 19),
+                numZoomLevels:msp.Util.getPropertyValue(options, "numZoomLevels", msp.Map.map.getNumZoomLevels()),
                 sphericalMercator:true,
                 transitionEffect:'resize'
             }
