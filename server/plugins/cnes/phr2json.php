@@ -184,7 +184,7 @@ function toGeoJSON($resultFileURI) {
             
         }
 
-        if ($swaths->item(0)) {
+        if ($swaths && $swaths->item(0)) {
             
             foreach ($swaths as $swath) {
                 $vertices = $swath->getElementsByTagname('Vertex');
