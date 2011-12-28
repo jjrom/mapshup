@@ -66,6 +66,7 @@
             {
                 isBaseLayer:true,
                 sphericalMercator:true,
+                numZoomLevels:msp.Map.map.getNumZoomLevels(), // Set zoom level to map zoom level
                 transitionEffect:'resize'
             }
             );
