@@ -610,12 +610,14 @@
                         title:msp.Map.Util.convert({
                             input:geoBounds,
                             format:"WKT",
-                            precision:5
+                            precision:5,
+                            limit:true
                         }),
                         value:msp.Map.Util.convert({
                             input:geoBounds,
                             format:"EXTENT",
-                            precision:5
+                            precision:5,
+                            limit:true
                         })
                     }
                     ]

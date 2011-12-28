@@ -57,7 +57,10 @@
      */
     Map.Util.convert = function(obj) {
         if (obj && obj.input instanceof OpenLayers.Bounds) {
-            var precision = obj.precision || -1,left,bottom,right,top;
+            var left,bottom,right,top,
+                precision = obj.precision || -1,
+                limit = obj.hasOwnProperty("limit") ? obj.limit : false;
+                
             if (precision !== -1) {
                 left = obj.input.left.toFixed(precision);
                 right = obj.input.right.toFixed(precision);
@@ -70,6 +73,19 @@
                 bottom = obj.input.bottom;
                 top = obj.input.top;
             }
+            
+            /*
+             * If limit is set, assume that input obj coordinates
+             * are in deegrees and that output coordinates cannot
+             * be outside of the whole earth i.e. -180,-90,180,90
+             */
+            if (limit) {
+                left = Math.max(left, -180);
+                right = Math.min(right, 180);
+                bottom = Math.max(bottom, -90);
+                top = Math.min(top, 90);
+            }
+            
             if (obj.format === "WKT") {
                 return "POLYGON(("+left+" "+bottom+","+left+" "+top+","+right+" "+top+","+right+" "+bottom+","+left+" "+bottom+"))";
             }
