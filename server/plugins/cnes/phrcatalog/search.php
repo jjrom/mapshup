@@ -229,8 +229,8 @@ if (intval($maxResults) != 0) {
     $cursor = intval((intval($cursor) / intval($maxResults)) + 1);
 }
 
-// By default, only on search filter is set
-$nbOfFilters = 1;
+// By default, no search filter is set
+$nbOfFilters = 0;
 
 $useGeo = 0;
 // bbox is optional (Structure is lllon,lllat,urlon,urlat)
