@@ -345,6 +345,7 @@ input {
 .pn {
     position:absolute;
     background-color:#ddd;
+    z-index:20000;
 }
 /*.pn a {
     color:yellowgreen;
