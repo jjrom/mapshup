@@ -214,7 +214,7 @@ if ($url == null) {
 
 // Set cursor. Default is 1
 $cursor = isset($_REQUEST["nextRecord"]) ? $_REQUEST["nextRecord"] : 1;
-if (!is_numeric($startPosition)) {
+if (!is_numeric($cursor)) {
     $cursor = 1;
 }
 
@@ -232,6 +232,7 @@ if (intval($maxResults) != 0) {
 // By default, only on search filter is set
 $nbOfFilters = 1;
 
+$useGeo = 0;
 // bbox is optional (Structure is lllon,lllat,urlon,urlat)
 if (isset($_REQUEST['bbox']) && $_REQUEST['bbox'] != "") {
     $bbox = preg_split('/,/', $_REQUEST['bbox']);
@@ -243,16 +244,16 @@ if (isset($_REQUEST['bbox']) && $_REQUEST['bbox'] != "") {
 }
 
 // $dates is an array of two dates (startDate and completionDate) that are retrieved from startDate interval
-$dates = getDatesFromInterval($_REQUEST["startDate"]);
+$dates = getDatesFromInterval(isset($_REQUEST["startDate"]) ? $_REQUEST["startDate"] : null);
 
 // Archiving date
-$archivingDate = isset($_REQUEST["archivingDate"]) ? addTimeToDate($_REQUEST["archivingDate"]) : NULL;
+$archivingDate = isset($_REQUEST["archivingDate"]) ? addTimeToDate($_REQUEST["archivingDate"]) : null;
 
 // Datastrip ID
-$DSID = isset($_REQUEST["DSID"]) ? $_REQUEST["DSID"] : NULL;
+$DSID = isset($_REQUEST["DSID"]) ? $_REQUEST["DSID"] : null;
 
 // PHR operateur name
-$operateur = isset($_REQUEST["operateur"]) ? $_REQUEST["operateur"] : NULL;
+$operateur = isset($_REQUEST["operateur"]) ? $_REQUEST["operateur"] : null;
 
 // If DatastripID is set, do not use geographical coordinates
 if ($DSID) {
