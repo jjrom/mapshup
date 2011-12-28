@@ -503,7 +503,7 @@
                      * Otherwise, display results
                      */
                     if (data.error) {
-                        msp.Util.message(layer.name + " : " + unescape(data.error["message"]), -1);
+                        msp.Util.message(layer.name + " : " + data.error["message"], -1);
                     }
                     else {
 

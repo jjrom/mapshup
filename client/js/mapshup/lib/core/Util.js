@@ -567,9 +567,10 @@
          */
         message: function(content, duration) {
             
-            var id = this.getId(),
+            var $d,
+                id = this.getId(),
                 parent = this.$$('#message', msp.$container).show(),
-                $d;
+                m = "&nbsp;"+unescape(content)+"&nbsp;";
 
             /*
              * Add a new message
@@ -583,13 +584,13 @@
              * and a close button is added to manually close it
              */
             if (duration && duration === -1) {
-                $d.html("&nbsp;"+content+"&nbsp;").fadeIn('slow');
+                $d.html(m).fadeIn('slow');
                 this.addCloseButton($d, function(){
                     $d.remove();
                 });
             }
             else {
-                $d.html("&nbsp;"+content+"&nbsp;").fadeIn('slow').delay(duration || 2000).fadeOut('slow', function(){
+                $d.html(m).fadeIn('slow').delay(duration || 2000).fadeOut('slow', function(){
                     $(this).remove();
                 });
             }
