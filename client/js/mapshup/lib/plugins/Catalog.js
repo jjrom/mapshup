@@ -89,7 +89,7 @@
                     ic:"search.png",
                     ti:"Search in catalogs",
                     cb:function() {
-                        self.searchAll(msp.Map.map.getExtent(), true);
+                        self.searchAll(null, true);
                     }
                 }]);
                 
@@ -110,12 +110,13 @@
                     ic:"search.png",
                     ti:"Search in catalogs",
                     cb:function(toponym) {
+                        
                         /**
                          * Create a buffer around clicked point
                          */
-                        var bounds = msp.Map.Util.d2p(new OpenLayers.Bounds(toponym.lng - 1, toponym.lat - 1, toponym.lng + 1,toponym.lat + 1));
-                        self.searchAll(bounds, true);
+                        self.searchAll(msp.Map.Util.d2p(new OpenLayers.Bounds(toponym.lng - 1, toponym.lat - 1, toponym.lng + 1,toponym.lat + 1)),true);
                         return false;
+                        
                     }
                 }]);
                 
@@ -181,7 +182,7 @@
                     ic:"search.png",
                     ti:"Search",
                     cb:function() {
-                        layer["_msp"].searchContext.search(msp.Map.map.getExtent());
+                        layer["_msp"].searchContext.search();
                     }
                 }
                 ]
@@ -366,7 +367,7 @@
                     {   
                         cssClass:"actnnw icnsearch",
                         callback:function(btn){
-                            btn.layer["_msp"].searchContext.search(msp.Map.map.getExtent())
+                            btn.layer["_msp"].searchContext.search()
                         }
                     }
                     ],
@@ -377,9 +378,8 @@
                      * that results table size is well computed
                      */
                     callback:scope.onResizeEnd,
-                    /* Important : add the layer reference to the button */
                     e:{
-                        layer:layer
+                        layer:layer // Important : add the layer reference to the button
                     }
                 }); 
 
@@ -532,7 +532,18 @@
                 /*
                  * Set west panel structure 
                  */
-                sc.btn.$w.html('<div class="title"><p>'+msp.Util._("Search parameters")+'</p></div><div class="description filters"></div>');
+                sc.btn.$w.html('<div class="title"><p>'+msp.Util._("Search parameters")+'</p><p><input type="checkbox" name="usegeo" '+(sc.useGeo ? "checked" : "")+'/>'+msp.Util._("Limit search to map view extent")+'</p></div><div class="description filters"></div>');
+                
+                /*
+                 * Change search bbox on usegeo check 
+                 */
+                $('input', sc.btn.$w).change(function() {
+                    
+                    /*
+                     * Swap search restriction between map view extent or to full extent
+                     */
+                    sc.useGeo = $(this).attr("checked") === "checked" ? true : false;
+                });
                 
                 /*
                  * Get the div filters reference
@@ -998,21 +1009,17 @@
         /**
          * Launch a search over all catalogs
          *
-         * @input <OpenLayers.Bounds> : force search within the given bounds (optional)
          * @input <boolean> initialize: if true set nextRecord to 1 for each catalog (optional)
          */
         this.searchAll = function (bounds,initialize) {
 
-            /**
-             * By default set bbox to the map current view
-             */
-            bounds = bounds || null;
-
+            var j,l,catalog;
+            
             /**
              * Roll over each catalogs
              */
-            for (var j = 0, l = this.registeredCatalogs.length; j < l; j++) {
-                var catalog = this.registeredCatalogs[j];
+            for (j = 0, l = this.registeredCatalogs.length; j < l; j++) {
+                catalog = this.registeredCatalogs[j];
 
                 /**
                  * initialize is set to true => force nextRecord to 1

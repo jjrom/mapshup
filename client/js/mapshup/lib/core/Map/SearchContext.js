@@ -99,6 +99,11 @@
          * Scope for the Callback function
          */
         this.scope = scope;
+        
+        /**
+         * When useGeo is set to true, search is restricted to the map view extent
+         */
+        this.useGeo = true;
 
         /**
          * VERY IMPORTANT !
@@ -447,7 +452,6 @@
         /**
          * Launch a search request on this SearchContext
          *
-         * @input <OpenLayers.Bounds> bounds : search within the given bounds (optional)
          * @input <int> nextRecord : nextRecord to search (optional)
          */
         this.search = function(bounds, nextRecord) {
@@ -462,13 +466,19 @@
              */
             nextRecord = nextRecord || 1;
 
-            /**
-             * Set bbox filter to the given bounds
+            /*
+             * Set bounds if defined
              */
             if (bounds) {
-                this.setBBOX(bounds);
+                self.setBBOX(bounds);
             }
-
+            /*
+             * else bounds is set depending on useGeo value
+             */
+            else {
+                self.setBBOX(self.useGeo ? msp.Map.map.getExtent() : null);
+            }
+            
             /*
              * Set extras parameters
              */
@@ -584,7 +594,7 @@
              * bounds is null => remove geometry item from the SearchContext
              */
             if (!bounds) {
-                this.remove('bbox', 'geometry');
+                this.remove('geometry', 'bbox');
             }
             else {
 
@@ -653,8 +663,8 @@
                 }
             }
 
-        }
-
+        };
+        
     };
     
 })(window.msp);
