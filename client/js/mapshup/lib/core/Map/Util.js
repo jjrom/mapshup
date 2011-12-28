@@ -58,7 +58,7 @@
     Map.Util.convert = function(obj) {
         if (obj && obj.input instanceof OpenLayers.Bounds) {
             var precision = obj.precision || -1,left,bottom,right,top;
-            if (precision === -1) {
+            if (precision !== -1) {
                 left = obj.input.left.toFixed(precision);
                 right = obj.input.right.toFixed(precision);
                 bottom = obj.input.bottom.toFixed(precision);
