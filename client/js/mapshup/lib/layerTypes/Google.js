@@ -80,7 +80,7 @@
             $.extend(options,
             {
                 isBaseLayer:true,
-                numZoomLevels:msp.Util.getPropertyValue(options, "numZoomLevels", 19),
+                numZoomLevels:msp.Util.getPropertyValue(options, "numZoomLevels", msp.Map.map.getNumZoomLevels()),
                 name:layerDescription.title,
                 transitionEffect:'resize',
                 type:layerDescription.googleType
