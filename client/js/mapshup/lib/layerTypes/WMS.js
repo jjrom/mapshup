@@ -86,6 +86,8 @@
          */
         add: function(layerDescription, options) {
 
+            var projection, BBOX, avoidBoundError;
+            
             /**
              * Repare URL if it is not well formed
              */
@@ -115,14 +117,14 @@
              * If the srs is different from get map srs, msp creates
              * a mapfile on server side to allow on the fly reprojection of the WMS tiles
              */
-            var projection = msp.Util.getPropertyValue(Map.map, "projection", Map.epsg4326);
+            projection = msp.Util.getPropertyValue(Map.map, "projection", Map.epsg4326);
 
             if (layerDescription.srs !== projection.projCode) {
                 OpenLayers.Request.GET({
                     url:msp.Util.getAbsoluteUrl(msp.Config["general"].reprojectionServiceUrl)+msp.Util.abc+"&url="+escape(layerDescription.url)+"&layers="+escape(layerDescription.layers)+"&srs="+layerDescription.srs,
                     callback: function(request) {
-                        var JSONReader = new OpenLayers.Format.JSON();
-                        var JSON = JSONReader.read(request.responseText);
+                        var JSONReader = new OpenLayers.Format.JSON(),
+                            JSON = JSONReader.read(request.responseText);
                         /**
                          * Add a new property "projectedUrl" that should be used
                          * in place of original url
@@ -142,13 +144,11 @@
 
             /**
              * Input "options" modification
+             * If no BBOX is given, default is set to -170,-80,170,80
              */
-            var BBOX = layerDescription.bbox ? layerDescription.bbox.split(",") : ["-180","-90","180","90"];
-
-            /*
-             * Avoid reprojection error at the pole
-             */
-            var avoidBoundError = 0;
+            BBOX = layerDescription.bbox ? layerDescription.bbox.split(",") : ["-170","-80","170","80"];
+            avoidBoundError = 0; //Avoid reprojection error at the pole
+            
 
             if (BBOX[0] === "-180" || BBOX[1] === "-90" || BBOX[2] === "90" || BBOX[3] === "180") {
                 avoidBoundError = 1;

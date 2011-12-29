@@ -397,7 +397,7 @@
              * Raster layer (e.g. WMS, Image) should have a layer["_msp"].getDataExtent()
              */
             if ((bounds = layer.getDataExtent()) || (bounds = layer["_msp"].bounds)) {
-
+                
                 /**
                  * Do not set a zoomOn capability on layer
                  * with _msp.noZoomOn set to true
