@@ -112,6 +112,8 @@
          */
         this.init = function() {
             
+            var self = this;
+            
             /*
              * mapshup can have one and only one panel
              * for each position (i.e. n, s, e, w) which
@@ -122,16 +124,16 @@
              * it is returned instead of creating an new panel
              *
              */
-            if (this.position === 'n' && msp.Panel._onp) {
+            if (self.position === 'n' && msp.Panel._onp) {
                 return msp.Panel._onp;
             }
-            else if (this.position === 's' && msp.Panel._osp) {
+            else if (self.position === 's' && msp.Panel._osp) {
                 return msp.Panel._osp;
             }
-            else if (this.position === 'e' && msp.Panel._oep) {
+            else if (self.position === 'e' && msp.Panel._oep) {
                 return msp.Panel._oep;
             }
-            else if (this.position === 'w' && msp.Panel._owp) {
+            else if (self.position === 'w' && msp.Panel._owp) {
                 return msp.Panel._owp;
             }
             
@@ -139,7 +141,7 @@
              * South and North panel heights is computed from window.height
              * with a minimum value of 300px
              */
-            this.h = Math.max(Math.round(2 * msp.$map.height() / 5), 300);
+            self.h = Math.max(Math.round(2 * msp.$map.height() / 5), 300);
             
             /*
              * Create a Panel div within msp.$container
@@ -147,66 +149,66 @@
              * Structure :
              *  <div class="pn pn<position>"></div>
              */
-            this.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('pn '+'pn'+this.position);
+            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('pn '+'pn'+self.position+' '+(self.over ? 'pnbgt' : 'pnbgn'));
             
             /*
              * Create unique panel reference
              * and set absolute positionning of panels
              */
-            if (this.position === 'n') {
+            if (self.position === 'n') {
                 
                 /*
                  * Hide the panel on the top
                  */
-                this.$d.css({
-                    'top':-this.h,
-                    'height':this.h
+                self.$d.css({
+                    'top':-self.h,
+                    'height':self.h
                 });
                 
-                msp.Panel._onp = this;
+                msp.Panel._onp = self;
                 
             }
-            else if (this.position === 's') {
+            else if (self.position === 's') {
                
                 /*
                  * Hide the panel on the bottom
                  */
                 this.$d.css({
-                    'bottom':-this.h,
-                    'height':this.h
+                    'bottom':-self.h,
+                    'height':self.h
                 });
                 
-                msp.Panel._osp = this;
+                msp.Panel._osp = self;
             }
-            else if (this.position === 'e') {
+            else if (self.position === 'e') {
                
                 /*
                  * Hide the panel on the right
                  */
-                this.$d.css({
-                    'right':-this.w,
-                    'width':this.w
+                self.$d.css({
+                    'right':-self.w,
+                    'width':self.w
                 });
                 
-                msp.Panel._oep = this;
+                msp.Panel._oep = self;
             }
-            else if (this.position === 'w') {
+            else if (self.position === 'w') {
                 
                 /*
                  * Hide the panel on the left
                  */
-                this.$d.css({
-                    'left':-this.w,
-                    'width':this.w
+                self.$d.css({
+                    'left':-self.w,
+                    'width':self.w
                 });
                 
-                msp.Panel._owp = this;
+                msp.Panel._owp = self;
             }
             
             /*
              * !! Panel widths and height follow the width of the map 
              */
-            msp.Map.events.register("resizeend", this, function(scope){
+            msp.Map.events.register("resizeend", self, function(scope){
                 
                 /*
                  * !! For North and South panels, the width of the panel is the width of the container
@@ -240,9 +242,9 @@
                     msp.Panel._owp.$d.height(msp.$map.height());
                 }
             });
-                
-
-            return this;
+            
+            return self;
+            
         };
 
         /**

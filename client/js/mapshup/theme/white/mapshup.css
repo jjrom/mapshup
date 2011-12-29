@@ -344,9 +344,22 @@ input {
 */
 .pn {
     position:absolute;
-    background-color:#ddd;
     z-index:20000;
 }
+
+/*
+ * Panel normal background (i.e. "over" attribute false)
+ */
+.pnbgn {
+    background-color:#ddd;
+}
+/*
+ * Panel transparent background (i.e. "over" attribute true)
+ */
+.pnbgt {
+    background-color:rgba(255,255,255,0.8);
+}
+
 /*.pn a {
     color:yellowgreen;
 }*/
@@ -382,7 +395,6 @@ input {
  * East panel
  */
 .pne {
-    background:#eee;
     color:#000;
 }
 .pne input {
