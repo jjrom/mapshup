@@ -63,6 +63,7 @@
                 id,
                 name,
                 pn,
+                tb,
                 firstLetter,
                 lastFirstLetter = "",
                 self = this;
@@ -85,9 +86,10 @@
             /*
              * Register CountryPicker action within NorthEast Toolbar triggering East panel 
              */
-            pn = new msp.Panel('e');
+            tb = new msp.Toolbar(self.options.position, self.options.orientation);
+            pn = new msp.Panel('e',{tb:tb});
             self.btn = new msp.Button({
-                tb:new msp.Toolbar(self.options.position, self.options.orientation),
+                tb:tb,
                 icon:"country.png",
                 tt:"Pick a country",
                 container:pn.add(), //  AddLayer plugin is displayed within an East msp.Panel

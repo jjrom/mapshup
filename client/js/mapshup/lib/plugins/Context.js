@@ -69,7 +69,8 @@
          */
         this.init = function(options) {
 
-            var pn,
+            var tb,
+                pn,
                 self = this;
             
             /*
@@ -110,10 +111,11 @@
              * The 'load' button is displayed under a North East toolbar
              * and the result is displayed within an East panel
              */
-            pn = new msp.Panel('e');
+            tb = new msp.Toolbar('ne', 'v');
+            pn = new msp.Panel('e',{tb:tb});
             
             self.lbtn = new msp.Button({
-               tb:new msp.Toolbar('ne', 'v'),
+               tb:tb,
                icon:"bookmark.png",
                tt:"Load a context",
                container:pn.add(), //  AddLayer plugin is displayed within an East msp.Panel

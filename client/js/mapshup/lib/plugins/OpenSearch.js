@@ -79,6 +79,7 @@
                 l,
                 pn,
                 $s,
+                tb,
                 id = msp.Util.getId(),
                 self = this;
             
@@ -101,9 +102,10 @@
             /*
              * Register CountryPicker action within NorthEast Toolbar triggering East panel 
              */
-            pn = new msp.Panel('e');
+            tb = new msp.Toolbar(self.options.position, self.options.orientation);
+            pn = new msp.Panel('e',{tb:tb});
             self.btn = new msp.Button({
-                tb:new msp.Toolbar(self.options.position, self.options.orientation),
+                tb:tb,
                 icon:"opensearch.png",
                 tt:"Search for media",
                 container:pn.add(), //  AddLayer plugin is displayed within an East msp.Panel

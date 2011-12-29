@@ -41,12 +41,22 @@
  */
 (function (msp) {
 
-    msp.Panel = function (position) {
+    msp.Panel = function (position, options) {
+        
+        /*
+         * Paranoid mode
+         */
+        options = options || {};
         
         /*
          * Reference of the active panel
          */
         this.$active = null;
+        
+        /*
+         * North/South panel height
+         */
+        this.h = options.h || 350;
         
         /*
          * List of panel items
@@ -58,22 +68,10 @@
         this.items = [];
         
         /*
-         * Panel position can be
-         *  - e (east)
-         *  
-         *  (Default e)
+         * If true, the panel is display over the map with transparency
+         * If false, the panel "push" the map
          */
-        this.position = position || 'e';
-        
-        /*
-         * North/South panel height
-         */
-        this.h = 350;
-        
-        /*
-         * East/West panel width
-         */
-        this.w = 320;
+        this.over = options.over || false;
         
         /*
          * North/South padding
@@ -84,6 +82,30 @@
             left:10,
             right:10
         };
+        
+        /*
+         * Panel position can be
+         *  - e (east)
+         *  
+         *  (Default e)
+         */
+        this.position = position || 'e';
+        
+        /*
+         * Toolbar reference. Used for animation when "over" is set to true
+         */
+        this.tb = options.tb || null;
+        
+        /*
+         * Number of pixels substracted from the map height to compute
+         * East/West panel height when "over" boolean is set to true
+         */
+        this.voffset = options.voffset || 100;
+        
+        /*
+         * East/West panel width
+         */
+        this.w = options.w || 320;
         
         /**
          * Panel initialisation
@@ -123,8 +145,7 @@
              * Create a Panel div within msp.$container
              * 
              * Structure :
-             *  <div class="panel">
-             *  </div>
+             *  <div class="pn pn<position>"></div>
              */
             this.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('pn '+'pn'+this.position);
             
@@ -197,10 +218,13 @@
                     msp.Panel._osp.$d.width(msp.$container.width());
                 }
                 /*
-                 * !! For East and West panels, the height of the panel is the height of the map
+                 * !! For East and West panels, the height of the panel is
+                 *  - the height of the map minus a constant
+                 *  - the height of the map in other case
                  */
                 if (msp.Panel._oep) {
-                    msp.Panel._oep.$d.height(msp.$map.height());
+                    
+                    msp.Panel._oep.$d.height(msp.$map.height() - (scope.over ? scope.voffset : 0));
                     
                     /*
                      * Object with an 'expdbl' class have their height constrain
@@ -244,14 +268,7 @@
                     'padding':padding
                 }) // by default newly created div is not visible
             }
-                
-            /*
-             * If panel is East or West, force a height to 100%
-             */
-            if (this.position === 'e' || this.position === 'w') {
-                item.$d.css('height','100%').addClass("pnec");
-            }
-            
+              
             /*
              * Add new item to the items array
              */
@@ -308,9 +325,23 @@
             h = action === 'show' ? mc.height() - this.h : mc.height() + this.h, // msp.$map container width after animation
             self = this,
             fcpl = function(){
-                msp.Map.map.setCenter(new OpenLayers.LonLat(lon, lat), msp.Map.map.getZoom());
-                msp.events.trigger('resizeend');
+                
+                /*
+                 * Recenter map after its size change (unless panel "over" attribute is set to true)
+                 */
+                if (!self.over) {
+                    msp.Map.map.setCenter(new OpenLayers.LonLat(lon, lat), msp.Map.map.getZoom());
+                    msp.events.trigger('resizeend');
+                }
+                
+                /*
+                 * Indicate that the panel animation is over 
+                 */
                 self.running = false;
+                
+                /*
+                 * Triggers onshow and onhide button functions
+                 */
                 if (btn) {
                     if (action === "show" && typeof btn.onshow === "function") {
                         btn.onshow(btn.scope, btn);
@@ -327,6 +358,9 @@
             if (self.running) {
                 return false;
             }
+            /*
+             * Indicates that the animation starts
+             */
             else {
                 self.running = true;
             }
@@ -341,20 +375,76 @@
                 
                 
                 if (action === 'show') {
+                    
+                    /*
+                     * Move the panel to the left
+                     */
                     self.$d.animate({
                         right:parseInt(self.$d.css('right'),10) === 0 ? -self.$d.outerWidth() : 0
                     }, 'slow');
-                    mc.animate({
-                        width:parseInt(mc.css('width'),10) ===  w ? -mc.outerWidth() : w
-                    },'slow',fcpl);
+                    
+                    /*
+                     * Push the map
+                     */ 
+                    if (!self.over) {
+                        
+                        /*
+                         * Reduce the width of the map accordingly
+                         */
+                        mc.animate({
+                            width:parseInt(mc.css('width'),10) ===  w ? -mc.outerWidth() : w
+                        },'slow',fcpl);
+                    }
+                    /*
+                     * ... or move toolbar
+                     */
+                    else {
+                        
+                        /*
+                         * Move the toolbar
+                         */
+                        if (self.tb) {
+                            self.tb.$d.animate({
+                                right:parseInt(self.tb.$d.css('right'),10) === 0 ? self.w : 0
+                            }, 'slow',fcpl);
+                        }
+                    }
                 }
                 else {
+                    
+                    /*
+                     * Move the panel to the right
+                     */
                     self.$d.animate({
                         right:parseInt(self.$d.css('right'),10) === -self.w ? self.$d.outerWidth() : -self.w
                     }, 'slow');
-                    mc.animate({
-                        width:parseInt(mc.css('width'),10) === w ? mc.outerWidth() : w
-                    },'slow',fcpl);
+                    
+                    /*
+                     * Show the map
+                     */
+                    if (!self.over) {
+                       
+                        /*
+                         * Expand the width of the map accordingly
+                         */
+                        mc.animate({
+                            width:parseInt(mc.css('width'),10) === w ? mc.outerWidth() : w
+                        },'slow',fcpl);
+                    }
+                    /*
+                     * ... or move toolbar
+                     */
+                    else {
+                        
+                        /*
+                         * Move the toolbar
+                         */
+                        if (self.tb) {
+                            self.tb.$d.animate({
+                                right:parseInt(self.tb.$d.css('right'),10) === self.w ? 0 : self.w
+                            }, 'slow',fcpl);
+                        }
+                    }
                 }
                 
             }

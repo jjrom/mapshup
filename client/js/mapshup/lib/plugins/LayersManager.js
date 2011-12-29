@@ -59,7 +59,8 @@
          */
         this.init = function(options) {
             
-            var id,
+            var tb,
+                id,
                 scope = this;
             
             /*
@@ -82,11 +83,12 @@
              * Register open layers list action within Toolbar and store
              * the reference of the created <li> element
              */
+            tb = new msp.Toolbar(this.options.position, this.options.orientation);
             this.btn = new msp.Button({
-                tb:new msp.Toolbar(this.options.position, this.options.orientation),
+                tb:tb,
                 icon:"layers.png",
                 tt:"Layers manager",
-                container:(new msp.Panel('e')).add(), //  Layers list is displayed within an East msp.Panel
+                container:(new msp.Panel('e', {tb:tb})).add(), //  Layers list is displayed within an East msp.Panel
                 activable:true,
                 scope:this
             });

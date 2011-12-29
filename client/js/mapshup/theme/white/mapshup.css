@@ -380,38 +380,18 @@ input {
 }
 /*
  * East panel
-*/
+ */
 .pne {
-    /*background:yellowgreen;*/
     background:#eee;
-    height:100%;
     color:#000;
-    
-    /*
-    background-image: linear-gradient(bottom, rgb(64,64,64) 5%, rgb(255,255,255) 68%);
-    background-image: -o-linear-gradient(bottom, rgb(64,64,64) 5%, rgb(255,255,255) 68%);
-    background-image: -moz-linear-gradient(bottom, rgb(64,64,64) 5%, rgb(255,255,255) 68%);
-    background-image: -webkit-linear-gradient(bottom, rgb(64,64,64) 5%, rgb(255,255,255) 68%);
-    background-image: -ms-linear-gradient(bottom, rgb(64,64,64) 5%, rgb(255,255,255) 68%);
-
-    background-image: -webkit-gradient(
-            linear,
-            left bottom,
-            left top,
-            color-stop(0.05, rgb(64,64,64)),
-            color-stop(0.68, rgb(255,255,255))
-    );*/
 }
-.pnec {
-    border-left: 1px solid #ccc;
-}
-
 .pne input {
     width:240px;
 }
+
 /*
  * South panel
-*/
+ */
 .pns {
     width:100%;
 }

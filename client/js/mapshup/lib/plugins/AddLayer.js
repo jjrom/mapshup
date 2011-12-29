@@ -65,6 +65,7 @@
             name,
             predefined,
             layerType,
+            tb,
             self = this,
             dd = true,
             id = msp.Util.getId(); // By default, drag&drop is enabled
@@ -211,10 +212,11 @@
             /*
              * Register AddLayer action within NorthEast Toolbar triggering East panel 
              */
-            self.pn = new msp.Panel('e');
+            tb = new msp.Toolbar(self.options.position, self.options.orientation);
+            self.pn = new msp.Panel('e',{tb:tb});
             
             self.btn = new msp.Button({
-                tb:new msp.Toolbar(self.options.position, self.options.orientation),
+                tb:tb,
                 icon:"add.png",
                 tt:"Add layer",
                 container:self.pn.add(), //  AddLayer plugin is displayed within an East msp.Panel

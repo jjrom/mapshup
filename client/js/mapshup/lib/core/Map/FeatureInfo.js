@@ -60,7 +60,7 @@
          */
         this.init = function(options) {
 
-            var self = this;
+            var tb, self = this;
             
             /*
              * Init options
@@ -81,9 +81,10 @@
             /*
              * NorthEast Toolbar triggering East panel 
              */
-            self.pn = new msp.Panel('e');
+            tb = new msp.Toolbar(self.options.position, self.options.orientation);
+            self.pn = new msp.Panel('e',{tb:tb});
             self.btn = new msp.Button({
-                tb:new msp.Toolbar(self.options.position, self.options.orientation),
+                tb:tb,
                 icon:"fiinfo.png",
                 tt:"Feature information",
                 container:self.pn.add(),
