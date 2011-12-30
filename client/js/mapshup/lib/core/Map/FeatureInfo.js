@@ -669,13 +669,18 @@
             
             /*
              * This is a bit tricky...
-             * If _force is set to true, then global _force
+             * If _triggered is set to true, then set the global _triggered to true
              */
             if (_triggered) {
                 self._triggered = true;
                 c = msp.Map.Util.getControlById("__CONTROL_SELECT__");
                 if (self.selected) {
-                    c.unselect(self.selected);
+                    try {
+                        c.unselect(self.selected);
+                    }
+                    catch(e) {
+                        self.selected = null
+                    }
                 }
                 return c.select(feature);
             }
