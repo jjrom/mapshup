@@ -71,7 +71,7 @@
          * If true, the panel is display over the map with transparency
          * If false, the panel "push" the map
          */
-        this.over = options.over || false;
+        this.over = false;
         
         /*
          * North/South padding
@@ -100,7 +100,7 @@
          * Number of pixels substracted from the map height to compute
          * East/West panel height when "over" boolean is set to true
          */
-        this.voffset = options.voffset || 100;
+        this.voffset = 100;
         
         /*
          * East/West panel width
@@ -113,6 +113,14 @@
         this.init = function() {
             
             var self = this;
+            
+            /*
+             * East panel are over by default
+             */
+            if (self.position === 'e') {
+                self.over = msp.Config["general"].eastPanelOver;
+                self.voffset = msp.Config["general"].eastPanelOffset || self.voffset;
+            }
             
             /*
              * mapshup can have one and only one panel
@@ -213,20 +221,17 @@
                 /*
                  * !! For North and South panels, the width of the panel is the width of the container
                  */
-                if (msp.Panel._onp) {
-                    msp.Panel._onp.$d.width(msp.$container.width());
+                if (scope.position === "n" || scope === "s") {
+                    scope.$d.width(msp.$container.width());
                 }
-                if (msp.Panel._osp) {
-                    msp.Panel._osp.$d.width(msp.$container.width());
-                }
+                
                 /*
                  * !! For East and West panels, the height of the panel is
                  *  - the height of the map minus a constant
                  *  - the height of the map in other case
                  */
-                if (msp.Panel._oep) {
-                    
-                    msp.Panel._oep.$d.height(msp.$map.height() - (scope.over ? scope.voffset : 0));
+                else if (scope.position === "e") {
+                    scope.$d.height(msp.$map.height() - (scope.over ? scope.voffset : 0));
                     
                     /*
                      * Object with an 'expdbl' class have their height constrain
@@ -238,8 +243,8 @@
                     });
                     
                 }
-                if (msp.Panel._owp) {
-                    msp.Panel._owp.$d.height(msp.$map.height());
+                else if (scope.position === "w") {
+                    scope.$d.height(msp.$map.height());
                 }
             });
             

@@ -82,6 +82,18 @@
     c["general"].displayOverviewMap = true;
 
     /*
+     * If true, East panel is displayed over the map with semi-transparency
+     * Otherwise, East panel "push" the map to the left when triggered
+     */
+    c["general"].eastPanelOver = true;
+
+    /*
+     * Number of pixels substracted from the map height to compute
+     * East panel height when "eastPanelOver" boolean is set to true
+     */
+    c["general"].eastPanelOffset = 100;
+    
+    /*
      * If true, feature are highlited when mouse over
      * (Note : this option is automatically set to false for touch devices)
      */
