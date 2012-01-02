@@ -174,7 +174,7 @@
     /**
      * Relative or absolute url to the theme directory
      */
-    c["general"].themeUrl = "js/mapshup/theme/white";
+    c["general"].themeUrl = "js/mapshup/theme/default";
 
     /**
      * If teleport is set to true, recentering the map is immediate. Otherwise, it
