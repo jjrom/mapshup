@@ -500,7 +500,14 @@ input {
 .po p {
     padding-left:10px;
 }
+.po .title {
+    text-transform:uppercase;
+    font-weight: bold;
+}
 
+.po .description {
+    padding:5px 0px 5px 10px;
+}
 .po input {
     width:410px;
     font-size:1em;
