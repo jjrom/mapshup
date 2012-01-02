@@ -51,7 +51,7 @@ then
 fi
 
 echo "Building mjquery.js"
-cat $jquerydir/jquery-1.6.2.min.js > $mjquerydir/mjquery.js
+cat $jquerydir/jquery-1.7.1.min.js > $mjquerydir/mjquery.js
 cat $jquerydir/fixedHeaderTable/jquery.fixedheadertable.min.js >> $mjquerydir/mjquery.js
 cat $jquerydir/watermark/jquery.watermark.min.js >> $mjquerydir/mjquery.js
 cat $jquerydir/idTabs/jquery.idTabs.min.js >> $mjquerydir/mjquery.js
