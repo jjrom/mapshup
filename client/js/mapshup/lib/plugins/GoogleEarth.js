@@ -233,6 +233,7 @@
                     close:false,
                     activable:true,
                     onshow:function() {
+                        
                         /*
                          * Paranoid mode
                          */
@@ -437,7 +438,13 @@
 
                 var kmlObject = scope.kmlObjects[layer.id];
                 if (kmlObject) {
-                    kmlObject.setVisibility(layer.getVisibility());
+                    
+                    try {
+                        kmlObject.setVisibility(layer.getVisibility());
+                    }
+                    catch (e) {
+                    }
+                    
                 }
             }
 
@@ -583,7 +590,26 @@
                 });
 
                 if (kmlString !== '') {
+                    
+                    /*
+                     * Create KML object from string
+                     */
                     kmlObject = self.ge.parseKml(kmlString);
+                    
+                    
+                    /*
+                     * Wrap alerts in API callbacks and event handlers
+                     * in a setTimeout to prevent deadlock in some browsers
+                     * 
+                     * (see example : http://earth-api-samples.googlecode.com/svn/trunk/examples/kml-fetch-good.html) 
+                     */
+                    if (!kmlObject) {
+                        setTimeout(function() {
+                          alert('Bad or null KML');
+                        }, 0);
+                        return false;
+                    }
+
                     self.ge.getFeatures().appendChild(kmlObject);
 
                     /*
@@ -636,14 +662,17 @@
                 /*
                  * Remove kmlObject from Google Earth
                  */
-                self.ge.getFeatures().removeChild(kmlObject);
+                try {
+                    self.ge.getFeatures().removeChild(kmlObject);
+                }
+                catch(e) {}
                 kmlObject = null;
 
                 /*
                  * Remove kmlObject entry from kmlObjects list
                  */
                 delete self.kmlObjects[layer.id];
-
+                
                 return true;
             }
 
@@ -723,13 +752,14 @@
          */
         this.setGELookAt = function () {
 
-            var self = this;
+            var geLookAt,
+                self = this;
             
             /*
              * Paranoid mode
              */
             if (self.ge) {
-
+                
                 /*
                  * Set the lookAt position in Lat/Lon
                  */
@@ -750,16 +780,23 @@
                  *  :param tilt: ``Number`` The tfilt of the lookAt position
                  *  :param range: ``Number`` The range of the lookAt position
                  */
-                var geLookAt = self.ge.createLookAt('');
-                geLookAt.set(self.lookAt.lat,
+                /*
+                 * Sometimes google Earth plugin crashes...
+                 */
+                try {
+                    geLookAt = self.ge.createLookAt('');
+                    geLookAt.set(self.lookAt.lat,
                     self.lookAt.lon,
                     self.altitude,
                     self.altitudeMode,
                     self.heading,
                     self.tilt,
                     self.range);
-                self.ge.getView().setAbstractView(geLookAt);
+                    self.ge.getView().setAbstractView(geLookAt);
+                }
+                catch (e) {}
             }
+            
         };
         
         /**
