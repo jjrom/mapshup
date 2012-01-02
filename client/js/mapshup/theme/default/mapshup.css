@@ -536,19 +536,12 @@ input {
  * For popup images
  */
 .imageContent {
-    position:absolute;
-    padding:10px;
     background-color:#fff;
-    width:auto;
-    height:auto;
     z-index:38001;
-    display:none;
 }
 .imageContent .innerTitle {
     text-align:center;
     overflow:hidden;
-    color:#fff;
-    background-color:#000;
 }
 /* End : for popup image */
 
