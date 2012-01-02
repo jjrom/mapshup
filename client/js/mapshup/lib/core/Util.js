@@ -523,7 +523,7 @@
                 
             }
             
-            /**
+            /*
              * Show the modal window
              */
             popup.show();
