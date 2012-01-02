@@ -69,7 +69,7 @@
     i["Error : this file type is not allowed"]="Erreur : ce format de fichier n'est pas accepté";
     i["Error performing GetCapabilities operation"]="Erreur de l'opération GetCapabilities";
     i["Error performing DescribeFeatureType operation"]="Erreur de l'opération DescribeFeatureType";
-    i["Expected format is YYYY-MM-DDTHH:mm:ss for a single date or YYYY-MM-DDTHH:mm:ss/YYYY-MM-DDTHH:mm:ss for a date interval"]="Le format attendu est AAAA-MM-JJTHH:mm:ss pour une date seule ou AAAA-MM-JJTHH:mm:ss/AAAA-MM-JJTHH:mm:ss pour un intervalle";
+    i["Expected format is YYYY-MM-DD for a single date or YYYY-MM-DD/YYYY-MM-DD for a date interval"]="Le format attendu est AAAA-MM-JJ pour une date seule ou AAAA-MM-JJ/AAAA-MM-JJ pour un intervalle";
     i["Expected format is lonmin,latmin,lonmax,latmax"]="Le format attendu est lonmin,latmin,lonmax,latmax";
     i["Flickr"]="Flickr";
     i["Get capabilities"]="Récupération du fichier Capabilities";

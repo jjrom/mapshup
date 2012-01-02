@@ -68,7 +68,7 @@ Error : registering is currently unavailable
 Error : this file type is not allowed
 Error performing GetCapabilities operation
 Error performing DescribeFeatureType operation
-Expected format is YYYY-MM-DDTHH:mm:ss for a single date or YYYY-MM-DDTHH:mm:ss/YYYY-MM-DDTHH:mm:ss for a date interval
+Expected format is YYYY-MM-DD for a single date or YYYY-MM-DD/YYYY-MM-DD for a date interval
 Expected format is lonmin,latmin,lonmax,latmax
 Flickr
 Get capabilities
