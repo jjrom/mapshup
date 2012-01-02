@@ -61,8 +61,8 @@
     font-weight: bold;
 }
 #gnm img {
-    height:16px;
-    width:16px;
+    max-height:16px;
+    max-width:16px;
 }
 
 #gnm .item {

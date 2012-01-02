@@ -184,7 +184,7 @@
                              */
                             items.push({
                                 id:msp.Util.getId(),
-                                ti:"+",
+                                ic:"plus.png",
                                 cb:function() {
                                     point.zoomOn(false);
                                 }
@@ -195,7 +195,7 @@
                              */
                             items.push({
                                 id:msp.Util.getId(),
-                                ti:"-",
+                                ic:"minus.png",
                                 cb:function() {
                                     point.zoomOn(true);
                                 }
