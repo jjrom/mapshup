@@ -208,7 +208,7 @@
              * Check if keys array is defined
              * This array has preseance to everything else
              */
-            if (feature.layer["_msp"].layerDescription.featureInfo && typeof feature.layer["_msp"].layerDescription.featureInfo.keys) {
+            if (feature.layer["_msp"].layerDescription.featureInfo && typeof feature.layer["_msp"].layerDescription.featureInfo.keys === "object") {
 
                 /*
                  * Roll over the featureInfo.keys array.
