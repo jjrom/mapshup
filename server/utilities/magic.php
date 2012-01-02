@@ -188,7 +188,7 @@ if (abcCheck($_REQUEST) && $url != '') {
     /*
      * Additionnal $infos keys/values
      */
-    if ($infos != null) {
+    if (isset($infos)) {
         foreach(array_keys($infos) as $key) {
             if ($infos[$key] != null) {
                 $item[$key] = $infos[$key];
