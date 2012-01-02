@@ -105,8 +105,8 @@ function getDatesFromInterval($interval) {
     $dates = preg_split('/\//', $interval);
     
     return array(
-        'startDate'=> $dates[0] !== "" ? addTimeToDate(urldecode($dates[0])) : null,
-        'completionDate'=> $dates[1] !== "" ? addTimeToDate(urldecode($dates[1])) : null,
+        'startDate'=> isset($dates[0]) && $dates[0] !== "" ? addTimeToDate(urldecode($dates[0])) : null,
+        'completionDate'=> isset($dates[1]) && $dates[1] !== "" ? addTimeToDate(urldecode($dates[1])) : null,
     );
     
 }
