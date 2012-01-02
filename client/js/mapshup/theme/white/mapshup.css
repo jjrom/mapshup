@@ -569,12 +569,10 @@ input {
     color:#fff;
 }
 .active {
-    /*background-color:yellowgreen;*/
     background-color:yellowgreen;
     text-shadow: black 1px 1px 3px;
     color:#fff;
 }
-
 .bold {
     font-weight:bold;
 }

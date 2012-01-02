@@ -248,6 +248,8 @@
          */
         this.activate = function(b) {
             
+            var i,l;
+            
             /*
              * Do nothing if button is not activable or if the
              * active status is the same as the requested one, do nothing
@@ -262,27 +264,35 @@
             if (b) {
                 
                 /*
-                 * Remove all 'active' class from toolbar buttons
-                 * except this button
+                 * Remove all 'active' class from toolbar buttons and add 'hidden' class
                  */
-                for (var i = 0, l = this.tb.items.length; i < l; i++) {
+                for (i = 0, l = this.tb.items.length; i < l; i++) {
                     if (this.tb.items[i].id !== this.id) {
-                        this.tb.items[i].$d.removeClass('active');
+                        this.tb.items[i].$d.removeClass('active').addClass('hidden');
                     }
                 }
                 
                 /*
-                 * Add 'active' class to button
+                 * Add 'active' class to button and remove 'hidden' class
                  */
-                this.$d.addClass("active");
+                this.$d.addClass("active").removeClass('hidden');
                 
             }
             else {
              
                 /*
+                 * Remove all 'hidden' class from toolbar buttons
+                 */
+                for (i = 0, l = this.tb.items.length; i < l; i++) {
+                    if (this.tb.items[i].id !== this.id) {
+                        this.tb.items[i].$d.removeClass('hidden');
+                    }
+                }
+                /*
                  * Remove 'active' class from button
                  */
-                this.$d.removeClass("active")
+                this.$d.removeClass("active");
+                
             }
             
             return true;
