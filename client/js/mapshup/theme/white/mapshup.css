@@ -500,15 +500,6 @@ input {
     padding-left:10px;
 }
 
-.po .title {
-    text-transform:uppercase;
-    font-weight: bold;
-}
-
-.po .description {
-    padding:5px 0px 5px 10px;
-}
-
 .po input {
     width:410px;
     font-size:1em;
@@ -522,11 +513,12 @@ input {
 }
 
 .po .header {
-    background-color:#000;
-    color:#fff;
+    background-color:#eee;
+    color:#666;
+    text-transform:uppercase;
+    font-weight: bold;
     height:40px;
     line-height:40px;
-    text-shadow: black 1px 1px 3px;
     width:100%;
 }
 /* End : "popup" definition */
