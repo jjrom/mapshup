@@ -439,7 +439,7 @@
                      */
                     var v = self.htmlEntitiesEncode($('#'+i).val());
                     if (t === "date") {
-                        if (self.isDateOrInterval(v)) {
+                        if (self.isDateOrInterval(v) || self.isISO8601(v)) {
                             callback(v);
                             d.remove(); 
                         }
