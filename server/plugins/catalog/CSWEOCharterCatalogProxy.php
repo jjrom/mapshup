@@ -127,39 +127,41 @@ $json = json_decode($theData);
 
 $geojson = array(
     'type' => 'FeatureCollection',
-    'totalResults' => $json->results,
+    'totalResults' => isset($json->results) ? $json->results : 0,
     'features' => array()
 );
 
-foreach ($json->rows as $row) {
+if (isset($json->rows)) {
+    foreach ($json->rows as $row) {
 
-    /*
-     * Add feature
-     */
-    $feature = array(
-        'type' => 'Feature',
-        'geometry' => poslistToGeoJSONGeometry($row->poslist, LATLON),
-        'properties' => array(
-            'identifier' => $row->identifier,
-            'producttype' => $row->producttype,
-            'beginposition' => $row->beginposition,
-            'endposition' => $row->endposition,
-            'acquisitiontype' => $row->acquisitiontype,
-            'status' => $row->status,
-            'triggeringidentifier' => $row->triggeringidentifier,
-            'description' => $row->description,
-            'disasterdate' => $row->disasterdate,
-            'disastertype' => $row->disastertype,
-            'location' => $row->location,
-            'thumbnail' => $row->thumbnail,
-            'quicklook' => $row->quicklook
-        )
-    );
+        /*
+         * Add feature
+         */
+        $feature = array(
+            'type' => 'Feature',
+            'geometry' => poslistToGeoJSONGeometry($row->poslist, LATLON),
+            'properties' => array(
+                'identifier' => $row->identifier,
+                'producttype' => $row->producttype,
+                'beginposition' => $row->beginposition,
+                'endposition' => $row->endposition,
+                'acquisitiontype' => $row->acquisitiontype,
+                'status' => $row->status,
+                'triggeringidentifier' => $row->triggeringidentifier,
+                'description' => $row->description,
+                'disasterdate' => $row->disasterdate,
+                'disastertype' => $row->disastertype,
+                'location' => $row->location,
+                'thumbnail' => $row->thumbnail,
+                'quicklook' => $row->quicklook
+            )
+        );
 
-    // Add feature array to feature collection array
-    array_push($geojson['features'], $feature);
+        // Add feature array to feature collection array
+        array_push($geojson['features'], $feature);
+    }
 }
-
 /* Returns encoded geojson string */
 echo json_encode($geojson);
+
 ?>
