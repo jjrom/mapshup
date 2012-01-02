@@ -437,14 +437,14 @@
                     if (feature.attributes.hasOwnProperty('quicklook')) {
                         
                         id = msp.Util.getId();
-                        $thumb.html('<a id="'+id+'" class="image" title="'+msp.Util._("Show quicklook")+'" href="'+feature.attributes['quicklook']+'">'+content+'</a>');
+                        $thumb.html('<a id="'+id+'" class="image" jtitle="'+self.getTitle(feature)+'" title="'+msp.Util._("Show quicklook")+'" href="'+feature.attributes['quicklook']+'">'+content+'</a>');
                         
                         /*
                          * Popup image
                          */
                         $('#'+id).click(function() {
                             var $t = $(this);
-                            msp.Util.showPopupImage($t.attr('href'), $t.attr('title'));
+                            msp.Util.showPopupImage($t.attr('href'), $t.attr('jtitle'));
                             return false;
                         });
                         
