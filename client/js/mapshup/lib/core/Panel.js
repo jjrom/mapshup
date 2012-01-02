@@ -157,7 +157,7 @@
              * Structure :
              *  <div class="pn pn<position>"></div>
              */
-            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('pn '+'pn'+self.position+' '+(self.over ? 'pnbgt' : 'pnbgn'));
+            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('pn '+'pn'+self.position+' '+(self.over ? 'pnover' : 'pnnorm'));
             
             /*
              * Create unique panel reference

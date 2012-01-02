@@ -348,16 +348,17 @@ input {
 }
 
 /*
- * Panel normal background (i.e. "over" attribute false)
+ * Panel normal (i.e. "over" attribute false)
  */
-.pnbgn {
+.pnnorm {
     background-color:#ddd;
 }
 /*
- * Panel transparent background (i.e. "over" attribute true)
+ * Panel over (i.e. "over" attribute true)
  */
-.pnbgt {
+.pnover {
     background-color:rgba(255,255,255,0.8);
+    top:20px;
 }
 
 /*.pn a {
