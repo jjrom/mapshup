@@ -504,7 +504,7 @@
                 for (var i = 0, l = value.length; i < l; i++) {
                     id1 = this.getId();
                     el = value[i];
-                    delim = i > 0 ? "|" : "";
+                    delim = i > 0 ? " | " : "";
                     icon = el.icon ? '<img class="middle" src="'+el.icon+'"/>&nbsp;' : '';
                     $p.append(delim+icon+'<a href="#" class="hover" id="'+id1+'">'+el.title+'</a>');
                     
