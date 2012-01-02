@@ -50,7 +50,6 @@ Drop files or url on the map
 Elevation (m)
 Email
 Enter an url
-Enter text
 Entering 2D mode
 Entering 3D mode
 entities

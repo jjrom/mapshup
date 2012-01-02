@@ -421,11 +421,12 @@
                 if (value) {
                     input.val(this.htmlEntitiesEncode(value));
                 }
-
                 /*
-                 * Set input text box watermark
+                 * Or set input text box watermark
                  */
-                input.watermark(description);
+                else if (description) {
+                    input.watermark(description);
+                }
                 
                 /**
                  * Avoid rewriting of twice the same code - i.e. keypress on #id1 (<input>)

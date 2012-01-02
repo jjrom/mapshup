@@ -767,7 +767,7 @@
              */
             processItem: function(item, father, div, layer, _id) {
 
-                var active,
+                var i,l,active,
                 id,
                 tmpItem,
                 newItem,
@@ -776,7 +776,7 @@
                 /**
                  * item can be an array
                  */
-                for (var i = 0, l = item.length; i < l; i++) {
+                for (i = 0, l = item.length; i < l; i++) {
 
                     /*
                      * Get item[i] reference
@@ -959,10 +959,10 @@
                             /*
                              * Ask for a free keyword on click
                              */
-                            (function(id, item, value, sc, type) {
+                            (function(id, item, sc, type) {
                                 $('#'+id).click(function(e) {
-
-                                    msp.Util.askFor(msp.Util._("Enter text"), value || "", type, null, function(v){
+                                    
+                                    msp.Util.askFor(msp.Util._(item.title), null, type, sc.getValue(item.id), function(v){
 
                                         /*
                                          * Value is set -> add newItem to searchContext
@@ -997,7 +997,7 @@
                                     });
                                     return false;
                                 });
-                            })(id, tmpItem, value, sc, tmpItem.type);
+                            })(id, tmpItem, sc, tmpItem.type);
 
                         }
                     }

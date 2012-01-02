@@ -51,7 +51,6 @@
     i["Elevation (m)"]="Altitude (m)";
     i["Email"]="Email";
     i["Enter an url"]="Entrer une URL";
-    i["Enter text"]="Entrer un texte";
     i["Entering 2D mode"]="Vous entrez en mode 2D";
     i["Entering 3D mode"]="Vous entrez en mode 3D";
     i["entities"]="entités";
