@@ -84,8 +84,7 @@
     i["Item"]="Element";
     i["Layer"]="Couche";
     i["Layer added"]="Couche ajoutée";
-    i["Layer type detection"]="Détection du type de couche";
-    i["Layer type detection in progess..."]="Détection du type de couche en cours...";
+    i["Layer detection in progress..."]="Détection de la couche en cours...";
     i["layers"]="couches";
     i["Layers manager"]="Couches";
     i["Line"]="Ligne";
@@ -170,7 +169,7 @@
     i["Videos"]="Vidéos";
     i["Visits per country"]="Visites par pays";
     i["Waiting for additional info"]="En attente d'information complémentaire";
-    i["Welcome on msp"]="Bienvenu sur msp";
+    i["What is the type for this layer ?"]="Quel est le type de la couche à ajouter ?";
     i["Where am I ?"]="Où suis-je?";
     i["Wikipedia"]="Wikipedia";
     i["Wrong login/password - Connection refused"]="Identifiant/Mot de passe incorrect - Connection refusée";

@@ -391,7 +391,7 @@
                                     value:t
                                 })
                             }
-                            msp.Util.askFor(msp.Util._("Layer type request"), msp.Util._("What is the type for this layer ?"), "list", list, function(v){
+                            msp.Util.askFor(msp.Util._("Add layer"), msp.Util._("What is the type for this layer ?"), "list", list, function(v){
                                 result["type"] = v;
                                 scope.add(result, scope);
                             });
@@ -407,7 +407,7 @@
                     msp.Util.message(msp.Util._("Error : cannot perform action"));
                 }
             },{
-                title:msp.Util._("Guess layer type from url"),
+                title:msp.Util._("Layer detection in progress..."),
                 cancel:true
             });
 
