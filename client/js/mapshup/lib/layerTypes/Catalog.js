@@ -157,23 +157,22 @@
             /*
              * Ask for mandatory connectorName
              */
-            var list = [],
-            connectors = msp.plugins["Catalog"]["connectors"] || [],
-            connector;
+            var i,l,name,list = [],
+            connectors = msp.plugins["Catalog"].options["connectors"] || [];
 
             /**
              * Parse available connectors list
              */
-            for (var key in connectors) {
+            for (i = 0, l = connectors.length; i < l;i++) {
 
                 /*
                  * Retrieve the connector
                  */
-                connector = connectors[key];
+                name = connectors[i].name;
 
                 list.push({
-                    title:msp.Util._(connector.options["description"]),
-                    value:msp.Util._(key)
+                    title:msp.Util._(name),
+                    value:msp.Util._(name)
                 })
             }
 

@@ -169,6 +169,7 @@
     i["Videos"]="Vidéos";
     i["Visits per country"]="Visites par pays";
     i["Waiting for additional info"]="En attente d'information complémentaire";
+    i["What is the format for this catalog ?"]="Quel est le format du catalogue à ajouter ?";
     i["What is the type for this layer ?"]="Quel est le type de la couche à ajouter ?";
     i["Where am I ?"]="Où suis-je?";
     i["Wikipedia"]="Wikipedia";

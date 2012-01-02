@@ -168,6 +168,7 @@ Validate
 Videos
 Visits per country
 Waiting for additional info
+What is the format for this catalog ?
 What is the type for this layer ?
 Where am I ?
 Wikipedia
