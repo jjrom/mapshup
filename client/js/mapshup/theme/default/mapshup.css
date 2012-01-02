@@ -294,10 +294,11 @@ input {
     margin-right:10px;
 }
 .tbnev .active, .tbssh .active {
-    background:orange;
+    background:#f3961c;
 }
 .tbfrh .active {
-    background:#000;
+    background:transparent;
+    border-bottom:3px solid #f3961c;
 }
 /* East Horizontal toolbar */
 .tbneh, .tbseh {
@@ -396,7 +397,7 @@ input {
     color:#fff;
 }
 .pne a {
-    color:orange;
+    color:#f3961c;
 }
 .pne input {
     width:240px;
@@ -569,8 +570,8 @@ input {
     color:#fff;
 }
 .active {
-    /*background-color:orange;*/
-    background-color:orange;
+    /*background-color:#f3961c;*/
+    background-color:#f3961c;
     text-shadow: black 1px 1px 3px;
     color:#fff;
 }
@@ -650,7 +651,7 @@ input {
     position:absolute;
     font-size:0.8em;
     border: 1px solid #ccc;
-    background-color:orange;
+    background-color:#f3961c;
     width:250px;
     padding:10px;
     overflow:hidden;
@@ -730,7 +731,7 @@ input {
  *  ------------------*/
 
 /**
- * OpenLayers css orangeefinition
+ * OpenLayers css #f3961cefinition
 */
 div.olControlMousePosition {
     font:normal 12px arial,tahoma,sans-serif;

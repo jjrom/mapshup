@@ -251,10 +251,9 @@
             var i,l;
             
             /*
-             * Do nothing if button is not activable or if the
-             * active status is the same as the requested one, do nothing
+             * Do nothing if button is not activable
              */
-            if (!this.activable || b === this.$d.hasClass("active")) {
+            if (!this.activable) {
                 return false;
             }
             
