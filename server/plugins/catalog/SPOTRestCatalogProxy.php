@@ -66,7 +66,7 @@ if (isset($_REQUEST['bbox']) && $_REQUEST['bbox'] != "") {
     $req .= '&selon=180';
 }
 
-$dates = getDatesFromInterval($_REQUEST["startDate"]);
+$dates = getDatesFromInterval(isset($_REQUEST["startDate"]) ? $_REQUEST["startDate"] : null);
 $req .= '&ed=' . ($dates['completionDate'] ? $dates['completionDate'] : "");
 $req .= '&sd=' . ($dates['startDate'] ? $dates['startDate'] : "");
 

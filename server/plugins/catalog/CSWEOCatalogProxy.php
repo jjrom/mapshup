@@ -275,7 +275,7 @@ if (!is_numeric($maxRecords)) {
  * dates is an array of two dates (startDate and completionDate)
  * that are retrieved from startDate interval
  */
-$dates = getDatesFromInterval($_REQUEST["startDate"]);
+$dates = getDatesFromInterval(isset($_REQUEST["startDate"]) ? $_REQUEST["startDate"] : null);
 
 /*
  * bbox is optional
