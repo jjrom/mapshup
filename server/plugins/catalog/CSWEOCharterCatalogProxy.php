@@ -70,15 +70,16 @@ if (isset($_REQUEST['bbox']) && $_REQUEST['bbox'] != "") {
 /*
  * Get dates
  */
-$dates = getDatesFromInterval($_REQUEST["startDate"]);
-
+$dates = getDatesFromInterval(isset($_REQUEST["startDate"]) ? $_REQUEST["startDate"] : null);
 $req .= '&completionDate=' . ($dates['completionDate'] ? $dates['completionDate'] : "");
 $req .= '&startDate=' . ($dates['startDate'] ? $dates['startDate'] : "");
 
-$proxyURL = 'catalogProxy';
-if (isset($_REQUEST['proxyUrl']) && $_REQUEST['proxyUrl'] != "") {
-    $proxyURL = $_REQUEST['proxyUrl'];
-}
+/*
+ * Disaster date interval
+ */
+$dates = getDatesFromInterval(isset($_REQUEST["disasterStartDate"]) ? $_REQUEST["disasterStartDate"] : null);
+$req .= '&disasterEndDate=' . ($dates['completionDate'] ? $dates['completionDate'] : "");
+$req .= '&disasterStartDate=' . ($dates['startDate'] ? $dates['startDate'] : "");
 
 /**
  * Force CALL ID to be on 3 digits
@@ -93,14 +94,17 @@ if (isset($_REQUEST['disasterCallId'])) {
         $callid = "0" . $callid;
     }
 }
-
 $req .= '&disasterCallId=' . $callid;
-$req .= '&disasterEndDate=' . (isset($_REQUEST['disasterEndDate']) ? $_REQUEST['disasterEndDate'] : "");
-$req .= '&disasterStartDate=' . (isset($_REQUEST['disasterStartDate']) ? $_REQUEST['disasterStartDate'] : "");
+
 $req .= '&disasterType=' . (isset($_REQUEST['disasterType']) ? $_REQUEST['disasterType'] : "");
 $req .= '&satelliteName=' . (isset($_REQUEST['satelliteName']) ? $_REQUEST['satelliteName'] : "");
 $req .= '&cursor=' . (isset($_REQUEST['nextRecord']) ? $_REQUEST['nextRecord'] : 1);
 $req .= '&maxResults=' . (isset($_REQUEST['numRecordsPerPage']) ? $_REQUEST['numRecordsPerPage'] : MSP_RESULTS_PER_PAGE);
+
+$proxyURL = 'catalogProxy';
+if (isset($_REQUEST['proxyUrl']) && $_REQUEST['proxyUrl'] != "") {
+    $proxyURL = $_REQUEST['proxyUrl'];
+}
 $req .= '&proxyUrl=' . $proxyURL;
 $req .= '&catalog=' . $catalogURL;
 $req .= '&catalogType=' . $catalogType;
