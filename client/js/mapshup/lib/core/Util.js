@@ -829,7 +829,7 @@
         
         /**
          * Check if a string is a valid date or date interval
-         * i.e. YYYY-MM-DD or YYYY-MM-DD/YYYY-MM/DD
+         * i.e. YYYY-MM-DD or YYYY-MM-DD/YYYY-MM-DD
          */
         isDateOrInterval:function(str) {
             
