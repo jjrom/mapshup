@@ -85,7 +85,7 @@
             self.pn = new msp.Panel('e',{tb:tb});
             self.btn = new msp.Button({
                 tb:tb,
-                icon:"fiinfo.png",
+                title:"i",
                 tt:"Feature information",
                 container:self.pn.add(),
                 activable:true,
