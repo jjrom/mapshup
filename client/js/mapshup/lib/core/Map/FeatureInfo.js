@@ -769,7 +769,7 @@
                          * Unselect feature with the _triggered trick to avoid display
                          * of menu when unselect the feature
                          */
-                        if (btn.feature) {
+                        if (btn.feature && btn.feature.layer) {
                             msp.Map.featureInfo._triggered = true;
                             msp.Map.Util.getControlById("__CONTROL_SELECT__").unselect(btn.feature);
                             msp.Map.featureInfo._triggered = false;
