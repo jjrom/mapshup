@@ -1002,7 +1002,7 @@
          */
         isUrl: function(str) {
             
-            if (str) {
+            if (str && typeof str === "string") {
                 
                 var s = str.substr(0,7);
                 

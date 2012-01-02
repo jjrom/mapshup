@@ -92,7 +92,7 @@
             /*
              * Intialize table with properties
              */
-            html += '<table id="jLayerInformation">';
+            html += '<table style="text-align:left;">';
 
             /*
              * Number of features
@@ -121,11 +121,9 @@
                 /*
                  * url is a special key that must be transformed into link
                  */
-                if (key === "url") {
-                    value = '<a href="'+value+'" target="_blank">'+msp.Util.shorten(value, 100)+'</a>'
-                }
-
-                html += '<tr><td>'+msp.Util._(key)+'</td><td> : ' + msp.Util._(value) + '</td></tr>';
+                value = msp.Util.isUrl(value) ? '<a href="'+value+'" title="'+value+'" target="_blank">'+msp.Util.shorten(value, 100)+'</a>' : msp.Util._(value);
+               
+                html += '<tr><td>'+msp.Util._(key)+'</td><td> : ' + value + '</td></tr>';
 
             }
 
