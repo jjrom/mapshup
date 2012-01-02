@@ -670,7 +670,7 @@ input {
 .pfi .info {
     padding:5px;
     margin-bottom:5px;
-    font-size:0.7em;
+    font-size:0.8em;
 }
 .pfi .thumb {
     text-align: center;
@@ -696,11 +696,10 @@ input {
 }
 .pfi td {
     padding:5px 0px;
-    border-top: 1px solid #ccc;
 }
 
 .pfi tr:nth-child(even) {
-    background: rgb(244, 244, 244);
+    background:#666;
 }
 
 /**
