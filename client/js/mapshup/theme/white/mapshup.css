@@ -691,7 +691,12 @@ input {
 .pfi tr:nth-child(even) {
     background: rgb(244, 244, 244);
 }
-
+#pfit {
+    padding-bottom:10px;
+}
+#pfit li {
+    display:inline;
+}
 /**
  * jMessage
 */

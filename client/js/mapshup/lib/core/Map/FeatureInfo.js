@@ -420,12 +420,12 @@
                  * Initialize $b content.
                  * 
                  * Structure :
-                 *  <div id="#fitm">
+                 *  <div id="pfitm">
                  *      <div class="thumb"></div>
                  *      <div class="info"></div>
                  *  </div>
                  */
-                self.$b.html('<div id="fitm"><div class="thumb"></div><div class="info"><table></table></div></div>');
+                self.$b.html('<div id="pfitm"><div class="thumb"></div><div class="info"><table></table></div></div>');
                 $info = $('.info', self.$b);
                 $thumb = $('.thumb', self.$b);
                 
@@ -595,7 +595,7 @@
                                     id = msp.Util.getId() ;
                                     
                                     if (self.$t.is(':empty')) {
-                                        self.$t.html('<div id="fitabs"><ul><li><a href="#fitm">'+msp.Util._("Description")+'</a></li></ul></div>');
+                                        self.$t.html('<div id="pfit"><ul><li><a href="#pfitm">'+msp.Util._("Description")+'</a></li></ul></div>');
                                     }
                                     $('ul', self.$t).append('<li><a href="#' + id + '">' + msp.Util._(kk) + '</a></li>');
 
@@ -639,7 +639,7 @@
                 /*
                  * Set the tabs if any
                  */
-                $("#fitabs ul").idTabs(); 
+                $("#pfit ul").idTabs(); 
 
             }
             
