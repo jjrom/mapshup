@@ -589,19 +589,24 @@
                                     }
 
                                     /*
-                                     * Create a tab container
-                                     * 
+                                     * Initialize tab
                                      */
-                                    id = msp.Util.getId() ;
-                                    
                                     if (self.$t.is(':empty')) {
                                         self.$t.html('<div id="pfit"><ul><li><a href="#pfitm" class="selected">'+msp.Util._("Description")+'</a></li></ul></div>');
                                     }
-                                    $('ul', self.$t).append('<li><a href="#' + id + '">' + msp.Util._(kk) + '</a></li>');
-
+                                    
                                     /*
-                                     * Create a specific tab
+                                     * If v[kk] is not an array or is an empty array, go to the next property
                                      */
+                                    if (typeof v[kk].length !== "number" || v[kk].length === 0) {
+                                        continue;
+                                    }
+                                    
+                                    /*
+                                     * If kk object is a non empty array, add a new tab
+                                     */
+                                    id = msp.Util.getId() ;
+                                    $('ul', self.$t).append('<li><a href="#' + id + '">' + msp.Util._(kk) + '</a></li>');
                                     self.$b.append('<div id="'+id+'" class="noflw"><table></table></div>');
 
                                     /*
