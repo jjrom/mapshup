@@ -482,7 +482,7 @@
                 /*
                  * Set variable and references
                  */
-                var d,v,t,$id,i,l,k,kk,kkk;
+                var d,v,t,i,l,k,kk,kkk;
 
                 /*
                  * Roll over attributes  
@@ -569,11 +569,13 @@
                                             /*
                                              * Popup image
                                              */
-                                            $id = $('#'+id);
-                                            $id.click(function() {
-                                                msp.Util.showPopupImage($id.attr('href'), $id.attr('title'));
-                                                return false;
-                                            });
+                                            (function($id){
+                                                $id.click(function() {
+                                                    msp.Util.showPopupImage($id.attr('href'), $id.attr('title'));
+                                                    return false;
+                                                });    
+                                            })($('#'+id));
+                                            
                                         }
                                         continue;
                                     }
