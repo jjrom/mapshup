@@ -66,6 +66,7 @@ Error : Google Earth cannot be loaded
 Error : read error
 Error : registering is currently unavailable
 Error : this file type is not allowed
+Error : url is not defined
 Error performing GetCapabilities operation
 Error performing DescribeFeatureType operation
 Expected format is YYYY-MM-DD for a single date or YYYY-MM-DD/YYYY-MM-DD for a date interval

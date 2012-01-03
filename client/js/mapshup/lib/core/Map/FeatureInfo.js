@@ -82,7 +82,9 @@
              * NorthEast Toolbar triggering East panel 
              */
             tb = new msp.Toolbar(self.options.position, self.options.orientation);
-            self.pn = new msp.Panel('e',{tb:tb});
+            self.pn = new msp.Panel('e',{
+                tb:tb
+            });
             self.btn = new msp.Button({
                 tb:tb,
                 title:"i",
@@ -201,8 +203,8 @@
             }
 
             var c,
-                i,
-                l;
+            i,
+            l;
             
             /*
              * Check if keys array is defined
@@ -248,13 +250,13 @@
         this.setActions = function(feature) {
             
             var a,
-                d,
-                i,
-                l,
-                connector,
-                self = this,
-                actions = [],
-                fi = feature.layer["_msp"].layerDescription.featureInfo;
+            d,
+            i,
+            l,
+            connector,
+            self = this,
+            actions = [],
+            fi = feature.layer["_msp"].layerDescription.featureInfo;
             
             /*
              * Clear actions
@@ -370,14 +372,14 @@
         this.setBody = function(feature) {
             
             var id,
-                content,
-                $info,
-                $thumb,
-                layerType,
-                self = this,
-                typeIsUnknown = true,
-                // Thumbnail of quicklook attributes
-                thumb = feature.attributes['thumbnail'] || feature.attributes['quicklook'] || null;
+            content,
+            $info,
+            $thumb,
+            layerType,
+            self = this,
+            typeIsUnknown = true,
+            // Thumbnail of quicklook attributes
+            thumb = feature.attributes['thumbnail'] || feature.attributes['quicklook'] || null;
 
             /*
              * Clean body
@@ -619,7 +621,25 @@
                                      */
                                     if (kk === "video" || kk === "audio") {
                                         for (i = 0, l = v[kk].length; i < l; i++) {
-                                            d.append('<tr><td><a href="'+v[kk][i]["url"]+'">' + v[kk][i]["name"] + '</a></td></tr>');
+                                            
+                                            /*
+                                             * Popup video
+                                             */
+                                            id = msp.Util.getId();
+                                            
+                                            d.append('<tr><td><a id="'+id+'" href="'+v[kk][i]["url"]+'">' + v[kk][i]["name"] + '</a></td></tr>');
+                                            
+                                            
+                                            (function($id){
+                                                $id.click(function() {
+                                                    msp.Util.showPopupVideo({
+                                                        url:$id.attr('href'), 
+                                                        title:$id.attr('title')
+                                                    });
+                                                    return false;
+                                                });    
+                                            })($('#'+id));
+                                            
                                         }
                                     }
                                     else {
@@ -671,11 +691,11 @@
         this.select = function(feature, _triggered) {
 
             var c,
-                i,
-                bounds,
-                length,
-                ran,
-                self = this;
+            i,
+            bounds,
+            length,
+            ran,
+            self = this;
             
             /*
              * Set select time (see unselect function)
@@ -756,9 +776,9 @@
             if (ran) {
                 
                 var btn,
-                    pn = new msp.Panel('s'), // Create new South panel
-                    ctn = pn.add(),
-                    extent = feature.geometry.getBounds().clone(); // Add container within panel
+                pn = new msp.Panel('s'), // Create new South panel
+                ctn = pn.add(),
+                extent = feature.geometry.getBounds().clone(); // Add container within panel
 
                 /*
                  * Set container content
@@ -799,12 +819,12 @@
                     activable:true,
                     scope:self,
                     actions:[
-                        {
-                            cssClass:"actnnw icnzoom",
-                            callback:function(btn) {
-                                msp.Map.zoomTo(extent);
-                            }
+                    {
+                        cssClass:"actnnw icnzoom",
+                        callback:function(btn) {
+                            msp.Map.zoomTo(extent);
                         }
+                    }
                     ],
                     e:{
                         feature:feature

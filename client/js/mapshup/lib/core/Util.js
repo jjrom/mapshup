@@ -254,7 +254,7 @@
         showPopupImage:function(href, title) {
 
             /*
-             * jPopupImage reference
+             * Popup reference
              */
             var popup = new msp.Popup({modal:true,resize:false,expand:true,noHeader:true}),
                 image = new Image();
@@ -330,6 +330,102 @@
                 popup.show();
             });
 
+        },
+        
+        /**
+         * Add a "display video" action to the given jquery 'a'
+         * A click on 'a' will open the within within a fullscreen popup
+         * 
+         * @input video : object describing video i.e. 
+         *                  {
+         *                      title://Video title
+         *                      url://url to the video
+         *                      type://video type - one of mp4, ogg or webm
+         *                      img://url to an image
+         *                      w://width of the player (default 640)
+         *                      h: height of the player (default 264)
+         *                  }
+         *                     
+         */
+        showPopupVideo: function(video) {
+            
+            /*
+             * Popup reference
+             */
+            var type,w,h,img,codec,content,
+                popup = new msp.Popup({modal:true,resize:false,expand:true,noHeader:true});
+
+            /*
+             * Paranoid mode
+             */
+            video = video || {};
+            if (!video.url) {
+                this.message(this._("Error : url is not defined"));
+                return false;
+            }
+            
+            /*
+             * Initialize default values
+             */
+            w = video.w || 640;
+            h = video.h || 264;
+            img = video.img || "";
+            type = video.type;
+            
+            /*
+             * Try to guess the video type from url if not specified
+             */
+            if (!type) {
+                type = video.url.substring(video.url.length - 3,video.url.length).toLowerCase();
+            }
+            
+            /*
+             * Get codec from type
+             */
+            switch (type) {
+                case "ogg":
+                    codec = "video/ogg";
+                    break;
+                case "webm":
+                    codec = "video/webm";
+                    break;
+                default:
+                    codec = "video/mp4";
+                    break;
+            };
+  
+            /*
+             * Show parent Mask
+             */
+            popup.$m.show();
+
+            /*
+             * Create videocontent
+             * See http://camendesign.com/code/video_for_everybody for more information
+             */
+             content = '<video width="'+w+'" height="'+h+'" controls>'
+                +'<source src="'+video.url+'" type="'+codec+'" />'
+                +'<object width="'+w+'" height="'+h+'" type="application/x-shockwave-flash" data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">'
+                +'<param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" />'
+                +'<param name="allowfullscreen" value="true" />'
+                +'<param name="flashvars" value="controlbar=over&amp;image='+img+'&amp;file='+video.url+'" />'
+                +'<img src="'+img+'" width="'+w+'" height="'+h+'" alt="'+video.title+'" title="'+video.title+'"/>'
+                +'</object>'
+                +'</video>'
+                +'<p class="vjs-no-video"><a href="'+video.url+'" target="_blank">'+this._("Download Video")+'</a></p>'
+                +'</div>';
+            popup.$b.html('<div class="imageContent"><div class="padded">'+content+'</div></div>');
+            popup.$d.css({
+                'left':(window.innerWidth - popup.$d.width()) / 2,
+                'top':(window.innerHeight - popup.$d.height()) / 2
+            });
+
+            /*
+             * Show popup image
+             */
+            popup.show();
+
+            return true;
         },
         
         /**

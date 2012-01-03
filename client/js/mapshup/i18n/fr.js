@@ -67,6 +67,7 @@
     i["Error : read error"]="Erreur : erreur de lecture";
     i["Error : registering is currently unavailable"]="Erreur : l'enregistrement est désactivé";
     i["Error : this file type is not allowed"]="Erreur : ce format de fichier n'est pas accepté";
+    i["Error : url is not defined"]="Erreur : l'url est indéfinie";
     i["Error performing GetCapabilities operation"]="Erreur de l'opération GetCapabilities";
     i["Error performing DescribeFeatureType operation"]="Erreur de l'opération DescribeFeatureType";
     i["Expected format is YYYY-MM-DD for a single date or YYYY-MM-DD/YYYY-MM-DD for a date interval"]="Le format attendu est AAAA-MM-JJ pour une date seule ou AAAA-MM-JJ/AAAA-MM-JJ pour un intervalle";
