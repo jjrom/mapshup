@@ -415,21 +415,21 @@
                 $info = $('.info', self.$b);
                 
                 /*
+                 * Add a thumb div container
+                 */
+                self.$b.prepend('<div class="thumb"></div>');
+
+                /*
+                 * Get a unique id for jquery click action
+                 */
+                var id,
+                    content = '<img src="'+thumb+'" class="padded">',
+                    $thumb = $('.thumb', self.$b);
+                    
+                /*
                  * Display thumbnail
                  */
                 if (thumb) {
-                    
-                    /*
-                     * Add a thumb div container
-                     */
-                    self.$b.prepend('<div class="thumb"></div>');
-                    
-                    /*
-                     * Get a unique id for jquery click action
-                     */
-                    var id,
-                        content = '<img src="'+thumb+'" class="padded">',
-                        $thumb = $('.thumb', self.$b);
                     
                     /*
                      * Display quicklook on popup if defined
@@ -560,7 +560,7 @@
                                     /*
                                      * Special case for photos array
                                      * No tab is created but instead a photo gallery
-                                     * is displayed within the west panel
+                                     * is displayed
                                      */
                                     if (kk === 'photo') {
                                         for (i = 0, l = v[kk].length; i < l; i++) {
