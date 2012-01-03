@@ -627,7 +627,7 @@
              * Flags noDeletionCheck and forceInitialized are set to true
              */
             if (context.hasOwnProperty('add')) {
-                var layers = msp.Util.unserialize(unescape(context.add));
+                var layers = msp.Util.unserialize(decodeURIComponent(context.add));
                 for (i = 0, l = layers.length; i < l; i++) {
                     layer = this.addLayer(layers[i], {
                         noDeletionCheck:true,
@@ -640,7 +640,7 @@
              * Remove layers
              */
             if (context.hasOwnProperty('remove')) {
-                var mspIDs = msp.Util.unserialize(unescape(context.remove));
+                var mspIDs = msp.Util.unserialize(decodeURIComponent(context.remove));
                 for (i = 0, l = mspIDs.length; i < l; i++) {
                     layer = this.Util.getLayerByMspID(mspIDs[i]);
                     if (layer) {
@@ -703,7 +703,7 @@
              * Hide layers
              */
             if (context.hasOwnProperty('hiddens')) {
-                var hiddens = msp.Util.unserialize(unescape(context.hiddens));
+                var hiddens = msp.Util.unserialize(decodeURIComponent(context.hiddens));
                 for (i = 0, l = hiddens.length; i < l; i++) {
                     layer = this.Util.getLayerByMspID(hiddens[i]);
                     if (layer) {
@@ -717,7 +717,7 @@
              */
             if (context.hasOwnProperty('searchs')) {
 
-                var searchs = msp.Util.unserialize(unescape(context.searchs));
+                var searchs = msp.Util.unserialize(decodeURIComponent(context.searchs));
 
                 /*
                  * Roll over searchs
@@ -899,11 +899,11 @@
             return "&lon=" + center.lon
             +"&lat=" + center.lat
             +"&zoom=" + this.map.getZoom()
-            +"&add=" + escape(add+"]")
-            +"&remove=" + escape(remove+"]")
-            +"&searchs=" + escape(msp.Util.serialize(searchs))
+            +"&add=" + encodeURIComponent(add+"]")
+            +"&remove=" + encodeURIComponent(remove+"]")
+            +"&searchs=" + encodeURIComponent(msp.Util.serialize(searchs))
             +"&bg=" + this.map.baseLayer["_msp"].mspID
-            +"&hiddens=" + escape(hiddens+"]");
+            +"&hiddens=" + encodeURIComponent(hiddens+"]");
 
         },
         
