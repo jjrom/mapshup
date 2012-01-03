@@ -559,7 +559,7 @@ input {
     text-shadow: black 1px 1px 3px;
     color:#fff;
 }
-.active {
+.active, .selected {
     background-color:#f3961c;
     text-shadow: black 1px 1px 3px;
     color:#fff;

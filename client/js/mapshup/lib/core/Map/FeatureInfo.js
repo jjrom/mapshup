@@ -595,7 +595,7 @@
                                     id = msp.Util.getId() ;
                                     
                                     if (self.$t.is(':empty')) {
-                                        self.$t.html('<div id="pfit"><ul><li><a href="#pfitm">'+msp.Util._("Description")+'</a></li></ul></div>');
+                                        self.$t.html('<div id="pfit"><ul><li><a href="#pfitm" class="selected">'+msp.Util._("Description")+'</a></li></ul></div>');
                                     }
                                     $('ul', self.$t).append('<li><a href="#' + id + '">' + msp.Util._(kk) + '</a></li>');
 
