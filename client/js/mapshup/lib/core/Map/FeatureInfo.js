@@ -369,7 +369,10 @@
          */
         this.setBody = function(feature) {
             
-            var $info,
+            var id,
+                content,
+                $info,
+                $thumb,
                 layerType,
                 self = this,
                 typeIsUnknown = true,
@@ -380,6 +383,11 @@
              * Clean body
              */
             self.$b.empty();
+            
+            /*
+             * Clean tab
+             */
+            self.$t.empty();
             
             /*
              * Roll over layer types to detect layer features that should be
@@ -409,27 +417,27 @@
             if (typeIsUnknown) {
                 
                 /*
-                 * Initialize $b content
+                 * Initialize $b content.
+                 * 
+                 * Structure :
+                 *  <div id="#fitm">
+                 *      <div class="thumb"></div>
+                 *      <div class="info"></div>
+                 *  </div>
                  */
-                self.$b.html('<div class="info"><table></table></div>');
+                self.$b.html('<div id="fitm"><div class="thumb"></div><div class="info"><table></table></div></div>');
                 $info = $('.info', self.$b);
+                $thumb = $('.thumb', self.$b);
                 
-                /*
-                 * Add a thumb div container
-                 */
-                self.$b.prepend('<div class="thumb"></div>');
-
-                /*
-                 * Get a unique id for jquery click action
-                 */
-                var id,
-                    content = '<img src="'+thumb+'" class="padded">',
-                    $thumb = $('.thumb', self.$b);
-                    
                 /*
                  * Display thumbnail
                  */
                 if (thumb) {
+                    
+                    /*
+                     * Set content for $thumb with the thumbnail url
+                     */
+                    content = '<img src="'+thumb+'" class="padded">';
                     
                     /*
                      * Display quicklook on popup if defined
@@ -581,20 +589,20 @@
                                     }
 
                                     /*
-                                     * Create a tab container eate it
+                                     * Create a tab container
                                      * 
                                      */
                                     id = msp.Util.getId() ;
                                     
                                     if (self.$t.is(':empty')) {
-                                        self.$t.html('<div id="fitabs"><ul><li><a href="#fimain">'+msp.Util._("Description")+'</a></li></ul></div>');
+                                        self.$t.html('<div id="fitabs"><ul><li><a href="#fitm">'+msp.Util._("Description")+'</a></li></ul></div>');
                                     }
                                     $('ul', self.$t).append('<li><a href="#' + id + '">' + msp.Util._(kk) + '</a></li>');
 
                                     /*
                                      * Create a specific tab
                                      */
-                                    self.$d.append('<div id="'+id+'" class="noflw"><table></table></div>');
+                                    self.$b.append('<div id="'+id+'" class="noflw"><table></table></div>');
 
                                     /*
                                      * Table reference
