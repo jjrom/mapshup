@@ -207,7 +207,7 @@
                             }
                             var innerHTML = "";
                             if (obj.geonames[i]['summary'] !== undefined) {
-                                innerHTML = '<p>'+unescape(obj.geonames[i]['summary'])+'</p><br/>';
+                                innerHTML = '<p>'+decodeURIComponent(obj.geonames[i]['summary'])+'</p><br/>';
                             }
                             if (obj.geonames[i]['thumbnailImg']) {
                                 var thumbnailURL = obj.geonames[i]['thumbnailImg'];
@@ -219,7 +219,7 @@
                             var pointLatLon = msp.Map.Util.d2p(new OpenLayers.Geometry.Point(obj.geonames[i]['lng'],obj.geonames[i]['lat'])),
                                 feature = new OpenLayers.Feature.Vector(pointLatLon,
                             {
-                                name:unescape(obj.geonames[i]['title']),
+                                name:decodeURIComponent(obj.geonames[i]['title']),
                                 url:"http://"+obj.geonames[i]['wikipediaUrl'],
                                 description:innerHTML
                             });

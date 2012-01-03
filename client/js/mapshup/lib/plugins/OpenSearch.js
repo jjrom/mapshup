@@ -309,7 +309,7 @@
                      bbox:bbox,
                      searchservice:scope.activeStrategy.description.name,
                      searchterms:searchTerms,
-                     searchurl:escape(searchUrl)
+                     searchurl:encodeURIComponent(searchUrl)
                 });
             }
                 

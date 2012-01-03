@@ -121,7 +121,7 @@
 
             if (layerDescription.srs !== projection.projCode) {
                 OpenLayers.Request.GET({
-                    url:msp.Util.getAbsoluteUrl(msp.Config["general"].reprojectionServiceUrl)+msp.Util.abc+"&url="+escape(layerDescription.url)+"&layers="+escape(layerDescription.layers)+"&srs="+layerDescription.srs,
+                    url:msp.Util.getAbsoluteUrl(msp.Config["general"].reprojectionServiceUrl)+msp.Util.abc+"&url="+encodeURIComponent(layerDescription.url)+"&layers="+encodeURIComponent(layerDescription.layers)+"&srs="+layerDescription.srs,
                     callback: function(request) {
                         var JSONReader = new OpenLayers.Format.JSON(),
                             JSON = JSONReader.read(request.responseText);

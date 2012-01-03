@@ -667,7 +667,7 @@
             var $d,
                 id = this.getId(),
                 parent = this.$$('#message', msp.$container).show(),
-                m = "&nbsp;"+unescape(content)+"&nbsp;";
+                m = "&nbsp;"+decodeURIComponent(content)+"&nbsp;";
 
             /*
              * Add a new message
@@ -1119,7 +1119,7 @@
          * @input {String} returntype : force HTTP header to the return type //optional
          */
         proxify: function(url, returntype) {
-            return this.getAbsoluteUrl(msp.Config["general"].proxyUrl)+this.abc+(returntype ? "&returntype="+returntype : "")+"&url="+escape(url);
+            return this.getAbsoluteUrl(msp.Config["general"].proxyUrl)+this.abc+(returntype ? "&returntype="+returntype : "")+"&url="+encodeURIComponent(url);
         },
         
         /**

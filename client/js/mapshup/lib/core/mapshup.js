@@ -352,7 +352,7 @@
              *
              *
              */
-            mspIDs = urlParameters && urlParameters.remove ? self.unserialize(unescape(urlParameters.remove)) : [];
+            mspIDs = urlParameters && urlParameters.remove ? self.unserialize(decodeURIComponent(urlParameters.remove)) : [];
 
             /*
              * Roll over config layers

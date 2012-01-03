@@ -282,13 +282,13 @@
                 /*
                  * New key/value pair for item[i]
                  */
-                serializedParams += "&" + escape(this.items[i].id) + "=";
+                serializedParams += "&" + encodeURIComponent(this.items[i].id) + "=";
 
                 /*
                  * Value is defined at item level
                  */
                 if (this.items[i].value !== undefined) {
-                    serializedParams += escape(this.items[i].value);
+                    serializedParams += encodeURIComponent(this.items[i].value);
                 }
                 /*
                  * No value defined at item level => get the son values
@@ -302,7 +302,7 @@
                         if (j>0) {
                             serializedParams += "|";
                         }
-                        serializedParams += escape(this.items[i].son[j].value);
+                        serializedParams += encodeURIComponent(this.items[i].son[j].value);
                     }
                 }
             }

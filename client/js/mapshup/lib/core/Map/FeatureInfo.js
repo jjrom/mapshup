@@ -478,7 +478,7 @@
                                 type:"Image",
                                 title:feature.attributes['identifier'],
                                 /* If removeBorderServiceUrl is defined => use it :) */
-                                url:msp.Config["general"].removeBlackBorderServiceUrl != null ? msp.Config["general"].removeBlackBorderServiceUrl + escape(feature.attributes['quicklook']) + msp.Util.abc : feature.attributes['quicklook'],
+                                url:msp.Config["general"].removeBlackBorderServiceUrl != null ? msp.Config["general"].removeBlackBorderServiceUrl + encodeURIComponent(feature.attributes['quicklook']) + msp.Util.abc : feature.attributes['quicklook'],
                                 bbox:feature.geometry.getBounds().toBBOX(),
                                 /* By default, quicklooks are added to the "Quicklooks" group */
                                 groupName:"Quicklooks"

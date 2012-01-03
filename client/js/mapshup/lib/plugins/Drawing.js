@@ -340,7 +340,7 @@
                 async:true,
                 type:"POST",
                 data:{
-                    s:escape(kml)
+                    s:encodeURIComponent(kml)
                 },
                 dataType:"json",
                 success: function(data) {

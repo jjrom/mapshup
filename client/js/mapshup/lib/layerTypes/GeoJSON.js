@@ -97,7 +97,7 @@
              * If urlModifier is set, add it before layerDescription.url
              * (See Pleiades.js layerType to understand why)
              */
-            var url = urlModifier ? urlModifier + escape(layerDescription.url + msp.Util.abc) : layerDescription.url;
+            var url = urlModifier ? urlModifier + encodeURIComponent(layerDescription.url + msp.Util.abc) : layerDescription.url;
 
             /**
              * Retrieve FeatureCollection from server

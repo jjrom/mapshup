@@ -347,7 +347,7 @@
             /*
              * Initialize connector searchUrl if not defined
              */
-            connector.searchUrl = connector.searchUrl || msp.Util.getAbsoluteUrl(msp.Util.repareUrl(connector.options.url)) + "catalogUrl=" + escape(_msp.layerDescription.url) + "&";
+            connector.searchUrl = connector.searchUrl || msp.Util.getAbsoluteUrl(msp.Util.repareUrl(connector.options.url)) + "catalogUrl=" + encodeURIComponent(_msp.layerDescription.url) + "&";
 
             /*
              * Initialize an empty searchContext

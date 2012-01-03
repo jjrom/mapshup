@@ -100,7 +100,7 @@ msp.plugins["Print"] = {
 
         // hand off the list to our server-side script, which will do the heavy lifting
         var tiles_json = JSON.stringify(tiles);
-        var printparams = 'width='+size.w + '&height='+size.h + '&tiles='+escape(tiles_json) ;
+        var printparams = 'width='+size.w + '&height='+size.h + '&tiles='+encodeURIComponent(tiles_json) ;
 
         OpenLayers.Request.POST(
         {

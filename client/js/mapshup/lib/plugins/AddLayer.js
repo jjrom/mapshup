@@ -369,7 +369,7 @@
             var scope = this;
             
             msp.Util.ajax({
-                url:msp.Util.getAbsoluteUrl(scope.options.magicServiceUrl)+msp.Util.abc+"&url="+escape(msp.Util.repareUrl($.trim(url))),
+                url:msp.Util.getAbsoluteUrl(scope.options.magicServiceUrl)+msp.Util.abc+"&url="+encodeURIComponent(msp.Util.repareUrl($.trim(url))),
                 async:true,
                 dataType:"json",
                 success:function(result){
