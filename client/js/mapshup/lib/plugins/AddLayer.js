@@ -493,6 +493,8 @@
                     id = msp.Util.getId();
                     ids += ids !== "" ? "," + id : id;
                 }
+                
+                return true;
 
             });
 
@@ -584,7 +586,7 @@
             tld,
             predefined,
             update = true;
-                 
+             
             /*
              * Are discarded :
              *  - empty layerDescription

@@ -160,44 +160,37 @@ if (abcCheck($_REQUEST) && $url != '') {
             $infos = getLayerInfosFromType($type, $doc);
             
             /*
-             * Catalog special case
-             */
-            $types = preg_split('/_/', $type);
-            $type = $types[0];
-            if (isset($types[1])) {
-                $extras = array(
-                    'connectorName' => $types[1]
-                );
-            }
-
-            /*
              * Remove temporary file
              */
             unlink($tmpFile);
         }
     }
 
-    $json = array(
+    
+    /*
+     * Push items
+     */
+    $item = array(
         'url' => $urlNoParameters != null ? $urlNoParameters : $url,
         'type' => $type,
         'id' => $id,
         'content_type' => $contentType,
         'extras' => $extras
     );
-    
+
     /*
-     * Additionnal $infos keys/values
+     * Infos keys/values
      */
     if (isset($infos)) {
         foreach(array_keys($infos) as $key) {
             if ($infos[$key] != null) {
                 $item[$key] = $infos[$key];
             }
-        
         }
     }
+    
 
-    echo json_encode($json);
+    echo json_encode($item);
 } else {
     echo '{"error":{"message":"Error : cannot perform action"}}';
 }

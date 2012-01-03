@@ -105,12 +105,33 @@ function getLayerInfosFromType($type, $doc) {
      * OpenSearch catalog
      */
     if ($type == "Catalog_OpenSearch") {
+        
+        // Change the type to "Catalog" and extract the connector name
+        $infos['type'] = "Catalog";
+        $infos['extras'] = array(
+            'connectorName' => "OpenSearch"
+        );
         $infos['title'] = $doc->getElementsByTagName('ShortName')->item(0)->nodeValue;
         $infos['description'] = $doc->getElementsByTagName('Description')->item(0)->nodeValue;
+        
         return $infos;
     }
 
     return $infos;
+}
+
+/**
+ * Assume input type is Catalog_XXXX,
+ * 
+ */
+function getConnectorName($type) {
+    $types = preg_split('/_/', $type);
+    $type = $types[0];
+    if (isset($types[1])) {
+        $extras = array(
+            'connectorName' => $types[1]
+        );
+    }
 }
 
 /**
