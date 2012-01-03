@@ -502,7 +502,10 @@
                      * First check if there is no error
                      * Otherwise, display results
                      */
-                    if (data.error) {
+                    if (!data) {
+                        msp.Util.message(layer.name + " : empty resut", -1);
+                    }
+                    else if (data.error) {
                         msp.Util.message(layer.name + " : " + data.error["message"], -1);
                     }
                     else {
