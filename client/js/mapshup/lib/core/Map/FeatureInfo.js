@@ -573,7 +573,7 @@
                                     if (kk === 'photo') {
                                         for (i = 0, l = v[kk].length; i < l; i++) {
                                             id = msp.Util.getId();
-                                            $thumb.append('<a href="'+v[kk][i]["url"]+'" title="'+v[kk][i]["name"]+'" id="'+id+'"><img height="50px" width="50px" src="'+v[kk][i]["url"]+'"/></a>');
+                                            $thumb.append('<a href="'+v[kk][i]["url"]+'" title="'+v[kk][i]["name"]+'" id="'+id+'" class="image"><img height="50px" width="50px" src="'+v[kk][i]["url"]+'"/></a>');
                                             /*
                                              * Popup image
                                              */
