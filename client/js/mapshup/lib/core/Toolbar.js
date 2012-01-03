@@ -304,6 +304,13 @@
          * Remove button
          */
         this.remove = function(btn) {
+            
+            /*
+             * Deactivate button
+             */
+            btn.activate(false);
+            
+            
             for (var i = 0, l = this.items.length ; i < l; i++) {
                 if (this.items[i].id === btn.id) {
                     this.items.splice(i,1);

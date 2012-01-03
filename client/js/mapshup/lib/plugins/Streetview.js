@@ -310,8 +310,9 @@
                 event,
                 scope = btn.scope,
                 obj = scope.svw.msp;
+               
             /*
-             * First remove the google streetview events
+             * Remove the google streetview events
              */
             for (i = 0, l = obj.events.length; i < l; i++) {
                 event = obj.events[i];
