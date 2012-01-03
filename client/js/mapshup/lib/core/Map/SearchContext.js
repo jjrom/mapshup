@@ -498,6 +498,8 @@
                 dataType:"json",
                 success: function(data) {
 
+                    var l;
+                    
                     /*
                      * First check if there is no error
                      * Otherwise, display results
@@ -528,7 +530,9 @@
                         /*
                          * Be kind with users !
                          */
-                        if (!features || features.length === 0) {
+                        l = features.length;
+                        
+                        if (!features || l === 0) {
                             msp.Util.message(msp.Util._(layer.name) + " : " + msp.Util._("No results"));
                         }
                         else {
@@ -550,6 +554,13 @@
                         }
 
                         /*
+                         * Avoid case where server don't take care of numRecordsPerPage value
+                         */
+                        if (l > self.numRecordsPerPage) {
+                            self.numRecordsPerPage = l;
+                        }
+                        
+                        /*
                          * See msp.Map.loadContext for explanation
                          */
                         layer["_msp"].zoomOnAfterLoad = true;
@@ -563,7 +574,7 @@
                          * Update the totalResults value
                          * If data.totalResults is not set then set totalResults to the number of features
                          */
-                        layer["_msp"].searchContext.totalResults = data.hasOwnProperty("totalResults") ? data.totalResults : features.length;
+                        layer["_msp"].searchContext.totalResults = data.hasOwnProperty("totalResults") ? data.totalResults : l;
 
                         /*
                          * Finally tells callback function that the search was

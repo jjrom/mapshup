@@ -722,7 +722,7 @@
                     /*
                      * Hide or display "next" action
                      */
-                    (sc.nextRecord < sc.totalResults) ? $('#'+nid).show() : $('#'+nid).hide();
+                    (sc.nextRecord + sc.numRecordsPerPage < sc.totalResults) ? $('#'+nid).show() : $('#'+nid).hide();
 
                     /*
                      * Hide or display "previous" action

@@ -167,6 +167,13 @@
                                         type:"date"
                                     });
                                 }
+                                
+                                /*
+                                 * If value = count then this should replace the numRecordsPerPage
+                                 */
+                                if (kvps[key].indexOf('{count') === 1) {
+                                    // TODO : replace "numRecordsPerPage" by "key" 
+                                }
                             }
                             
                             /*
