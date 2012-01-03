@@ -68,7 +68,7 @@ body {
 }
 
 a {
-    color:#666;
+    color:#f3961c;
     text-decoration:none;
     padding:5px;
 }
@@ -397,9 +397,6 @@ input {
 .pne {
     color:#fff;
 }
-.pne a {
-    color:#f3961c;
-}
 .pne input {
     width:240px;
 }
@@ -563,7 +560,6 @@ input {
     color:#fff;
 }
 .active {
-    /*background-color:#f3961c;*/
     background-color:#f3961c;
     text-shadow: black 1px 1px 3px;
     color:#fff;
