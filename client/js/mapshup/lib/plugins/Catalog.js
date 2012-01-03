@@ -641,7 +641,8 @@
                 pid = msp.Util.getId(),
                 nid = msp.Util.getId(),
                 sc = layer["_msp"].searchContext,
-                nbOfFeatures = layer.features.length;
+                features = msp.Map.Util.getFeatures(layer), // Important ! Get unclusterized features
+                nbOfFeatures = features.length;
 
                 /*
                  * Create the east side panel structure:
@@ -674,10 +675,10 @@
                      * Roll over features
                      */ 
                     for (i = 0, nbOfFeatures; i < nbOfFeatures; i++) {
-                        a = layer.features[i].attributes;
+                        a = features[i].attributes;
                         html += '<tr class="hover" idx="'+i+'">';
                         for (j = 0, m = attributes.length; j < m; j++) {
-                            a = layer.features[i].attributes[attributes[j].value];
+                            a = features[i].attributes[attributes[j].value];
                             if (attributes[j].title === "Preview") {
                                 html += '<td><img src="' + (a ? a : msp.Util.getImgUrl('nodata.png')) + '"/></td>'
                             }
@@ -731,27 +732,29 @@
                     /*
                      * Select feature on click
                      */
-                    $('tbody tr', table).click(function(){
+                    (function($d,features) {
+                        $d.click(function(){
 
-                        /*
-                         * Remove active class for every <tr>
-                         */
-                        $('tr', table).removeClass('active');
+                            /*
+                             * Remove active class for every <tr>
+                             */
+                            $('tr', table).removeClass('active');
 
-                        /*
-                         * Set this <tr> active and select the current
-                         * feature. Note that the 'force' input parameter
-                         * is set to true
-                         */
-                        var f = layer.features[$(this).addClass('active').attr('idx')];
+                            /*
+                             * Set this <tr> active and select the current
+                             * feature. Note that the 'force' input parameter
+                             * is set to true
+                             */
+                            var f = features[$(this).addClass('active').attr('idx')];
 
-                        /*
-                         * Zoom on feature and select it
-                         */
-                        msp.Map.zoomTo(f.geometry.getBounds());
-                        msp.Map.featureInfo.select(f, true);
+                            /*
+                             * Zoom on feature and select it
+                             */
+                            msp.Map.zoomTo(f.geometry.getBounds());
+                            msp.Map.featureInfo.select(f, true);
 
-                    });
+                        });
+                    })($('tbody tr', table),features);
 
                     /*
                      * Compute size

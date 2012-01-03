@@ -103,6 +103,61 @@
         return Map.map.getControlsBy("id", id)[0];
     };
     
+    
+    /**
+     * Return an array of unclusterized features
+     * 
+     * @input layer : layer containing clusterizes or unclusterized features
+     * 
+     */
+    Map.Util.getFeatures = function(layer) {
+
+        var feature,
+            i,
+            j,
+            l,
+            m,
+            features = [];
+        
+        /*
+         * Roll over layer features
+         */
+        if (layer && layer.features) {
+            for (i = 0, l = layer.features.length; i < l; i++) {
+
+                /*
+                 * Get feature
+                 */
+                feature = layer.features[i];
+
+                /*
+                 * If feature is a cluster, roll over features
+                 * within this cluster
+                 */
+                if (feature.cluster) {
+
+                    /*
+                     * Roll over cluster features
+                     */
+                    for (j = 0, m = feature.cluster.length; j < m; j++) {
+
+                        /*
+                         * Add a new entry to features array
+                         */
+                        features.push(feature.cluster[j]);
+
+                    }
+                }
+                else {
+                        features.push(feature);
+                }
+            }
+        }
+
+        return features;
+
+    };
+    
     /**
      * mspID is an unique identifier used to identify
      * unambiguisly a specific layer
