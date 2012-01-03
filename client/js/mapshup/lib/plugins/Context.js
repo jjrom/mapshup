@@ -101,6 +101,7 @@
                icon:"save.png",
                tt:"Save this context",
                callback:self.save,
+               activable:false,
                scope:self
             });
             
