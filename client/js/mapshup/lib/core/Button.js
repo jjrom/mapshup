@@ -230,7 +230,14 @@
                 return false;
 
             });
-
+            
+            /*
+             * Set button inactive if added to a toolbar with an already visible panel
+             */
+            if (self.container && self.container.pn.isVisible) {
+                self.$d.addClass("inactive");
+            }
+            
             return this;
         };
         
