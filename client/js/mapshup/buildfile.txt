@@ -83,4 +83,4 @@ lib/plugins/Navigation.js
 #lib/plugins/UserManagement_SearchHistory.js
 #lib/plugins/Welcome.js
 lib/plugins/Wikipedia.js
-#lib/plugins/WorldGrid.js
+lib/plugins/WorldGrid.js
