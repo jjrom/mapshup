@@ -848,7 +848,7 @@
                 return false;
             }
             for (var i=0;i<3;i++) {
-                if (!this.isNumeric(arr[i])) {
+                if (!$.isNumeric(arr[i])) {
                     return false;
                 }
             }
@@ -1021,17 +1021,6 @@
 
         },
         
-        /**
-         * Check if a string is a valid numeric value
-         */
-        isNumeric: function (str) {
-            if (!str || str.length === 0) {
-                return false;
-            }
-            var pattern = /^-{0,1}\d*\.{0,1}\d+$/;
-            return pattern.test(str);
-        },
-
         /**
          * Check if a string is a valid time i.e. HH:mm:ss or HH:mm:ssZ
          */
