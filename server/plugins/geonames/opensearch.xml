@@ -4,5 +4,5 @@
 	<LongName>Geonames</LongName>
 	<Description>Geonames</Description>
         <Image height="32" width="32" type="image/x-icon">geonames.png</Image>
-	<Url type="application/json" template="http://engine.mapshup.info/server/plugins/geonames/search.php?q={searchTerms}&amp;lang={lang}"/>
+	<Url type="application/json" template="http://engine.mapshup.info/s/plugins/geonames/search.php?q={searchTerms}&amp;lang={lang}"/>
 </OpenSearchDescription>
