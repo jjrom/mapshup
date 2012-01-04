@@ -111,8 +111,8 @@ then
             CONFIG_FILE=`basename $CONFIG`
             
             # Copy index*.html files and replace __DEVEL__.js with input config file
-            cat $EXPORTDIR/index_prod.html | sed s/__DEVEL__\.js/$CONFIG_FILE/g > $TARGET/index.html
-            cat $EXPORTDIR/index_prodt.html | sed s/__DEVEL__\.js/$CONFIG_FILE/g > $TARGET/indext.html
+            cat $EXPORTDIR/index_prod.html | sed s/__DEVEL__\.js/$CONFIG_FILE/g > $TARGET/tmp_index.html
+            cat $EXPORTDIR/index_prodt.html | sed s/__DEVEL__\.js/$CONFIG_FILE/g > $TARGET/tmp_indext.html
         else
             # Copy index*.html files
             cat $EXPORTDIR/index_prod.html | grep -v "__DEVEL__\.js" > $TARGET/index.html
@@ -120,8 +120,8 @@ then
         fi
         
         # Replace theme name in index files
-        sed -i s/__THEME__/$THEME/g $TARGET/index.html
-        sed -i s/__THEME__/$THEME/g $TARGET/indext.html
+        sed s/__THEME__/$THEME/g $TARGET/tmp_index.html > $TARGET/tmp_index.html
+        sed s/__THEME__/$THEME/g $TARGET/tmp_indext.html > $TARGET/tmp_indext.html
 
         /bin/cp -Rf $EXPORTDIR/blank.html $TARGET/
         /bin/cp -Rf $EXPORTDIR/error.html $TARGET/
@@ -237,7 +237,9 @@ echo "Clean..."
 /bin/rm -Rf $TARGET/js/mapshup/theme/$THEME/mapshupt.css.tmp
 /bin/rm -Rf $TARGET/js/mapshup/lib
 /bin/rm -Rf $TARGET/js/mapshup/theme/$THEME/plugins
-#/bin/rm -Rf /tmp/_mspexport
+/bin/rm -Rf $TARGET/tmp_index.html
+/bin/rm -Rf $TARGET/tmp_index.html
+/bin/rm -Rf /tmp/_mspexport
 mv $TARGET/js/mapshup/_mapshup.js $TARGET/js/mapshup/mapshup.js
 mv $TARGET/js/mapshup/_mapshupt.js $TARGET/js/mapshup/mapshupt.js
 
