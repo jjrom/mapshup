@@ -291,11 +291,13 @@
      *      (The Following should not be overrided)
      *      loginUrl: "/plugins/usermanagement/login.php";
      */
+    /*
     c.add("plugins",
     {
         name:"UserManagement"
     });
-
+    */
+   
     /**
      *  This plugin requires UserManagement plugin
      *  Options :
@@ -303,11 +305,12 @@
      *      historyUrl: "/plugins/usermanagement/navigationHistory.php";
      *      statsWMSUrl: "http://localhost/cgi-bin/mapserv?map=/Users/jrom/Documents/Devel/j_/src/server/plugins/logger/logger.map&LAYERS=countries&";
      */
+    /*
     c.add("plugins",
     {
         name:"UserManagement_NavigationHistory"
     });
-
+    */
     /**
      *  This plugin requires UserManagement plugin
      *  Options :
@@ -315,10 +318,11 @@
      *      historyUrl: "/plugins/usermanagement/searchHistory.php";
      *      trendsUrl: "/plugins/usermanagement/searchTrends.php";
      */
+    /*
     c.add("plugins", {
         name:"UserManagement_SearchHistory"
     });
-
+    */
     /*
      * Download plugin
      *  options:
@@ -373,7 +377,7 @@
         name:"GoogleEarth",
         options:{
             synchronizeWMS:false,
-            buildings:true
+            buildings:false
         }
     });
 
@@ -559,11 +563,6 @@
                     type:"WFS",
                     title:"PDC server",
                     url:"http://www.pdc.org/wfs/wfs/PDC_Active_Hazards_WFS?"
-                },
-                {
-                    type:"WFS",
-                    title:"Astrium WD Server",
-                    url:"http://wslabs.spotimage.com/geoserver/wfs?"
                 }
                 ]
             },
@@ -673,11 +672,12 @@
     /*
      * GetFeatureInfo plugin
      */
+    /*
     c.add("plugins",
     {
         name:"GetFeatureInfo"
     });
-
+    */
     /**
      * Geonames plugin
      * Options:
@@ -752,7 +752,7 @@
             url:"/plugins/routing/getShortestPath2.php?"
         }
     });
-
+    
     c.add("plugins",
     {
         name:"Catalog",
@@ -831,11 +831,12 @@
     /*
      * LocateMe plugin
      */
+    /*
     c.add("plugins",
     {
         name:"LocateMe"
     });
-
+    */
     /**
      * WorldGrid plugin
      * options: 
