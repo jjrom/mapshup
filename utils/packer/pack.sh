@@ -119,6 +119,10 @@ then
             cat $EXPORTDIR/index_prodt.html | grep -v "__DEVEL__\.js" > $TARGET/indext.html
         fi
         
+        # Replace theme name in index files
+        sed -i s/__THEME__/$THEME/g $TARGET/index.html
+        sed -i s/__THEME__/$THEME/g $TARGET/indext.html
+
         /bin/cp -Rf $EXPORTDIR/blank.html $TARGET/
         /bin/cp -Rf $EXPORTDIR/error.html $TARGET/
         /bin/cp -Rf $EXPORTDIR/welcome.html $TARGET/
