@@ -176,6 +176,9 @@
 
         },
 
+        /*
+         * Overide FeatureInfo setBody() function
+         */
         setFeatureInfoBody: function(feature, $d) {
 
             var i,l,tags,$tags;
@@ -206,6 +209,9 @@
             }
         },
 
+        /*
+         * OpenSearch description
+         */
         appendOpenSearchDescription: function(feature, id, $d) {
             $d.append('<a style="padding:5px 0px 0px 5px;" href="#" class="image '+id+'"><img src="'+feature.attributes['icon']+'" title="'+feature.attributes['name']+'"/></a>');
             (function(id, feature) {

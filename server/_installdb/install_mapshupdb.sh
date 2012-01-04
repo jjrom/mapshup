@@ -4,7 +4,7 @@
 db=mapshup
 superuser=postgres
 user=mspuser
-password=mspuser00
+password=m2siUdRpYY023
 
 ###### ADMIN ACCOUNT CREATION ######
 psql -U postgres -d template1 << EOF
@@ -12,11 +12,10 @@ CREATE USER $user WITH PASSWORD '$password' NOCREATEDB;
 EOF
 
 # POSTGIS path
-postgis=/usr/local/pgsql/share/contrib/postgis-1.5/postgis.sql
+postgis=/usr/share/postgresql/8.4/contrib/postgis-1.5/postgis.sql
 
 # Projections path
-projections=/usr/local/pgsql/share/contrib/postgis-1.5/spatial_ref_sys.sql
-
+projections=/usr/share/postgresql/8.4/contrib/postgis-1.5/spatial_ref_sys.sql
 
 # Make db POSTGIS compliant
 createdb $db -U $superuser --o $user

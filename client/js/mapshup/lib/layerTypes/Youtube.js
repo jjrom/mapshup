@@ -127,16 +127,22 @@
             return newLayer;
         },
 
-        appendOpenSearchDescription: function(feature, id, div) {
-            div.append('<a href="#" class="'+id+'"><b>'+feature.attributes['name'] + '</b></a><br/>');
+        /*
+         * OpenSearch description
+         */
+        appendOpenSearchDescription: function(feature, id, $d) {
+            $d.append('<a style="padding:5px 0px 0px 5px;" href="#" class="image '+id+'"><img class="square" src="'+feature.attributes['thumbnail']+'" title="'+feature.attributes['name']+'"/></a>');
             (function(id, feature) {
-                $('.'+id, '#jOpenSearchResult').click(function() {
+                $('.'+id, $d).click(function() {
                     Map.zoomTo(feature.geometry.getBounds());
                 });
             })(id, feature);
-            div.append('<div align="center"><img src="'+feature.attributes['thumbnail']+'"/></div>');
-        },
 
+        },
+        
+        /*
+         * Overide FeatureInfo setBody() function
+         */
         setFeatureInfoBody: function(feature, $d) {
 
             /*
@@ -144,7 +150,7 @@
              */
             if (feature.attributes["url"]) {
                 var vid = msp.Util.extractKVP(feature.attributes["url"]).v;
-                $d.append('<div class="thumb"><object width="425" height="250" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"><param value="http://www.youtube.com/v/'+vid+'&amp;feature=youtube_gdata_player" name="movie"><param value="transparent" name="wmode"><param value="true" name="allowfullscreen"><embed width="425" height="250" allowfullscreen="true" wmode="transparent" type="application/x-shockwave-flash" src="http://www.youtube.com/v/'+vid+'&amp;feature=youtube_gdata_player"></object></div>');
+                $d.append('<div class="thumb"><object width="250" height="250"><param value="http://www.youtube.com/v/'+vid+'&amp;feature=youtube_gdata_player" name="movie"><param value="transparent" name="wmode"><param value="true" name="allowfullscreen"><embed width="250" height="250" allowfullscreen="true" wmode="transparent" type="application/x-shockwave-flash" src="http://www.youtube.com/v/'+vid+'&amp;feature=youtube_gdata_player"></object></div>');
             }
 
         },
