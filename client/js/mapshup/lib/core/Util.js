@@ -242,7 +242,7 @@
                     if (typeof action === "function") {
                         action();
                     }
-                    msp.Util.hide(div);
+                    div.hide();
                 });
             }
         },
@@ -797,24 +797,6 @@
         },
         
         /**
-         * Hide a div
-         *
-         * @input {jquery DOM Object} div : div to hide
-         */
-        hide:function(div) {
-            
-            /*
-             * Only hide div if it is visible
-             */
-            if (div && div.is(':visible')) {
-                div.hide();             
-                return true;
-            }
-            
-            return false;
-        },
-
-        /**
          * Remove the < and > character to avoid script injection
          * // 60 3C && // 62 3E
          */
@@ -1278,23 +1260,6 @@
                 return str.substring(0,halfsize-1)+"..."+str.substring(size-halfsize+3);
             }
             return str;
-        },
-        
-        /**
-         * Show div
-         *
-         * @input {jquery DOM Object} div : div to show
-         */
-        show:function(div) {
-            
-            /*
-             * Only show div if not visible
-             */
-            if (div && !div.is(':visible')) {
-                div.show();
-                return true;
-            }
-            return false;
         },
         
         /**
