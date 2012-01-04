@@ -271,7 +271,6 @@
                 id:id,
                 pn:this,
                 $d:msp.Util.$$('#'+id, this.$d).css({
-                    'display':'none',
                     'padding':padding
                 }) // by default newly created div is not visible
             }
@@ -626,12 +625,41 @@
             /*
              * Hide all divs
              */
-            this.$d.children().hide();
+            this.$d.children().each(function(index) {
+                
+                /*
+                 * This is bit tricky.
+                 * If panel item has a 'nodisplaynone' class, then the
+                 * item is not hidden using jquery .hide() function, but
+                 * instead it's position is set to somewhere outside the
+                 * window display.
+                 * This avoid the 'display:none' bug when hiding GoogleEarth plugin
+                 * iframe for example
+                 */
+                var $t = $(this);
+                $t.hasClass("nodisplaynone") ? $t.css({
+                    'position':'absolute',
+                    'top':'-1000px',
+                    'left':'-1000px'
+                }) : $t.hide();
+
+            });
 
             /*
              * Show the input div
+             * 
+             * If panel item has a 'nodisplaynone' class, then the
+             * item is not shown using jquery .show() function, but
+             * instead it's absolute position is set to top:0px,left:0px
+             * This avoid the 'display:none' bug when hiding GoogleEarth plugin
+             * iframe for example
+             * 
              */
-            item.$d.show();
+            item.$d.hasClass("nodisplaynone") ? item.$d.css({
+                'position':'static',
+                'top':'0px',
+                'left':'0px'
+            }) : item.$d.show();
 
             /* 
              * Set the input $id as the new this.$active div
