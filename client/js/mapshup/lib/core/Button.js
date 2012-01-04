@@ -263,28 +263,28 @@
             if (b) {
                 
                 /*
-                 * Remove all 'active' class from toolbar buttons and add 'hidden' class
+                 * Remove all 'active' class from toolbar buttons and add 'inactive' class
                  */
                 for (i = 0, l = this.tb.items.length; i < l; i++) {
                     if (this.tb.items[i].id !== this.id) {
-                        this.tb.items[i].$d.removeClass('active').addClass('hidden');
+                        this.tb.items[i].$d.removeClass('active').addClass('inactive');
                     }
                 }
                 
                 /*
-                 * Add 'active' class to button and remove 'hidden' class
+                 * Add 'active' class to button and remove 'inactive' class
                  */
-                this.$d.addClass("active").removeClass('hidden');
+                this.$d.addClass("active").removeClass('inactive');
                 
             }
             else {
              
                 /*
-                 * Remove all 'hidden' class from toolbar buttons
+                 * Remove all 'inactive' class from toolbar buttons
                  */
                 for (i = 0, l = this.tb.items.length; i < l; i++) {
                     if (this.tb.items[i].id !== this.id) {
-                        this.tb.items[i].$d.removeClass('hidden');
+                        this.tb.items[i].$d.removeClass('inactive');
                     }
                 }
                 /*

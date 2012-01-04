@@ -569,7 +569,9 @@ input {
     text-shadow: black 1px 1px 3px;
     color:#fff;
 }
-
+.inactive {
+    -moz-opacity:.50; filter:alpha(opacity=50); opacity:.50;
+}
 .bold {
     font-weight:bold;
 }
