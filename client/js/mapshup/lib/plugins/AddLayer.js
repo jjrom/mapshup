@@ -749,7 +749,7 @@
                     /*
                      * Mandatory poperties are missing => update layerDescription
                      */
-                    if (lt.update && typeof lt.update === "function") {
+                    if ($.isFunction(lt.update)) {
                         lt.update(p, function(a) {
                             self.getInfo(a);
                         });

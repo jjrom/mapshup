@@ -239,7 +239,7 @@
                      */
                     msp.tooltip.remove();
                     
-                    if (typeof action === "function") {
+                    if ($.isFunction(action)) {
                         action();
                     }
                     div.hide();

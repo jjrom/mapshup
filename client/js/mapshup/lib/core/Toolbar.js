@@ -243,7 +243,7 @@
                             /*
                              * Callback function onclose
                              */
-                            if (typeof btn.onclose === "function") {
+                            if ($.isFunction(btn.onclose)) {
                                 btn.onclose(btn);
                             }
 
@@ -268,7 +268,7 @@
                         /*
                          * Callback function 
                          */
-                        if (typeof action.callback === "function") {
+                        if ($.isFunction(action.callback)) {
                             action.callback(btn);
                         }
                         return false;

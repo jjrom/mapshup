@@ -230,7 +230,7 @@
             var self = Map.layerTypes["WMS"],
                 predefined,
                 availableLayer,
-                doCall = !callback || typeof callback !== "function" ? false : true;
+                doCall = !callback || !$.isFunction(callback) ? false : true;
 
             /*
              * First check if one of the predefined layers with the same url

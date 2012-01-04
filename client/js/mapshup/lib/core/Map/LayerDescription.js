@@ -134,7 +134,7 @@
              * Default MspID is msp.crc32(layerDescription.type + (layerDescription.url || layerDescription.title || ""))
              * unless specified in the layerType object
              */
-            return typeof layerType.getMspID === "function" ? layerType.getMspID(this.obj) : msp.Util.crc32(this.obj.type + (this.obj.url || this.obj.title || ""));
+            return $.isFunction(layerType.getMspID) ? layerType.getMspID(this.obj) : msp.Util.crc32(this.obj.type + (this.obj.url || this.obj.title || ""));
         };
         
         /**
@@ -172,7 +172,7 @@
                         arr.push(["Preview", this.obj["preview"]]);
                     }
 
-                    if (layerType && typeof layerType.getInfo === "function") {
+                    if ($.isFunction(layerType.getInfo)) {
                         arr = arr.concat(layerType.getInfo(this.obj));
                     }
                 }

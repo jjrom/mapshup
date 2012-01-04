@@ -207,7 +207,7 @@
          */
         this.remove = function() {
             this.hide();
-            if (typeof this.callback === "function") {
+            if ($.isFunction(this.callback)) {
                 this.callback(this.scope);
             }
             msp.remove(this);

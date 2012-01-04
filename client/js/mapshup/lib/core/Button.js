@@ -219,7 +219,7 @@
                 /*
                  * Callback is defined
                  */
-                if (typeof self.callback === "function") {
+                if ($.isFunction(self.callback)) {
 
                     /*
                      * Return the scope and the clicked <li> to the callback function

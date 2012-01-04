@@ -456,7 +456,7 @@
                         msp.Util.askFor(msp.Util._("Set date"), msp.Util._("Enter ISO 8601 date..."), "date", layer["_msp"].layerDescription.time.value, function(time) {
                             if (layer) {
                                 var layerType = msp.Map.layerTypes[layer["_msp"].layerDescription["type"]];
-                                if (layerType && typeof layerType.setTime === "function") {
+                                if (isFunction(layerType.setTime)) {
                                     layerType.setTime(layer, time)
                                 }
                             }
@@ -489,7 +489,7 @@
             for(key in msp.plugins) {
                 plugin = msp.plugins[key];
                 if (plugin) {
-                    if (typeof plugin.getLmngActions === "function") {
+                    if ($.isFunction(plugin.getLmngActions)) {
                         menuactions = plugin.getLmngActions(layer, li);
                         if (menuactions) {
                             if (menuactions instanceof Array) {

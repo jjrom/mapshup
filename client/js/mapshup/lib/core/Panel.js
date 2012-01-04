@@ -350,10 +350,10 @@
                  * Triggers onshow and onhide button functions
                  */
                 if (btn) {
-                    if (action === "show" && typeof btn.onshow === "function") {
+                    if (action === "show" && $.isFunction(btn.onshow)) {
                         btn.onshow(btn.scope, btn);
                     }
-                    else if (action === "hide" && typeof btn.onhide === "function") {
+                    else if (action === "hide" && $.isFunction(btn.onhide)) {
                         btn.onhide(btn.scope, btn);
                     }
                 }
@@ -535,7 +535,7 @@
                 /*
                  * If onshow callback function is defined, call it
                  */
-                if (btn && typeof btn.onshow === "function") {
+                if (btn && $.isFunction(btn.onshow)) {
                     btn.onshow(btn.scope, btn);
                 }
             

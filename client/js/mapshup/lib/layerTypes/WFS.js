@@ -248,7 +248,7 @@
             var self = Map.layerTypes["WFS"],
                 availableLayer,
                 predefined,
-                doCall = !callback || typeof callback !== "function" ? false : true;
+                doCall = !callback || !$.isFunction(callback) ? false : true;
 
             /*
              * First check if one of the availableLayers with the same url

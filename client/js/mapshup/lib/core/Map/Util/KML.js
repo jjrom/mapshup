@@ -512,7 +512,7 @@
                 /*
                  * Pointer is a function
                  */
-                if (style.context && typeof style.context[pointer] === "function") {
+                if (style.context && $.isFunction(style.context[pointer])) {
                     str = style.context[pointer](feature);
                 }
                 /*

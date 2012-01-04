@@ -284,7 +284,7 @@
                 /*
                  * The action is added only if javascript property is a valid function
                  */
-                if (typeof fi.action.callback === "function") {
+                if ($.isFunction(fi.action.callback)) {
 
                     /*
                      * Add feature action
@@ -319,14 +319,14 @@
                         id:msp.Util.getId(),
                         icon:fi.action["icon"],
                         title:fi.action["title"],
-                        sla:typeof connector.action.sla === "function" ? connector.action.sla : null,
+                        sla:$.isFunction(connector.action.sla) ? connector.action.sla : null,
                         callback:function(a, f) {
                             
                             /*
                              * If an href was set with sla function, resolve href
                              * Otherwise trigger callback
                              */
-                            if (typeof connector.action.callback === "function") {
+                            if ($.isFunction(connector.action.callback)) {
                                 if (a.attr("href") === "#") {
                                     connector.action.callback(a, f);
                                     return false;
@@ -396,7 +396,7 @@
              * displayed using a dedicated setFeatureInfoBody function
              */
             if ((layerType = msp.Map.layerTypes[feature.layer["_msp"].layerDescription["type"]])) {
-                if (typeof layerType.setFeatureInfoBody === "function" ) {
+                if ($.isFunction(layerType.setFeatureInfoBody)) {
                     layerType.setFeatureInfoBody(feature, self.$b);
                     typeIsUnknown = false;
                 }

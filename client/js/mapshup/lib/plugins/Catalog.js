@@ -135,7 +135,7 @@
          * East side panel size affects the table result container size
          */
         this.onResizeEnd = function(scope) {
-            if (typeof $().fixedHeaderTable === "function") {
+            if ($.isFunction($().fixedHeaderTable)) {
                 var c;
                 $('.catalog').each(function(index) {
                     c = $(this);
@@ -663,7 +663,7 @@
                 /*
                  * Initialize table container
                  */
-                if (typeof sc.connector.getBriefAttributes === 'function') {
+                if ($.isFunction(sc.connector.getBriefAttributes)) {
                     attributes = sc.connector.getBriefAttributes();
                     html = '<thead><tr>';
                     for (i = 0, l = attributes.length; i < l; i++) {

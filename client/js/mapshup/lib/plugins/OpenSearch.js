@@ -407,7 +407,7 @@
             /**
              * Feature description rendering depend on feature type
              */
-            if (type && typeof msp.Map.layerTypes[type].appendOpenSearchDescription === "function") {
+            if (type && $.isFunction(msp.Map.layerTypes[type].appendOpenSearchDescription)) {
                 msp.Map.layerTypes[type].appendOpenSearchDescription(feature, id, this.$r);
             }
             else {
