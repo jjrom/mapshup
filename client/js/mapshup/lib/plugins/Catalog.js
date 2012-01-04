@@ -136,9 +136,8 @@
          */
         this.onResizeEnd = function(scope) {
             if ($.isFunction($().fixedHeaderTable)) {
-                var c;
                 $('.catalog').each(function(index) {
-                    c = $(this);
+                    var c = $(this);
                     if (!c.is(':empty')) {
                         c.fixedHeaderTable('destroy').fixedHeaderTable(
                         {
