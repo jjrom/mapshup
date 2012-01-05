@@ -948,7 +948,7 @@
              * OpenLayers 2.11 and >
              * Add support for SVG2 by default
              */
-            OpenLayers.Layer.Vector.prototype.renderers = ["SVG", "VML", "Canvas"];
+            OpenLayers.Layer.Vector.prototype.renderers = ["SVG2", "VML", "Canvas"];
 
             /**
              * Force msp CSS to overide default OpenLayers CSS
