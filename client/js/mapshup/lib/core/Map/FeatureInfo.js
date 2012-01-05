@@ -285,7 +285,7 @@
                  * The action is added only if javascript property is a valid function
                  */
                 if ($.isFunction(fi.action.callback)) {
-
+                    
                     /*
                      * Add feature action
                      */
@@ -317,8 +317,8 @@
                      */
                     actions.push({
                         id:msp.Util.getId(),
-                        icon:fi.action["icon"],
-                        title:fi.action["title"],
+                        icon:connector.action["icon"],
+                        title:connector.action["title"],
                         sla:$.isFunction(connector.action.sla) ? connector.action.sla : null,
                         callback:function(a, f) {
                             
