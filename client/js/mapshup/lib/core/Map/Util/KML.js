@@ -287,7 +287,7 @@
                      */
                     if (attribute === "ele") {
                         elevation = feature.attributes[attribute];
-                        if (!isNumeric(elevation)) {
+                        if (!$.isNumeric(elevation)) {
                             elevation = null;
                         }
                     }
