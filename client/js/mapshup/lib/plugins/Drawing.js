@@ -261,7 +261,7 @@
                  */
                 scope.$inf.css({
                     'left':((msp.$mcontainer.width() - scope.$inf.width()) / 2) + msp.$mcontainer.offset().left,
-                    'top': msp.$mcontainer.offset().top
+                    'top': msp.$mcontainer.offset().top + 30
                 });
 
                 return;
