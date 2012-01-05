@@ -105,7 +105,8 @@
     
     
     /**
-     * Return an array of unclusterized features
+     * Return a hash table of unclusterized features.
+     * The hash entry is the feature id attribute
      * 
      * @input layer : layer containing clusterizes or unclusterized features
      * 
@@ -144,12 +145,12 @@
                         /*
                          * Add a new entry to features array
                          */
-                        features.push(feature.cluster[j]);
+                        features[feature.cluster[j].id] = feature.cluster[j];
 
                     }
                 }
                 else {
-                        features.push(feature);
+                        features[feature.id] = feature;
                 }
             }
         }

@@ -629,20 +629,13 @@
                  * Get the container div reference
                  * based on the layer.id prefixed by sr
                  */
-                var i,
-                l,
-                j,
-                m,
-                a,
-                attributes,
-                html,
-                table,
+                var key,i,l,j,m,a,attributes,html,table,
+                nbOfFeatures = 0,
                 pid = msp.Util.getId(),
                 nid = msp.Util.getId(),
                 sc = layer["_msp"].searchContext,
-                features = msp.Map.Util.getFeatures(layer), // Important ! Get unclusterized features
-                nbOfFeatures = features.length;
-
+                features = msp.Map.Util.getFeatures(layer); // Important ! Get unclusterized features
+                
                 /*
                  * Create the east side panel structure:
                  * 
@@ -651,13 +644,6 @@
                  * </table>
                  */
                 sc.btn.$e.html('<table class="catalog" id="sr'+msp.Util.encode(layer.id)+'"></table>');
-
-                /*
-                 * No results = show nothing
-                 */
-                if (nbOfFeatures === 0) {
-                    return;
-                };
 
                 /*
                  * Initialize table container
@@ -673,11 +659,10 @@
                     /*
                      * Roll over features
                      */ 
-                    for (i = 0, nbOfFeatures; i < nbOfFeatures; i++) {
-                        a = features[i].attributes;
-                        html += '<tr class="hover" idx="'+i+'">';
+                    for (key in features) {
+                        html += '<tr class="hover" fid="'+key+'">';
                         for (j = 0, m = attributes.length; j < m; j++) {
-                            a = features[i].attributes[attributes[j].value];
+                            a = features[key].attributes[attributes[j].value];
                             if (attributes[j].title === "Preview") {
                                 html += '<td><img src="' + (a ? a : msp.Util.getImgUrl('nodata.png')) + '"/></td>'
                             }
@@ -692,6 +677,11 @@
                             }
                         }
                         html += '</tr></tbody>';
+                        
+                        /*
+                         * Count the number of features
+                         */
+                        nbOfFeatures++;
                     }
 
                     /*
@@ -729,6 +719,12 @@
                     (sc.nextRecord - sc.numRecordsPerPage > 0) ? $('#'+pid).show() : $('#'+pid).hide();
 
                     /*
+                     * Update SearchContext reference
+                     * (See Map.Util.FeatureInfo for explanation)
+                     */
+                    sc.$t = $('tbody tr', table);
+                    
+                    /*
                      * Select feature on click
                      */
                     (function($d,features) {
@@ -744,7 +740,7 @@
                              * feature. Note that the 'force' input parameter
                              * is set to true
                              */
-                            var f = features[$(this).addClass('active').attr('idx')];
+                            var f = features[$(this).addClass('active').attr('fid')];
 
                             /*
                              * Zoom on feature and select it
@@ -754,7 +750,7 @@
 
                         });
                     })($('tbody tr', table),features);
-
+                    
                     /*
                      * Compute size
                      */
