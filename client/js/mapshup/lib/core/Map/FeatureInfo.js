@@ -331,9 +331,8 @@
                                     connector.action.callback(a, f);
                                     return false;
                                 }
-                                return true;
                             }
-                            return false;
+                            return true;
                         }
                     });
 
