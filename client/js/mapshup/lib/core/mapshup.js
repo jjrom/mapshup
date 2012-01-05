@@ -130,8 +130,8 @@
  *      welcome                     :   12000   (plugins/Welcome.js)
  *      .pn                         :   20000   (core/Panel.js)
  *      ddzone                      :   34000   (plugins/AddLayer.js)
- *      tooltip                     :   35000
- *      mask                        :   36000
+ *      mask                        :   35000
+ *      tooltip                     :   36000
  *      activity                    :   37000
  *      message                     :   38000 
  *      drawingAsk                  :   38000   (plugins/Drawing.js)

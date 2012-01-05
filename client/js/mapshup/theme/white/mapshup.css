@@ -238,7 +238,7 @@ input {
     top:50%;
     width:30%;
     text-align:center;
-    z-index:36001;
+    z-index:35001;
 }
 .mask .loading {
     margin-top:10px;
@@ -247,7 +247,7 @@ input {
 /**
  * Tooltip
 */
-#tooltip { position:absolute; display:none; padding: 5px; font-size: 10px; opacity: 0.8; filter: alpha(opacity=80); background-repeat: no-repeat; z-index:35000; }
+#tooltip { position:absolute; display:none; padding: 5px; font-size: 10px; opacity: 0.8; filter: alpha(opacity=80); background-repeat: no-repeat; z-index:36000; }
 #tooltip .inner { padding: 5px 8px 4px 8px; background-color: #000000; color: #FFFFFF; max-width: 200px; text-align: center; }
 #tooltip .inner { border-radius:5px;-moz-border-radius:3px; -webkit-border-radius:3px; }
 

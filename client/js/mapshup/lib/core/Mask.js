@@ -73,7 +73,7 @@
                 'top':'0',
                 'width':'100%',
                 'height':'100%',
-                'z-index':'36000'
+                'z-index':'35000'
             }).html('<div class="content"><div class="loading"></div></div>');
     
             /*
