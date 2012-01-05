@@ -597,8 +597,12 @@
                     /*
                      * Create KML object from string
                      */
-                    kmlObject = self.ge.parseKml(kmlString);
-                    
+                    try {
+                        kmlObject = self.ge.parseKml(kmlString);
+                    }
+                    catch(e) {
+                        return false;
+                    }
                     
                     /*
                      * Wrap alerts in API callbacks and event handlers
@@ -613,7 +617,12 @@
                         return false;
                     }
 
-                    self.ge.getFeatures().appendChild(kmlObject);
+                    try {
+                        self.ge.getFeatures().appendChild(kmlObject);
+                    }
+                    catch(e) {
+                        return false;
+                    }
 
                     /*
                      * Update the kmlObjects array
@@ -825,8 +834,17 @@
              */
             limit = limit || false;
 
-            var geLookAt = self.ge.getView().copyAsLookAt(self.altitudeMode);
-
+            /*
+             * Remove kmlObject from Google Earth
+             */
+            var geLookAt;
+            try {
+                geLookAt = self.ge.getView().copyAsLookAt(self.altitudeMode);
+            }
+            catch(e) {
+                return;
+            }
+            
             /*
              * Update lookAt position from GE
              */
