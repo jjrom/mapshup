@@ -306,7 +306,7 @@
             }
 
             /**
-             * Show '#jMenu' at the right position
+             * Show '#menu' at the right position
              * within #map div
              */
             this.$m.css({
