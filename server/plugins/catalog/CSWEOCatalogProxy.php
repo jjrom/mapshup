@@ -95,10 +95,7 @@ function outputToGeoJSON($resultFileURI, $theData, $slotprefix, $objprefix) {
         $slotprefix . "sensorType" => "sensorType",
         $slotprefix . "instrumentShortName" => "instrumentShortName",
         $slotprefix . "sensorOperationalMode" => "sensorOperationalMode",
-        $slotprefix . "platformOrbitType" => "platformOrbitType",
-        $slotprefix . "incidenceAngle" => "incidenceAngle",
-        $slotprefix . "incidenceAngle" => "incidenceAngle",
-        $slotprefix . "incidenceAngle" => "incidenceAngle",
+        $slotprefix . "platformOrbitType" => "platformOrbitType"
     );
 
     /*
@@ -154,6 +151,22 @@ function outputToGeoJSON($resultFileURI, $theData, $slotprefix, $objprefix) {
                     foreach ($slots as $slot) {
                         if ($slot->getAttribute('name') == $slotprefix . "fileName") {
                             $properties[$browsetype] = $slot->getElementsByTagname('Value')->item(0)->nodeValue;
+                        }
+                    }
+                }
+            }
+            /*
+             * Product information
+             */ elseif ($extrinsicObject->getAttribute('objectType') == $objprefix . "EOProductInformation") {
+
+                /*
+                 * Get Productinformation
+                 */
+                $slots = $extrinsicObject->getElementsByTagname('Slot');
+                if ($slots->item(0) != null) {
+                    foreach ($slots as $slot) {
+                        if ($slot->getAttribute('name') == $slotprefix . "fileName") {
+                            $properties["productUrl"] = $slot->getElementsByTagname('Value')->item(0)->nodeValue;
                         }
                     }
                 }
