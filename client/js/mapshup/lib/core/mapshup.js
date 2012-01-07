@@ -252,6 +252,18 @@
                 success:function() {
                     self.Config["i18n"].lang = lang;
                     self.init(urlParameters);
+                },
+                /* Lang does not exist - load english */
+                error:function() {
+                    $.ajax({
+                        url:self.Config["i18n"].url+"/en.js",
+                        async:true,
+                        dataType:"script",
+                        success:function() {
+                            self.Config["i18n"].lang = "en";
+                            self.init(urlParameters);
+                        }
+                    });
                 }
             });
         },
