@@ -327,9 +327,9 @@
             lat,
             mc = msp.$map.parent(), // msp.$map container reference
             extent = msp.Map.map.getExtent(), // Original extent before fire animation
-            w = action === 'show' ? mc.width() - this.w : mc.width() + this.w, // msp.$map container width after animation
-            h = action === 'show' ? mc.height() - this.h : mc.height() + this.h, // msp.$map container width after animation
             self = this,
+            w = action === 'show' ? mc.width() - self.w : mc.width() + self.w, // msp.$map container width after animation
+            h = action === 'show' ? mc.height() - self.h : mc.height() + self.h, // msp.$map container height after animation
             fcpl = function(){
                 
                 /*
@@ -357,7 +357,7 @@
                     }
                 }
             };
-                
+ 
             /*
              * If an animation is running do nothing
              */
@@ -370,7 +370,7 @@
             else {
                 self.running = true;
             }
-            
+ 
             /*
              * East panel
              */
