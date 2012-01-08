@@ -355,7 +355,6 @@
                                 /*
                                  * Set container content
                                  */
-                                ctn.$d.html('<div id="'+msp.Util.getId()+'" style="height:'+pn.getInnerDimension().h+'px;"></div>')
                                 self.$e = ctn.$d.children().first();
 
                                 /*

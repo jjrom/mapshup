@@ -218,7 +218,7 @@
                  * ! Important ! Add a "nodisplaynone" class to avoid the use of "display:none" when
                  * panel item is switch on/off. See msp.Panel.setActive(item) for explanation
                  */
-                ctn.$d.addClass("nodisplaynone").html('<div id="'+msp.Util.getId()+'" style="height:'+pn.getInnerDimension().h+'px;"></div>')
+                ctn.$d.addClass("nodisplaynone");
 
                 /*
                  * Set container content

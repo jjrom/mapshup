@@ -67,12 +67,11 @@
             if (self.options.url) {
 
                 var pn = new msp.Panel('s'), // Create new South panel
-                    ctn = pn.add(); // Add container within panel
+                    ctn = pn.add('<iframe class="frame" src="'+msp.Util.getAbsoluteUrl(self.options.url)+'" width="100%" height="100%"></iframe>'); // Add container within panel
 
                 /*
                  * Set container content
                  */
-                ctn.$d.html('<div id="'+msp.Util.getId()+'" style="height:'+pn.getInnerDimension().h+'px;"><iframe class="frame" src="'+msp.Util.getAbsoluteUrl(self.options.url)+'" width="100%" height="100%"></iframe></div>')
                 msp.activity.show();
                 $('.frame', ctn.$d).load(function() {
                     msp.activity.hide();

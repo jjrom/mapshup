@@ -119,13 +119,12 @@
                tb:tb,
                icon:"bookmark.png",
                tt:"Load a context",
-               container:pn.add(), //  AddLayer plugin is displayed within an East msp.Panel
+               container:pn.add('<div class="header">'+msp.Util._("Contexts")+'</div><div class="body block expdbl"></div>'), //  AddLayer plugin is displayed within an East msp.Panel
                activable:true,
                callback:self.load,
                scope:self
             });
             
-            self.lbtn.container.$d.html('<div id="'+msp.Util.getId()+'" style="width:'+pn.getInnerDimension().w+'px;"><div class="header">'+msp.Util._("Contexts")+'</div><div class="body block expdbl"></div>');
             self.$d = $('.body', self.lbtn.container.$d);
             return self;
 

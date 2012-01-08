@@ -141,11 +141,6 @@
                 lonlat = msp.Map.map.getCenter();
             
             /*
-             * Add the container within the South Panel container
-             */
-            ctn.$d.html('<div id="'+msp.Util.getId()+'" style="height:'+pn.getInnerDimension().h+'px;"></div>')
-            
-            /*
              * Set container content
              */
             self.$d = ctn.$d.children().first();

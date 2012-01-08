@@ -261,24 +261,35 @@
          *      pn: // this panel reference
          *      $d: // jquery object reference for this item
          * }
+         * 
+         * @input content : html content (optional)
+         * @input extras : class name(s) to add to main item div (optional)
          */
-        this.add = function() {
+        this.add = function(content, extras) {
             
-            var id = msp.Util.getId(),
-            /* Panel inner padding depends on Panel position */
-            padding = (this.position === 'n' || this.position === 's') ? this.padding.top+'px 0px '+this.padding.bottom+'px 0px' : '0px '+this.padding.right+'px 0px '+this.padding.left+'px',
-            item = {
-                id:id,
-                pn:this,
-                $d:msp.Util.$$('#'+id, this.$d).css({
-                    'padding':padding
-                }) // by default newly created div is not visible
-            }
-              
+            var style,
+                id = msp.Util.getId(),
+                self = this,
+                /* Panel inner padding depends on Panel position */
+                padding = (self.position === 'n' || self.position === 's') ? self.padding.top+'px 0px '+self.padding.bottom+'px 0px' : '0px '+self.padding.right+'px 0px '+self.padding.left+'px',
+                item = {
+                    id:id,
+                    pn:self,
+                    $d:msp.Util.$$('#'+id, self.$d).css({
+                        'padding':padding
+                    }) // by default newly created div is not visible
+                };
+            
+            /*
+             * Set content if specified
+             */
+            style = self.position === 'n' || self.position === 's' ? 'height:'+self.getInnerDimension().h+'px;' : 'width:'+self.getInnerDimension().w+'px;';
+            item.$d.html('<div id="'+msp.Util.getId()+'" style="'+style+'"'+(extras ? ' class="'+extras+'"' : '')+'>'+(content || "")+'</div>');
+            
             /*
              * Add new item to the items array
              */
-            this.items.push(item);
+            self.items.push(item);
             
             /*
              * Return the newly created item

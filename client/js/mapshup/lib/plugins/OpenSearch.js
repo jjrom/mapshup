@@ -108,24 +108,22 @@
                 tb:tb,
                 icon:"opensearch.png",
                 tt:"Search for media",
-                container:pn.add(), //  AddLayer plugin is displayed within an East msp.Panel
+                /*
+                 * Set the panel container content with the following html structure
+                 * 
+                 * <div id="...">
+                 *      <div class="header"></div>
+                 *      <div class="search block"></div>
+                 *      <div class="result block expdbl">
+                 *          
+                 *      </div>
+                 * </div>
+                 */
+                container:pn.add('<div class="header">'+msp.Util._("Search for media")+'</div><div class="search block"></div><div class="rtitle block">'+msp.Util._("No result")+'</div><div class="result block expdbl jstfy"></div>'), //  AddLayer plugin is displayed within an East msp.Panel
                 activable:true,
                 scope:self
             });
             
-            /*
-             * Set the panel container content with the following html structure
-             * 
-             * <div id="...">
-             *      <div class="header"></div>
-             *      <div class="search block"></div>
-             *      <div class="result block expdbl">
-             *          
-             *      </div>
-             * </div>
-             */
-            self.btn.container.$d.html('<div id="'+msp.Util.getId()+'" style="width:'+pn.getInnerDimension().w+'px;"><div class="header">'+msp.Util._("Search for media")+'</div><div class="search block"></div><div class="rtitle block">'+msp.Util._("No result")+'</div><div class="result block expdbl jstfy"></div>');
-
             /*
              * Get search ($s) and result ($r) jquery object references
              */

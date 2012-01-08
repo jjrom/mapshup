@@ -219,23 +219,21 @@
                 tb:tb,
                 icon:"add.png",
                 tt:"Add layer",
-                container:self.pn.add(), //  AddLayer plugin is displayed within an East msp.Panel
+                /*
+                 * Set the panel container content with the following html structure
+                 * 
+                 * <div id="..." class="pgal">
+                 *      <div class="header"></div>
+                 *      <div class="body expdbl">
+                 *          <div class="list"></div>
+                 *      </div>
+                 * </div>
+                 */
+                container:self.pn.add('<div class="header">'+msp.Util._("Add layer")+'</div><h1 class="block"><a href="#" class="hover" id="'+id+'">'+msp.Util._("Enter an url")+'</a></h1><div class="body block expdbl"><div class="list"></div></div>', 'pgal'), //  AddLayer plugin is displayed within an East msp.Panel
                 activable:true,
                 scope:self
             });
             
-            /*
-             * Set the panel container content with the following html structure
-             * 
-             * <div id="..." class="pgal">
-             *      <div class="header"></div>
-             *      <div class="body expdbl">
-             *          <div class="list"></div>
-             *      </div>
-             * </div>
-             */
-            self.btn.container.$d.html('<div id="'+msp.Util.getId()+'" style="width:'+self.pn.getInnerDimension().w+'px;" class="pgal"><div class="header">'+msp.Util._("Add layer")+'</div><h1 class="block"><a href="#" class="hover" id="'+id+'">'+msp.Util._("Enter an url")+'</a></h1><div class="body block expdbl"><div class="list"></div></div>');
-
             /*
              * When user enter an url, mapshup try to
              * determine magically what kind of url it is...

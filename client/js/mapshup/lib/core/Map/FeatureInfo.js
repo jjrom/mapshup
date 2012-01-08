@@ -89,22 +89,20 @@
                 tb:tb,
                 title:"i",
                 tt:"Feature information",
-                container:self.pn.add(),
+                /*
+                 * Set the panel container content with the following html structure
+                 * 
+                 * <div id="..." class="pfi">
+                 *      <div class="header"><div class="title"></div><div class="actions"></div></div>
+                 *      <div class="body expdbl">
+                 *      </div>
+                 * </div>
+                 */
+                container:self.pn.add('<div class="header"><div class="title">'+msp.Util._("Feature information")+'</div><div class="actions"></div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi'),
                 activable:true,
                 scope:self
             });
             
-            /*
-             * Set the panel container content with the following html structure
-             * 
-             * <div id="..." class="pfi">
-             *      <div class="header"><div class="title"></div><div class="actions"></div></div>
-             *      <div class="body expdbl">
-             *      </div>
-             * </div>
-             */
-            self.btn.container.$d.html('<div id="'+msp.Util.getId()+'" style="width:'+self.pn.getInnerDimension().w+'px;" class="pfi"><div class="header"><div class="title">'+msp.Util._("Feature information")+'</div><div class="actions"></div></div><div class="tabs"></div><div class="body expdbl"></div>');
-
             /*
              * Set references
              */
@@ -802,13 +800,12 @@
                 
                 var btn,
                 pn = new msp.Panel('s'), // Create new South panel
-                ctn = pn.add(),
+                ctn = pn.add('<iframe class="frame" src="'+feature.attributes[ran]+'" width="100%" height="100%"></iframe>'),
                 extent = feature.geometry.getBounds().clone(); // Add container within panel
 
                 /*
                  * Set container content
                  */
-                ctn.$d.html('<div id="'+msp.Util.getId()+'" style="height:'+pn.getInnerDimension().h+'px;"><iframe class="frame" src="'+feature.attributes[ran]+'" width="100%" height="100%"></iframe></div>')
                 msp.activity.show();
                 $('.frame', ctn.$d).load(function() {
                     msp.activity.hide();

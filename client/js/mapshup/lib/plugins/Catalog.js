@@ -360,7 +360,7 @@
                     tb:new msp.Toolbar('ss', 'h'),
                     tt:msp.Util._("Catalog") + " : " + layer.name,
                     title:layer.name,
-                    container:scope.pn.add(),
+                    container:scope.pn.add('<div class="west"><div style="width:99%;height:99%;overflow:auto;"></div></div><div class="east"><div style="height:99%;overflow:auto;"></div></div>'),
                     /* Add a search action */
                     actions:[
                     {   
@@ -381,12 +381,7 @@
                         layer:layer // Important : add the layer reference to the button
                     }
                 }); 
-
-                /*
-                 * Add content to btn container
-                 */
-                btn.container.$d.html('<div id="'+msp.Util.getId()+'" style="height:'+scope.pn.getInnerDimension().h+'px;"><div class="west"><div style="width:99%;height:99%;overflow:auto;"></div></div><div class="east"><div style="height:99%;overflow:auto;"></div></div></div>');
-                
+ 
                 /*
                  * Add $w and $e reference to btn
                  */
