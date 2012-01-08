@@ -326,10 +326,10 @@
             var lon,
             lat,
             mc = msp.$map.parent(), // msp.$map container reference
+            mch = msp.$map.height(),
+            mcw = msp.$map.width(),
             extent = msp.Map.map.getExtent(), // Original extent before fire animation
             self = this,
-            w = action === 'show' ? mc.width() - self.w : mc.width() + self.w, // msp.$map container width after animation
-            h = action === 'show' ? mc.height() - self.h : mc.height() + self.h, // msp.$map container height after animation
             fcpl = function(){
                 
                 /*
@@ -339,11 +339,6 @@
                     msp.Map.map.setCenter(new OpenLayers.LonLat(lon, lat), msp.Map.map.getZoom());
                     msp.events.trigger('resizeend');
                 }
-                
-                /*
-                 * Indicate that the panel animation is over 
-                 */
-                self.running = false;
                 
                 /*
                  * Triggers onshow and onhide button functions
@@ -357,26 +352,13 @@
                     }
                 }
             };
- 
-            /*
-             * If an animation is running do nothing
-             */
-            if (self.running) {
-                return false;
-            }
-            /*
-             * Indicates that the animation starts
-             */
-            else {
-                self.running = true;
-            }
- 
+
             /*
              * East panel
              */
             if (self.position === 'e') {
                 
-                lon = (((w * (extent.right - extent.left)) / msp.$map.width()) + (2 * extent.left)) / 2;
+                lon = ((((action === 'show' ? mc.width() - self.w : mc.width() + self.w) * (extent.right - extent.left)) / msp.$map.width()) + (2 * extent.left)) / 2;
                 lat = (extent.top + extent.bottom) / 2;
                 
                 
@@ -385,36 +367,32 @@
                     /*
                      * Move the panel to the left
                      */
-                    self.$d.animate({
+                    self.$d.stop(true,true).animate({
                         right:parseInt(self.$d.css('right'),10) === 0 ? -self.$d.outerWidth() : 0
-                    }, 'slow');
+                    },
+                    {
+                        duration:'slow',
+                        step:function(now,fx) {
+                            
+                            /*
+                             * Push the map
+                             */ 
+                            if (!self.over) {
+                                mc.css('width', mcw - self.w - now);
+                            }
+                            /*
+                             * or move toolbar
+                             */
+                            else {
+                                if (self.tb) {
+                                    self.tb.$d.css('right', self.w + now);
+                                }
+                            }
+                            
+                        },
+                        complete:fcpl
+                    });
                     
-                    /*
-                     * Push the map
-                     */ 
-                    if (!self.over) {
-                        
-                        /*
-                         * Reduce the width of the map accordingly
-                         */
-                        mc.animate({
-                            width:parseInt(mc.css('width'),10) ===  w ? -mc.outerWidth() : w
-                        },'slow',fcpl);
-                    }
-                    /*
-                     * ... or move toolbar
-                     */
-                    else {
-                        
-                        /*
-                         * Move the toolbar
-                         */
-                        if (self.tb) {
-                            self.tb.$d.animate({
-                                right:parseInt(self.tb.$d.css('right'),10) === 0 ? self.w : 0
-                            }, 'slow',fcpl);
-                        }
-                    }
                 }
                 else {
                     
@@ -423,34 +401,30 @@
                      */
                     self.$d.animate({
                         right:parseInt(self.$d.css('right'),10) === -self.w ? self.$d.outerWidth() : -self.w
-                    }, 'slow');
+                    },
+                    {
+                        duration:'slow',
+                        step:function(now,fx) {
+                            
+                            /*
+                             * Pull the map
+                             */
+                            if (!self.over) {
+                                mc.css('width', mcw - now);
+                            }
+                            /*
+                             * ... or move toolbar
+                             */
+                            else {
+                                if (self.tb) {
+                                    self.tb.$d.css('right', self.w + now);
+                                }
+                            }
+                            
+                        },
+                        complete:fcpl
+                    });
                     
-                    /*
-                     * Show the map
-                     */
-                    if (!self.over) {
-                       
-                        /*
-                         * Expand the width of the map accordingly
-                         */
-                        mc.animate({
-                            width:parseInt(mc.css('width'),10) === w ? mc.outerWidth() : w
-                        },'slow',fcpl);
-                    }
-                    /*
-                     * ... or move toolbar
-                     */
-                    else {
-                        
-                        /*
-                         * Move the toolbar
-                         */
-                        if (self.tb) {
-                            self.tb.$d.animate({
-                                right:parseInt(self.tb.$d.css('right'),10) === self.w ? 0 : self.w
-                            }, 'slow',fcpl);
-                        }
-                    }
                 }
                 
             }
@@ -461,23 +435,33 @@
             else if (self.position === 's') {
                 
                 lon = (extent.right + extent.left) / 2;
-                lat = (((h * (extent.bottom - extent.top)) / msp.$map.height()) + (2 * extent.top)) / 2;
+                lat = ((((action === 'show' ? mc.height() - self.h : mc.height() + self.h) * (extent.bottom - extent.top)) / msp.$map.height()) + (2 * extent.top)) / 2;
                 
                 if (action === 'show') {
                     self.$d.animate({
                         bottom:parseInt(self.$d.css('bottom'),10) === 0 ? -self.$d.outerHeight() : 0
-                    }, 'slow');
-                    mc.animate({
-                        height:parseInt(mc.css('height'),10) ===  h ? -mc.outerHeight() : h
-                    },'slow',fcpl);
+                    },
+                    {
+                        duration:'slow',
+                        queue:true,
+                        step:function(now,fx) {
+                            mc.css('height', mch - self.h - now);
+                        },
+                        complete:fcpl
+                    });
                 }
                 else {
                     self.$d.animate({
                         bottom:parseInt(self.$d.css('bottom'),10) === -self.h ? self.$d.outerHeight() : -self.h
-                    }, 'slow');
-                    mc.animate({
-                        height:parseInt(mc.css('height'),10) === h ? mc.outerHeight() : h
-                    },'slow',fcpl);
+                    },
+                    {
+                        duration:'slow',
+                        queue:true,
+                        step:function(now,fx) {
+                            mc.css('height', mch - now);
+                        },
+                        complete:fcpl
+                    });
                 }
             }
            
