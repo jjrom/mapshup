@@ -35,158 +35,218 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-/*********************************************
- * PLUGIN: Template
- *
- * This plugin does nothing
- * It is an exhaustive template that should be
- * used for plugin creation
- *********************************************/
 
 /**
- * Plugin "Template" will be loaded by msp if :
+ * Plugin Template
+ *
+ * This plugin does nothing
+ * 
+ * It is an exhaustive template that should be used by
+ * developers to start a fresh plugin.
+ * 
+ * The name "Template" is given as an exemple. In the following you should
+ * replace every occurence of "Template" by your plugin name.
+ * 
+ * 
+ *  The plugin "Template" should match the following rules :
+ * 
  *  1. the entry "Template" exists within the plugins list in
- *     msp configuration file
+ *     the configuration file (see client/js/mapshup/config/default.js)
  *        plugins:[
  *           {...},
  *           {
  *               name:"Template",
  *               options:{
- *                   useCSS:true
  *                   // Your options here
  *               }
  *           },
  *           {...}
  *        ]
- *   2. the plugin "Template" is valid
+ *        
+ *   2. the plugin description (i.e. this file) is called "Template.js" and
+ *   stored under the client/js/mapshup/lib/plugins directory 
+ *   
+ *   3. If the plugin "Template" needs specific CSS, the dedicated css file should
+ *   be names "Template.css" and stored under the plugins directory of each theme
+ *   (i.e. under client/js/mapshup/theme/.../plugins
+ *   
+ *   4. For developpement, both Template.js and Template.css files should be declared
+ *   within the index.html file
+ *   
+ *   5. For operational site (see utils/packer/pack.sh), both Template.js and Template.css
+ *   files should be declared within the client/js/mapshup/buildfile.txt file
+ */
+
+/*
+ * Always use a closure to describe a plugin
  *
- * Plugin "Template" is valid if and only if :
- *   1. the plugin filename is "Template.js"
- *   2. the plugin file is put within js/msp/plugins directory
- *   3. the plugin describe all mandatories methods
- *
- * Best practice : if the plugin "Template" needs specific CSS, the CSS file should
- * be named "Template.css" and appended to the plugins directory. In this case,
- * the plugin options property "useCSS" should be set to true (see msp configuration file)
+ * The closure should take only one argument which is
+ * the reference to the mapshup object, i.e. window.msp 
  *
  */
-msp.plugins["Template"] = {
-
-    /**
-     * Initialize plugin
-     *
-     * This is MANDATORY
+(function(msp) {
+    
+    /*
+     * Start defining a "msp.Plugins.Template" object
      */
-    init: function(options) {
-
-        /**
-         * Best practice : init options
-         */
-        this.options = options || {};
-
-        // Define your default options values here
-
-        /*
-         * If the plugin needs plugin "Parent" to work,
-         * the plugin name should be "Template_Parent"
-         * and not "Template".
-         *
-         * First check if the "Parent" plugin is loaded.
-         * If it is not loaded, then the "Template_Parent"
-         * should not be loaded (i.e. returns false)
-         *
-         *
-         *      var parent = msp.plugins["Parent"];
-         *      if (!parent || !parent.isLoaded) {
-         *          return false;
-         *      }
-         *
-         */
+    msp.Plugins.Template = function() {
         
-        // Write your code here
-
         /*
-         * VERY IMPORTANT : if return value is false, the plugin will
-         * not be added to msp
+         * Only one plugin object instance should be created.
+         * 
+         * To ensure this, we initialize a unique msp.Plugins.Template._o
+         * object instance on first call (see the end of this file)
+         * 
+         * If another instance of this object is requested, then the 
+         * reference of the first object instance is returned instead of creating
+         * a new object instance
+         * 
          */
-        return true;
-    },
-
-    /**
-     * This method is called during msp.plugins["Geonames"] initialisation
-     * It should be used to add items to the Geonames menu
-     */
-    getGeonamesMenuItems: function(toponym) {
-        return {
-            id:msp.Util.getId(),
-            icon:msp.Util.getImgUrl("template.png"), // Replace with your code
-            title:"My template", // Replace with your code
-            description:"My template description", // Replace with your code
-            javascript:function() {
-                // Write your code here
-                return false;
-            }
-
+        if (msp.Plugins.Template._o) {
+            return msp.Plugins.Template._o;
         }
-    },
+        
+        /**
+         * The init(options) function is mandatory
+         * 
+         * It is called during mapshup initialization
+         * If everything is fine, the init function should return
+         * the reference of the created plugin (i.e. returns this)
+         * 
+         * Otherwise it should returns null. In this case, the plugin
+         * is considered to be invalid and it is discarded by mapshup
+         */
+        this.init = function(options) {
 
-    /**
-     * This method is called by LayersManager plugin
-     * It should be used to add items to the Geonames menu
-     */
-    getLayersManagerMenuItems: function(layer,li) {
-        return {
-            id:msp.Util.getId(),
-            icon:msp.Util.getImgUrl("template.png"), // Replace with your code
-            title:"Template", // Replace with your code
-            javascript:function() {
+            /*
+             * It is cleaner to set a local 'self' 
+             * variable referencing this plugin
+             */
+            var self = this;
+            
+            /*
+             * The object options property is an object initialized from input options
+             * i.e. initialized from the options object defined in the plugin description
+             * within the configuration file
+             */
+            self.options = options || {};
+
+            /*
+             * To set default options, best practice is to use the $.extend() function from jquery
+             */
+            $.extend(self.options, {
+                myFirstOption:self.options.myFirstOption || 'myFirstOption default value',
+                mySecondOption:self.options.mySecondOption || 'mySecondOption default value'
+                /*
+                 * ... and so on
+                 */
+            });
+            
+            
+            /*
+             * This part of code should only be used if your plugin needs to have
+             * one or more entries in the main menu (i.e. the circular menu that pops up when
+             * you click on the map)
+             */
+            if (msp.menu) {
+                msp.menu.add([
+                    {
+                        id:msp.Util.getId(),
+                        /*
+                         * The name of the template icon.
+                         * This icon should be put under each theme img directory,
+                         * i.e. under each client/js/mapshup/theme/.../img/
+                         */
+                        ic:"template.png",
+                        /*
+                         * The title of the template action displayed on the menu
+                         */
+                        ti:"My template action",
+                        /*
+                         * The callback function called when user click on the template
+                         * action in the menu.
+                         */
+                        cb:function() {
+                            // Put your code here
+                        }
+                    }
+                ]);
+            }
+            
+            /*
+             * This code should only be used if your plugin needs to have a button set
+             * in one of the available toolbar
+             * 
+             * In the following example, the Template set a button in the
+             * "North East Vertical" toolbar
+             */
+            var tb = new msp.Toolbar('ne', 'v');
+            var btn = new msp.Button({
+                tb:tb,
+                icon:"template.png",
+                tt:"My template button name",
+                container:(new msp.Panel('e',{tb:tb})).add(), //  AddLayer plugin is displayed within an East msp.Panel
+                activable:true,
+                scope:self
+            });
+            
+            /**
+             * Register changebaselayer
+             */
+            msp.Map.map.events.register('changebaselayer', msp.Map.map, function(e){
+                var btn = scope.tb.get(msp.Util.encode(e.layer.id));
+                if (btn) {
+                    btn.activate(true);
+                }
+            });
+
+            /*
+             * Register events
+             * 
+             * Here are the list of masphup available events
+             */
+            
+            /* Called after map has been resized */
+            msp.Map.events.register("resizeend", self, function(scope){
                 // Your code here
-                return false;
-            }
+            });
+
+            /* Called after map extent changed */
+            msp.Map.events.register("moveend", self, function(scope){
+                // Your code here
+            });
+            
+            /* Called after a layer is added, removed or updated */
+            msp.Map.events.register("layersend", self, function(layer, scope) {
+                // Your code here
+            });
+            
+            /* Called after a layer starts loading */
+            msp.Map.events.register("loadstart", self, function(layer, scope) {
+                // Your code here
+            });
+            
+            /* Called after a layer ends loading */
+            msp.Map.events.register("loadend", self, function(layer, scope) {
+                // Your code here
+            });
+            
+            /* Called after a layer visibility changed */
+            msp.Map.events.register("visibilitychanged", self, function(layer, scope) {
+                // Your code here
+            });
+            
+            /* Called after a layer z-index changed */
+            msp.Map.events.register("indexchanged", self, function(layer,scope){
+                // Your code here
+            });
+            
+            /*
+             * Initialize a unique msp.Plugins.Template._o
+             */
+            msp.Plugins.Template._o = this;
+
+            return this;
         }
-    },
-
-    /**
-     * This method is called during msp.menu initialisation
-     * It should be used to add items to the menu
-     */
-    getMenuItems: function() {
-        return {
-            id:msp.Util.getId(),
-            icon:msp.Util.getImgUrl("template.png"), // Replace with your code
-            title:"My template", // Replace with your code
-            description:"",
-            javascript:function() {
-                // Write your code here
-                msp.menu.hide();
-                return false;
-            }
-        }
-    },
-
-    /**
-     * This method is triggered after msp.Map.map.layers changed
-     * (i.e. successfull addLayer or removeLayer)
-     * 
-     * @input action : "add", "remove", "update" or "features"
-     * @input layer : added or removed layer - undefined for "init" action
-     */
-    onLayersEnd: function(action, layer, scope) {
-        // Write your code here
-    },
-
-    /**
-     * This method is triggered by msp.Map objectafter a "moveend" event call
-     */
-    onMoveEnd: function(map, scope) {
-        // Write your code here
-    },
-
-    /**
-     * This method is triggered by msp.Map object after a changeSize() call
-     */
-    onResizeEnd: function(scope) {
-        // Write your code here
-    }
-
-};
+    };
+})(window.msp); // The closure should only references the mapshup object, i.e. window.msp
