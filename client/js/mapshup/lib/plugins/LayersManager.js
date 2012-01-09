@@ -456,7 +456,7 @@
                         msp.Util.askFor(msp.Util._("Set date"), msp.Util._("Enter ISO 8601 date..."), "date", layer["_msp"].layerDescription.time.value, function(time) {
                             if (layer) {
                                 var layerType = msp.Map.layerTypes[layer["_msp"].layerDescription["type"]];
-                                if (isFunction(layerType.setTime)) {
+                                if ($.isFunction(layerType.setTime)) {
                                     layerType.setTime(layer, time)
                                 }
                             }
