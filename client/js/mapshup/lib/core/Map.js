@@ -101,11 +101,62 @@
         /**
          * Predefined layerDescriptions object
          * Used by AddLayer plugin
-         * !! IMPORTANT !!
-         * This is a hash of array containing layerDescription
-         * The hash keys are the layerDescription types
          */
-        predefined:[],
+        predefined:{
+            
+            /**
+             * Hash of array containing layerDescription
+             * The hash keys are the layerDescription types
+             */
+            items:[],
+            
+            /**
+             * Add a new layer description to the item list
+             */
+            add: function(p) {
+                
+                var i,l,t,
+                    add = true,
+                    self = this;
+                
+                /*
+                 * Paranoid mode
+                 */
+                if (!p || !p.hasOwnProperty("type")) {
+                    return false;
+                }
+                
+                /*
+                 * Roll over t to check if layer Description already exists
+                 */
+                self.items[p["type"]] = self.items[p["type"]] || [];
+                t = self.items[p["type"]]
+                for (i = 0, l = t.length; i < l; i++) {
+                    if ((new msp.Map.LayerDescription(t[i], msp.Map)).getMspID() === (new msp.Map.LayerDescription(p, msp.Map)).getMspID()) {
+                        add = false;
+                        
+                        /*
+                         * Update layer title
+                         */
+                        if (p.pTitle) {
+                            t[i].title = p.pTitle;
+                        }
+                        
+                        break;
+                    }
+                }
+            
+                /*
+                 * Add new layer description
+                 */
+                if (add) {
+                    t.push(p);
+                }
+                
+                return true;
+            }
+            
+        },
 
         /**
          * Number of call to the window.setInterval function

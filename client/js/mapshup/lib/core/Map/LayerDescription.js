@@ -142,7 +142,6 @@
         /**
          * Return a human readable array of layer properties
          * 
-         * @input layerDescription : layer description object
          * @return Array of Key/Value arrays
          */
         this.getInfo = function() {

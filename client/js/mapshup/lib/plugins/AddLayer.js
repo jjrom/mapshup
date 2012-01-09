@@ -64,7 +64,6 @@
             m,
             name,
             predefined,
-            layerType,
             tb,
             self = this,
             dd = true,
@@ -192,19 +191,15 @@
                 /**
                  * options should define an array of availableLayers
                  */
-                predefined = [];
-                if (self.options.allowedLayerTypes[i].predefined) {
-                    predefined = self.options.allowedLayerTypes[i].predefined;
-                }
+                predefined = self.options.allowedLayerTypes[i].predefined || [];
 
                 /**
                  * Add layer description to Map.predefined
                  */
-                layerType = msp.Map.layerTypes[name];
-                if (layerType) {
+                if (msp.Map.layerTypes[name]) {
                     for (j = 0, m = predefined.length; j < m; j++){
-                        msp.Map.predefined[name] = msp.Map.predefined[name] || [];
-                        msp.Map.predefined[name].push(predefined[j]);
+                        predefined[j].type = name;
+                        msp.Map.predefined.add(predefined[j]);
                     }
                 }
             }
@@ -288,12 +283,12 @@
              * Populate div with predefined layers list if any
              * The list is generated from predefined layers from each layerTypes
              */
-            for (key in msp.Map.predefined) {
+            for (key in msp.Map.predefined.items) {
 
                 /*
                  * Get the predefined layerDescription for this type
                  */
-                list = msp.Map.predefined[key];
+                list = msp.Map.predefined.items[key];
 
                 /*
                  * If list is not empty, display the type as the
@@ -578,12 +573,7 @@
          */
         this.add = function(p, scope) {
 
-            var i,
-            l,
-            ld,
-            tld,
-            predefined,
-            update = true;
+            var ld;
              
             /*
              * Are discarded :
@@ -604,38 +594,17 @@
                 }
                 delete p.extras;
             }
-
-            /*
-             * Get LayerDescription object from p
-             */
-            ld = new msp.Map.LayerDescription(p, msp.Map);
             
             /*
-             * Roll over Map predefined. If guessed layer description is
-             * not already stored in this list, add it. Otherwise skip this step
+             * Add layer description to predefined layersDescription.
              */
-            msp.Map.predefined[p["type"]] = msp.Map.predefined[p["type"]] || [];
-            predefined = msp.Map.predefined[p["type"]];
-            for (i = 0, l = predefined.length; i < l; i++) {
-                tld = new msp.Map.LayerDescription(predefined[i], msp.Map);
-                if (tld.getMspID() === ld.getMspID()) {
-                    update = false;
-                    break;
-                }
-            }
-
-            /*
-             * Update predefined layerDescription
-             */
-            if (update) {
-                predefined.push(p);
-            }
-
+            msp.Map.predefined.add(p);
+            
             /*
              * Update layers list and trigger getInfo
              * for this result
              */
-            scope.update(scope, scope.btn, ld.getMspID());
+            scope.update(scope, scope.btn, (new msp.Map.LayerDescription(p, msp.Map)).getMspID());
 
             return true;
 
