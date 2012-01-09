@@ -79,6 +79,11 @@
             }
 
             /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription)
+            
+            /*
              * Sentinel layers are unclusterized
              */
             layerDescription.clusterized = false;

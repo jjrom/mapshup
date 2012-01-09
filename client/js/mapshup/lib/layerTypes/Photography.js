@@ -83,6 +83,11 @@
             }
 
             /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription)
+            
+            /*
              * Photography layer are unclusterized
              */
             layerDescription.clusterized = false;

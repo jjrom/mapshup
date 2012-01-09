@@ -81,6 +81,11 @@
          */
         add: function(layerDescription, options, urlModifier) {
 
+            /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription);
+            
             /**
              * Layer creation
              */

@@ -75,6 +75,11 @@
         add: function(layerDescription, options) {
 
             /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription);
+            
+            /*
              * Check if bbox is defined in layerDescription
              */
             layerDescription.bbox = msp.Util.getPropertyValue(layerDescription, "bbox", Map.getBBOX());

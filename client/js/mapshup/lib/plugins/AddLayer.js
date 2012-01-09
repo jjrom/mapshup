@@ -596,13 +596,6 @@
             }
 
             /*
-             * Check title
-             */
-            if (!p["title"]) {
-                p["title"] = p["type"] + "#" + msp.Util.getId();
-            }
-
-            /*
              * Add each 'extras' property to the layerDescription object
              */
             if (typeof p.extras === "object") {

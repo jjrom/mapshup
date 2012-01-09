@@ -89,7 +89,7 @@
             /*
              * Set title to q term if not defined
              */
-            layerDescription.title = msp.Util.getPropertyValue(layerDescription, "title", msp.Util.getPropertyValue(layerDescription, "q", "OpenSearch #" + msp.Util.sequence++));
+            layerDescription.title = msp.Util.getPropertyValue(layerDescription, "title", msp.Util.getPropertyValue(layerDescription, "q", msp.Util.getTitle(layerDescription)));
 
             /*
              * Add the opensearch.xml description to the layer strategie

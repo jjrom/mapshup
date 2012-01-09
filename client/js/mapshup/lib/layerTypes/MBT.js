@@ -59,7 +59,12 @@
             if (!layerDescription.t) {
                 return null;
             }
-
+            
+            /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription);
+            
             /*
              * Extend options object with MBT specific properties
              */

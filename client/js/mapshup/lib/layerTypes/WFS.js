@@ -176,6 +176,11 @@
             }*/
 
             /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription)
+            
+            /*
              * Layer creation
              */
             var newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);

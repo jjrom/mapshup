@@ -47,7 +47,7 @@
          *
          * layerDescription = {
          *  type:"Bing",
-         *  title:"Bing Shaded",
+         *  title:"Bing Aerial",
          *  bingType:"Aerial",
          *  key:your Bing API key
          *
@@ -64,7 +64,7 @@
             $.extend(options,
             {
                 isBaseLayer:true,
-                name:layerDescription.title,
+                name:msp.Util.getTitle(layerDescription),
                 key:layerDescription.key,
                 type:layerDescription.bingType,
                 transitionEffect:'resize'

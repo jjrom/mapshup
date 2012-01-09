@@ -57,6 +57,12 @@
          *  icon:
          */
         add: function(layerDescription, options) {
+            
+            /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription);
+            
             if (!layerDescription.layer) {
                 return new OpenLayers.Layer.Vector(layerDescription.title, options);
             }

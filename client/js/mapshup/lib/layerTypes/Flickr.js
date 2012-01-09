@@ -85,6 +85,11 @@
 
             var flickr = msp.plugins["Flickr"];
 
+            /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription);
+            
             /**
              * flickr is null ?
              * Perhaps plugin is not initialized yet...In this case

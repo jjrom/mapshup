@@ -79,6 +79,11 @@
             }
 
             /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription)
+            
+            /*
              * Pleiades layer are unclusterized
              */
             layerDescription.clusterized = false;

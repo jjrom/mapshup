@@ -79,6 +79,11 @@
             }
 
             /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription)
+            
+            /*
              * Set layerDescription.srs to the map projection
              */
             layerDescription.srs = Map.map.projection.projCode

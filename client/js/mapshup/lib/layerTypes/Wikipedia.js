@@ -66,6 +66,12 @@
          *  };
          */
         add: function(layerDescription, options) {
+            
+            /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription);
+            
             options["_msp"].selectable = msp.Util.getPropertyValue(options, "selectable", this.selectable);
             options["_msp"].unremovable = true;
             /**

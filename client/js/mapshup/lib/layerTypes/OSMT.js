@@ -57,6 +57,11 @@
             }
 
             /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription);
+            
+            /*
              * Extend options object with Flickr specific properties
              */
             $.extend(options,

@@ -75,6 +75,11 @@
             layerDescription.googleType = msp.Util.getPropertyValue(layerDescription, "googleType", "roadmap");
 
             /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription);
+            
+            /*
              * Extend options object with Google specific properties
              */
             $.extend(options,

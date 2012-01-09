@@ -246,7 +246,17 @@
                 });
             }
         },
-
+        
+        /**
+         * Return a unique title from layerDescription
+         * 
+         * @input typeName : input layerDescription object
+         */
+        getTitle: function(layerDescription) {
+            layerDescription = layerDescription || {};
+            return layerDescription.title ? layerDescription.title : (layerDescription.type || "Unknown") + "#" + this.sequence++;
+        },
+        
         /**
          * Add a "display image" action to the given jquery 'a'
          * A click on 'a' will open the image within a fullscreen popup

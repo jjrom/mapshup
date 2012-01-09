@@ -79,7 +79,12 @@
             if (!layerDescription.url) {
                 return null;
             }
-
+            
+            /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription);
+            
             /*
              * Check mandatory properties
              */

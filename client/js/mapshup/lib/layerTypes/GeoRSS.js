@@ -74,6 +74,11 @@
          */
         add: function(layerDescription, options) {
 
+            /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription);
+            
             /**
              * Input "options" modification
              */
@@ -99,7 +104,7 @@
             /*
              * Layer creation
              */
-            return new OpenLayers.Layer.GML(layerDescription.title || "__RSS__", msp.Util.getAbsoluteUrl(msp.Config["general"].rssToGeoRSSServiceUrl + encodeURIComponent(layerDescription.url) + msp.Util.abc), options);
+            return new OpenLayers.Layer.GML(layerDescription.title, msp.Util.getAbsoluteUrl(msp.Config["general"].rssToGeoRSSServiceUrl + encodeURIComponent(layerDescription.url) + msp.Util.abc), options);
 
         }
     }

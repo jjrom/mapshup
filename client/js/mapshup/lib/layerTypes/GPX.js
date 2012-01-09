@@ -83,6 +83,11 @@
             }
 
             /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription);
+            
+            /*
              * Extend options object with GPX specific properties
              */
             $.extend(options,

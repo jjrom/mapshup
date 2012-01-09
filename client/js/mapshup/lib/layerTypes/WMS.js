@@ -175,13 +175,16 @@
             }
 
             /*
+             * Set title
+             */
+            layerDescription.title = msp.Util.getTitle(layerDescription)
+            
+            /*
              * Layer creation
              * !! If "projectedUrl" is defined, then use it instead
              * of original url
              */
-            var url = msp.Util.getPropertyValue(layerDescription, "projectedUrl", layerDescription.url);
-
-            var newLayer = new OpenLayers.Layer.WMS(layerDescription.title, url, {
+            var newLayer = new OpenLayers.Layer.WMS(layerDescription.title, msp.Util.getPropertyValue(layerDescription, "projectedUrl", layerDescription.url), {
                 layers:layerDescription.layers,
                 format:"image/jpeg",
                 transitionEffect: "resize",
