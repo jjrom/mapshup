@@ -644,7 +644,7 @@
         /*
          * Display layer(s) description on the east column
          * 
-         * @input p : layer description (can be an array or an individual)
+         * @input a : layer description (can be an array or an individual)
          */
         this.getInfo = function(a) {
             
@@ -694,7 +694,6 @@
                 /*
                  * Set title
                  */
-                //self.popup.$h.html('<p>'+(a[0]['ptitle'] ? a[0]['ptitle'] : a[0]['title'])+'</p>');
                 self.popup.$h.html('<p>'+msp.Util._("Add layer")+'</p>');
                 
             }
