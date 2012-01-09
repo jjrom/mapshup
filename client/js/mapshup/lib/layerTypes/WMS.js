@@ -418,7 +418,7 @@
                      * The bbox of this layer if retrieved from the capabilities
                      * or set to the whole earth if not found
                      */
-                    d.bbox = "-180,-90,180,90";
+                    d.bbox = "-170,-80,170,80";
                     if (layer.llbbox && layer.llbbox.length === 4) {
                         d.bbox = layer.llbbox[0]+','+layer.llbbox[1]+','+layer.llbbox[2]+','+layer.llbbox[3];
                     }
