@@ -133,6 +133,7 @@
                      * and DescribeFeatureType operations
                      */
                     this.update(layerDescription);
+                    
                 }
                 return null;
             }
@@ -250,9 +251,8 @@
          */
         update: function(layerDescription, callback) {
 
-            var self = Map.layerTypes["WFS"],
-                availableLayer,
-                predefined,
+            var availableLayer,i,l,
+                self = Map.layerTypes["WFS"],
                 doCall = !callback || !$.isFunction(callback) ? false : true;
 
             /*
@@ -260,10 +260,9 @@
              * already got a capabilities
              */
             Map.predefined["WFS"] = Map.predefined["WFS"] || [];
-            predefined = Map.predefined["WFS"];
-            for (var i = 0, l = predefined.length; i < l; i++) {
+            for (i = 0, l = Map.predefined["WFS"].length; i < l; i++) {
 
-                availableLayer = predefined[i];
+                availableLayer = Map.predefined["WFS"][i];
 
                 /*
                  * This layer is one of the available layers
@@ -277,7 +276,7 @@
                         layerDescription.capabilities = availableLayer.capabilities;
                         layerDescription.describeFeatureType = availableLayer.describeFeatureType;
                         if (doCall) {
-                            callback(self.getLayerDescriptions(layerDescription));
+                            //callback(self.getLayerDescriptions(layerDescription));
                         }
                         return true;
                     }
@@ -304,14 +303,24 @@
                                 /*
                                  * Get describeFeatureType
                                  */
-                                var describeFeatureType = self.describeFeatureType(XMLHttpRequest);
+                                var i,l,
+                                    update = false,
+                                    describeFeatureType = self.describeFeatureType(XMLHttpRequest) || {};
+
+                                /*
+                                 * Set the layerDescription title if not already set
+                                 */
+                                if (!this.obj.title) {
+                                    if (this.obj.capabilities.service) {
+                                        this.obj.title = this.obj.capabilities.service["title"];
+                                    }
+                                }
 
                                 /*
                                  * Problem during describeFeatureType => empty featureNS
                                  */
-                                if (!describeFeatureType) {
-                                    describeFeatureType = {};
-
+                                if ($.isEmptyObject(describeFeatureType)) {
+                                    
                                     /**
                                      * Old school...
                                      */
@@ -327,10 +336,9 @@
                                  * Add this layerDescription to the list of available layers,
                                  * or update this list if it is already defined
                                  */
-                                var update = false;
-                                for (var i = 0, l = predefined.length; i< l; i++) {
+                                for (i = 0, l = Map.predefined["WFS"].length; i< l; i++) {
 
-                                    availableLayer = predefined[i];
+                                    availableLayer = Map.predefined["WFS"][i];
 
                                     /*
                                      * This layer is one of the available layers
@@ -354,7 +362,7 @@
                                  * No update => insert
                                  */
                                 if (!update) {
-                                    predefined.push({
+                                    Map.predefined["WFS"].push({
                                         type:"WFS",
                                         title:this.obj.title,
                                         url:this.obj.url,
@@ -424,9 +432,8 @@
                 /**
                  * Parse layers list
                  */
-                var d, featureType, f, geometryName, property;
-                for (var i = 0, l = layerDescription.capabilities.featureTypeList.featureTypes.length; i < l; i++) {
-
+                var i, l, j, m, k, n, d, featureType, f, geometryName, property; 
+                for (i = 0, l = layerDescription.capabilities.featureTypeList.featureTypes.length; i < l; i++) {
                     featureType = layerDescription.capabilities.featureTypeList.featureTypes[i];
 
                     d = {
@@ -442,17 +449,17 @@
                      * This is the default
                      */
                     geometryName = 'the_geom';
-
+                    
                     /*
                      * Extract geometryName from describeFeatureType
                      * (first property with a geometrical type)
                      */
-                    if (layerDescription.describeFeatureType && layerDescription.describeFeatureType.featureTypes) {
+                    if (layerDescription.describeFeatureType && layerDescription.describeFeatureType.hasOwnProperty("featureTypes")) {
 
                         /*
                          * Roll over featureTypes
                          */
-                        for (var j = 0, m = layerDescription.describeFeatureType.featureTypes.length; j < m; j++) {
+                        for (j = 0, m = layerDescription.describeFeatureType.featureTypes.length; j < m; j++) {
 
                             f = layerDescription.describeFeatureType.featureTypes[j];
 
@@ -467,7 +474,7 @@
                                  */
                                 if (f.properties) {
 
-                                    for (var k = 0, n = f.properties.length; k < n; j++) {
+                                    for (k = 0, n = f.properties.length; k < n; j++) {
 
                                         property = f.properties[k];
 
@@ -486,13 +493,17 @@
                                 break;
                             }
                         }
+                        
+                        /*
+                         * Set properties
+                         */
+                        d.featureNS = layerDescription.describeFeatureType.targetNamespace || "";
 
                     }
+                    else {
+                        d.featureNS = layerDescription.targetNamespace;
+                    }
 
-                    /*
-                     * Set properties
-                     */
-                    d.featureNS = layerDescription.describeFeatureType.targetNamespace;
                     d.geometryName = geometryName;
 
                     /*

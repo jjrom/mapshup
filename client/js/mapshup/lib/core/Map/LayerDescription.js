@@ -66,6 +66,8 @@
          */
         this.isValid = function() {
             
+            var layerType,i,l,m;
+            
             /*
              * Paranoid mode
              */
@@ -76,7 +78,7 @@
             /*
              * Check layerType - not valid then return false
              */
-            var layerType = this.getLayerType();
+            layerType = this.getLayerType();
             if (!layerType) {
                 return false;
             }
@@ -84,13 +86,13 @@
             /*
              * Mandatory properties array
              */
-            var m = layerType.mandatories || [];
+            m = layerType.mandatories || [];
         
             /*
              * Roll over properties
              */
-            for (var i=0, l = m.length; i < l; i++) {
-                if (this.obj[m[i]] === undefined) {
+            for (i=0, l = m.length; i < l; i++) {
+                if (!this.obj.hasOwnProperty([m[i]])) {
                     return false;
                 }
             }
