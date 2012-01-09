@@ -614,6 +614,7 @@
          * Display layer(s) description on the east column
          * 
          * @input a : layer description (can be an array or an individual)
+         * 
          */
         this.getInfo = function(a) {
             
@@ -634,7 +635,7 @@
             if (typeof a !== "object") {
                 return false;
             }
-
+            
             /*
              * If a is not an array move it to array
              */
@@ -716,7 +717,7 @@
                     }
 
                 }
-
+                
                 /*
                  * Layer Description
                  */

@@ -134,14 +134,6 @@
                 for (i = 0, l = t.length; i < l; i++) {
                     if ((new msp.Map.LayerDescription(t[i], msp.Map)).getMspID() === (new msp.Map.LayerDescription(p, msp.Map)).getMspID()) {
                         add = false;
-                        
-                        /*
-                         * Update layer title
-                         */
-                        if (p.pTitle) {
-                            t[i].title = p.pTitle;
-                        }
-                        
                         break;
                     }
                 }
