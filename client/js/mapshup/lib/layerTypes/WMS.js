@@ -230,7 +230,7 @@
          */
         update: function(layerDescription, callback) {
 
-            var i,l,availableLayer,
+            var i,l,availableLayer,predefined,
                 self = Map.layerTypes["WMS"],
                 doCall = !callback || !$.isFunction(callback) ? false : true;
 
@@ -238,10 +238,11 @@
              * First check if one of the predefined layers with the same url
              * already got a capabilities
              */
-            Map.predefined["WMS"] = Map.predefined["WMS"] || [];
-            for (i = 0, l = Map.predefined["WMS"].length; i < l; i++) {
+            Map.predefined.items["WMS"] = Map.predefined.items["WMS"] || [];
+            predefined = Map.predefined.items["WMS"];
+            for (i = 0, l = predefined.length; i < l; i++) {
 
-                availableLayer = Map.predefined["WMS"][i];
+                availableLayer = predefined[i];
 
                 /*
                  * This layer is one of the available layers
@@ -277,9 +278,7 @@
                      * Set the layerDescription title if not already set
                      */
                     if (!layerDescription.title) {
-                        if (layerDescription.capabilities.service) {
-                            layerDescription.title = layerDescription.capabilities.service["title"];
-                        }
+                        layerDescription.title = layerDescription.capabilities.service ? layerDescription.capabilities.service["title"] : msp.Util.getTitle(layerDescription);
                     }
                     
                     /*
@@ -287,9 +286,9 @@
                      * or update this list if it is already defined
                      */
                     var i,l,update = false;
-                    for (i = 0, l = Map.predefined["WMS"].length; i < l; i++) {
+                    for (i = 0, l = predefined.length; i < l; i++) {
 
-                        availableLayer = Map.predefined["WMS"][i];
+                        availableLayer = predefined[i];
 
                         /*
                          * This layer is one of the available layers
@@ -312,12 +311,12 @@
                      * No update => insert
                      */
                     if (!update) {
-                        Map.predefined["WMS"].push({
+                        Map.predefined.add({
                             type:"WMS",
                             title:layerDescription.title,
                             url:layerDescription.url,
                             capabilities:layerDescription.capabilities
-                        })
+                        });
                     }
 
                     if (doCall) {

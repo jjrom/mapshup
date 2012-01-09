@@ -251,7 +251,7 @@
          */
         update: function(layerDescription, callback) {
 
-            var availableLayer,i,l,
+            var availableLayer,i,l,predefined,
                 self = Map.layerTypes["WFS"],
                 doCall = !callback || !$.isFunction(callback) ? false : true;
 
@@ -259,10 +259,11 @@
              * First check if one of the availableLayers with the same url
              * already got a capabilities
              */
-            Map.predefined["WFS"] = Map.predefined["WFS"] || [];
-            for (i = 0, l = Map.predefined["WFS"].length; i < l; i++) {
+            Map.predefined.items["WFS"] = Map.predefined.items["WFS"] || [];
+            predefined = Map.predefined.items["WFS"];
+            for (i = 0, l = predefined.length; i < l; i++) {
 
-                availableLayer = Map.predefined["WFS"][i];
+                availableLayer = predefined[i];
 
                 /*
                  * This layer is one of the available layers
@@ -311,9 +312,7 @@
                                  * Set the layerDescription title if not already set
                                  */
                                 if (!this.obj.title) {
-                                    if (this.obj.capabilities.service) {
-                                        this.obj.title = this.obj.capabilities.service["title"];
-                                    }
+                                    this.obj.title = this.obj.capabilities.service ? this.obj.capabilities.service["title"] : msp.Util.getTitle(this.obj);
                                 }
 
                                 /*
@@ -336,9 +335,9 @@
                                  * Add this layerDescription to the list of available layers,
                                  * or update this list if it is already defined
                                  */
-                                for (i = 0, l = Map.predefined["WFS"].length; i< l; i++) {
+                                for (i = 0, l = predefined.length; i< l; i++) {
 
-                                    availableLayer = Map.predefined["WFS"][i];
+                                    availableLayer = predefined[i];
 
                                     /*
                                      * This layer is one of the available layers
@@ -352,6 +351,7 @@
                                         if (availableLayer.typeName === undefined) {
                                             availableLayer.capabilities = this.obj.capabilities;
                                             availableLayer.describeFeatureType = this.obj.describeFeatureType;
+                                            availableLayer.title = this.obj.title;
                                             update = true;
                                         }
 
@@ -362,13 +362,13 @@
                                  * No update => insert
                                  */
                                 if (!update) {
-                                    Map.predefined["WFS"].push({
+                                    Map.predefined.add({
                                         type:"WFS",
                                         title:this.obj.title,
                                         url:this.obj.url,
                                         capabilities:this.obj.capabilities,
                                         describeFeatureType:this.obj.describeFeatureType
-                                    })
+                                    });
                                 }
 
                                 /*
