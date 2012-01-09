@@ -226,13 +226,12 @@
          * 
          * @input layerDescription: layerDescription object of a WMS server
          * @input callback : function to be called on success with an array of layerDescription
-         *                   as input parameter (e.g. plugins["LayersManager_AddFactory"].displayLayersInfo(a))
+         *                   as input parameter (e.g. plugins["AddLayer"].displayLayersInfo(a))
          */
         update: function(layerDescription, callback) {
 
-            var self = Map.layerTypes["WMS"],
-                predefined,
-                availableLayer,
+            var i,l,availableLayer,
+                self = Map.layerTypes["WMS"],
                 doCall = !callback || !$.isFunction(callback) ? false : true;
 
             /*
@@ -240,10 +239,9 @@
              * already got a capabilities
              */
             Map.predefined["WMS"] = Map.predefined["WMS"] || [];
-            predefined = Map.predefined["WMS"];
-            for (var i = 0, l = predefined.length; i < l; i++) {
+            for (i = 0, l = Map.predefined["WMS"].length; i < l; i++) {
 
-                availableLayer = predefined[i];
+                availableLayer = Map.predefined["WMS"][i];
 
                 /*
                  * This layer is one of the available layers
@@ -276,13 +274,22 @@
                     layerDescription.capabilities = self.getCapabilities(XMLHttpRequest);
 
                     /*
+                     * Set the layerDescription title if not already set
+                     */
+                    if (!layerDescription.title) {
+                        if (layerDescription.capabilities.service) {
+                            layerDescription.title = layerDescription.capabilities.service["title"];
+                        }
+                    }
+                    
+                    /*
                      * Add this layerDescription to the list of available layers,
                      * or update this list if it is already defined
                      */
-                    var update = false;
-                    for (var i = 0, l = predefined.length; i < l; i++) {
+                    var i,l,update = false;
+                    for (i = 0, l = Map.predefined["WMS"].length; i < l; i++) {
 
-                        availableLayer = predefined[i];
+                        availableLayer = Map.predefined["WMS"][i];
 
                         /*
                          * This layer is one of the available layers
@@ -305,7 +312,7 @@
                      * No update => insert
                      */
                     if (!update) {
-                        predefined.push({
+                        Map.predefined["WMS"].push({
                             type:"WMS",
                             title:layerDescription.title,
                             url:layerDescription.url,
