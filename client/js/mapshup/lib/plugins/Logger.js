@@ -75,9 +75,8 @@
              */
             msp.Map.events.register("moveend", this, function(map, scope) {
         
-                var extent = map.getExtent(),
-                    projected = msp.Map.Util.p2d(extent.clone()),
-                    bbox = projected.left+","+projected.bottom+","+projected.right+","+projected.top;
+                var state = msp.Map.getState(),
+                    projected = msp.Map.Util.p2d(map.getExtent().clone());
 
                 if (map.getZoom() <= msp.Map.lowestZoomLevel) {
                     return;
@@ -86,23 +85,25 @@
                 /*
                  * Avoid Logger to store re-visited "history" extent
                  */
-                 if (msp.Map.doNotLog) {
-                     msp.Map.doNotLog = false;
-                     return;
-                 }
-
+                if (msp.Map.doNotLog) {
+                    msp.Map.doNotLog = false;
+                }
+                
                 /*
                  * Avoid an OpenLayers behaviour (bug ?) :
                  * each time baseLayer is changed, 'moveend' is triggered
                  * even if map.getExtent() did not change
                  */
-                if (scope.lastExtent) {
-                    if (scope.lastExtent.top === extent.top && scope.lastExtent.bottom === extent.bottom && scope.lastExtent.left === extent.left && scope.lastExtent.right === extent.right) {
-                        return;
-                    }
+                if (state.center.equals(msp.Map.currentState.center) && state.center.resolution(msp.Map.currentState.resolution)) {
+                    return;
                 }
-                scope.lastExtent = extent;
-                scope.log({bbox:bbox});
+
+                /*
+                 * Call the log service with new bbox
+                 */
+                scope.log({
+                    bbox:projected.left+","+projected.bottom+","+projected.right+","+projected.top
+                });
             });
 
             return this;
@@ -114,7 +115,7 @@
         this.log = function(obj) {
 
             var key,
-                query = "";
+            query = "";
                 
             /*
              * Check for mandatory bbox information

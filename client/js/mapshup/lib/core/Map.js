@@ -49,7 +49,7 @@
      */
     msp.Map = {
         
-        /*
+        /**
          * Reference to featureHilite jquery object
          */
         $featureHilite:$(),
@@ -60,6 +60,11 @@
          * plugin
          */
         doNotLog: false,
+        
+        /**
+         * Stpre current navigation state
+         */
+        currentState:null,
         
         /**
          * WGS84 projection object
@@ -611,6 +616,22 @@
         },
         
         /**
+         * Method: getState
+         * Get the current map state and return it.
+         *
+         * Returns:
+         * {Object} An object representing the current state.
+         */
+       getState:function() {
+            return {
+                center: this.map.getCenter(),
+                resolution: this.map.getResolution(),
+                projection: this.map.getProjectionObject(),
+                units: this.map.getUnits() || this.map.units || this.map.baseLayer.units
+            };
+        },
+
+        /**
          * Load a context
          */
         loadContext: function(context) {
@@ -1076,7 +1097,17 @@
              * Call Map 'moveend' events on map 'moveend'
              */
             self.map.events.register('moveend', self, function(){
+                
+                /*
+                 * Propagate moveend to registered plugin
+                 */
                 msp.Map.events.trigger('moveend');
+                
+                /*
+                 * Store the new lastExtent
+                 */
+                self.currentState = msp.Map.getState();
+                
             });
 
             /**
@@ -1551,7 +1582,7 @@
             }
         },
 
-        /**
+        /*
          * Setcenter
          */
         setCenter: function(lonlat,zoom,doNotLog) {

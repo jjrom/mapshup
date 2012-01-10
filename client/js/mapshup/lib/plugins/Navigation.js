@@ -53,40 +53,38 @@
         }
         
         /**
-         * Store the latest saved context
-         */
-        this.latestSavedContext = "";
-        
-        /**
          * Initialize plugin
          */
         this.init = function(options) {
 
-            var tb;
+            var tb,
+            self = this;
             
-            this.options = options || {};
+            self.options = options || {};
 
             /*
              * Set options
              * Default toolbar is North West Horizontal
              */
-            $.extend(this.options, {
-                home:this.options.home || false,
-                zoomin:this.options.zoomin || true,
-                zoomout:this.options.zoomout || true,
-                position:this.options.position || 'nw',
-                orientation:this.options.orientation || 'h'
+            $.extend(self.options, {
+                home:msp.Util.getPropertyValue(self.options, "home", false),
+                zoomin:msp.Util.getPropertyValue(self.options, "zoomin", true),
+                zoomout:msp.Util.getPropertyValue(self.options, "zoomout", true),
+                history:msp.Util.getPropertyValue(self.options, "history", true),
+                limit:msp.Util.getPropertyValue(self.options, "limit", 50),
+                position:msp.Util.getPropertyValue(self.options, "position", 'nw'),
+                orientation:msp.Util.getPropertyValue(self.options, "orientation", 'h')
             });
 
             /*
              * Set the toolbar container
              */
-            tb = new msp.Toolbar(this.options.position, this.options.orientation);
+            tb = new msp.Toolbar(self.options.position, self.options.orientation);
             
             /*
              * Zoom in button
              */
-            if (this.options.zoomin) {
+            if (self.options.zoomin) {
                 new msp.Button({
                     tb:tb,
                     title:"+",
@@ -101,7 +99,7 @@
             /*
              * Zoom out button
              */
-            if (this.options.zoomout) {
+            if (self.options.zoomout) {
                 new msp.Button({
                     tb:tb,
                     title:"-",
@@ -112,11 +110,254 @@
                     }
                 });
             }
+            
+            
+            /*
+             * Navigation history buttons
+             */
+            if (self.options.history) {
+                
+                /*
+                 * Create an history object
+                 */
+                this.nh = (function(limit) {
 
+                    /**
+                     * Store navigation states for history
+                     * 
+                     * Structure of a state :
+                     *   {
+                     *      center,
+                     *      resolution:,
+                     *      projection:,
+                     *      units:
+                     *   }
+                     * 
+                     */
+                    this.states = [];
+
+                    /**
+                     * Temporary navigation states for history
+                     * 
+                     * Structure of a state :
+                     *   {
+                     *      center,
+                     *      resolution:,
+                     *      projection:,
+                     *      units:
+                     *   }
+                     * 
+                     */
+                    this.tmp = [];
+                    
+                    /**
+                     * Current position in the history array
+                     */
+                    this.idx = 0;
+                    
+                    /**
+                     * Maximum number of stored states (minimum is 2)
+                     */
+                    this.limit = Math.max(limit, 2);
+
+                    /**
+                     * Add a new extent in the history array
+                     * 
+                     * How ?
+                     * 
+                     * 1. First if states array is empty, add the first state
+                     * 2. When a new state is given :
+                     *      - if the state is identical to the current state then
+                     *      the input state is discarded and function returns false.
+                     *      This avoid duplicating storing of identical states
+                     *      - if the state is not identical to the current state then :
+                     *          a. if the position in the states array (idx) is the last
+                     *          inserted then the state is added to the states and
+                     *          the idx is set to the last position in the states array.
+                     *          Eventually, if the limit of array size is reached, the
+                     *          first element of the array is removed and as a consequence
+                     *          the whole states array is shifted
+                     *          b. otherwise, if the position in the states array is not
+                     *          the last inserted then it's a bit tricky :)  
+                     * 
+                     * 
+                     * @input state : state to be added to the navigation history (states) array
+                     */
+                    this.add = function(state) {
+                        
+                        var i,
+                            self = this,
+                            l = self.states.length,
+                            k = self.tmp.length;
+                        
+                        /*
+                         * Avoid storing successive identical "history" extent
+                         */
+                        if (self.idx < l) {
+                            if (state.center.equals(self.states[self.idx].center) && state.resolution === self.states[self.idx].resolution) {
+                                return false;
+                            }
+                        }
+                        
+                        /*
+                         * If states array is not empty and if 
+                         * idx is the not last inserted then join tmp array
+                         * with states array
+                         */
+                        if (l !== 0 && self.idx !== l - 1) {
+                            for (i = 0; i < k; i++) {
+                                self.states.push(self.tmp[i]);
+                                
+                                /*
+                                 * Check that states size limit is not reached
+                                 * otherwise discarded the first element
+                                 */
+                                if (self.states.length > self.limit) {
+                                    self.states.shift();
+                                }
+                            }
+                        }
+                        
+                        /*
+                         * Add the input state at the end of the states array
+                         */
+                        self.states.push(state);
+                        
+                        /*
+                         * If the array size reaches the limit,
+                         * then removed the first array element
+                         */
+                        if (self.states.length > self.limit) {
+                            self.states.shift();
+                        }
+                        
+                        /*
+                         * Set idx to the last array object
+                         */
+                        self.idx = self.states.length - 1;
+                        
+                        return true;
+                        
+                    };
+                    
+                    /**
+                     * Return the next extent in navigation history
+                     */
+                    this.next = function(){
+                        
+                        var self = this;
+                        
+                        /*
+                         * Increment index
+                         */
+                        self.idx++;
+                        
+                        /*
+                         * We did not reach the end of the array
+                         * Then zoom to extent and store the state to the tmp array
+                         */
+                        if (self.idx < self.states.length) {
+                            self.center(self.idx);
+                        }
+                        else {
+                            self.idx = self.states.length - 1;
+                        }
+                    };
+
+                    /**
+                     * Return the previous extent in navigation history
+                     */
+                    this.previous = function() {
+                        
+                        var self = this;
+                        
+                        /*
+                         * Decrement index
+                         */
+                        self.idx--;
+                        
+                        /*
+                         * We reach the end of the array - do nothing
+                         */
+                        if (self.idx >= 0) {
+                            self.center(self.idx);
+                        }
+                        else {
+                            self.idx = 0;
+                        }
+                        
+                    };
+                    
+                    /**
+                     * Set map to the navigation state defined by idx
+                     */
+                    this.center = function(idx) {
+                        
+                        var self = this,
+                            s = self.states[idx];
+                        
+                        /*  
+                         * Zoom to extent
+                         */
+                        msp.Map.map.setCenter(s.center, msp.Map.map.getZoomForResolution(s.resolution));
+                            
+                        /*
+                         * Store the state to the tmp array
+                         */
+                        self.tmp.push(s);
+                        
+                        /*
+                         * If the array size reaches the limit,
+                         * then removed the first array element
+                         */
+                        if (self.tmp.length >= self.limit) {
+                            self.tmp.shift();
+                        }
+                        
+                    };
+                    
+                    return this;
+
+                })(self.options.limit);
+                
+                /*
+                 * Add previous button
+                 */
+                new msp.Button({
+                    tb:tb,
+                    title:"&lt;",
+                    tt:"Previous view",
+                    activable:false,
+                    callback:function() {
+                        self.nh.previous();
+                    }
+                });
+
+                /*
+                 * Add next button
+                 */
+                new msp.Button({
+                    tb:tb,
+                    title:"&gt;",
+                    tt:"Next view",
+                    activable:false,
+                    callback:function() {
+                        self.nh.next();
+                    }
+                });
+                
+                /*
+                 * Register event - on map move, store the map extent in the states array
+                 */
+                msp.Map.events.register("moveend", self, function(map, scope) {
+                    self.nh.add(msp.Map.getState());
+                });
+            }
+            
             /*
              * Home button
              */
-            if (this.options.home) {
+            if (self.options.home) {
                 new msp.Button({
                     tb:tb,
                     icon:"fullscreen.png",
@@ -131,7 +372,7 @@
             return this;
 
         };
-
+        
         /*
          * Set unique instance
          */
