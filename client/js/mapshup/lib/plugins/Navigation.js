@@ -36,12 +36,10 @@
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
 /*********************************************
- * PLUGIN: Toolbar_Navigation
+ * PLUGIN: Navigation
  *
  * Add navigation tools
- *
- * WARNING : This plugin requires "Toolbar" plugin
- * to be loaded first
+ * 
  *********************************************/
 (function(msp) {
     
