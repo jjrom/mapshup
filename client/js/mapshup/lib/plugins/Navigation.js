@@ -57,8 +57,8 @@
          */
         this.init = function(options) {
 
-            var tb,
-            self = this;
+            var pb,nb,tb,
+                self = this;
             
             self.options = options || {};
 
@@ -118,9 +118,35 @@
             if (self.options.history) {
                 
                 /*
+                 * Add previous button
+                 */
+                pb = new msp.Button({
+                    tb:tb,
+                    title:"&laquo;",
+                    tt:"Previous view",
+                    activable:false,
+                    callback:function() {
+                        self.nh.previous();
+                    }
+                });
+
+                /*
+                 * Add next button
+                 */
+                nb = new msp.Button({
+                    tb:tb,
+                    title:"&raquo;",
+                    tt:"Next view",
+                    activable:false,
+                    callback:function() {
+                        self.nh.next();
+                    }
+                });
+                
+                /*
                  * Create an history object
                  */
-                this.nh = (function(limit) {
+                this.nh = (function(limit, pb, nb) {
 
                     /**
                      * Store navigation states for history
@@ -159,7 +185,17 @@
                      * Maximum number of stored states (minimum is 2)
                      */
                     this.limit = Math.max(limit, 2);
-
+                    
+                    /**
+                     * Previous button reference
+                     */
+                    this.pb = pb;
+                    
+                    /**
+                     * Next button reference
+                     */
+                    this.nb = nb;
+                    
                     /**
                      * Add a new extent in the history array
                      * 
@@ -194,6 +230,17 @@
                          * Avoid storing successive identical "history" extent
                          */
                         if (self.idx < l) {
+                            
+                            /*
+                             * Show the next button
+                             */
+                            self.nb.$d.removeClass("inactive");
+                            
+                            /*
+                             * Show the previous button only if idx is not equal to 1
+                             */
+                            self.idx === 0 ? self.pb.$d.addClass("inactive") : self.pb.$d.removeClass("inactive");
+                            
                             if (state.center.equals(self.states[self.idx].center) && state.resolution === self.states[self.idx].resolution) {
                                 return false;
                             }
@@ -206,6 +253,7 @@
                          */
                         if (l !== 0 && self.idx !== l - 1) {
                             for (i = 0; i < k; i++) {
+                                
                                 self.states.push(self.tmp[i]);
                                 
                                 /*
@@ -216,12 +264,22 @@
                                     self.states.shift();
                                 }
                             }
+                            
+                            /*
+                             * Clear tmp array
+                             */
+                            self.tmp = [];
                         }
                         
                         /*
                          * Add the input state at the end of the states array
                          */
                         self.states.push(state);
+                        
+                        /*
+                         * Hide the next button
+                         */
+                        self.nb.$d.addClass("inactive");
                         
                         /*
                          * If the array size reaches the limit,
@@ -277,7 +335,8 @@
                         self.idx--;
                         
                         /*
-                         * We reach the end of the array - do nothing
+                         * We did not reach the beginning of the array
+                         * Then zoom to the state
                          */
                         if (self.idx >= 0) {
                             self.center(self.idx);
@@ -318,33 +377,7 @@
                     
                     return this;
 
-                })(self.options.limit);
-                
-                /*
-                 * Add previous button
-                 */
-                new msp.Button({
-                    tb:tb,
-                    title:"&lt;",
-                    tt:"Previous view",
-                    activable:false,
-                    callback:function() {
-                        self.nh.previous();
-                    }
-                });
-
-                /*
-                 * Add next button
-                 */
-                new msp.Button({
-                    tb:tb,
-                    title:"&gt;",
-                    tt:"Next view",
-                    activable:false,
-                    callback:function() {
-                        self.nh.next();
-                    }
-                });
+                })(self.options.limit, pb, nb);
                 
                 /*
                  * Register event - on map move, store the map extent in the states array
