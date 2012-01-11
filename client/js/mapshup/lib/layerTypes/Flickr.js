@@ -186,7 +186,8 @@
          */
         setFeatureInfoBody: function(feature, $d) {
 
-            var i,l,tags,$tags;
+            var i,l,tags,$tags,
+                id = msp.Util.getId();
             
             /*
              * Photo page url :
@@ -194,7 +195,17 @@
              *
              * (see http://www.flickr.com/services/api/misc.urls.html)
              */
-            $d.append('<div class="thumb"><a target="_blank" href="http://www.flickr.com/photos/'+feature.attributes['owner']+'/'+feature.attributes['identifier']+'" class="image"><img src="'+feature.attributes['thumbnail']+'" class="padded"/></a></div><div class="info">'+feature.attributes['description']+'<br/><div class="tags"></div></div>');
+            $d.append('<div class="thumb"><a id="'+id+'" class="image" title="'+feature.attributes['name']+'" href="'+feature.attributes['quicklook']+'"><img src="'+feature.attributes['thumbnail']+'" class="padded"/></a></div><div class="info">'+feature.attributes['description']+'<br/><div class="tags"></div><br/><div class="center"><a target="_blank" href="http://www.flickr.com/photos/'+feature.attributes['owner']+'/'+feature.attributes['identifier']+'">'+msp.Util._("Go to flickr page")+'</a></div></div>');
+             
+            /*
+             * Popup image
+             */
+            $('#'+id).click(function() {
+                var $t = $(this);
+                msp.Util.showPopupImage($t.attr('href'), $t.attr('title'));
+                return false;
+            });
+            
             $tags = $('.tags', $d);
             if (feature.attributes["tags"]) {
                 tags = feature.attributes["tags"].split(' ');
