@@ -129,7 +129,12 @@
                         self.nh.previous();
                     }
                 });
-
+                
+                /*
+                 * "Pseudo" hide previous button
+                 */
+                pb.$d.addClass("inactive");
+                
                 /*
                  * Add next button
                  */
@@ -142,6 +147,11 @@
                         self.nh.next();
                     }
                 });
+                
+                /*
+                 * "Pseudo" hide next button
+                 */
+                nb.$d.addClass("inactive");
                 
                 /*
                  * Create an history object
@@ -227,59 +237,60 @@
                             k = self.tmp.length;
                         
                         /*
-                         * Avoid storing successive identical "history" extent
+                         * Nothing is stored until mapshup is loaded
                          */
-                        if (self.idx < l) {
-                            
-                            /*
-                             * Show the next button
-                             */
-                            self.nb.$d.removeClass("inactive");
-                            
-                            /*
-                             * Show the previous button only if idx is not equal to 1
-                             */
-                            self.idx === 0 ? self.pb.$d.addClass("inactive") : self.pb.$d.removeClass("inactive");
-                            
-                            if (state.center.equals(self.states[self.idx].center) && state.resolution === self.states[self.idx].resolution) {
-                                return false;
-                            }
+                        if (!msp.isLoaded) {
+                            return false;
                         }
-                        
+                            
                         /*
-                         * If states array is not empty and if 
-                         * idx is the not last inserted then join tmp array
-                         * with states array
+                         * First check that states array is not empty
                          */
-                        if (l !== 0 && self.idx !== l - 1) {
-                            for (i = 0; i < k; i++) {
-                                
-                                self.states.push(self.tmp[i]);
-                                
-                                /*
-                                 * Check that states size limit is not reached
-                                 * otherwise discarded the first element
-                                 */
-                                if (self.states.length > self.limit) {
-                                    self.states.shift();
+                        if (l !== 0) {
+                            
+                            /*
+                             * Avoid storing successive identical "history" extent
+                             */
+                            if (self.idx < l) {
+                                if (state.center.equals(self.states[self.idx].center) && state.resolution === self.states[self.idx].resolution) {
+                                    return false;
                                 }
                             }
-                            
+                        
                             /*
-                             * Clear tmp array
+                             * idx is the not last inserted then join tmp array
+                             * with states array
                              */
-                            self.tmp = [];
+                            if (self.idx !== l - 1) {
+                                
+                                /*
+                                 * Populate states array with tmp array states
+                                 */
+                                for (i = 0; i < k; i++) {
+
+                                    self.states.push(self.tmp[i]);
+
+                                    /*
+                                     * Check that states size limit is not reached
+                                     * otherwise discarded the first element
+                                     */
+                                    if (self.states.length > self.limit) {
+                                        self.states.shift();
+                                    }
+                                }
+
+                                /*
+                                 * Clear tmp array
+                                 */
+                                self.tmp = [];
+                            }
+                        
                         }
                         
                         /*
                          * Add the input state at the end of the states array
                          */
                         self.states.push(state);
-                        
-                        /*
-                         * Hide the next button
-                         */
-                        self.nb.$d.addClass("inactive");
                         
                         /*
                          * If the array size reaches the limit,
@@ -293,6 +304,11 @@
                          * Set idx to the last array object
                          */
                         self.idx = self.states.length - 1;
+                        
+                        /*
+                         * Hide the next button and show the previous one
+                         */
+                        self.showHide();
                         
                         return true;
                         
@@ -320,6 +336,12 @@
                         else {
                             self.idx = self.states.length - 1;
                         }
+                        
+                        /*
+                         * Show/Hide next button
+                         */
+                        self.showHide();
+                        
                     };
 
                     /**
@@ -344,6 +366,11 @@
                         else {
                             self.idx = 0;
                         }
+                        
+                        /*
+                         * Show/Hide previous button
+                         */
+                        self.showHide();
                         
                     };
                     
@@ -371,6 +398,35 @@
                          */
                         if (self.tmp.length >= self.limit) {
                             self.tmp.shift();
+                        }
+                        
+                    };
+                    
+                    /**
+                     * Show/Hide next and previous button
+                     */
+                    this.showHide = function() {
+                        
+                        var self = this;
+                        
+                        /*
+                         * Show/hide previous button
+                         */
+                        if (self.idx < 1) {
+                            self.pb.$d.addClass('inactive');
+                        }
+                        else {
+                            self.pb.$d.removeClass('inactive')
+                        }
+                        
+                        /*
+                         * Show/hide next button
+                         */
+                        if (self.idx >= self.states.length - 1) {
+                             self.nb.$d.addClass('inactive');
+                        }
+                        else {
+                            self.nb.$d.removeClass('inactive')
                         }
                         
                     };

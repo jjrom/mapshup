@@ -101,6 +101,7 @@
     i["My history"]="Mon historique";
     i["My searches"]="Mes recherches";
     i["Navigation history"]="Historique de navigation";
+    i["Next view"]="Vue suivante";
     i["No"]="Non";
     i["No description available"]="Pas de description disponible";
     i["No information available here"]="Pas d'information disponible à cet endroit";
@@ -121,6 +122,7 @@
     i["Photos"]="Photos";
     i["Point"]="Point";
     i["Preview"]="Aperçu";
+    i["Previous view"]="Vue précédente";
     i["Polygon"]="Polygone";
     i["Quicklooks"]="Images";
     i["Quit"]="Quitter";
