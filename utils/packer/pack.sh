@@ -120,8 +120,8 @@ then
         fi
         
         # Replace theme name in index files
-        sed s/__THEME__/$THEME/g $TARGET/tmp_index.html > $TARGET/tmp_index.html
-        sed s/__THEME__/$THEME/g $TARGET/tmp_indext.html > $TARGET/tmp_indext.html
+        sed s/__THEME__/$THEME/g $TARGET/tmp_index.html > $TARGET/index.html
+        sed s/__THEME__/$THEME/g $TARGET/tmp_indext.html > $TARGET/indext.html
 
         /bin/cp -Rf $EXPORTDIR/blank.html $TARGET/
         /bin/cp -Rf $EXPORTDIR/error.html $TARGET/
@@ -238,7 +238,7 @@ echo "Clean..."
 /bin/rm -Rf $TARGET/js/mapshup/lib
 /bin/rm -Rf $TARGET/js/mapshup/theme/$THEME/plugins
 /bin/rm -Rf $TARGET/tmp_index.html
-/bin/rm -Rf $TARGET/tmp_index.html
+/bin/rm -Rf $TARGET/tmp_indext.html
 /bin/rm -Rf /tmp/_mspexport
 mv $TARGET/js/mapshup/_mapshup.js $TARGET/js/mapshup/mapshup.js
 mv $TARGET/js/mapshup/_mapshupt.js $TARGET/js/mapshup/mapshupt.js
