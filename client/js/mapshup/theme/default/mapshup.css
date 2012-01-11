@@ -405,6 +405,16 @@ input {
 .pne input {
     width:240px;
 }
+.pne a {
+    padding:0px;
+    background-color:transparent;
+}
+.pne a:hover {
+    background-color:transparent;
+    box-shadow: 0px 0px 0px 0 transparent;
+    border-bottom:1px solid #f3961c;
+}
+
 
 /*
  * South panel
