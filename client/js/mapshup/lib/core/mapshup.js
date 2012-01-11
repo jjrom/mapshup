@@ -541,6 +541,11 @@
              * Force mapshup resize
              */
             self.events.trigger('resizeend');
+            
+            /**
+             * Mapshup is loaded
+             */
+            self.isLoaded = true;
          
         },
         
