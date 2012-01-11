@@ -488,6 +488,10 @@
                 ]
             },
             {
+                name:"GeoJSON",
+                predefined:[]
+            },
+            {
                 name:"GeoRSS",
                 predefined:[
                 {
