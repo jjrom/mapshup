@@ -51,25 +51,30 @@ header("Cache-Control: no-cache, must-revalidate");
 header("Content-type: application/json; charset=utf-8");
 
 /*
- *
- * Flickr key :
- *
- * Application : _msprowserTest
- * key         : 6c22e5099af9c5842bf2b7c744fee9d9
- *
- *
+ * Flickr API KEY must be requested here
+ * 
+ * http://www.flickr.com/services/api/misc.api_keys.html
+ * 
  */
-$api_key = '6c22e5099af9c5842bf2b7c744fee9d9';
-$url = 'http://api.flickr.com/services/rest/?method=flickr.photos.search&format=json&api_key=' . $api_key . '&has_geo=1&';
+$url = 'http://api.flickr.com/services/rest/?method=flickr.photos.search&format=json&api_key=' . MSP_FLICKR_KEY . '&has_geo=1&';
 
+/*
+ * Set request parameters
+ */
 $q = isset($_REQUEST["q"]) ? $_REQUEST["q"] : "";
 $machine_tags = isset($_REQUEST["machine_tags"]) ? $_REQUEST["machine_tags"] : "";
 $user_id = isset($_REQUEST["userID"]) ? $_REQUEST["userID"] : "";
 $tag_mode = isset($_REQUEST["tag_mode"]) ? $_REQUEST["tag_mode"] : "";
-$extras = "description,tags,geo,url_s,url_sq";
 $per_page = isset($_REQUEST["maxfeatures"]) ? $_REQUEST["maxfeatures"] : MSP_RESULTS_PER_PAGE;
 $bbox = isset($_REQUEST["bbox"]) ? $_REQUEST["bbox"] : "-180,-90,180,90";
 $relevance = isset($_REQUEST["relevance"]) ? $_REQUEST["relevance"] : "";
+
+/*
+ * url_s is equivalent to thumbnail
+ * url_l is equivalent to quicklook
+ * url_sq is a small square image use for layer symbology
+ */
+$extras = "description,tags,geo,url_s,url_l,url_sq";
 
 /*
  * Construct url with input parameters
@@ -139,6 +144,7 @@ if ($json == NULL) {
  *              "geo_is_contact":0,
  *              "geo_is_public":1,
  *              "url_s":"http:\/\/farm6.static.flickr.com\/5150\/5637250714_88c6b1347e_m.jpg",
+ *              "url_l":"http:\/\/farm6.static.flickr.com\/5150\/5637250714_88c6b1347e_b.jpg",
  *              "height_s":"188",
  *              "width_s":"240",
  *              "url_sq":"http:\/\/farm6.static.flickr.com\/5150\/5637250714_88c6b1347e_sq.jpg",
@@ -168,6 +174,7 @@ for ($i = 0; $i < $length; $i++) {
             'name' => $row->title,
             'owner' => $row->owner,
             'thumbnail' => $row->url_s,
+            'quicklook' => $row->url_l,
             'icon' => $row->url_sq,
             'tags' => $row->tags,
             'description' => $row->description->_content
