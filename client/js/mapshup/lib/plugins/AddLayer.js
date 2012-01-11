@@ -375,19 +375,7 @@
                          * If the type is unknown, ask for user
                          */
                         if (result["type"] === "unknown") {
-                            var list = [],
-                                t;
-                            for (var i = 0, l = scope.options.allowedLayerTypes.length; i < l; i++) {
-                                t = scope.options.allowedLayerTypes[i].name;
-                                list.push({
-                                    title:msp.Util._(t),
-                                    value:t
-                                })
-                            }
-                            msp.Util.askFor(msp.Util._("Add layer"), msp.Util._("What is the type for this layer ?"), "list", list, function(v){
-                                result["type"] = v;
-                                scope.add(result, scope);
-                            });
+                            scope.askType(result);
                         }
                         else {
                             scope.add(result, scope);
@@ -404,6 +392,27 @@
                 cancel:true
             });
 
+        };
+        
+        /*
+         * Ask user for layer type
+         */
+        this.askType = function(p) {
+            
+            var i,l,t,self=this,list = [];
+            
+            for (i = 0, l = self.options.allowedLayerTypes.length; i < l; i++) {
+                t = self.options.allowedLayerTypes[i].name;
+                list.push({
+                    title:msp.Util._(t),
+                    value:t
+                })
+            }
+            msp.Util.askFor(msp.Util._("Add layer"), msp.Util._("What is the type for this layer ?"), "list", list, function(v){
+                p["type"] = v;
+                self.add(p, self);
+            });
+            
         };
 
         /**
@@ -518,7 +527,7 @@
                  */
                 http.onreadystatechange = function() {
 
-                    var result;
+                    var i,l,result;
                     
                     /*
                      * End of the process is readyState 4
@@ -538,8 +547,18 @@
                         }
                         else {
                             if (result.items) {
-                                for (var i = 0, l = result.items.length; i < l;i++) {
-                                    scope.add(result.items[i], scope);
+                                
+                                for (i = 0, l = result.items.length; i < l;i++) {
+                                    
+                                    /*
+                                     * If the type is unknown we ask user for some usefull help :)
+                                     */
+                                    if (result.items[i]["type"] === "unknown") {
+                                        scope.askType(result.items[i]);
+                                    }
+                                    else {
+                                        scope.add(result.items[i], scope);
+                                    }
                                 }
                             }
                         }
@@ -573,8 +592,6 @@
          */
         this.add = function(p, scope) {
 
-            var ld;
-             
             /*
              * Are discarded :
              *  - empty layerDescription
