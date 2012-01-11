@@ -51,7 +51,7 @@ define("MSP_ADMIN_EMAIL","jrom@localhost");
 /**
  * Flickr API key (for API search through mapshup 
  */
-define("MSP_FLICKR_KEY","6c22e5099af9c5842bf2b7c744fee9d9"); // api key for jeobrowserTest user
+define("MSP_FLICKR_KEY",""); // api key for jeobrowserTest user
 
 /**
  * gdal_translate path
@@ -101,8 +101,7 @@ define("MSP_MAPFILE_DIR", "/Users/jrom/Documents/Devel/_mapshuplogs/");
 define("MSP_MBTILES_DIR", "/Users/jrom/Documents/Devel/_mapshupdata/");
 
 /**
- * mapshup Server Domain name
- * (Usually = localhost)
+ * ogrinfo path
  */
 define("MSP_OGRINFO_PATH","/Library/Frameworks/GDAL.framework/Programs/ogrinfo");
 
@@ -138,18 +137,18 @@ define("MSP_TIMEZONE","Europe/Paris");
  * The MSP_PROXY_* parameters are only used if MSP_USE_PROXY
  * is set to true
  */
-define("MSP_USE_PROXY", true);
-define("MSP_PROXY_URL", "surf.cnes.fr");
-define("MSP_PROXY_PORT", "8050");
-define("MSP_PROXY_USER", "cnesnet\\gasperij");
-define("MSP_PROXY_PASSWORD", "@yaho666");
+define("MSP_USE_PROXY", false);
+define("MSP_PROXY_URL", "");
+define("MSP_PROXY_PORT", "");
+define("MSP_PROXY_USER", "");
+define("MSP_PROXY_PASSWORD", "");
 
 /**
  * Database connexion parameters for Logger plugin
  */
-define("MSP_DB_HOST", "localhost");
-define("MSP_DB_NAME", "jeobrowser");
-define("MSP_DB_USER", "jeobuser");
-define("MSP_DB_PASSWORD", "jeobuser00");
+define("MSP_DB_HOST", "");
+define("MSP_DB_NAME", "");
+define("MSP_DB_USER", "");
+define("MSP_DB_PASSWORD", "");
 
 ?>
