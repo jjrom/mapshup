@@ -195,16 +195,6 @@ java -jar $COMPRESSOR $TARGET/js/mapshup/config/touch.js > $TARGET/js/mapshup/co
 cat $LICENSE $TARGET/js/mapshup/config/touch.js.tmp > $TARGET/js/mapshup/config/touch.js
 
 echo ""
-if [ $CONFIG != "0" ]
-then
-    echo "Compress $CONFIG file..."
-    CONFIG_FILE=`basename $CONFIG`
-    java -jar $COMPRESSOR $TARGET/js/mapshup/config/$CONFIG_FILE > $TARGET/js/mapshup/config/$CONFIG_FILE.tmp
-    cat $LICENSE $TARGET/js/mapshup/config/$CONFIG_FILE.tmp > $TARGET/js/mapshup/config/$CONFIG_FILE
-    /bin/rm -Rf $TARGET/js/mapshup/config/$CONFIG_FILE.tmp
-fi
-
-echo ""
 echo "Concatenate css files"
 CSSFILES=`grep "\.css" $BUILDFILE | grep -v "#" | awk '{print $1}'`
 for css in $CSSFILES
