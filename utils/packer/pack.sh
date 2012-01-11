@@ -77,6 +77,7 @@ then
         # Export mercurial last repository
         hg clone $REPO /tmp/_mspexport
         EXPORTDIR=`echo /tmp/_mspexport/client/`
+        SERVERDIR=`echo /tmp/_mspexport/server/`
 	
         # Create target directories
         mkdir $TARGET
@@ -130,6 +131,9 @@ then
         /bin/cp -Rf $EXPORTDIR/license-fr.txt $TARGET/
         /bin/cp -Rf $EXPORTDIR/license-en.txt $TARGET/
         /bin/cp -Rf $EXPORTDIR/favicon.ico $TARGET/
+
+        # Copy server file to export directory
+        /bin/cp -Rf $SERVERDIR $TARGET/s
 
         # Touch files
         /bin/cp -Rf $EXPORTDIR/js/mapshup/theme/$THEME/mapshup.css $TARGET/js/mapshup/theme/$THEME/mapshupt.css
