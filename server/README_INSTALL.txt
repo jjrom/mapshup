@@ -59,15 +59,20 @@ their own installation scripts.
 
 2. Database installation
 
+  # Go to _installdb directory
   cd _installdb
+
   # Edit install_mapshupdb.sh to put the right postgis paths if needed
+  # Note : don't forget to remove mapshup database before launching the script
+  
+  # Launch installation script
   ./install_mapshupdb.sh
 
 
 3. Server installation
 
   # copy everything under an Apache directory EXCEPT this README file and
-    the _installdb directory 
+  # the _installdb directory 
 
 4. Server configuration
 
