@@ -1366,7 +1366,7 @@
 
             /**
              * Set map center.
-             * Map is centered at Lat=15 & Lon=0 with a zoom level of 2 unless a map.restrictedExtent
+             * Map is centered at initialLocation unless a map.restrictedExtent
              * is defined. In this case, the map is centered to this restrictedExtent
              */
             self.map.restrictedExtent ? self.map.zoomToExtent(self.map.restrictedExtent) : self.setCenter(self.Util.d2p(new OpenLayers.LonLat(self.initialLocation.lon,self.initialLocation.lat)), self.initialLocation.zoom, true);
