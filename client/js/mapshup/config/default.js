@@ -215,7 +215,7 @@
     /**
      * Allowed file types for upload
      */
-    c["upload"].allowedExtensions = ["gml","gpx","kml","xml","rss","jpeg","jpg","gif","png","shp","shx","dbf"];
+    c["upload"].allowedExtensions = ["gml","gpx","kml","xml","rss","jpeg","jpg","gif","png","shp","shx","dbf","json"];
 
     /** Default layers */
     c.add("layers", {
