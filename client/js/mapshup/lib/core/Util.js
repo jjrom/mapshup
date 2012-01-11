@@ -248,6 +248,23 @@
         },
         
         /**
+         * Clone object
+         * 
+         * Code from Keith Devens
+         * (see http://keithdevens.com/weblog/archive/2007/Jun/07/javascript.clone)
+         */
+        clone: function(srcInstance) {
+            if(typeof(srcInstance) != 'object' || srcInstance == null) {
+                    return srcInstance;
+            }
+            var i, newInstance = srcInstance.constructor();
+            for(i in srcInstance) {
+                    newInstance[i] = this.clone(srcInstance[i]);
+            }
+            return newInstance;
+        },
+        
+        /**
          * Return a unique title from layerDescription
          * 
          * @input typeName : input layerDescription object
