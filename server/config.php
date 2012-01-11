@@ -49,6 +49,11 @@ define("MSP_DOMAIN","132.149");
 define("MSP_ADMIN_EMAIL","jrom@localhost");
 
 /**
+ * Flickr API key (for API search through mapshup)
+ */
+define("MSP_FLICKR_KEY","");
+
+/**
  * gdal_translate path
  */
 define("MSP_GDAL_TRANSLATE_PATH","/Library/Frameworks/GDAL.framework/Programs/gdal_translate");
