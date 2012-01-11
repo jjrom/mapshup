@@ -60,9 +60,9 @@ $random = createPassword(10);
 
 /**
  * Upload allowed extension
- * Should be identical to _msprowser.plugins["Magic"].options.allowedExtensions
+ * Should be identical to mapshup client msp.Config["upload"].allowedExtensions
  */
-$validExtensions = array("gml", "gpx", "kml", "xml", "rss", "jpeg", "jpg", "gif", "png", "shp", "shx", "dbf");
+$validExtensions = array("gml", "gpx", "kml", "xml", "rss", "jpeg", "jpg", "gif", "png", "shp", "shx", "dbf", "json");
 
 /*
  * Process only valid requests
