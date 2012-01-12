@@ -241,6 +241,7 @@ if (isset($_REQUEST['bbox']) && $_REQUEST['bbox'] != "") {
     $latmax = $bbox[3];
     $lonmax = $bbox[2];
     $useGeo = 1;
+    $nbOfFilters++;
 }
 
 // $dates is an array of two dates (startDate and completionDate) that are retrieved from startDate interval
