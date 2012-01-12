@@ -579,15 +579,13 @@
                     type:"WMS",
                     title:"VMAP0 [Metacarta]",
                     url:"http://vmap0.tiles.osgeo.org/wms/vmap0?",
-                    displayType:"OVERLAY",
                     layers:"Vmap0",
                     srs:"EPSG:4326"
                 },
                 {
                     type:"WMS",
                     title:"Disasters Charter server",
-                    url:"http://www.disasterschartercatalog.org/ogc/cecec4wms?",
-                    displayType:"OVERLAY"
+                    url:"http://www.disasterschartercatalog.org/ogc/cecec4wms?"
                 },
                 {
                     type:"WMS",
@@ -599,7 +597,6 @@
                     title:"World summits",
                     url:"http://www.camptocamp.org/cgi-bin/c2corg_wms?",
                     layers:"summits",
-                    displayType:"OVERLAY",
                     srs:"EPSG:4326"/*,
                     ol:{
                         singleTile:true
@@ -610,7 +607,6 @@
                     title:"Global 30 Second Elevations",
                     url:"http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi?",
                     layers:"Foundation.GTOPO30",
-                    displayType:"OVERLAY",
                     version:"1.1.0",
                     srs:"EPSG:3857",
                     queryable:true

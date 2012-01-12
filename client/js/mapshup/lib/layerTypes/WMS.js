@@ -166,7 +166,7 @@
              * Extend options object with WMS specific properties
              */
             options.buffer = 0;
-
+                
             /*
              * Time component
              */
@@ -416,7 +416,6 @@
                         ptitle:ptitle,
                         url:url,
                         layers:layer["name"],
-                        displayType:"OVERLAY",
                         preview:preview+projinfo+'&LAYERS='+layer["name"],
                         version:capabilities.version
                     };
