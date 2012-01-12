@@ -166,7 +166,12 @@
              * Extend options object with WMS specific properties
              */
             options.buffer = 0;
-                
+            
+            /*
+             * WMS can be set as background (isBaseLayer:true) or as overlay
+             */
+            options.isBaseLayer = layerDescription.hasOwnProperty('isBaseLayer') ? layerDescription.isBaseLayer : false;
+            
             /*
              * Time component
              */
