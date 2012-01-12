@@ -58,8 +58,8 @@
     Map.Util.convert = function(obj) {
         if (obj && obj.input instanceof OpenLayers.Bounds) {
             var left,bottom,right,top,
-                precision = obj.precision || -1,
-                limit = obj.hasOwnProperty("limit") ? obj.limit : false;
+            precision = obj.precision || -1,
+            limit = obj.hasOwnProperty("limit") ? obj.limit : false;
                 
             if (precision !== -1) {
                 left = obj.input.left.toFixed(precision);
@@ -114,11 +114,11 @@
     Map.Util.getFeatures = function(layer) {
 
         var feature,
-            i,
-            j,
-            l,
-            m,
-            features = [];
+        i,
+        j,
+        l,
+        m,
+        features = [];
         
         /*
          * Roll over layer features
@@ -150,13 +150,109 @@
                     }
                 }
                 else {
-                        features[feature.id] = feature;
+                    features[feature.id] = feature;
                 }
             }
         }
 
         return features;
 
+    };
+    
+    /**
+     *
+     * This function will return latitude or longitude value formatted
+     * It is inspired by the OpenLayers.Util.getFormattedLonLat function
+     *
+     * Parameters:
+     *      coordinate - {Float} the coordinate value to be formatted
+     *      axis - {String} value of either 'lat' or 'lon' to indicate which axis is to
+     *          to be formatted (default = lat)
+     *      format - {String} specify the precision of the output can be one of:
+     *           'dms' show degrees minutes and seconds (default)
+     *           'hms' show hour minutes second
+     *           'dm' show only degrees and minutes
+     *           'd' show only degrees
+     * 
+     * Returns:
+     *      {String} the coordinate value formatted as a string
+     */
+    Map.Util.getFormattedLonLat = function(coordinate, axis, format) {
+        
+        var result,degreesOrHours,degreesOrHoursUnit,minutes,seconds,tmp,nsew;
+        
+        /*
+         * Check format - By default returns degree, minutes, seconds
+         */
+        if (!format) {
+            format = 'dms';
+        }
+
+        /*
+         * Normalize coordinate for longitude values between -180 and 180 degrees
+         */
+        coordinate = (coordinate+540)%360 - 180;
+
+        /*
+         * Set the nsew suffix
+         */
+        nsew = axis === "lon" ? (coordinate < 0 ? "W" : "E") : (coordinate < 0 ? "S" : "N");
+        
+        /*
+         * Computation for longitude coordinate depends on the display format
+         */
+        if (format.indexOf('h') !== -1 && axis === 'lon') {
+            
+            /*
+             * Coordinate is now in hour
+             */
+            coordinate = 24 * (coordinate + 180) / 360.0;
+            
+            /*
+             * degreeOrHourUnit is hour
+             */
+            degreesOrHoursUnit = "h";
+            
+            /*
+             * nsew has no sense
+             */
+            nsew = "";
+        }
+        else {
+            coordinate = Math.abs(coordinate);
+            degreesOrHoursUnit = "\u00B0";
+        }
+        
+        /*
+         * Get degreesOrHour, minutes and seconds
+         */
+        degreesOrHours = Math.floor(coordinate);
+        minutes = (coordinate - degreesOrHours)/(1/60);
+        tmp = minutes;
+        minutes = Math.floor(minutes);
+        seconds = Math.round((tmp - minutes)/(1/60) * 10) / 10;
+        if(seconds >= 60) { 
+            seconds -= 60; 
+            minutes += 1; 
+            if( minutes >= 60) { 
+                minutes -= 60; 
+                degreesOrHours += 1; 
+            } 
+        }
+
+        /*
+         * Format result
+         */
+        result = (degreesOrHours < 10 ? "0" : "") + degreesOrHours + degreesOrHoursUnit;
+        if (format.indexOf('m') >= 1) {
+            result += (minutes < 10 ? "0" : "") + minutes + "'";
+            if (format.indexOf('ms') >= 1) {
+                result += (seconds < 10 ? "0" : "") + seconds + '"';
+            }
+        }
+
+        return result + nsew;
+        
     };
     
     /**
@@ -200,8 +296,8 @@
         }
 
         var isEmpty = true,
-            length = layer.features.length,
-            i;
+        length = layer.features.length,
+        i;
         for (i = length;i--;) {
             if (layer.features[i].geometry) {
                 isEmpty = false;
@@ -263,10 +359,10 @@
     Map.Util.updateLayerAI = function() {
         
         var i,
-            l,
-            layer,
-            show = false,
-            $d = msp.Util.$$('#layerai', msp.$mcontainer);
+        l,
+        layer,
+        show = false,
+        $d = msp.Util.$$('#layerai', msp.$mcontainer);
         
         for (i = 0, l = Map.map.layers.length; i < l; i++) {
             layer = Map.map.layers[i];
@@ -290,9 +386,9 @@
         // TODO : on ne s'en sert plus
         return;
         var i,
-            tmpLayer,
-            index = Map.map.getLayerIndex(layer), //Set index to the layer index
-            l = Map.map.layers.length;
+        tmpLayer,
+        index = Map.map.getLayerIndex(layer), //Set index to the layer index
+        l = Map.map.layers.length;
 
         /*
          * Roll over layers list from the higher element
