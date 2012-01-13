@@ -104,24 +104,30 @@ if ($doc->loadXML(getRemoteData($url, null, false))) {
         
         $ra = $result->getElementsByTagname('ra')->item(0)->nodeValue;
         $dec = $result->getElementsByTagname('dec')->item(0)->nodeValue;
-        /*
-         * Add feature
-         */
-        $feature = array(
-            'type' => 'Feature',
-            'geometry' => pointToGeoJSONGeometry($ra, $dec),
-            'properties' => array(
-                'name' => $result->getElementsByTagname('target')->item(0)->nodeValue,
-                'ra' => $ra,
-                'dec' => $dec,
-                'coordsys' => $result->getElementsByTagname('coordsys')->item(0)->nodeValue,
-                'time' => $result->getElementsByTagname('time')->item(0)->nodeValue
-            )
-        );
-
-        // Add feature array to feature collection array
-        array_push($geojson['features'], $feature);
         
+        /*
+         * Only exploitable results are processed
+         */
+        if ($ra && $dec) {
+            /*
+             * Add feature
+             */
+            $feature = array(
+                'type' => 'Feature',
+                'geometry' => pointToGeoJSONGeometry($ra, $dec),
+                'properties' => array(
+                    'name' => $result->getElementsByTagname('target')->item(0)->nodeValue,
+                    'ra' => $ra,
+                    'dec' => $dec,
+                    'coordsys' => $result->getElementsByTagname('coordsys')->item(0)->nodeValue,
+                    'time' => $result->getElementsByTagname('time')->item(0)->nodeValue,
+                    'quicklook' => 'http://alasky.u-strasbg.fr/cgi/portal/aladin/get-preview-img.py?pos='.$ra.','.($dec >= 0 ? '+'.$dec : $dec)
+                )
+            );
+
+            // Add feature array to feature collection array
+            array_push($geojson['features'], $feature);
+        }
     } 
 }
 /*
