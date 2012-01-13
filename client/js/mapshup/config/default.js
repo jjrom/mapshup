@@ -851,10 +851,15 @@
     */
     /**
      * WorldGrid plugin
+     * 
      * options: 
-     *  - strokeWidth // default 1
-     *  - strokeColor // default #FFFF00
-     *  - intervals // default [45, 30, 20, 10, 5, 2, 1]
+     *      color // color for label - default #fff
+     *      intervals // default [45, 30, 20, 10, 5, 2, 1]
+     *      labelFormat // Display label format 'hm' or 'dm' - default 'dm' degrees/minutes
+     *      labelled // Label or not the grid - default true
+     *      lineWidth // width for grid line - default 1
+     *      lineColor // color for grid line - default #666
+     *      title // Title for the layer - Default "Lat/Lon Grid"
      */
     c.add("plugins",
     {
