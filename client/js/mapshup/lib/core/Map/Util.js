@@ -206,7 +206,7 @@
             /*
              * Coordinate is now in hour
              */
-            coordinate = 24 * (coordinate + 180) / 360.0;
+            coordinate = 24 * ((360 - coordinate)%360) / 360.0;
             
             /*
              * degreeOrHourUnit is hour
