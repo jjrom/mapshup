@@ -120,7 +120,7 @@
                  *      </div>
                  * </div>
                  */
-                container:pn.add('<div class="header">'+msp.Util._("Search for media")+'</div><div class="search block"></div><div class="rtitle block">'+msp.Util._("No result")+'</div><div class="result block expdbl jstfy"></div>'), //  AddLayer plugin is displayed within an East msp.Panel
+                container:pn.add('<div class="header">'+msp.Util._(self.options.title)+'</div><div class="search block"></div><div class="rtitle block">'+msp.Util._("No result")+'</div><div class="result block expdbl jstfy"></div>'), //  AddLayer plugin is displayed within an East msp.Panel
                 activable:true,
                 scope:self
             });
