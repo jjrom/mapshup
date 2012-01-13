@@ -121,6 +121,7 @@ if ($doc->loadXML(getRemoteData($url, null, false))) {
                     'dec' => $dec,
                     'coordsys' => $result->getElementsByTagname('coordsys')->item(0)->nodeValue,
                     'time' => $result->getElementsByTagname('time')->item(0)->nodeValue,
+                    /* Add the "Cut out image" service from CDS to display quicklook */
                     'quicklook' => 'http://alasky.u-strasbg.fr/cgi/portal/aladin/get-preview-img.py?pos='.$ra.','.($dec >= 0 ? '+'.$dec : $dec)
                 )
             );
