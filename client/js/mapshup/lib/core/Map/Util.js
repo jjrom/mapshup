@@ -159,6 +159,19 @@
 
     };
     
+    /*
+     * This function will return a formated LonLat
+     * 
+     * Parameters:
+     *      lonlat - {OpenLayers.LonLat} the lonlat object to be formatted MUST BE IN Longitude/Latitude
+     *      format - {String} specify the precision of the output can be one of:
+     *           'dms' show degrees minutes and seconds (default)
+     *           'hms' show hour minutes second
+     */
+    Map.Util.getFormattedLonLat = function(lonlat,format) {
+        return msp.Map.Util.getFormattedCoordinate(lonlat.lon,"lon",format)+"&nbsp;:&nbsp;"+getFormattedCoordinate(lonlat.lat,"lat",format);
+    };
+    
     /**
      *
      * This function will return latitude or longitude value formatted
@@ -177,7 +190,7 @@
      * Returns:
      *      {String} the coordinate value formatted as a string
      */
-    Map.Util.getFormattedLonLat = function(coordinate, axis, format) {
+    Map.Util.getFormattedCoordinate = function(coordinate, axis, format) {
         
         var result,degreesOrHours,degreesOrHoursUnit,minutes,seconds,tmp,nsew;
         

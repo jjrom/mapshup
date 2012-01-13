@@ -1168,7 +1168,7 @@
                     /*
                      * Set the mousePosition object
                      */
-                    var lonlat,offset = msp.$map.offset();
+                    var offset = msp.$map.offset();
                         
                     msp.Map.mousePosition = new OpenLayers.Pixel(e.pageX - offset.left, e.pageY - offset.top);
 
@@ -1176,9 +1176,7 @@
                      * Display the mouse position if Config.general.displayCoordinates is set to true
                      */
                     if (_config["general"].displayCoordinates) {
-
-                        lonlat = self.Util.p2d(msp.Map.map.getLonLatFromPixel(msp.Map.mousePosition));
-                        msp.Map.$coords.html(msp.Map.Util.getFormattedLonLat(lonlat.lon,"lon","dms")+"&nbsp;:&nbsp;"+msp.Map.Util.getFormattedLonLat(lonlat.lat,"lon","dms")).css({
+                        msp.Map.$coords.html(self.Util.p2d(msp.Map.map.getLonLatFromPixel(msp.Map.mousePosition))).css({
                             'top': msp.Map.mousePosition.y - 20,
                             'left': msp.Map.mousePosition.x
                         }).show();
