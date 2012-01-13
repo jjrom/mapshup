@@ -95,7 +95,8 @@
             {
                 position:self.options.position || 'ne',
                 orientation:self.options.orientation || 'v',
-                descriptions:self.options.descriptions || []
+                descriptions:self.options.descriptions || [],
+                title:self.options.title || "Search for media"
             }
             );
 
@@ -107,7 +108,7 @@
             self.btn = new msp.Button({
                 tb:tb,
                 icon:"opensearch.png",
-                tt:"Search for media",
+                tt:self.options.title,
                 /*
                  * Set the panel container content with the following html structure
                  * 

@@ -632,6 +632,10 @@
      * OpenSearch plugin
      * NB: if "layerType" property is not set,
      * the created layer is supposed to be a "Generic" layer
+     * 
+     * options:
+     * 
+     *      title://Set the title of the OpenSearch panel (default is "Search for media")
      *
      */
     c.add("plugins",
