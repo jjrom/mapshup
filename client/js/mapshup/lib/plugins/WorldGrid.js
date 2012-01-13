@@ -135,6 +135,20 @@
             });
 
             /*
+             * Register events
+             */
+            msp.Map.events.register("layersend", self, function(action, layer, scope) {
+
+                /*
+                 * Each time a layer is added make sure streetview layer is on top
+                 */
+                if (action === "add" && scope.layer) {
+                    msp.Map.Util.setLayerOnTop(scope.layer);
+                }
+                
+            });
+            
+            /*
              * Reprocess the grid each time the map move
              */
             msp.Map.events.register("moveend", self, self.update);
