@@ -207,7 +207,7 @@
                     }
                 }
                 
-            }
+            };
             
             /*
              * Add streetview layer to mapshup map
