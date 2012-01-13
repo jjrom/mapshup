@@ -192,7 +192,9 @@
      */
     Map.Util.getFormattedCoordinate = function(coordinate, axis, format) {
         
-        var result,degreesOrHours,degreesOrHoursUnit,minutes,seconds,tmp,nsew;
+        var result,degreesOrHours,minutes,seconds,tmp,nsew,
+            sign = "",
+            degreesOrHoursUnit = "\u00B0";
         
         /*
          * Check format - By default returns degree, minutes, seconds
@@ -214,31 +216,37 @@
         /*
          * Computation for longitude coordinate depends on the display format
          */
-        if (format.indexOf('h') !== -1 && axis === 'lon') {
+        if (format.indexOf('h') !== -1) {
             
             /*
-             * Coordinate is now in hour
+             * For longitude, coordinate is in hours not in degrees
              */
-            coordinate = 24 * ((360 - coordinate)%360) / 360.0;
+            if (axis === 'lon') {
+                
+                /*
+                 * Transform degrees -> hours
+                 * Warning : 0 degrees = 0 hours
+                 */
+                coordinate = 24 * ((360 - coordinate)%360) / 360.0;
+                degreesOrHoursUnit = "h";
+            }
             
             /*
-             * degreeOrHourUnit is hour
-             */
-            degreesOrHoursUnit = "h";
-            
-            /*
-             * nsew has no sense
+             * nsew has no sense in 'hms'
              */
             nsew = "";
-        }
-        else {
-            coordinate = Math.abs(coordinate);
-            degreesOrHoursUnit = "\u00B0";
+            
+            /*
+             * For latitude (i.e. declinaison) the sign is stored 
+             */
+            sign = coordinate < 0 ? '-' : '+';
+            
         }
         
         /*
          * Get degreesOrHour, minutes and seconds
          */
+        coordinate = Math.abs(coordinate);
         degreesOrHours = Math.floor(coordinate);
         minutes = (coordinate - degreesOrHours)/(1/60);
         tmp = minutes;
@@ -256,7 +264,7 @@
         /*
          * Format result
          */
-        result = (degreesOrHours < 10 ? "0" : "") + degreesOrHours + degreesOrHoursUnit;
+        result = (axis === 'lat' ? sign : "") + (degreesOrHours < 10 ? "0" : "") + degreesOrHours + degreesOrHoursUnit;
         if (format.indexOf('m') >= 1) {
             result += (minutes < 10 ? "0" : "") + minutes + "'";
             if (format.indexOf('ms') >= 1) {
