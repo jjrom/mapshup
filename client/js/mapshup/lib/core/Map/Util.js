@@ -169,7 +169,7 @@
      *           'hms' show hour minutes second
      */
     Map.Util.getFormattedLonLat = function(lonlat,format) {
-        return msp.Map.Util.getFormattedCoordinate(lonlat.lon,"lon",format)+"&nbsp;:&nbsp;"+getFormattedCoordinate(lonlat.lat,"lat",format);
+        return Map.Util.getFormattedCoordinate(lonlat.lon,"lon",format)+"&nbsp;:&nbsp;"+Map.Util.getFormattedCoordinate(lonlat.lat,"lat",format);
     };
     
     /**
