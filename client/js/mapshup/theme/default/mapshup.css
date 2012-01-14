@@ -254,77 +254,71 @@ input {
 #tooltip .inner { border-radius:5px;-moz-border-radius:3px; -webkit-border-radius:3px; }
 
 /**
- * Toolbar
-*/
+ * Toolbars
+ *
+ *      .tb is common to all toolbars
+ *
+ *      .tbnwh : North West Horizontal
+ *      .tbnwv : North West Vertical
+ *
+ *      .tbneh : North East Horizontal
+ *      .tbnev : North East Vertical
+ *
+ *      .tbswh : South West Horizontal
+ *      .tbswv : South West Vertical
+ *
+ *      .tbseh : South East Horizontal
+ *      .tbsev : South East Vertical
+ *
+ *      .tbnnh : North North Horizontal
+ *      .tbssh : South South Horizontal
+ *
+ */
 .tb .item {
     position:relative;
-    line-height:37px;
     text-align:center;
     white-space:nowrap;
 }
-.tbfrh {
-    font-size:2em;
-}
-.tbneh, .tbnwh, .tbnwv, .tbseh, .tbsev, .tbswh, .tbswv, .tbnnh {
-    background-color:#000;
-    font-size:2em;
-    color:#fff;
-}
 
-.tbnev {
-    background-color:#000;
-    font-size:2em;
-    color:#fff;
-}
-
-/* North toobar */
-.tbneh, .tbnev, .tbnwh, .tbnwv, .tbnnh {
+/* Position for North toobar */
+.tbneh, .tbnev, .tbnwh, .tbnwv {
     top:20px;
 }
 
-/* South toolbar */
+/* Position for South toolbar */
 .tbseh, .tbsev, .tbswh, .tbswv {
     bottom:20px;
 }
 
-/* South south toolbar */
-.tbssh {
-    bottom:0px;
-    left:20px;
-    color:#fff;
-}
-.tbssh .item {
-    font-size:1em;
-    background-color:#000;
-    width:100px;
-    height:100%;
-    margin-right:10px;
-}
-.tbnev .active, .tbssh .active {
-    background:#f3961c;
-}
-.tbfrh .active {
-    background:transparent;
-    border-bottom:3px solid #f3961c;
-}
-/* East Horizontal toolbar */
+/* Position for East Horizontal toolbar */
 .tbneh, .tbseh {
     right:20px;
 }
 
-/* East Vertical toolbar */
+/* Position for East Vertical toolbar */
 .tbnev, .tbsev {
     right:0px;
 }
 
-/* West Horizontal toolbar */
+/* Position for West Horizontal toolbar */
 .tbnwh, .tbswh {
     left:20px;
 }
 
-/* West Vertical toolbar */
+/* Position for West Vertical toolbar */
 .tbnwv, .tbswv {
     left:0px;
+}
+
+/* Position for North North toolbar */
+.tbnnh {
+    top:5px;
+}
+
+/* Position for South South toolbar */
+.tbssh {
+    bottom:0px;
+    left:20px;
 }
 
 /* Horizontal toolbar */
@@ -345,6 +339,58 @@ input {
 .tbv .item {
     min-width:100%;
     height:40px;
+}
+
+/* Background color, font and size color for general toolbar */
+.tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev {
+    background-color:#000;
+    font-size:2em;
+    line-height:37px;
+    color:#fff;
+}
+
+.tbfrh {
+    font-size:2em;
+    line-height:37px;
+}
+
+/* South south toolbar */
+.tbssh .item {
+    background-color:#000;
+    width:100px;
+    height:100%;
+    margin-right:10px;
+    font-size:1em;
+    line-height:37px;
+    color:#fff;
+}
+
+/* North North toolbar */
+.tbnnh {
+    background-color:#000;
+    height:30px;
+}
+.tbnnh img {
+    height:24px;
+}
+.tbnnh .item {
+    font-size:1em;
+    line-height:30px;
+    min-width:30px;
+}
+.tbnnh input {
+    background-color:#eee;
+    color:#666;
+    border:solid 1px #aacfe4;
+}
+
+/* Toolbar active class */
+.tbnev .active, .tbssh .active {
+   background:#f3961c;
+}
+.tbfrh .active, .tbnnh .active {
+    background:transparent;
+    border-bottom:3px solid #f3961c;
 }
 
 /*
