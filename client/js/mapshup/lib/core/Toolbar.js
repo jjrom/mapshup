@@ -226,7 +226,7 @@
             /*
              * Add a <li> element to toolbar
              */
-            self.$d.append('<div class="hover item" jtitle="'+(msp.Util._(btn.tt) || "")+'" id="'+btn.id+'">'+content+'</div>');
+            self.$d.append('<div class="'+(btn.nohover ? "" : "hover")+' item" jtitle="'+(msp.Util._(btn.tt) || "")+'" id="'+btn.id+'">'+content+'</div>');
             
             /*
              * Get newly created div reference

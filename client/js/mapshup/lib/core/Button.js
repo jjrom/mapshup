@@ -64,6 +64,7 @@
      *               are specified, html has preseance (i.e. title is discarded)
      *      icon: // Url to the icon image (if no text)
      *      id: // Unique identifier for the <li> element. Automatically created if not given
+     *      nohover: // if true, button is not sensitive to onmouseover event
      *      onclose: // function to call on close
      *      onhide: // function to call on hide (if container is set)
      *      switchable: // boolean - if true, click on button alternate activate/deactivate
@@ -136,19 +137,24 @@
         this.id = options.id || msp.Util.getId();
        
         /*
+         * Boolean. If true, button is not sensitive to onmouseover event
+         */
+        this.nohover = options.nohover || false;
+        
+        /*
          * Function called before button container is closed
          */
-        this.onclose = options.onclose || null;
+        this.onclose = options.onclose;
         
         /*
          * Function called before button container is hide
          */
-        this.onhide = options.onhide || null;
+        this.onhide = options.onhide;
         
         /*
          * Function called before button container is shown
          */
-        this.onshow = options.onshow || null;
+        this.onshow = options.onshow;
         
         /*
          * If true, click on button make alternate activate/deactivate. If false, click
