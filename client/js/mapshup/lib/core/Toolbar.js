@@ -182,12 +182,8 @@
                  * The North north toolbar should always centered on
                  * the top of the map
                  */
-                msp.Map.events.register("resizeend", self, function(scope){
-                    scope.$d.css({
-                        'left':(msp.$map.width() - scope.$d.width()) / 2
-                    });
-                });
-
+                msp.Map.events.register("resizeend", self, self.resize);
+                
             }
             else if (self.position === 'sw') {
                 msp.Toolbar._oswtb = self;
@@ -219,12 +215,13 @@
                 id,
                 l,
                 $d,
-                content = btn.title ? msp.Util.shorten(btn.title,10,true) : '<img class="middle" alt="" src="'+msp.Util.getImgUrl(btn.icon || "empty.png")+'"/>';
+                content = btn.title ? msp.Util.shorten(btn.title,10,true) : '<img class="middle" alt="" src="'+msp.Util.getImgUrl(btn.icon || "empty.png")+'"/>',
+                self = this;
             
             /*
              * Add a <li> element to toolbar
              */
-            this.$d.append('<div class="hover item" jtitle="'+(msp.Util._(btn.tt) || "")+'" id="'+btn.id+'">'+content+'</div>');
+            self.$d.append('<div class="hover item" jtitle="'+(msp.Util._(btn.tt) || "")+'" id="'+btn.id+'">'+content+'</div>');
             
             /*
              * Get newly created div reference
@@ -234,11 +231,11 @@
             /*
              * Add a WEST/EAST/NORTH/SOUTH tooltip depending on orientation
              */
-            if (this.position !== 'fr') {
-                msp.tooltip.add($d, this.orientation === 'h'? this.position.substr(0,1) : this.position.substr(1,2));
+            if (self.position !== 'fr') {
+                msp.tooltip.add($d, self.orientation === 'h'? self.position.substr(0,1) : self.position.substr(1,2));
             }
             else {
-                msp.tooltip.add($d, this.orientation === 'h'? 'n' : 'e');
+                msp.tooltip.add($d, self.orientation === 'h'? 'n' : 'e');
             }
             
             /*
@@ -299,7 +296,12 @@
             /*
              * Add a new item
              */
-            this.items.push(btn);
+            self.items.push(btn);
+            
+            /*
+             * Resize toolbar
+             */
+            self.resize(self);
             
             /*
              * Return the newly created action div
@@ -337,6 +339,17 @@
                     btn = null;
                     break;
                 }
+            }
+        };
+        
+        /*
+         * Resize toolbar (should only be called for nnh toolbar
+         */
+        this.resize = function(scope) {
+            if (scope.position === 'nn') {
+                scope.$d.css({
+                    'left':(msp.$map.width() - scope.$d.width()) / 2
+                });
             }
         };
         
