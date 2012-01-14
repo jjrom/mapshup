@@ -210,14 +210,19 @@
             /*
              * Set content to item.text if defined or item.url in other case
              */
-            var action,
-                i,
-                id,
-                l,
-                $d,
-                content = btn.title ? msp.Util.shorten(btn.title,10,true) : '<img class="middle" alt="" src="'+msp.Util.getImgUrl(btn.icon || "empty.png")+'"/>',
+            var action,i,id,l,$d,content,
                 self = this;
             
+            /*
+             * Set content. Preseance for html, then title, then icon
+             */
+            if (btn.html) {
+                content = btn.html;
+            }
+            else {
+                content = btn.title ? msp.Util.shorten(btn.title,10,true) : '<img class="middle" alt="" src="'+msp.Util.getImgUrl(btn.icon || "empty.png")+'"/>';
+            }
+                
             /*
              * Add a <li> element to toolbar
              */
@@ -230,12 +235,15 @@
             
             /*
              * Add a WEST/EAST/NORTH/SOUTH tooltip depending on orientation
+             * Note : if btn.html is set, then no tooltip is added
              */
-            if (self.position !== 'fr') {
-                msp.tooltip.add($d, self.orientation === 'h'? self.position.substr(0,1) : self.position.substr(1,2));
-            }
-            else {
-                msp.tooltip.add($d, self.orientation === 'h'? 'n' : 'e');
+            if (!btn.html) {
+                if (self.position !== 'fr') {
+                    msp.tooltip.add($d, self.orientation === 'h'? self.position.substr(0,1) : self.position.substr(1,2));
+                }
+                else {
+                    msp.tooltip.add($d, self.orientation === 'h'? 'n' : 'e');
+                }
             }
             
             /*
@@ -348,7 +356,7 @@
         this.resize = function(scope) {
             if (scope.position === 'nn') {
                 scope.$d.css({
-                    'left':(msp.$map.width() - scope.$d.width()) / 2
+                    'left':(scope.parent.width() - scope.$d.width()) / 2
                 });
             }
         };

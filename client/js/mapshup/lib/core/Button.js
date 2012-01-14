@@ -60,6 +60,8 @@
      *      close: // boolean - if true, add a close button to the panel
      *      container: // Panel container (i.e. returned object of a msp.Panel().add() function
      *      e: // Extras properties - Properties under this property can be anything
+     *      html: // html code to display within the button instead of title - If both html and title
+     *               are specified, html has preseance (i.e. title is discarded)
      *      icon: // Url to the icon image (if no text)
      *      id: // Unique identifier for the <li> element. Automatically created if not given
      *      onclose: // function to call on close
@@ -117,6 +119,11 @@
          * Extra properties container
          */
         this.e = options.e || {};
+        
+        /*
+         * Html content for the button - replace title
+         */
+        this.html = options.html;
         
         /*
          * Url to the button icon image 
@@ -194,7 +201,7 @@
             delete self.e;
             
             /*
-             * Set content to item.title if defined or item.url in other case
+             * Add this button to the toolbar
              */
             self.$d = this.tb.add(this);
             
