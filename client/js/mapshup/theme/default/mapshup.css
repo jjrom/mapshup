@@ -265,7 +265,7 @@ input {
 .tbfrh {
     font-size:2em;
 }
-.tbneh, .tbnwh, .tbnwv, .tbseh, .tbsev, .tbswh, .tbswv {
+.tbneh, .tbnwh, .tbnwv, .tbseh, .tbsev, .tbswh, .tbswv, .tbnnh {
     background-color:#000;
     font-size:2em;
     color:#fff;
@@ -278,7 +278,7 @@ input {
 }
 
 /* North toobar */
-.tbneh, .tbnev, .tbnwh, .tbnwv {
+.tbneh, .tbnev, .tbnwh, .tbnwv, .tbnnh {
     top:20px;
 }
 

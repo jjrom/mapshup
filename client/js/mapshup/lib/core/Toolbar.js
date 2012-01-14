@@ -69,6 +69,7 @@
          * Toolbar position can be
          *  - ne (north east)
          *  - nw (north west)
+         *  - nn (north north)
          *  - se (south east)
          *  - sw (south west)
          *  - ss (south south)
@@ -83,11 +84,13 @@
          */
         this.init = function() {
 
+            var self = this;
+            
             /*
              * mapshup can have one and only one toolbar
-             * for each position (i.e. nw, ne, sw, se, ss) which
+             * for each position (i.e. nw, ne, nn, sw, se, ss) which
              * are stored respectively under msp.Toolbar._onwtb, msp.Toolbar._onetb,
-             * msp.Toolbar._oswtb and msp.Toolbar._osetb.
+             * msp.Toolbar._onntb,msp.Toolbar._oswtb, msp.Toolbar._osetb and msp.Toolbar._osstb,.
              * 
              * If an already initialized toolbar is requested then
              * it is returned instead of creating an new toolbar
@@ -98,27 +101,30 @@
              * in fact returned this toolbar and thus the orientation parameter
              * will be ignored.
              */
-            if (this.position === 'nw' && msp.Toolbar._onwtb) {
+            if (self.position === 'nw' && msp.Toolbar._onwtb) {
                 return msp.Toolbar._onwtb;
             }
-            else if (this.position === 'ne' && msp.Toolbar._onetb) {
+            else if (self.position === 'ne' && msp.Toolbar._onetb) {
                 return msp.Toolbar._onetb;
             }
-            else if (this.position === 'sw' && msp.Toolbar._oswtb) {
+            else if (self.position === 'nn' && msp.Toolbar._onntb) {
+                return msp.Toolbar._onntb;
+            }
+            else if (self.position === 'sw' && msp.Toolbar._oswtb) {
                 return msp.Toolbar._oswtb;
             }
-            else if (this.position === 'se' && msp.Toolbar._osetb) {
+            else if (self.position === 'se' && msp.Toolbar._osetb) {
                 return msp.Toolbar._osetb;
             }
-            else if (this.position === 'ss' && msp.Toolbar._osstb) {
+            else if (self.position === 'ss' && msp.Toolbar._osstb) {
                 return msp.Toolbar._osstb;
             }
             
             /*
-             * South south toolbar cannot be vertical
+             * South south and North north toolbars cannot be vertical
              */
-            if (this.position === "ss") {
-                this.orientation = 'h';
+            if (self.position === "ss" || self.position === "nn") {
+                self.orientation = 'h';
             }
             
             /*
@@ -135,13 +141,13 @@
              *  </div>
              *  
              */
-            this.$d = msp.Util.$$('#'+msp.Util.getId(), this.parent);
+            self.$d = msp.Util.$$('#'+msp.Util.getId(), self.parent);
             
             /*
              * "Non-free" toolbar are absolutely positionned
              */
-            if (this.position !== 'fr') {
-                this.$d.css({
+            if (self.position !== 'fr') {
+                self.$d.css({
                     'position':'absolute',
                     'z-index':'10250'
                 });
@@ -150,36 +156,50 @@
             /*
              * Add classes
              */
-            this.$d.addClass('tb tb'+this.position+this.orientation+' tb'+this.orientation);
+            self.$d.addClass('tb tb'+self.position+self.orientation+' tb'+self.orientation);
             
             /*
              * "shadow" class is not added to 'fr', 'ss' or 'v' toolbars
              */
-            if (this.orientation === 'h' && this.position !== 'fr' && this.position !== 'ss') {
-                this.$d.addClass('shadow');
+            if (self.orientation === 'h' && self.position !== 'fr' && self.position !== 'ss') {
+                self.$d.addClass('shadow');
             }
             
             
             /*
              * Create unique toolbar reference
              */
-            if (this.position === 'nw') {
-                msp.Toolbar._onwtb = this;
+            if (self.position === 'nw') {
+                msp.Toolbar._onwtb = self;
             }
-            else if (this.position === 'ne') {
-                msp.Toolbar._onetb = this;
+            else if (self.position === 'ne') {
+                msp.Toolbar._onetb = self;
             }
-            else if (this.position === 'sw') {
-                msp.Toolbar._oswtb = this;
-            }
-            else if (this.position === 'se') {
-                msp.Toolbar._osetb = this;
-            }
-            else if (this.position === 'ss') {
-                msp.Toolbar._osstb = this;
-            }
+            else if (self.position === 'nn') {
+                msp.Toolbar._onntb = self;
+                
+                /*
+                 * The North north toolbar should always centered on
+                 * the top of the map
+                 */
+                msp.Map.events.register("resizeend", self, function(scope){
+                    scope.$d.css({
+                        'left':(msp.$map.width() - scope.$d.width()) / 2
+                    });
+                });
 
-            return this;
+            }
+            else if (self.position === 'sw') {
+                msp.Toolbar._oswtb = self;
+            }
+            else if (self.position === 'se') {
+                msp.Toolbar._osetb = self;
+            }
+            else if (self.position === 'ss') {
+                msp.Toolbar._osstb = self;
+            }
+            
+            return self;
         };
 
         /**
