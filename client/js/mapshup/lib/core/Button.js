@@ -268,12 +268,12 @@
          */
         this.activate = function(b) {
             
-            var i,l;
+            var i,l,item,self = this;
             
             /*
              * Do nothing if button is not activable
              */
-            if (!this.activable) {
+            if (!self.activable) {
                 return false;
             }
             
@@ -284,33 +284,41 @@
                 
                 /*
                  * Remove all 'active' class from toolbar buttons and add 'inactive' class
+                 * This step is only applied to activable buttons
                  */
-                for (i = 0, l = this.tb.items.length; i < l; i++) {
-                    if (this.tb.items[i].id !== this.id) {
-                        this.tb.items[i].$d.removeClass('active').addClass('inactive');
+                for (i = 0, l = self.tb.items.length; i < l; i++) {
+                    item = self.tb.items[i];
+                    if (item.id !== self.id) {
+                        if (item.activable) {
+                            item.$d.removeClass('active').addClass('inactive');
+                        }
                     }
                 }
                 
                 /*
                  * Add 'active' class to button and remove 'inactive' class
                  */
-                this.$d.addClass("active").removeClass('inactive');
+                self.$d.addClass("active").removeClass('inactive');
                 
             }
             else {
              
                 /*
                  * Remove all 'inactive' class from toolbar buttons
+                 * This step is only applied to activable buttons
                  */
-                for (i = 0, l = this.tb.items.length; i < l; i++) {
-                    if (this.tb.items[i].id !== this.id) {
-                        this.tb.items[i].$d.removeClass('inactive');
+                for (i = 0, l = self.tb.items.length; i < l; i++) {
+                    item = self.tb.items[i];
+                    if (item.id !== self.id) {
+                        if (item.activable) {
+                            item.$d.removeClass('inactive');
+                        }
                     }
                 }
                 /*
                  * Remove 'active' class from button
                  */
-                this.$d.removeClass("active");
+                self.$d.removeClass("active");
                 
             }
             
