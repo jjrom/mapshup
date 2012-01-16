@@ -37,7 +37,7 @@ lib/layerTypes/GPX.js
 lib/layerTypes/Image.js
 lib/layerTypes/KML.js
 lib/layerTypes/MBT.js
-lib/layerTypes/OpenSearch.js
+#lib/layerTypes/OpenSearch.js
 lib/layerTypes/OSMT.js
 lib/layerTypes/Photography.js
 lib/layerTypes/Pleiades.js
