@@ -66,11 +66,6 @@
             this.options = options || {};
             
             /*
-             * Default flickr search service url
-             */
-            this.options.url = this.options.url || "/plugins/flickr/search.php?";
-
-            /*
              * Add a "Flickr" search action to the geonames menu
              * This action launch a flickr search limited to the map
              * view and constraint with the name

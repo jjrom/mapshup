@@ -728,8 +728,7 @@
     });
 
     /**
-     * Options :
-     *    url:'/plugins/flickr/search.php?'
+     * Flickr search url is fixed to '/plugins/flickr/search.php?'
      */
     c.add("plugins",
     {
