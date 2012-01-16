@@ -89,7 +89,8 @@
             /**
              * Layer creation
              */
-            var newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);
+            var self = this,
+                newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);
 
             /*
              * Add a featuresadded event
@@ -113,46 +114,54 @@
                 async:true,
                 dataType:"json",
                 success:function(data) {
-
-                    /*
-                     * First check if there is no error
-                     * Otherwise, display results
-                     */
-                    if (data.error) {
-                        msp.Util.message(newLayer.name + " : " + data.error["message"], -1);
-                    }
-                    else {
-                        /*
-                         * By default, GeoJSON stream is assume to be in EPSG:4326 projection
-                         * unless srs is specified in EPSG:3857 or EPSG:900913
-                         */
-                        if (layerDescription.srs === "EPSG:3857" || layerDescription.srs === "EPSG:900913") {
-                            this.layer.addFeatures(new OpenLayers.Format.GeoJSON().read(data));
-                        }
-                        else {
-                            this.layer.addFeatures(new OpenLayers.Format.GeoJSON({
-                                internalProjection:Map.map.projection,
-                                externalProjection:Map.epsg4326
-                            }).read(data));
-                        }
-
-                        /*
-                         * Zoom on layer after load
-                         */
-                        Map.Util.zoomOnAfterLoad(this.layer);
-
-                        /*
-                         * Reindex layer
-                         */
-                        Map.Util.updateIndex(this.layer);
-                    }
-
+                    self.load(data, layerDescription, this.layer);
                 }
             });
 
             return newLayer;
 
+        },
+        
+        /*
+         * Load GeoJSON data from a stream
+         */
+        load: function(data, layerDescription, layer) {
+            
+            /*
+             * First check if there is no error
+             * Otherwise, display results
+             */
+            if (!data || data.error) {
+                msp.Util.message(layer.name + " : " + data.error["message"], -1);
+            }
+            else {
+                /*
+                 * By default, GeoJSON stream is assume to be in EPSG:4326 projection
+                 * unless srs is specified in EPSG:3857 or EPSG:900913
+                 */
+                if (layerDescription.srs === "EPSG:3857" || layerDescription.srs === "EPSG:900913") {
+                    layer.addFeatures(new OpenLayers.Format.GeoJSON().read(data));
+                }
+                else {
+                    layer.addFeatures(new OpenLayers.Format.GeoJSON({
+                        internalProjection:Map.map.projection,
+                        externalProjection:Map.epsg4326
+                    }).read(data));
+                }
+
+                /*
+                 * Zoom on layer after load
+                 */
+                Map.Util.zoomOnAfterLoad(layer);
+
+                /*
+                 * Reindex layer
+                 */
+                Map.Util.updateIndex(layer);
+            }
+
         }
+        
     }
 
 })(window.msp, window.msp.Map);
