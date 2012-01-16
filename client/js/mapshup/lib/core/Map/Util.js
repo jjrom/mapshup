@@ -370,34 +370,6 @@
         Map.events.trigger("visibilitychanged", layer);
 
     };
-
-    /**
-     * Update the layer activity indicator i.e. show it
-     * if at least one layer is not loaded and remove it
-     * when all layers are loaded
-     */
-    Map.Util.updateLayerAI = function() {
-        
-        var i,l,layer,
-        show = false,
-        $d = msp.Util.$$('#layerai', msp.$mcontainer);
-        
-        for (i = 0, l = Map.map.layers.length; i < l; i++) {
-            layer = Map.map.layers[i];
-            
-            /* If the layer is due to be destroyed */
-            if (layer._tobedestroyed) {
-                continue;
-            }
-            else if (layer.hasOwnProperty('_msp') && !layer._msp.isLoaded) {
-                show = true;
-                break;
-            }
-        }
-        
-        show ? $d.show() : $d.hide(); 
-        
-    };
     
     /**
      * Reindex layer to ensure that :

@@ -151,9 +151,7 @@
          */
         this.trigger = function(eventname, extra) {
 
-            var obj,
-            i,
-            l;
+            var obj,i,l,self = this;
 
             /*
              * Trigger layersend to each handlers
@@ -175,15 +173,31 @@
                         extra.layer["_msp"].count = count;
                     }
                     
-                    for (i = 0, l = this.events["layersend"].length; i < l; i++) {
-                        obj = this.events["layersend"][i];
+                    for (i = 0, l = self.events["layersend"].length; i < l; i++) {
+                        obj = self.events["layersend"][i];
                         obj.handler(extra.action, extra.layer, obj.scope);
                     }
                     
                     /*
                      * Update layer activity indicator
                      */
-                    msp.Map.Util.updateLayerAI();
+                    var layer,
+                    show = false,
+                    $d = msp.Util.$$('#layerai', msp.$mcontainer);
+
+                    for (i = 0, l = self.map.map.layers.length; i < l; i++) {
+                        layer = self.map.map.layers[i];
+
+                        /* If the layer is due to be destroyed */
+                        if (layer._tobedestroyed) {
+                            continue;
+                        }
+                        else if (layer.hasOwnProperty('_msp') && !layer._msp.isLoaded) {
+                            show = true;
+                            break;
+                        }
+                    }
+                    show ? $d.show() : $d.hide();
                     
                 }
             }
@@ -203,7 +217,7 @@
                      * The layer has been updated (for example Wikipedia layer)
                      * Propagate this update to plugins
                      */
-                    this.trigger("layersend", {
+                    self.trigger("layersend", {
                         action:"update",
                         layer:extra
                     });
@@ -224,7 +238,7 @@
                     /*
                      * Update plugins
                      */
-                    this.trigger("layersend", {
+                    self.trigger("layersend", {
                         action:"update",
                         layer:extra
                     });
@@ -234,17 +248,17 @@
              * Trigger moveend to each handlers
              */
             else if (eventname === 'moveend') {
-                for (i = 0, l = this.events["moveend"].length; i < l; i++) {
-                    obj = this.events["moveend"][i];
-                    obj.handler(this.map.map, obj.scope);
+                for (i = 0, l = self.events["moveend"].length; i < l; i++) {
+                    obj = self.events["moveend"][i];
+                    obj.handler(self.map.map, obj.scope);
                 }
             }
             /*
              * Trigger resizeend to each handlers
              */
             else if (eventname === 'resizeend') {
-                for (i = 0, l = this.events["resizeend"].length; i < l; i++) {
-                    obj = this.events["resizeend"][i];
+                for (i = 0, l = self.events["resizeend"].length; i < l; i++) {
+                    obj = self.events["resizeend"][i];
                     obj.handler(obj.scope);
                 }
             }
@@ -256,8 +270,8 @@
                  * extra is a layer object
                  */
                 if (extra) {
-                    for (i = 0, l = this.events["visibilitychanged"].length; i < l; i++) {
-                        obj = this.events["visibilitychanged"][i];
+                    for (i = 0, l = self.events["visibilitychanged"].length; i < l; i++) {
+                        obj = self.events["visibilitychanged"][i];
                         obj.handler(extra, obj.scope);
                     } 
                 }
@@ -270,8 +284,8 @@
                  * extra is a layer object
                  */
                 if (extra) {
-                    for (i = 0, l = this.events["indexchanged"].length; i < l; i++) {
-                        obj = this.events["indexchanged"][i];
+                    for (i = 0, l = self.events["indexchanged"].length; i < l; i++) {
+                        obj = self.events["indexchanged"][i];
                         obj.handler(extra, obj.scope);
                     } 
                 }
