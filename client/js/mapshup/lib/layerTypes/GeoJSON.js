@@ -160,38 +160,49 @@
             else {
                 
                 /*
-                 * Tell user that layer is added
+                 * No features then remove layer
                  */
-                msp.Util.message(msp.Util._("Added")+ " : " + msp.Util._(layer.name));
-                
-                /*
-                 * Set layer isLoaded status to true
-                 */
-                layer['_msp'].isLoaded = true;
-                
-                /*
-                 * By default, GeoJSON stream is assume to be in EPSG:4326 projection
-                 * unless srs is specified in EPSG:3857 or EPSG:900913
-                 */
-                if (layerDescription.srs === "EPSG:3857" || layerDescription.srs === "EPSG:900913") {
-                    layer.addFeatures(new OpenLayers.Format.GeoJSON().read(data));
+                if (data.features.length === 0) {
+                    msp.Util.message(msp.Util._(layer.name)+ " : " + msp.Util._("No result"));
+                    msp.Map.removeLayer(layer, false);
                 }
                 else {
-                    layer.addFeatures(new OpenLayers.Format.GeoJSON({
-                        internalProjection:Map.map.projection,
-                        externalProjection:Map.epsg4326
-                    }).read(data));
+                    
+                    /*
+                     * Tell user that layer is added
+                     */
+                    msp.Util.message(msp.Util._("Added")+ " : " + msp.Util._(layer.name));
+
+                    /*
+                     * Set layer isLoaded status to true
+                     */
+                    layer['_msp'].isLoaded = true;
+
+                    /*
+                     * By default, GeoJSON stream is assume to be in EPSG:4326 projection
+                     * unless srs is specified in EPSG:3857 or EPSG:900913
+                     */
+                    if (layerDescription.srs === "EPSG:3857" || layerDescription.srs === "EPSG:900913") {
+                        layer.addFeatures(new OpenLayers.Format.GeoJSON().read(data));
+                    }
+                    else {
+                        layer.addFeatures(new OpenLayers.Format.GeoJSON({
+                            internalProjection:Map.map.projection,
+                            externalProjection:Map.epsg4326
+                        }).read(data));
+                    }
+
+                    /*
+                     * Zoom on layer after load
+                     */
+                    Map.Util.zoomOnAfterLoad(layer);
+
+                    /*
+                     * Reindex layer
+                     */
+                    Map.Util.updateIndex(layer);
+                    
                 }
-
-                /*
-                 * Zoom on layer after load
-                 */
-                Map.Util.zoomOnAfterLoad(layer);
-
-                /*
-                 * Reindex layer
-                 */
-                Map.Util.updateIndex(layer);
                 
             }
 
