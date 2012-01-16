@@ -107,6 +107,13 @@
             else {
                 
                 /*
+                 * First set the isLoaded status to false to avoid
+                 * annoying popup telling that the layer is added before
+                 * the data has been effectively retrieve from server
+                 */
+                newLayer['_msp'].isLoaded = false;
+                
+                /*
                  * Add a featuresadded event
                  */
                 newLayer.events.register("featuresadded", newLayer, function() {
@@ -151,6 +158,17 @@
                 msp.Util.message(layer.name + " : " + data.error["message"], -1);
             }
             else {
+                
+                /*
+                 * Tell user that layer is added
+                 */
+                msp.Util.message(msp.Util._("Added")+ " : " + msp.Util._(layer.name));
+                
+                /*
+                 * Set layer isLoaded status to true
+                 */
+                layer['_msp'].isLoaded = true;
+                
                 /*
                  * By default, GeoJSON stream is assume to be in EPSG:4326 projection
                  * unless srs is specified in EPSG:3857 or EPSG:900913
@@ -174,6 +192,7 @@
                  * Reindex layer
                  */
                 Map.Util.updateIndex(layer);
+                
             }
 
         }
