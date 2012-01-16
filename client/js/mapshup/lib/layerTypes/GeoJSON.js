@@ -155,7 +155,8 @@
              * Otherwise, display results
              */
             if (!data || data.error) {
-                msp.Util.message(layer.name + " : " + data.error["message"], -1);
+                msp.Util.message(layer.name + " : " + (data ? data.error["message"] : "Error"), -1);
+                msp.Map.removeLayer(layer, false);
             }
             else {
                 
