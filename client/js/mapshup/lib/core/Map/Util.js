@@ -372,10 +372,9 @@
     };
 
     /**
-     *
      * Update the layer activity indicator i.e. show it
      * if at least one layer is not loaded and remove it
-     * when all layers are loaded 
+     * when all layers are loaded
      */
     Map.Util.updateLayerAI = function() {
         
