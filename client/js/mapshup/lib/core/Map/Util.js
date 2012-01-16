@@ -378,15 +378,18 @@
      */
     Map.Util.updateLayerAI = function() {
         
-        var i,
-        l,
-        layer,
+        var i,l,layer,
         show = false,
         $d = msp.Util.$$('#layerai', msp.$mcontainer);
         
         for (i = 0, l = Map.map.layers.length; i < l; i++) {
             layer = Map.map.layers[i];
-            if (layer.hasOwnProperty('_msp') && !layer._msp.isLoaded) {
+            
+            /* If the layer is due to be destroyed */
+            if (layer._tobedestroyed) {
+                continue;
+            }
+            else if (layer.hasOwnProperty('_msp') && !layer._msp.isLoaded) {
                 show = true;
                 break;
             }
