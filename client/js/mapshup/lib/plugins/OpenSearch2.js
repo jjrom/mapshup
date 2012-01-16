@@ -197,7 +197,7 @@
          * Add an OpenSearch service
          * 
          * @input {String} url : url to an OpenSearch XML service description
-         * @input {String} stype : layer sub type (optional)
+         * @input {String} stype : layer subtype (optional)
          */
         this.add = function(url, stype) {
             
@@ -215,12 +215,8 @@
                      * Use the OpenLayers.Format.OpenSearchDescription reader
                      * to decode data result
                      */
-                    var d = self.reader.read(data);
-                    
-                    /*
-                     * Add stype to service description
-                     */
-                    d.stype = stype;
+                    var type,
+                        d = self.reader.read(data);
                     
                     /*
                      * Look for the best type candidate in the description list of available types
@@ -228,16 +224,29 @@
                      * Order of preference is GeoJSON, KML, Atom and GeoRSS
                      */
                     if (d.formats.GeoJSON) {
-                        d.type = "GeoJSON";
+                        
+                        type = "GeoJSON";
+                        
+                        /*
+                         * Special case for Flickr and Youtube 
+                         * Force the service type
+                         */
+                        if (stype === "Youtube") {
+                            d.type = "Youtube";
+                        }
+                        else if (stype === "Flickr") {
+                            d.type = "Flickr";
+                        }
+                        
                     }
                     else if (d.formats.KML) {
-                        d.type = "KML";
+                        type = "KML";
                     }
                     else if (this.description.formats.Atom) {
-                        d.type = "Atom"
+                        type = "Atom"
                     }
                     else if (this.description.formats.GeoRSS) {
-                        d.type = "GeoRSS";
+                        type = "GeoRSS";
                     }
                     else {
                         msp.Util.message(d.name + ": " + msp.Util._("Error : format not supported"));
@@ -247,8 +256,13 @@
                     /*
                      * Set URLTemplate and searchParams object
                      */
-                    d.URLTemplate = d.formats[d.type].URLTemplate;
-                    d.searchParams = d.formats[d.type].searchParams;
+                    d.URLTemplate = d.formats[type].URLTemplate;
+                    d.searchParams = d.formats[type].searchParams;
+                    
+                    /*
+                     * Set type
+                     */
+                    d.type = d.type || type;
                     
                     /*
                      * Add a new button to Search toolbar
@@ -323,7 +337,6 @@
              */
             layerDescription = {
                 type:service.type,
-                stype:service.stype,
                 url:msp.Util.proxify(url),
                 title:self.$input.val(),
                 q:self.$input.val()
