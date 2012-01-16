@@ -669,6 +669,9 @@ input {
     margin-bottom:5px;
     font-size:0.7em;
 }
+.pfi .info table {
+    width:100%;
+}
 .pfi .thumb {
     text-align: center;
     padding:5px;
