@@ -75,9 +75,16 @@
         add: function(layerDescription, options) {
 
             /*
-             * Set title
+             * Youtube layer is a GeoJSON layer
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription);
+            var geojson = Map.layerTypes["GeoJSON"];
+
+            /*
+             * No url or no GeoJSON support => return null
+             */
+            if (!geojson) {
+                return null;
+            }
             
             /*
              * Check if bbox is defined in layerDescription
@@ -90,7 +97,7 @@
             layerDescription.q = msp.Util.getPropertyValue(layerDescription, "q", "");
 
             /*
-             * Extend options object with Flickr specific properties
+             * Extend options object with Youtube specific properties
              */
             $.extend(options,
             {
@@ -127,9 +134,7 @@
             }
             );
 
-            var newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);
-
-            return newLayer;
+            return geojson.add(layerDescription, options);
         },
 
         /*
