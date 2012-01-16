@@ -434,9 +434,9 @@
             if (newLayer) {
 
                 /*
-                 * Tell user a layer has been added
+                 * Tell user a non-initial layer has been added (only if it has been loaded)
                  */
-                if (!newLayer["_msp"].initialLayer) {
+                if (!newLayer["_msp"].initialLayer && newLayer["_msp"].isLoaded) {
                     msp.Util.message(msp.Util._("Added")+ " : " + msp.Util._(newLayer.name));
                 }
 
