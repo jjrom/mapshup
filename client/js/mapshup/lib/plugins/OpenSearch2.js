@@ -145,7 +145,7 @@
              */
             for (i = 0, l = self.options.services.length; i < l ;i++){
                 d = self.options.services[i];
-                self.add(d.url,d.layerType);
+                self.add(d.url,d.stype);
             }
 
             /*
@@ -197,9 +197,9 @@
          * Add an OpenSearch service
          * 
          * @input {String} url : url to an OpenSearch XML service description
-         * @input {String} layerType : layer Type (optional)
+         * @input {String} stype : layer sub type (optional)
          */
-        this.add = function(url, layerType) {
+        this.add = function(url, stype) {
             
             var self = this;
             
@@ -218,42 +218,38 @@
                     var d = self.reader.read(data);
                     
                     /*
-                     * If no layerType is specified, then we look for
-                     * the best type candidate in the description list of available types
+                     * Add stype to service description
+                     */
+                    d.stype = stype;
+                    
+                    /*
+                     * Look for the best type candidate in the description list of available types
                      * 
                      * Order of preference is GeoJSON, KML, Atom and GeoRSS
                      */
-                    //if (layerType) {
-                    if (1 === 2) {
-                        d.type = layerType;
+                    if (d.formats.GeoJSON) {
+                        d.type = "GeoJSON";
+                    }
+                    else if (d.formats.KML) {
+                        d.type = "KML";
+                    }
+                    else if (this.description.formats.Atom) {
+                        d.type = "Atom"
+                    }
+                    else if (this.description.formats.GeoRSS) {
+                        d.type = "GeoRSS";
                     }
                     else {
-                        
-                        if (d.formats.GeoJSON) {
-                            d.type = "GeoJSON";
-                        }
-                        else if (d.formats.KML) {
-                            d.type = "KML";
-                        }
-                        else if (this.description.formats.Atom) {
-                            d.type = "Atom"
-                        }
-                        else if (this.description.formats.GeoRSS) {
-                            d.type = "GeoRSS";
-                        }
-                        else {
-                            msp.Util.message(d.name + ": " + msp.Util._("Error : format not supported"));
-                            return false;
-                        }
-                        
-                        /*
-                         * Set URLTemplate and searchParams object
-                         */
-                        d.URLTemplate = d.formats[d.type].URLTemplate;
-                        d.searchParams = d.formats[d.type].searchParams;
-                    
+                        msp.Util.message(d.name + ": " + msp.Util._("Error : format not supported"));
+                        return false;
                     }
 
+                    /*
+                     * Set URLTemplate and searchParams object
+                     */
+                    d.URLTemplate = d.formats[d.type].URLTemplate;
+                    d.searchParams = d.formats[d.type].searchParams;
+                    
                     /*
                      * Add a new button to Search toolbar
                      */
@@ -327,6 +323,7 @@
              */
             layerDescription = {
                 type:service.type,
+                stype:service.stype,
                 url:msp.Util.proxify(url),
                 title:self.$input.val(),
                 q:self.$input.val()

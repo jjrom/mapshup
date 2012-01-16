@@ -649,13 +649,15 @@
             services: [
             {
                 name:"Flickr",
-                layerType:"Flickr",
-                url:"/plugins/flickr/opensearch.xml"
+                url:"/plugins/flickr/opensearch.xml",
+                /* Sub type Flickr */
+                stype:"Flickr"
             },
             {
                 name:"Youtube",
-                layerType:"Youtube",
-                url:"/plugins/youtube/opensearch.xml"
+                url:"/plugins/youtube/opensearch.xml",
+                /* Sub type Youtube */
+                stype:"Youtube"
             },
             {
                 name:"Geonames",
