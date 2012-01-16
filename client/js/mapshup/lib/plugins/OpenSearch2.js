@@ -148,6 +148,47 @@
                 self.add(d.url,d.layerType);
             }
 
+            /*
+             * Event registration when layer end to load
+             * 
+             * If a layersend event occured on the self._layer layer,
+             * then the loading mask is cleared
+             */
+             msp.Map.events.register("layersend", self, function(action, layer, scope) {
+
+                /*
+                 * Process event only if a non loaded OpenSearch layer is defined
+                 */
+                if (self._layer) {
+                    
+                    /*
+                     * The event occurs on the current OpenSearch layer
+                     */
+                    if (layer.id === self._layer.id) {
+                       
+                        /*
+                         * The OpenSearch layer is loaded or is due to be destroyed
+                         */
+                        if (layer.hasOwnProperty('_msp') && (layer._msp.isLoaded || layer._tobedestroyed)) {
+                            
+                            /*
+                             * Hide the mask
+                             */
+                            msp.mask.hide();
+                            
+                            /*
+                             * No more OpenSearch layer
+                             */
+                            self._layer = null;
+                            
+                        }
+                    }
+                }
+                
+                return true;
+        
+            });
+            
             return this;
 
         };
@@ -281,7 +322,7 @@
             /*
              * Add layer
              */
-            msp.Map.addLayer({
+            self._layer = msp.Map.addLayer({
                 type:service.type,
                 url:msp.Util.proxify(url),
                 title:self.$input.val(),
@@ -289,31 +330,13 @@
             });
             
             /*
-             * Launch search
+             * Tell user that search is in progress
              */
-            /*
-            msp.Util.ajax({
-                url:msp.Util.proxify(url),
-                async:true,
-                dataType:"json",
-                success:function(result){
-                    if (result.error) {
-                        msp.Util.message(result.error["message"]);
-                    }
-                    else {
-                        
-                        
-                    }
-
-                },
-                error:function() {
-                    msp.Util.message(msp.Util._("Error : cannot perform action"));
-                }
-            },{
+            msp.mask.add({
                 title:msp.Util._(service.name)+' : '+msp.Util._("Searching")+" "+ self.$input.val(),
                 cancel:true
             });
-*/
+            
             return false;
         };
         
