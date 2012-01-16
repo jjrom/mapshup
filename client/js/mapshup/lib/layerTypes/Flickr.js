@@ -194,19 +194,6 @@
             }
         },
 
-        /*
-         * OpenSearch description
-         */
-        appendOpenSearchDescription: function(feature, id, $d) {
-            $d.append('<a style="padding:5px 0px 0px 5px;" href="#" class="image '+id+'"><img src="'+feature.attributes['icon']+'" title="'+feature.attributes['name']+'"/></a>');
-            (function(id, feature) {
-                $('.'+id, $d).click(function() {
-                    Map.zoomTo(feature.geometry.getBounds());
-                });
-            })(id, feature);
-
-        },
-
         /**
          * MANDATORY
          * Compute an unique mspID based on layerDescription
