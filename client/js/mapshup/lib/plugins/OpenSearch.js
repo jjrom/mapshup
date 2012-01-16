@@ -381,7 +381,7 @@
 
             }
             else {
-                msp.Util.message(msp.Util._("No results"));
+                msp.Util.message(msp.Util._("No result"));
             }
 
         };

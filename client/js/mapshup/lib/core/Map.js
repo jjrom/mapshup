@@ -476,7 +476,7 @@
                              * Layer is empty => remove it
                              */
                             if (msp.Map.Util.layerIsEmpty(this)) {
-                                msp.Util.message(msp.Util._("No results"));
+                                msp.Util.message(msp.Util._("No result"));
                                 return msp.Map.removeLayer(this);
                             }
                         }

@@ -533,7 +533,7 @@
                         l = features.length;
                         
                         if (!features || l === 0) {
-                            msp.Util.message(msp.Util._(layer.name) + " : " + msp.Util._("No results"));
+                            msp.Util.message(msp.Util._(layer.name) + " : " + msp.Util._("No result"));
                         }
                         else {
                             
