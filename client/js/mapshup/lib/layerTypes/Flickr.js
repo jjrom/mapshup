@@ -83,37 +83,18 @@
          */
         add: function(layerDescription, options) {
 
-            var flickr = msp.plugins["Flickr"];
+            /*
+             * Flickr layer is a GeoJSON layer
+             */
+            var geojson = Map.layerTypes["GeoJSON"];
 
             /*
-             * Set title
+             * No url or no GeoJSON support => return null
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription);
-            
-            /**
-             * flickr is null ?
-             * Perhaps plugin is not initialized yet...In this case
-             * try to get options directly from the config file
-             *
-             * This case should only occurs if a flickr layer is defined
-             * within the msp.Config.layers object. In this case it
-             * is loaded before the plugins initialization
-             */
-            if (!flickr) {
-                for (var i = 0, l = msp.plugins.length; i < l; i++) {
-                    var plugin = msp.plugins[i];
-                    if (plugin.name === "Flickr") {
-                        flickr = plugin;
-                        flickr.options = flickr.options || {};
-                        flickr.options.url = flickr.options.url || "/plugins/flickr/search.php?"
-                        break;
-                    }
-                }
-                if (!flickr) {
-                    return null;
-                }
+            if (!geojson) {
+                return null;
             }
-
+            
             /*
              * Check if bbox is defined in layerDescription
              */
@@ -151,7 +132,7 @@
                  * HTTP protocol initialization
                  */
                 protocol:new OpenLayers.Protocol.HTTP({
-                    url:msp.Util.getAbsoluteUrl(flickr.options.url),
+                    url:msp.Util.getAbsoluteUrl("/plugins/flickr/search.php?"),
                     params: {
                         maxfeatures: 20,
                         tag_mode:"all",
@@ -165,19 +146,7 @@
                 })
             });
 
-            /**
-             * Layer creation
-             */
-            var newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);
-
-            /*
-             * Add a featuresadded event
-             */
-            newLayer.events.register("featuresadded", newLayer, function() {
-                Map.onFeaturesAdded(this);
-            });
-
-            return newLayer;
+            return geojson.add(layerDescription, options);
 
         },
 
