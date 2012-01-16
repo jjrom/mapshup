@@ -425,7 +425,7 @@
                  *  </div>
                  */
                 self.$b.html('<div id="pfitm"><div class="thumb"></div><div class="info"><table></table></div></div>');
-                $info = $('.info', self.$b);
+                $info = $('.info table', self.$b);
                 $thumb = $('.thumb', self.$b);
                 
                 /*
