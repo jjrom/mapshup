@@ -181,6 +181,13 @@
                              */
                             self._layer = null;
                             
+                            /*
+                             * Automatically zoom on result extent
+                             */
+                            if (!layer._tobedestroyed) {
+                                msp.Map.zoomTo(layer.getDataExtent());
+                            }
+                            
                         }
                     }
                 }
