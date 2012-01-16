@@ -379,9 +379,9 @@ input {
     min-width:30px;
 }
 .tbnnh input {
-    background-color:#eee;
-    color:#666;
-    border:solid 1px #aacfe4;
+    background-color:#000;
+    color:#fff;
+    border:solid 1px #666;
 }
 
 /* Toolbar active class */
