@@ -73,6 +73,7 @@
          *      type:"GeoJSON",
          *      title:"Toulouse (Points)",
          *      url:"/server/plugins/tripsntracks/getFeatures.php?type=point",
+         *      data: // A valid GeoJSON data structure
          *      hidden:false,
          *      clusterized:true,
          *      hasIconAttribute:false // if true assume that features got a 'icon' attribute
@@ -81,43 +82,58 @@
          */
         add: function(layerDescription, options, urlModifier) {
 
+            var url,newLayer,self = this;
+            
             /*
              * Set title
              */
             layerDescription.title = msp.Util.getTitle(layerDescription);
             
-            /**
+            /*
              * Layer creation
              */
-            var self = this,
-                newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);
+            newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);
 
             /*
-             * Add a featuresadded event
+             * If layerDescription.data is set, the GeoJSON stream is directly
+             * read from data description
              */
-            newLayer.events.register("featuresadded", newLayer, function() {
-                Map.onFeaturesAdded(this);
-            });
-
+            if (layerDescription.hasOwnProperty("data")) {
+                self.load(layerDescription.data, layerDescription, newLayer);
+            }
             /*
-             * If urlModifier is set, add it before layerDescription.url
-             * (See Pleiades.js layerType to understand why)
+             * Otherwise, read data asynchronously from url
              */
-            var url = urlModifier ? urlModifier + encodeURIComponent(layerDescription.url + msp.Util.abc) : layerDescription.url;
+            else {
+                
+                /*
+                 * Add a featuresadded event
+                 */
+                newLayer.events.register("featuresadded", newLayer, function() {
+                    Map.onFeaturesAdded(this);
+                });
+                
+                /*
+                 * If urlModifier is set, add it before layerDescription.url
+                 * (See Pleiades.js layerType to understand why)
+                 */
+                url = urlModifier ? urlModifier + encodeURIComponent(layerDescription.url + msp.Util.abc) : layerDescription.url;
 
-            /**
-             * Retrieve FeatureCollection from server
-             */
-            $.ajax({
-                url:msp.Util.proxify(msp.Util.getAbsoluteUrl(url)),
-                layer:newLayer,
-                async:true,
-                dataType:"json",
-                success:function(data) {
-                    self.load(data, layerDescription, this.layer);
-                }
-            });
-
+                /**
+                 * Retrieve FeatureCollection from server
+                 */
+                $.ajax({
+                    url:msp.Util.proxify(msp.Util.getAbsoluteUrl(url)),
+                    layer:newLayer,
+                    async:true,
+                    dataType:"json",
+                    success:function(data) {
+                        self.load(data, layerDescription, this.layer);
+                    }
+                });
+                
+            }
+            
             return newLayer;
 
         },
