@@ -306,7 +306,7 @@
          */
         this.search = function(service) {
 
-            var url,self = this;
+            var layer,layerDescription,url,self = this;
             
             /*
              * If no input service is set, then use the active service
@@ -321,13 +321,57 @@
             
             /*
              * Add layer
+             * 
+             * This is a bit tricky...We first need to check that layer doex not exist
+             * before add it
              */
-            self._layer = msp.Map.addLayer({
+            layerDescription = {
                 type:service.type,
                 url:msp.Util.proxify(url),
                 title:self.$input.val(),
                 q:self.$input.val()
-            });
+            };
+            
+            layer = msp.Map.Util.getLayerByMspID((new msp.Map.LayerDescription(layerDescription, msp.Map)).getMspID());
+            
+            /*
+             * Layer already exist...ask for deletion before launching the search
+             */
+            if (layer) {
+                
+                /**
+                 * Ask for deletion if :
+                 *  - it is requested in the query
+                 *  - msp.Config.general.confirmDeletion is set to true
+                 */
+                if (msp.Config["general"].confirmDeletion) {
+
+                    msp.Util.askFor(msp.Util._("Delete layer"), msp.Util._("Do you really want to remove layer")+" "+layer.name, "list", [{
+                        title:msp.Util._("Yes"), 
+                        value:"y"
+                    },
+                    {
+                        title:msp.Util._("No"), 
+                        value:"n"
+                    }
+                    ], function(v){
+                        if (v === "y") {
+                            msp.Map.removeLayer(layer);
+                            self.search(service);
+                        }
+                    });
+                    return null;
+                }
+                else {
+                    msp.Map.removeLayer(layer);
+                }
+                
+            }
+            
+            /*
+             * Add layer and store it for post processing 
+             */
+            self._layer = msp.Map.addLayer(layerDescription);
             
             /*
              * Tell user that search is in progress
