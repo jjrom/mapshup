@@ -646,7 +646,7 @@
             /**
              * Descriptions of OpenSearch services
              */
-            descriptions: [
+            services: [
             {
                 name:"Flickr",
                 layerType:"Flickr",

@@ -91,7 +91,7 @@
             {
                 position:self.options.position || 'nn',
                 orientation:self.options.orientation || 'h',
-                descriptions:self.options.descriptions || [],
+                services:self.options.services || [],
                 title:self.options.title || "Search for media"
             }
             );
@@ -143,8 +143,8 @@
             /*
              * Extract service information for each OpenSearch description
              */
-            for (i = 0, l = self.options.descriptions.length; i < l ;i++){
-                d = self.options.descriptions[i];
+            for (i = 0, l = self.options.services.length; i < l ;i++){
+                d = self.options.services[i];
                 self.add(d.url,d.layerType);
             }
 
