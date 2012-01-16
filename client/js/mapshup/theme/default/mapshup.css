@@ -704,7 +704,7 @@ input {
     font-size:0.8em;
     border: 1px solid #ccc;
     background-color:#f3961c;
-    width:250px;
+    max-width:250px;
     padding:10px;
     overflow:hidden;
     z-index:10000;
