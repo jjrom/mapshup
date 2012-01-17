@@ -544,8 +544,8 @@ input {
 /*
  * OpenSearch input text box
  */
- .osearch input[type="text"] {
-    background: url(img/osearch.png) no-repeat 10px 6px #444;
+ .ossearch input[type="text"] {
+    background: url(img/ossearch.png) no-repeat 10px 6px #444;
     border: 0 none;
     font:12px Arial,Helvetica,Sans-serif;
     color: #d7d7d7;
@@ -562,6 +562,25 @@ input {
     -moz-transition: all 0.7s ease 0s;
     -o-transition: all 0.7s ease 0s;
     transition: all 0.7s ease 0s;
+}
+/*
+ * Input text box clear button
+ */
+span.osclear {
+    position: relative;
+}
+span.osclear span {
+    position: absolute;
+    display: block;
+    top: 5px;
+    right: 0px;
+    width: 16px;
+    height: 16px;
+    background: url('img/osclear.png') no-repeat;
+    cursor: pointer;
+}
+span.osclear input {
+    padding-right: 16px;
 }
 
 /*

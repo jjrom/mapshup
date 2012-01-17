@@ -96,7 +96,7 @@
                 tb:self.tb,
                 tt:self.options.description,
                 switchable:false,
-                html:'<form method="get" action="#" class="osearch"><input id="'+id+'" name="q" type="text" size="40" placeholder="'+msp.Util._("Keywords or coordinates")+'"/></form>',
+                html:'<form method="get" action="#" class="ossearch"><input id="'+id+'" name="q" type="text" size="40" placeholder="'+msp.Util._("Keywords or coordinates")+'"/></form>',
                 nohover:true,
                 activable:false
             });
@@ -151,11 +151,11 @@
             });
             
             /*
-             * Clear input text box value when user click on it
+             * Add a clear button within the input text box
              */
-            self.$input.click(function(){
-                $(this).val('');
-            });
+            self.$input.wrap('<span class="osclear" />').after($('<span/>').click(function() {
+                $(this).prev('input').val('').focus();
+            }));
             
             /*
              * Initialize OpenSearch format reader
