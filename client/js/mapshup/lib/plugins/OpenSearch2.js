@@ -80,7 +80,7 @@
                 position:self.options.position || 'nn',
                 orientation:self.options.orientation || 'h',
                 services:self.options.services || [],
-                description:self.options.description || "Search for one or more comma-delimited <b>keywords</b> (e.g. Paris, France) in the active service or enter <b>coordinates</b> in decimal degrees (e.g. 44.1 -128.8) to center the map"
+                description:self.options.description || "Search for one or more comma-delimited <b>keywords</b> (e.g. Toulouse,France) or enter <b>coordinates</b> in decimal degrees (e.g. 44.1 -128.8)"
             }
             );
 
@@ -433,7 +433,7 @@
             /*
              * Avoid XSS vulnerability
              */
-            self.$input.val(msp.Util.htmlEntitiesEncode(self.$input.val()));
+            self.$input.val(msp.Util.htmlEntitiesEncode(self.format(self.$input.val())));
 
             /*
              * Set special params
