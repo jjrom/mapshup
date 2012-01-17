@@ -104,7 +104,7 @@
              */
             new msp.Button({
                 tb:self.tb,
-                tt:self.options.title,
+                tt:self.options.description,
                 switchable:false,
                 html:'<input style="margin-left:5px;" id="'+id+'" type="text"/>',
                 nohover:true,
