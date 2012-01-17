@@ -206,9 +206,9 @@
             
             /*
              * Add a WEST/EAST/NORTH/SOUTH tooltip depending on orientation
-             * Note : if btn.html is set, then no tooltip is added
+             * Note : if btn.tt is not set, then no tooltip is added
              */
-            if (!btn.html) {
+            if (btn.tt) {
                 if (self.position !== 'fr') {
                     msp.tooltip.add($d, self.orientation === 'h'? self.position.substr(0,1) : self.position.substr(1,2));
                 }
