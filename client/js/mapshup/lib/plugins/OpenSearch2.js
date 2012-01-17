@@ -96,7 +96,7 @@
                 tb:self.tb,
                 tt:self.options.description,
                 switchable:false,
-                html:'<input style="margin-left:5px;" id="'+id+'" type="text"/>',
+                html:'<form method="get" action="#" class="osearch"><input id="'+id+'" name="q" type="text" size="40" placeholder="'+msp.Util._("Keywords or coordinates")+'"/></form>',
                 nohover:true,
                 activable:false
             });
@@ -105,12 +105,13 @@
              * Set default value if defined
              * Input value is encoded to avoid javascript code injection
              */
-            self.$input = $('#'+id).watermark(msp.Util._("Keywords or coordinates"));
+            self.$input = $('#'+id);
             
             /*
              * Launch a search when user hits 'return' or 'tab' key
              */
             self.$input.keypress(function(event) {
+                
                 if (event.keyCode === 13 || event.keyCode === 9) {
                     
                     /*
@@ -340,9 +341,9 @@
             self.active = service;
             
             /*
-             * Firefox bug with watermark ?
+             * Launch search if input text box is not empty
              */
-            if(self.$input.val().length > 1 && self.$input.val() != msp.Util._("Keywords or coordinates")) {
+            if(self.$input.val().length > 1) {
                 self.search();
             }
         };
@@ -365,6 +366,13 @@
              * If url is null then we try the special case
              */
             url = self.getRequestUrl(service);
+            
+            /*
+             * Empty val, no search
+             */
+            if (self.$input.val() === "") {
+                return false;
+            }
             
             /*
              * Add layer
