@@ -1176,7 +1176,7 @@
                      * Display the mouse position if Config.general.displayCoordinates is set to true
                      */
                     if (_config["general"].displayCoordinates) {
-                        msp.Map.$coords.html(msp.Map.Util.getFormattedLonLat(self.Util.p2d(msp.Map.map.getLonLatFromPixel(msp.Map.mousePosition)), msp.Config["general"].coordinatesDisplay)).css({
+                        msp.Map.$coords.html(msp.Map.Util.getFormattedLonLat(self.Util.p2d(msp.Map.map.getLonLatFromPixel(msp.Map.mousePosition)), msp.Config["general"].coordinatesFormat)).css({
                             'top': msp.Map.mousePosition.y - 20,
                             'left': msp.Map.mousePosition.x
                         }).show();

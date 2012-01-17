@@ -131,7 +131,7 @@
                             /*
                              * Tell user we zoom the map
                              */
-                            msp.Util.message(msp.Util._("Zoom map")+": " + msp.Map.Util.getFormattedLonLat(lonlat, msp.Config["general"].coordinatesDisplay));
+                            msp.Util.message(msp.Util._("Zoom map")+": " + msp.Map.Util.getFormattedLonLat(lonlat, msp.Config["general"].coordinatesFormat));
                                
                             /*
                              * Latitude/longitude to map projection
