@@ -545,10 +545,10 @@
                     input.val(this.htmlEntitiesEncode(value));
                 }
                 /*
-                 * Or set input text box watermark
+                 * Or set input text box placeholder
                  */
                 else if (description) {
-                    input.watermark(description);
+                    input.attr('placeholder', description);
                 }
                 
                 /**
