@@ -112,7 +112,8 @@
          */
         this.init = function() {
             
-            var self = this;
+            var self = this,
+                uid = '_o'+self.position+'p';
             
             /*
              * East panel are over by default
@@ -132,18 +133,16 @@
              * it is returned instead of creating an new panel
              *
              */
-            if (self.position === 'n' && msp.Panel._onp) {
-                return msp.Panel._onp;
+            if (msp.Panel[uid]) {
+                return msp.Panel[uid];
             }
-            else if (self.position === 's' && msp.Panel._osp) {
-                return msp.Panel._osp;
+            /*
+             * Create unique Panel reference
+             */
+            else {
+                msp.Panel[uid] = self;
             }
-            else if (self.position === 'e' && msp.Panel._oep) {
-                return msp.Panel._oep;
-            }
-            else if (self.position === 'w' && msp.Panel._owp) {
-                return msp.Panel._owp;
-            }
+            
             
             /*
              * South and North panel heights is computed from window.height
@@ -173,7 +172,6 @@
                     'height':self.h
                 });
                 
-                msp.Panel._onp = self;
                 
             }
             else if (self.position === 's') {
@@ -186,7 +184,6 @@
                     'height':self.h
                 });
                 
-                msp.Panel._osp = self;
             }
             else if (self.position === 'e') {
                
@@ -198,7 +195,6 @@
                     'width':self.w
                 });
                 
-                msp.Panel._oep = self;
             }
             else if (self.position === 'w') {
                 
@@ -210,7 +206,6 @@
                     'width':self.w
                 });
                 
-                msp.Panel._owp = self;
             }
             
             /*
