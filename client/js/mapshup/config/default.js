@@ -633,7 +633,7 @@
      *
      * options:
      * 
-     *      description:// Set the test displayed to describre the service (default is "Search for media")
+     *      description:// Set the tooltip text displayed on mouse over the input search text box
      *
      */
     c.add("plugins",
