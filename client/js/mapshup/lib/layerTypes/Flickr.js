@@ -77,7 +77,6 @@
          *      userID:,
          *      q:,
          *      machineTags:,
-         *      fromOpenSearch:,
          *      bbox:
          *  };
          */
@@ -96,15 +95,29 @@
             }
             
             /*
-             * Check if bbox is defined in layerDescription
+             * Set Layer description url
+             * Full url with parameters is already set in case of and OpenSearch request
+             * Otherwise we need to build it with layerDescription parameters
              */
-            layerDescription.bbox = msp.Util.getPropertyValue(layerDescription, "bbox", Map.getBBOX());
+            if (!layerDescription.url) {
+                
+                /*
+                 * Check if bbox is defined in layerDescription
+                 */
+                layerDescription.bbox = msp.Util.getPropertyValue(layerDescription, "bbox", Map.getBBOX());
 
-            /*
-             * Set an empty search term value if not set
-             */
-            layerDescription.q = msp.Util.getPropertyValue(layerDescription, "q", "");
+                /*
+                 * Set an empty search term value if not set
+                 */
+                layerDescription.q = msp.Util.getPropertyValue(layerDescription, "q", "");
 
+                /*
+                 * Build url
+                 */
+                layerDescription.url = msp.Util.getAbsoluteUrl("/plugins/flickr/search.php?q="+layerDescription.q+"&bbox="+layerDescription.bbox);
+                
+            }
+            
             /*
              * Extend options object with Flickr specific properties
              */
@@ -121,29 +134,8 @@
                     "select": new OpenLayers.Style({
                         pointRadius: 35
                     })
-                }),
-
-                /*
-                 * Features are loaded entirely at first
-                 */
-                strategies: [new OpenLayers.Strategy.Fixed()],
-
-                /*
-                 * HTTP protocol initialization
-                 */
-                protocol:new OpenLayers.Protocol.HTTP({
-                    url:msp.Util.getAbsoluteUrl("/plugins/flickr/search.php?"),
-                    params: {
-                        maxfeatures: 20,
-                        tag_mode:"all",
-                        sort:"relevance",
-                        bbox:layerDescription.bbox,
-                        q:layerDescription.q,
-                        machine_tags:layerDescription.machineTags,
-                        user_id:layerDescription.userID
-                    },
-                    format: new OpenLayers.Format.GeoJSON()
                 })
+
             });
 
             return geojson.add(layerDescription, options);
