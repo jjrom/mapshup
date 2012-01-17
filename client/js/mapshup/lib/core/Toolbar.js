@@ -126,7 +126,7 @@
              * Toolbar is a div container of <div class="item"> divs
              * 
              * Structure :
-             *  <div class="tb shadow">
+             *  <div class="tb">
              *      <div class="item"></div>
              *      <div class="item"></div>
              *      ...
@@ -149,13 +149,6 @@
              * Add classes
              */
             self.$d.addClass('tb tb'+self.position+self.orientation+' tb'+self.orientation);
-            
-            /*
-             * "shadow" class is not added to 'fr', 'ss' or 'v' toolbars
-             */
-            if (self.orientation === 'h' && self.position !== 'fr' && self.position !== 'ss') {
-                self.$d.addClass('shadow');
-            }
             
             /*
              * The North north toolbar should always centered on

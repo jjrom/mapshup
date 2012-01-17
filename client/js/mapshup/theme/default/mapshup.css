@@ -354,6 +354,14 @@ input {
     line-height:37px;
 }
 
+/* Shadow for all toolbars except for 'fr', 'ss', 'nn' and 'v' toolbars */
+.tbnwh, .tbneh, .tbswh, .tbseh {
+    box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
+    -o-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 1px 1px 5px 0 gba(0, 0, 0, 0.5);
+}
+
 /* South south toolbar */
 .tbssh .item {
     background-color:#000;
@@ -367,7 +375,7 @@ input {
 
 /* North North toolbar */
 .tbnnh {
-    background-color:#000;
+    background-color:transparent;
     height:30px;
 }
 .tbnnh img {
@@ -534,6 +542,28 @@ input {
 
 /* END : Actions */
 
+/*
+ * OpenSearch input text box
+ */
+ .osearch input[type="text"] {
+    background: url(img/osearch.png) no-repeat 10px 6px #444;
+    border: 0 none;
+    font:12px Arial,Helvetica,Sans-serif;
+    color: #d7d7d7;
+    width:200px;
+    padding: 6px 15px 6px 35px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.3); 
+    -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2) inset;
+    -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2) inset;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2) inset;
+    -webkit-transition: all 0.7s ease 0s;
+    -moz-transition: all 0.7s ease 0s;
+    -o-transition: all 0.7s ease 0s;
+    transition: all 0.7s ease 0s;
+}
 
 /*
  * Start "popup" definition
