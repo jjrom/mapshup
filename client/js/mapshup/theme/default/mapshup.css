@@ -140,11 +140,11 @@ input {
 
 #wheader {
     position:absolute;
-    background-color:#eee;
+    background-color:#000;
     top:0px;
     left:0px;
     height:0px; /* Header has a null height */
-    line-height:50px;
+    line-height:35px;
     width:100%;
     overflow:hidden;
 }
@@ -163,7 +163,6 @@ input {
 */
 .map {
     position:absolute;
-    border-top:1px solid #ccc;
     top:0px; /* Fullscreen map */
     left:0px;
     right:0px;
@@ -312,7 +311,7 @@ input {
 
 /* Position for North North toolbar */
 .tbnnh {
-    top:5px;
+    top:0px;
 }
 
 /* Position for South South toolbar */
@@ -449,7 +448,7 @@ input {
 .pn .block {
     padding:5px;
     margin-bottom:5px;
-}
+} 
 /*
  * East panel
  */
