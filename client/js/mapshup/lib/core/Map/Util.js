@@ -171,6 +171,13 @@
     Map.Util.getFormattedLonLat = function(lonlat,format) {
         
         /*
+         * Check format - By default returns degree, minutes, seconds
+         */
+        if (!format) {
+            format = 'dms';
+        }
+        
+        /*
          * Format 'hms' first display Right Ascension then Declinaison
          */
         if (format.indexOf('h') !== -1) {

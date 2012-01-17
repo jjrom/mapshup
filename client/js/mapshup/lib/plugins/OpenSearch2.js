@@ -131,7 +131,7 @@
                             /*
                              * Tell user we zoom the map
                              */
-                            msp.Util.message(msp.Util._("Zoom map")+": " + msp.Map.Util.getFormattedLonLat(lonlat, msp.Config.coordinatesDisplay));
+                            msp.Util.message(msp.Util._("Zoom map")+": " + msp.Map.Util.getFormattedLonLat(lonlat, msp.Config["general"].coordinatesDisplay));
                                
                             /*
                              * Latitude/longitude to map projection
@@ -202,11 +202,20 @@
                              */
                             self._layer = null;
                             
-                            /*
-                             * Automatically zoom on result extent
-                             */
                             if (!layer._tobedestroyed) {
+                                
+                                /*
+                                 * Automatically zoom on result extent
+                                 */
                                 msp.Map.zoomTo(layer.getDataExtent());
+                                
+                                /*
+                                 * If only one feature is present in the result,
+                                 * then automatically select it
+                                 */
+                                if (layer.features.length === 1) {
+                                    msp.Map.featureInfo.select(layer.features[0], true);
+                                }
                             }
                             
                         }
