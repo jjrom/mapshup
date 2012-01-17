@@ -58,16 +58,6 @@
          */
         this.active = null;
         
-        /*
-         * Compile regular expression during object creation
-         */
-        this.regExp = {
-            all:(/\{(\w|:)+\??\}/g),
-            trimCurly:(/(^\{|\??\}$)/g),
-            searchTerms:(/\{searchTerms\}/g),
-            bbox:(/\{geo:box\??\}/g)
-        };
-
         /**
          * Initialize plugin
          */
@@ -90,7 +80,7 @@
                 position:self.options.position || 'nn',
                 orientation:self.options.orientation || 'h',
                 services:self.options.services || [],
-                description:self.options.description || "Search for media"
+                description:self.options.description || "Search for one or more comma-delimited <b>keywords</b> (e.g. Paris, France) in the active service or enter <b>coordinates</b> in decimal degrees (e.g. 44.1 -128.8) to center the map"
             }
             );
 
@@ -115,13 +105,46 @@
              * Set default value if defined
              * Input value is encoded to avoid javascript code injection
              */
-            self.$input = $('#'+id).watermark(msp.Util._("Search")+"...");
+            self.$input = $('#'+id).watermark(msp.Util._("Keywords or coordinates"));
             
             /*
              * Launch a search when user hits 'return' or 'tab' key
              */
             self.$input.keypress(function(event) {
                 if (event.keyCode === 13 || event.keyCode === 9) {
+                    
+                    /*
+                     * Determine if input value is a keyword or a coordinates
+                     * A valid Lat/Lon coordinates couple is composed of 2 float
+                     * The first one with a value between -90 and 90 and the second
+                     * one with a value between -180 and 180
+                     */
+                    var lonlat,
+                        c = $.trim($(this).val()).split(' ');
+                    
+                    if (c.length === 2) {
+                        
+                        if ($.isNumeric(c[0]) && $.isNumeric(c[1])) {
+                            
+                            lonlat = new OpenLayers.LonLat(c[1],c[0]);
+                            
+                            /*
+                             * Tell user we zoom the map
+                             */
+                            msp.Util.message(msp.Util._("Zoom map")+": " + msp.Map.Util.getFormattedLonLat(lonlat, msp.Config.coordinatesDisplay));
+                               
+                            /*
+                             * Latitude/longitude to map projection
+                             */
+                            msp.Map.map.setCenter(msp.Map.Util.d2p(lonlat), 14);
+                            
+                            return false;
+                        }
+                    }
+                    
+                    /*
+                     * Keywords case
+                     */
                     return self.search();
                 }
             });
@@ -310,7 +333,7 @@
             /*
              * Firefox bug with watermark ?
              */
-            if(self.$input.val().length > 1 && self.$input.val() != msp.Util._("Search")+"...") {
+            if(self.$input.val().length > 1 && self.$input.val() != msp.Util._("Keywords or coordinates")) {
                 self.search();
             }
         };
