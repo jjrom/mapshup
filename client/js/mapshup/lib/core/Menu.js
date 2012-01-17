@@ -125,8 +125,8 @@
                     ic:"x.png",
                     ti:"Close menu",
                     cb:function(scope) {}
-                },
-                /* Add "zoom in" menu item */
+                }
+                /* Add "zoom in" menu item
                 {
                     id:msp.Util.getId(),
                     ic:"plus.png",
@@ -135,7 +135,8 @@
                         msp.Map.map.setCenter(scope.lonLat, msp.Map.map.getZoom() + 1);
                     }
                 },
-                /* Add "zoom out" menu item */
+                */
+                /* Add "zoom out" menu item
                 {
                     id:msp.Util.getId(),
                     ic:"minus.png",
@@ -144,6 +145,7 @@
                         msp.Map.map.setCenter(scope.lonLat, Math.max(msp.Map.map.getZoom() - 1, msp.Map.lowestZoomLevel));
                     }
                 }
+                */
             ]);
 
             /*
