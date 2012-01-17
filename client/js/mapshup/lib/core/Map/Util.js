@@ -169,7 +169,20 @@
      *           'hms' show hour minutes second
      */
     Map.Util.getFormattedLonLat = function(lonlat,format) {
-        return Map.Util.getFormattedCoordinate(lonlat.lat,"lat",format)+"&nbsp;::&nbsp;"+Map.Util.getFormattedCoordinate(lonlat.lon,"lon",format);
+        
+        /*
+         * Format 'hms' first display Right Ascension then Declinaison
+         */
+        if (format.indexOf('h') !== -1) {
+            return Map.Util.getFormattedCoordinate(lonlat.lon,"lon",format)+"&nbsp;::&nbsp;"+Map.Util.getFormattedCoordinate(lonlat.lat,"lat",format);
+        }
+        /*
+         * Classical 'dms' first display Latitude then Longitude
+         */
+        else {
+           return Map.Util.getFormattedCoordinate(lonlat.lat,"lat",format)+"&nbsp;::&nbsp;"+Map.Util.getFormattedCoordinate(lonlat.lon,"lon",format);
+        }
+        
     };
     
     /**
