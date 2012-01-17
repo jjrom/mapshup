@@ -84,7 +84,8 @@
          */
         this.init = function() {
 
-            var self = this;
+            var self = this,
+                uid = '_o'+self.position+'tb';
             
             /*
              * mapshup can have one and only one toolbar
@@ -101,23 +102,14 @@
              * in fact returned this toolbar and thus the orientation parameter
              * will be ignored.
              */
-            if (self.position === 'nw' && msp.Toolbar._onwtb) {
-                return msp.Toolbar._onwtb;
+            if (msp.Toolbar[uid]) {
+                return msp.Toolbar[uid];
             }
-            else if (self.position === 'ne' && msp.Toolbar._onetb) {
-                return msp.Toolbar._onetb;
-            }
-            else if (self.position === 'nn' && msp.Toolbar._onntb) {
-                return msp.Toolbar._onntb;
-            }
-            else if (self.position === 'sw' && msp.Toolbar._oswtb) {
-                return msp.Toolbar._oswtb;
-            }
-            else if (self.position === 'se' && msp.Toolbar._osetb) {
-                return msp.Toolbar._osetb;
-            }
-            else if (self.position === 'ss' && msp.Toolbar._osstb) {
-                return msp.Toolbar._osstb;
+            /*
+             * Create unique toolbar reference
+             */
+            else {
+                msp.Toolbar[uid] = self;
             }
             
             /*
@@ -165,35 +157,14 @@
                 self.$d.addClass('shadow');
             }
             
-            
             /*
-             * Create unique toolbar reference
+             * The North north toolbar should always centered on
+             * the top of the map
              */
-            if (self.position === 'nw') {
-                msp.Toolbar._onwtb = self;
+            if (self.position === 'nn') {
+               msp.Map.events.register("resizeend", self, self.resize);
             }
-            else if (self.position === 'ne') {
-                msp.Toolbar._onetb = self;
-            }
-            else if (self.position === 'nn') {
-                msp.Toolbar._onntb = self;
-                
-                /*
-                 * The North north toolbar should always centered on
-                 * the top of the map
-                 */
-                msp.Map.events.register("resizeend", self, self.resize);
-                
-            }
-            else if (self.position === 'sw') {
-                msp.Toolbar._oswtb = self;
-            }
-            else if (self.position === 'se') {
-                msp.Toolbar._osetb = self;
-            }
-            else if (self.position === 'ss') {
-                msp.Toolbar._osstb = self;
-            }
+            
             
             return self;
         };
