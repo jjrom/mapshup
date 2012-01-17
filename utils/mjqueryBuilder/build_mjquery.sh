@@ -53,7 +53,6 @@ fi
 echo "Building mjquery.js"
 cat $jquerydir/jquery-1.7.1.min.js > $mjquerydir/mjquery.js
 cat $jquerydir/fixedHeaderTable/jquery.fixedheadertable.min.js >> $mjquerydir/mjquery.js
-cat $jquerydir/watermark/jquery.watermark.min.js >> $mjquerydir/mjquery.js
 cat $jquerydir/idTabs/jquery.idTabs.min.js >> $mjquerydir/mjquery.js
 cat $jquerydir/autocomplete/jquery.autocomplete.js >> $mjquerydir/mjquery.js
 cat $jquerydir/jqplot/jquery.jqplot.min.js >> $mjquerydir/mjquery.js
