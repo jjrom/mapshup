@@ -629,18 +629,16 @@
     });
 
     /**
-     * OpenSearch plugin
-     * NB: if "layerType" property is not set,
-     * the created layer is supposed to be a "Generic" layer
-     * 
+     * OpenSearch2 plugin
+     *
      * options:
      * 
-     *      title://Set the title of the OpenSearch panel (default is "Search for media")
+     *      description:// Set the test displayed to describre the service (default is "Search for media")
      *
      */
     c.add("plugins",
     {
-        name:"OpenSearch",
+        name:"OpenSearch2",
         options:{
 
             /**
@@ -648,23 +646,19 @@
              */
             services: [
             {
-                name:"Flickr",
                 url:"/plugins/flickr/opensearch.xml",
                 /* Sub type Flickr */
                 stype:"Flickr"
             },
             {
-                name:"Youtube",
                 url:"/plugins/youtube/opensearch.xml",
                 /* Sub type Youtube */
                 stype:"Youtube"
             },
             {
-                name:"Geonames",
                 url:"/plugins/geonames/opensearch.xml"
             },
             {
-                name:"Wikipedia",
                 url:"/plugins/wikipedia/opensearch.xml"
             }
             ]

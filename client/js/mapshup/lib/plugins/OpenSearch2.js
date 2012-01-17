@@ -37,11 +37,9 @@
  */
 /*********************************************
  * 
- * Plugin: OpenSearch
+ * Plugin: OpenSearch2
  * 
  * Add support for OpenSearch feeds
- * OpenSearch plugin is activated through a
- * msp.Button and displayed within a msp.Panel
  * 
  *********************************************/
 (function(msp) {
@@ -92,7 +90,7 @@
                 position:self.options.position || 'nn',
                 orientation:self.options.orientation || 'h',
                 services:self.options.services || [],
-                title:self.options.title || "Search for media"
+                description:self.options.description || "Search for media"
             }
             );
 
