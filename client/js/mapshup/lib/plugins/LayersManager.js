@@ -483,6 +483,20 @@
                 });
             }
             
+            /*
+             * Add a legend if available
+             */
+            if (layer["_msp"].legend) {
+                actions.push({
+                    id:id+"legend",
+                    ic:"legend.png",
+                    ti:"Legend",
+                    cb:function() {
+                        msp.Util.showPopupImage(layer["_msp"].legend, layer.name);
+                    }
+                });
+            }
+            
             /**
              * Add item from other plugins
              */
