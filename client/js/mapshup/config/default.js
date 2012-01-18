@@ -178,9 +178,9 @@
     c["general"].mbtilesServiceUrl = "/utilities/mbtsrv.php?zxy=${z}/${x}/${y}&t=";
 
     /**
-     * Relative or absolute url to the theme directory
+     * Absolute url to the theme directory
      */
-    c["general"].themeUrl = "js/mapshup/theme/default";
+    c["general"].themeUrl = c["general"].applicationRootUrl+"/js/mapshup/theme/default";
 
     /**
      * If teleport is set to true, recentering the map is immediate. Otherwise, it
