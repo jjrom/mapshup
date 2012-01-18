@@ -87,6 +87,11 @@
      */
     c["general"].displayOverviewMap = true;
 
+    /**
+     * True to display overview map
+     */
+    c["general"].displayScale = true;
+
     /*
      * If true, East panel is displayed over the map with semi-transparency
      * Otherwise, East panel "push" the map to the left when triggered

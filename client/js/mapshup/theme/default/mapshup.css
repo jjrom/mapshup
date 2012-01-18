@@ -926,4 +926,11 @@ div.olControlMousePosition {
     filter:alpha(opacity=50); /* IE */
 }
 
+/* ScaleLine position */
+.olControlScaleLine {
+    top:65px;
+    left:20px;
+    height:20px;
+}
+
 #__CONTROL_ATTRIBUTION__ {font-size:0.6em;}
