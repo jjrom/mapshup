@@ -101,7 +101,8 @@ function bboxToGeoJSONGeometry($lonmin, $latmin, $lonmax, $latmax) {
 function pointToGeoJSONGeometry($lon, $lat) {
     $geometry = array(
         'type' => 'Point',
-        'coordinates' => array($lon, $lat)
+        /* Ensure that longitude is between [-180,180] and latitude between [-90,90] */
+        'coordinates' => array(($lon+540)%360 - 180, ($lat+270)%180 - 90)
     );
 
     return $geometry;
