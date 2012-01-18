@@ -20,6 +20,7 @@
     i["Center"]="Centrer";
     i["Center map on one of the following countries"]="Centrer la carte sur un des pays suivants";
     i["Checking"]="Vérification";
+    i["Choose a search service"]="Choisir un service de recherche";
     i["Choose download format"]="Choisir le format de téléchargement";
     i["Choose the catalog type"]="Choix du type de catalogue";
     i["Clear"]="Effacer";
@@ -62,6 +63,7 @@
     i["Error : cannot save layer on server"]="Erreur : ne peut pas sauver cette couche sur le serveur";
     i["Error : email adress is already registered"]="Erreur : l'adresse mail est déjà enregistrée";
     i["Error : file size is too big or extension is not allowed"]="Erreur : la taille du fichier est trop grande, ou l'extension n'est pas permise";
+    i["Error : format not supported"]="Erreur : format non supporté";
     i["Error : Flash doesn't appear to be supported by your browser"]="Erreur : Flash ne semble pas être supporté par votre navigateur";
     i["Error : Google Earth cannot be loaded"]="Erreur : Google Earth ne peut pas être chargé";
     i["Error : read error"]="Erreur : erreur de lecture";
@@ -83,6 +85,7 @@
     i["Information"]="Information";
     i["Initializing 3D mode"]="Initialisation du mode 3D";
     i["Item"]="Element";
+    i["Keywords or coordinates"]="Mots clés ou coordonnées";
     i["Layer"]="Couche";
     i["Layer added"]="Couche ajoutée";
     i["Layer detection in progress..."]="Détection de la couche en cours...";
@@ -137,6 +140,7 @@
     i["Search"]="Rechercher";
     i["Search Area"]="Zone de recherche";
     i["Search for media"]="Recherche de media";
+    i["Search for one or more comma-delimited <b>keywords</b> (e.g. Toulouse,France) or enter <b>coordinates</b> in decimal degrees (e.g. 44.1 -128.8)"]="Rechercher un ou plusieurs <b>mots clés</b> séparés par une virgule (ex. Paris,France) ou entrer un couple de <b>coordonnées</b> en degrés décimaux (ex. 44.1 -128.8)";
     i["Search for related data"]="Recherche de données liées";
     i["Search for related images"]="Recherche d&#39;images liées";
     i["Search in"]="Rechercher dans";

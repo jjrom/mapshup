@@ -18,6 +18,7 @@ Catalog
 Catalogs
 Center
 Center map on one of the following countries
+Choose a search service
 Choose download format
 Choose the catalog type
 Checking
@@ -61,6 +62,7 @@ Error : cannot save context
 Error : cannot save layer on server
 Error : email adress is already registered
 Error : file size is too big or extension is not allowed
+Error : format not supported
 Error : Flash doesn't appear to be supported by your browser
 Error : Google Earth cannot be loaded
 Error : read error
@@ -82,6 +84,7 @@ Hide
 Initializing 3D mode
 Information
 Item
+Keywords or coordinates
 Layer
 Layer added
 Layer detection in progress...
@@ -136,6 +139,7 @@ Saving layer
 Search
 Search Area
 Search for media
+Search for one or more comma-delimited <b>keywords</b> (e.g. Toulouse,France) or enter <b>coordinates</b> in decimal degrees (e.g. 44.1 -128.8)
 Search for related data
 Search for related images
 Search in

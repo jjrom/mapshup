@@ -137,7 +137,7 @@
                             /*
                              * Tell user we zoom the map
                              */
-                            msp.Util.message(msp.Util._("Zoom map")+": " + msp.Map.Util.getFormattedLonLat(lonlat, msp.Config["general"].coordinatesFormat));
+                            msp.Util.message(msp.Map.Util.getFormattedLonLat(lonlat, msp.Config["general"].coordinatesFormat));
                                
                             /*
                              * Latitude/longitude to map projection
@@ -340,7 +340,7 @@
             
             var self = this;
             
-            msp.Util.askFor(msp.Util._("Choose search service"), null, "list", self.services, function(v){
+            msp.Util.askFor(msp.Util._("Choose a search service"), null, "list", self.services, function(v){
                 self.activate(self.services[v]);
             }); 
         
