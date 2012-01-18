@@ -149,7 +149,7 @@
      */
     window.msp = {
         
-        VERSION_NUMBER:'mapshup 1.0.1',
+        VERSION_NUMBER:'mapshup 1.1',
         
         /**
          * Plugin objects are defined within msp.Plugins
