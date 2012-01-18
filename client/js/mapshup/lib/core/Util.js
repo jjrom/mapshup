@@ -619,15 +619,16 @@
                 var el,
                     icon,
                     delim,
+                    count = 0,
                     $p = popup.$b.append('<p class="center">'+description+'</p><p class="center"></p>').children().last();
                 
                 /*
                  * Roll over items
                  */
-                for (var i = 0, l = value.length; i < l; i++) {
+                for (i in value) {
                     id1 = this.getId();
                     el = value[i];
-                    delim = i > 0 ? " | " : "";
+                    delim = count > 0 ? " | " : "";
                     icon = el.icon ? '<img class="middle" src="'+el.icon+'"/>&nbsp;' : '';
                     $p.append(delim+icon+'<a href="#" class="hover" id="'+id1+'">'+el.title+'</a>');
                     
@@ -642,6 +643,7 @@
                         });
                     })(popup, $('#'+id1), callback, el.value);
                 
+                    count++;
                 }
                 
             }
