@@ -66,10 +66,10 @@
              */
             get: function(name) {
                 var nameEQ = name + "=",
-                    ca = document.cookie.split(';'),
-                    i,
-                    l,
-                    c;
+                ca = document.cookie.split(';'),
+                i,
+                l,
+                c;
                 for(i = 0, l = ca.length; i < l; i++) {
                     c = ca[i];
                     while (c.charAt(0)===' ') c = c.substring(1,c.length);
@@ -109,8 +109,8 @@
              * Initialize user agent string to lower case
              */
             var device,
-                touch,
-                uagent = navigator.userAgent.toLowerCase();
+            touch,
+            uagent = navigator.userAgent.toLowerCase();
 
             /**
              * android ?
@@ -219,7 +219,7 @@
             if (div) {
                 
                 var $id,
-                    id = msp.Util.getId();
+                id = msp.Util.getId();
                 div.append('<div id="'+id+'" class="act actne icnclose" jtitle="'+this._("Close")+'"></div>');
                 
                 $id = $('#'+id);
@@ -255,11 +255,11 @@
          */
         clone: function(srcInstance) {
             if(typeof(srcInstance) != 'object' || srcInstance == null) {
-                    return srcInstance;
+                return srcInstance;
             }
             var i, newInstance = srcInstance.constructor();
             for(i in srcInstance) {
-                    newInstance[i] = this.clone(srcInstance[i]);
+                newInstance[i] = this.clone(srcInstance[i]);
             }
             return newInstance;
         },
@@ -283,8 +283,13 @@
             /*
              * Popup reference
              */
-            var popup = new msp.Popup({modal:true,resize:false,expand:true,noHeader:true}),
-                image = new Image();
+            var popup = new msp.Popup({
+                modal:true,
+                resize:false,
+                expand:true,
+                noHeader:true
+            }),
+            image = new Image();
 
             /*
              * Show Activity
@@ -355,6 +360,16 @@
                  * Show popup image
                  */
                 popup.show();
+            }).error(function () {
+                
+                /*
+                 * Hide activity/popup
+                 */
+                msp.activity.hide();
+                popup.hide();
+                
+                msp.Util.message("Error loading image");
+                
             });
 
         },
@@ -380,7 +395,12 @@
              * Popup reference
              */
             var type,w,h,img,codec,content,
-                popup = new msp.Popup({modal:true,resize:false,expand:true,noHeader:true});
+            popup = new msp.Popup({
+                modal:true,
+                resize:false,
+                expand:true,
+                noHeader:true
+            });
 
             /*
              * Paranoid mode
@@ -430,17 +450,17 @@
              * Create videocontent
              * See http://camendesign.com/code/video_for_everybody for more information
              */
-             content = '<video width="'+w+'" height="'+h+'" controls>'
-                +'<source src="'+video.url+'" type="'+codec+'" />'
-                +'<object width="'+w+'" height="'+h+'" type="application/x-shockwave-flash" data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">'
-                +'<param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" />'
-                +'<param name="allowfullscreen" value="true" />'
-                +'<param name="flashvars" value="controlbar=over&amp;image='+img+'&amp;file='+video.url+'" />'
-                +'<img src="'+img+'" width="'+w+'" height="'+h+'" alt="'+video.title+'" title="'+video.title+'"/>'
-                +'</object>'
-                +'</video>'
-                +'<p class="vjs-no-video"><a href="'+video.url+'" target="_blank">'+this._("Download Video")+'</a></p>'
-                +'</div>';
+            content = '<video width="'+w+'" height="'+h+'" controls>'
+            +'<source src="'+video.url+'" type="'+codec+'" />'
+            +'<object width="'+w+'" height="'+h+'" type="application/x-shockwave-flash" data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf">'
+            +'<param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" />'
+            +'<param name="allowfullscreen" value="true" />'
+            +'<param name="flashvars" value="controlbar=over&amp;image='+img+'&amp;file='+video.url+'" />'
+            +'<img src="'+img+'" width="'+w+'" height="'+h+'" alt="'+video.title+'" title="'+video.title+'"/>'
+            +'</object>'
+            +'</video>'
+            +'<p class="vjs-no-video"><a href="'+video.url+'" target="_blank">'+this._("Download Video")+'</a></p>'
+            +'</div>';
             popup.$b.html('<div class="imageContent"><div class="padded">'+content+'</div></div>');
             popup.$d.css({
                 'left':(window.innerWidth - popup.$d.width()) / 2,
@@ -507,10 +527,12 @@
         askFor:function(title, description, type, value, callback) {
           
             var id1,
-                id2,
-                self = this,
-                input = [],
-                popup = new msp.Popup({modal:true}); // Create popup
+            id2,
+            self = this,
+            input = [],
+            popup = new msp.Popup({
+                modal:true
+            }); // Create popup
             
             /*
              * Set header
@@ -617,10 +639,10 @@
             else if (type === "list") {
                 
                 var el,
-                    icon,
-                    delim,
-                    count = 0,
-                    $p = popup.$b.append((description ? '<p class="center">'+description+'</p>' : '') + '<p class="center"></p>').children().last();
+                icon,
+                delim,
+                count = 0,
+                $p = popup.$b.append((description ? '<p class="center">'+description+'</p>' : '') + '<p class="center"></p>').children().last();
                 
                 /*
                  * Roll over items
@@ -694,9 +716,9 @@
         message: function(content, duration) {
             
             var $d,
-                id = this.getId(),
-                parent = this.$$('#message', msp.$container).show(),
-                m = "&nbsp;"+decodeURIComponent(content)+"&nbsp;";
+            id = this.getId(),
+            parent = this.$$('#message', msp.$container).show(),
+            m = "&nbsp;"+decodeURIComponent(content)+"&nbsp;";
 
             /*
              * Add a new message
@@ -1127,10 +1149,10 @@
          */
         randomColor: function(){
             var colors = ["0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f"],
-                d1 = "",
-                d2 = "",
-                d3 = "",
-                i;
+            d1 = "",
+            d2 = "",
+            d3 = "",
+            i;
             for (i=0;i<2;i++) {
                 d1=d1+colors[Math.round(Math.random()*15)];
                 d2=d2+colors[Math.round(Math.random()*15)];
