@@ -375,15 +375,15 @@ input {
 /* North North toolbar */
 .tbnnh {
     background-color:transparent;
-    height:30px;
+    height:40px;
 }
 .tbnnh img {
-    height:24px;
+    /*height:24px;*/
 }
 .tbnnh .item {
     font-size:1em;
-    line-height:30px;
-    min-width:30px;
+    line-height:37px;
+    min-width:40px;
 }
 .tbnnh input {
     background-color:#000;
@@ -549,7 +549,7 @@ input {
     border: 0 none;
     font:12px Arial,Helvetica,Sans-serif;
     color: #d7d7d7;
-    width:200px;
+    width:250px;
     padding: 6px 15px 6px 35px;
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
