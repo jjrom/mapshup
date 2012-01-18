@@ -58,6 +58,11 @@
          */
         this.active = null;
         
+        /*
+         * List of services - Hash map with url as the primary key
+         */
+        this.services = [];
+        
         /**
          * Initialize plugin
          */
@@ -90,7 +95,7 @@
             self.tb = new msp.Toolbar(self.options.position, self.options.orientation);
             
             /*
-             * Add the input text box
+             * Add input text box button
              */
             new msp.Button({
                 tb:self.tb,
@@ -303,19 +308,20 @@
                     d.type = d.type || type;
                     
                     /*
-                     * Add a new button to Search toolbar
+                     * Set mandatory values for choose() function
                      */
-                    new msp.Button({
-                        tb:self.tb,
-                        tt:d.name,
-                        switchable:false,
-                        icon:d.icon,
-                        activable:true,
-                        callback:function() {
-                            self.activate(d);
-                        }
-                    }).activate(true);
-
+                    d.title = d.name;
+                    d.value = d.URLTemplate;
+                    d.icon = msp.Util.getImgUrl(d.icon);
+                    
+                    /*
+                     * Add new service
+                     */
+                    self.services[d.URLTemplate] = msp.Util.clone(d);
+                    
+                    /*
+                     * Activate the new service
+                     */
                     self.activate(d);
                     
                     return true;
@@ -328,24 +334,52 @@
         };
 
         /*
-         * Activate an OpenSearch service and launch a search
-         * if the input value is set
+         * Ask user to choose the active search service
+         */
+        this.choose = function() {
+            
+            var self = this;
+            
+            msp.Util.askFor(msp.Util._("Choose search service"), null, "list", self.services, function(v){
+                self.activate(self.services[v]);
+            }); 
+        
+        };
+        
+        /*
+         * Activate an OpenSearch service
          */
         this.activate = function(service) {
-
+            
             var self = this;
             
             /*
+             * Replace the button switcher
+             */
+            if (self.btn) {
+                self.btn.remove();
+            }
+
+            self.btn = new msp.Button({
+                tb:self.tb,
+                tt:service.name,
+                switchable:false,
+                icon:service.icon,
+                activable:false,
+                nohover:true,
+                /*
+                 * On click, ask user to choose for another search service
+                 */
+                callback:function() {
+                    self.choose();
+                }
+            });
+
+            /*
              * Set input service as the active service
              */
-            self.active = service;
+            this.active = service;
             
-            /*
-             * Launch search if input text box is not empty
-             */
-            if(self.$input.val().length > 1) {
-                self.search();
-            }
         };
 
         /**
