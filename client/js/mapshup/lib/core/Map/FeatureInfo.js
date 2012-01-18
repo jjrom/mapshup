@@ -93,12 +93,12 @@
                  * Set the panel container content with the following html structure
                  * 
                  * <div id="..." class="pfi">
-                 *      <div class="header"><div class="title"></div><div class="actions"></div></div>
+                 *      <div class="header"><div class="title"></div></div>
                  *      <div class="body expdbl">
                  *      </div>
                  * </div>
                  */
-                container:self.pn.add('<div class="header"><div class="title">'+msp.Util._("Feature information")+'</div><div class="actions"></div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi'),
+                container:self.pn.add('<div class="header"><div class="title">'+msp.Util._("Feature information")+'</div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi'),
                 activable:true,
                 scope:self
             });
@@ -106,11 +106,22 @@
             /*
              * Set references
              */
-            self.$a = $('.actions', self.btn.container.$d); // Actions
             self.$t = $('.tabs', self.btn.container.$d); // Tabs
             self.$b = $('.body', self.btn.container.$d); // Body
             self.$h = $('.header', self.btn.container.$d); // Header
             self.$d = $('.pfi', self.btn.container.$d); // Parent div
+            
+            /*
+             * Create feature menu div over the map container div
+             */
+            self.$m = msp.Util.$$("#fmenu", msp.$mcontainer);
+            
+            /*
+             * Update menu position on map move
+             */
+            msp.Map.map.events.register('move', msp.Map.map, function(){
+                self.updatePosition();
+            });
             
             /*
              * On init, "information" button is hidden
@@ -247,19 +258,15 @@
          */
         this.setActions = function(feature) {
             
-            var a,
-            d,
-            i,
-            l,
-            connector,
+            var a,d,i,l,connector,
             self = this,
             actions = [],
             fi = feature.layer["_msp"].layerDescription.featureInfo;
             
             /*
-             * Clear actions
+             * Clear feature menu
              */
-            self.$a.empty();
+            self.$m.empty();
             
             /*
              * Add "zoom on feature" action
@@ -343,9 +350,8 @@
              */
             for (i = 0, l = actions.length;i < l; i++) {
                 a = actions[i];
-                self.$a.append('<a href="#" id="'+a.id+'" jtitle="'+msp.Util._(a.title)+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/></a>');
+                self.$m.append('<span class="item shadow" id="'+a.id+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/>&nbsp;'+msp.Util._(a.title)+'</span>');
                 d = $('#'+a.id);
-                msp.tooltip.add(d, 'n');
                 (function(d,a,f){
                     d.click(function() {
                         return a.callback(a,f);
@@ -360,6 +366,11 @@
                 }
                 
             }
+            
+            /*
+             * Display menu
+             */
+            self.updatePosition();
 
         };
         
@@ -671,8 +682,13 @@
          * Set $h html content
          */
         this.setHeader = function(feature) {
-            var title = this.getTitle(feature);
-            $('.title', this.$h).attr('title',feature.layer.name + ' | ' + title).html(msp.Util.shorten(title, 25));    
+            var self = this,
+                title = self.getTitle(feature);
+                
+            $('.title', self.$h).attr('title',feature.layer.name + ' | ' + title).html(msp.Util.shorten(title, 25))
+            .click(function(){
+                self.zoomOn(feature);
+            });    
         };
 
         /**
@@ -925,9 +941,10 @@
             self._tun = (new Date()).getTime();
             
             /*
-             * Hide menu
+             * Hide menu and fmenu
              */
             msp.menu.hide();
+            self.$m.hide();
             
             msp.Map.featureInfo.selected = null;
             
@@ -964,6 +981,23 @@
             
         };
 
+        /*
+         * Update fmenu position
+         */
+        this.updatePosition = function() {
+            var xy,
+                self = this;
+            if (self.selected) {
+                self.$m.show();
+                xy = msp.Map.map.getPixelFromLonLat(self.selected.geometry.getBounds().getCenterLonLat());
+                self.$m.css({
+                    'left': xy.x - self.$m.width() / 2,
+                    'top': xy.y - 80
+                });
+            }
+            
+        };
+        
         /**
          * Zoom map on selected feature
          */

@@ -225,6 +225,31 @@ input {
     text-shadow: black 1px 1px 3px;
 }
 
+/*
+ * Feature menu
+ */
+#fmenu {
+    position:absolute;
+    font-size:0.9em;
+    cursor:pointer;
+    width:auto;
+    height:auto;
+    display:none;
+    z-index:10000;
+}
+#fmenu .item {
+    height:20px;
+    width:auto;
+    padding:5px;
+    border:1px solid #666;
+    margin:0px 5px;
+    color:#fff;
+    background-color:rgba(0,0,0,0.7);
+}
+#fmenu .item:hover  {
+    background-color:#f3961c;
+    text-shadow: black 1px 1px 3px;
+}
 /**
  * Loading mask
 */
@@ -761,12 +786,8 @@ span.osclear input {
 /**
  * FeatureInfo panel
 */
-.pfi .actions {
-    text-align: center;
-    padding:5px;
-}
-.pfi .actions a {
-    padding:7px;
+.pfi .title {
+    cursor:pointer;
 }
 .pfi .info {
     padding:5px;
@@ -809,6 +830,7 @@ span.osclear input {
     padding-bottom:10px;
 }
 #pfit li {
+    padding-left:5px;
     display:inline;
 }
 
