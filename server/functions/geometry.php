@@ -43,6 +43,16 @@
 define("LATLON", 0);
 define("LONLAT", 1);
 
+/*
+ * Compute modulus with float
+ */
+function modulus_of ($q, $d) {
+  $rem = $q;
+  while ($rem > $d )
+     $rem -= $d;
+  return $rem;
+}
+
 /**
  * Return POLYGON WKT from bbox
  * @param <string> $bbox "lonmin,latmin,lonmax,latmax"
@@ -102,7 +112,7 @@ function pointToGeoJSONGeometry($lon, $lat) {
     $geometry = array(
         'type' => 'Point',
         /* Ensure that longitude is between [-180,180] and latitude between [-90,90] */
-        'coordinates' => array(($lon+540)%360 - 180, ($lat+270)%180 - 90)
+        'coordinates' => array(modulus_of($lon+540,360) - 180, modulus_of($lat+270,180) - 90)
     );
 
     return $geometry;
