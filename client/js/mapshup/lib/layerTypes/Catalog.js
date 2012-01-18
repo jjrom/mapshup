@@ -178,7 +178,7 @@
                 list.push({
                     title:msp.Util._(name),
                     value:msp.Util._(name)
-                })
+                });
             }
 
             msp.Util.askFor(msp.Util._("Catalog") + ' : ' + layerDescription.title, msp.Util._("What is the format for this catalog ?"), "list", list, function(v){
