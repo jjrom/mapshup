@@ -69,8 +69,7 @@ lib/plugins/LayersManager.js
 lib/plugins/AddLayer.js
 #lib/plugins/LocateMe
 lib/plugins/Logger.js
-lib/plugins/OpenSearch.js
-#lib/plugins/OpenSearch2.js
+lib/plugins/OpenSearch2.js
 #lib/plugins/Print
 lib/plugins/Routing.js
 lib/plugins/Streetview.js // NOTOUCH 
