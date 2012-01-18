@@ -85,13 +85,13 @@
             /*
              * Variables initialisation
              */
-            var scope = this;
+            var self = this;
 
             /*
              * menu is already initialized ? => do nothing
              */
-            if (this.isLoaded) {
-                return this;
+            if (self.isLoaded) {
+                return scope;
             }
 
             /*
@@ -101,8 +101,8 @@
              * nothing
              */
             if (!msp.Config["general"].displayContextualMenu) {
-                this.isLoaded = true;
-                return this;
+                self.isLoaded = true;
+                return self;
             }
 
             /*
@@ -113,12 +113,12 @@
             /*
              * Set jquery #menu reference
              */
-            this.$m = $('#menu');
+            self.$m = $('#menu');
             
             /*
              * Add "close" menu item
              */
-            this.add([
+            self.add([
                 /* Add "close" menu item */
                 {
                     id:msp.Util.getId(),
@@ -151,9 +151,9 @@
             /*
              * Menu is successfully loaded
              */
-            this.isLoaded = true;
+            self.isLoaded = true;
             
-            return this;
+            return self;
 
         };
         
