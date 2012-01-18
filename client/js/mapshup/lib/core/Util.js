@@ -620,7 +620,7 @@
                     icon,
                     delim,
                     count = 0,
-                    $p = popup.$b.append('<p class="center">'+description+'</p><p class="center"></p>').children().last();
+                    $p = popup.$b.append((description ? '<p class="center">'+description+'</p>' : '') + '<p class="center"></p>').children().last();
                 
                 /*
                  * Roll over items
