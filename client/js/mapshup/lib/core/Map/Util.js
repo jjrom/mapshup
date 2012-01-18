@@ -224,15 +224,17 @@
         }
 
         /*
-         * Normalize coordinate for longitude values between -180 and 180 degrees
+         * Normalize coordinate for longitude values between [-180,180] degrees for longitude and [-90,90] for latitudes
          */
-        coordinate = (coordinate+540)%360 - 180;
+        if (axis === "lon") {
+            coordinate = (coordinate+540)%360 - 180;
+            nsew = coordinate < 0 ? "W" : "E";
+        }
+        else {
+            coordinate = (coordinate+270)%180 - 90;
+            nsew =coordinate < 0 ? "S" : "N";
+        }
 
-        /*
-         * Set the nsew suffix
-         */
-        nsew = axis === "lon" ? (coordinate < 0 ? "W" : "E") : (coordinate < 0 ? "S" : "N");
-        
         /*
          * Computation for longitude coordinate depends on the display format
          */
