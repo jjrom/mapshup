@@ -141,8 +141,8 @@
     i["Search Area"]="Zone de recherche";
     i["Search for media"]="Recherche de media";
     i["Search for one or more comma-delimited <b>keywords</b> (e.g. Toulouse,France) or enter <b>coordinates</b> in decimal degrees (e.g. 44.1 -128.8)"]="Rechercher un ou plusieurs <b>mots clés</b> séparés par une virgule (ex. Paris,France) ou entrer un couple de <b>coordonnées</b> en degrés décimaux (ex. 44.1 -128.8)";
-    i["Search for related data"]="Recherche de données liées";
-    i["Search for related images"]="Recherche d&#39;images liées";
+    i["Search for related data"]="Rechercher des données liées";
+    i["Search for related images"]="Rechercher d&#39;images liées";
     i["Search in"]="Rechercher dans";
     i["Search in catalogs"]="Recherche catalogues";
     i["Search location name..."]="Recherche de la localité...";
