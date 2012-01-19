@@ -121,8 +121,8 @@
             add: function(p) {
                 
                 var i,l,t,
-                    add = true,
-                    self = this;
+                add = true,
+                self = this;
                 
                 /*
                  * Paranoid mode
@@ -622,7 +622,7 @@
          * Returns:
          * {Object} An object representing the current state.
          */
-       getState:function() {
+        getState:function() {
             return {
                 center: this.map.getCenter(),
                 resolution: this.map.getResolution(),
@@ -1042,20 +1042,49 @@
              * If device is a touch device, enable TouchNavigation
              * instead of Navigation
              */
-            if (msp.Util.device.touch) {
-                _config.mapOptions.controls = [new OpenLayers.Control.TouchNavigation({
-                    id:"__CONTROL_NAVIGATION__",
-                    dragPanOptions: {
-                        enableKinetic: true
+            var opt = {
+                id:"__CONTROL_NAVIGATION__",
+                documentDrag: true,
+                dragPanOptions:{
+                    /*
+                     * When drag starts, store the clicked point and the time of click in milliseconds
+                     */
+                    panMapStart:function(e){
+                        self._clk = {
+                            x:e.x,
+                            y:e.y,
+                            d:(new Date()).getTime()
+                        }
+                    },
+                    /*
+                     * When mouse up, if mouse have not moved and if the time between up and down is large enough,
+                     * then display the contextual menu
+                     */
+                    panMapUp:function(e){
+                        if (self._clk) {
+                            
+                            /*
+                             * No drag occured
+                             */
+                            if (e.x === self._clk.x && e.y === self._clk.y) {
+                                
+                                /*
+                                 * User clicks was larger enough to display the contextual menu
+                                 */
+                                if ((new Date()).getTime() - self._clk.d > 200) {
+                                    self.mouseClick = {
+                                        x:e.x,
+                                        y:e.y
+                                        };
+                                    msp.menu.show();
+                                }
+                                
+                            }
+                        }
                     }
-                })];
-            }
-            else {
-                _config.mapOptions.controls = [new OpenLayers.Control.Navigation({
-                    id:"__CONTROL_NAVIGATION__",
-                    documentDrag: true
-                })];
-            }
+                }
+            };
+            _config.mapOptions.controls = msp.Util.device.touch ? [new OpenLayers.Control.TouchNavigation(opt)] : [new OpenLayers.Control.Navigation(opt)];
 
             /**
              * Create the mapfile
@@ -1110,7 +1139,7 @@
                 
             });
 
-            /**
+            /*
              * Disable mouse right click within 'msp.$map' div
              */
             msp.$map.mousedown(function(e){
@@ -1122,7 +1151,7 @@
                 }
                 return true;
             });
-
+            
             /**
              * onmouseover event definition is only
              * valid if the current device is not a touch device
@@ -1294,46 +1323,6 @@
             }
 
             /*
-             * Extend Click control to add msp specific
-             * functionnality (i.e. menu display)
-             */
-            OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
-                defaultHandlerOptions: {
-                    'single':true,
-                    'double':true,
-                    'pixelTolerance':0,
-                    'stopSingle':false,
-                    'delay':200,
-                    'stopDouble':false
-                },
-                initialize: function(options) {
-                    this.handlerOptions = OpenLayers.Util.extend(
-                    {}, this.defaultHandlerOptions
-                        );
-                    OpenLayers.Control.prototype.initialize.apply(
-                        this, arguments
-                        );
-                    this.handler = new OpenLayers.Handler.Click(
-                        this, {
-                            'click':this.trigger
-                        }, this.handlerOptions
-                        );
-                },
-                trigger: function(e) {
-                    msp.Map.mouseClick = e.xy.clone();
-                    msp.menu.show();
-                }
-
-            });
-
-            /*
-             * Click control
-             */
-            controls.push(new OpenLayers.Control.Click({
-                id:"__CONTROL_CLICK__"
-            }));
-
-            /*
              * Attribution control (see OpenLayers documentation)
              */
             controls.push(new OpenLayers.Control.Attribution({
@@ -1395,7 +1384,7 @@
                  */
                 msp.Map.refreshCycle++;
                 var i,
-                    layer;
+                layer;
                 for (i=msp.Map.map.layers.length;i--;) {
                     layer = msp.Map.map.layers[i];
 
@@ -1551,7 +1540,7 @@
              * to ensure that highlite/select controls are actives
              */
             var sfControl = this.Util.getControlById("__CONTROL_SELECT__"),
-                hfControl = this.Util.getControlById("__CONTROL_HIGHLITE__");
+            hfControl = this.Util.getControlById("__CONTROL_HIGHLITE__");
 
             if (sfControl) {
 
@@ -1629,9 +1618,9 @@
              * Get the bounds + a half of the bounds 
              */
             var w = bounds.getWidth(),
-                h = bounds.getHeight(),
-                c = bounds.getCenterLonLat(),
-                e = msp.Util._("Cannot zoom : this feature is outside authorized extent");
+            h = bounds.getHeight(),
+            c = bounds.getCenterLonLat(),
+            e = msp.Util._("Cannot zoom : this feature is outside authorized extent");
 
             /**
              * Bounds is too small => center to bounds

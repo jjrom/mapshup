@@ -65,7 +65,7 @@
      * True to ask user when deleting a layer
      */
     c["general"].confirmDeletion = true;
-
+    
     /**
      * Coordinates can be displayed in 'dms' for degrees/minutes/seconds or in 'hms' for hour/minutes/seconds
      * If 'hms' is selected this will only affect the longitude coordinate display
