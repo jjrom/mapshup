@@ -93,18 +93,6 @@
     c["general"].displayScale = true;
 
     /*
-     * If true, East panel is displayed over the map with semi-transparency
-     * Otherwise, East panel "push" the map to the left when triggered
-     */
-    c["general"].eastPanelOver = true;
-
-    /*
-     * Number of pixels substracted from the map height to compute
-     * East panel height when "eastPanelOver" boolean is set to true
-     */
-    c["general"].eastPanelOffset = 100;
-    
-    /*
      * If true, feature are highlited when mouse over
      * (Note : this option is automatically set to false for touch devices)
      */
@@ -212,7 +200,30 @@
      */
     c["i18n"].url = "js/mapshup/i18n";
 
-
+    /** 
+     * Panel configuration
+     */
+    c["panel"] = {
+        /* North */
+        n:{
+            over:false // North panel push the map
+        },
+        /* South */
+        s:{
+            over:false // South panel push the map
+        },
+        /* East */
+        e:{
+            over:true, // East panel is displayed over the map
+            top:20
+        },
+        /* West */
+        w:{
+            over:true, // West panel is displayed over the map
+            top:100
+        }
+    };
+    
     /**
      * Upload service url
      */

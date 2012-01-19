@@ -444,7 +444,6 @@ input {
  */
 .pnover {
     background-color:rgba(0,0,0,0.7);
-    top:20px;
 }
 
 .pn .header {
@@ -475,19 +474,19 @@ input {
     margin-bottom:5px;
 } 
 /*
- * East panel
+ * East and West panel
  */
-.pne {
+.pne, .pnw {
     color:#fff;
 }
 .pne input {
     width:240px;
 }
-.pne a {
+.pne a, .pnw a {
     padding:0px;
     background-color:transparent;
 }
-.pne a:hover {
+.pne a:hover, .pnw a:hover{
     background-color:transparent;
     box-shadow: 0px 0px 0px 0 transparent;
     border-bottom:1px solid #f3961c;

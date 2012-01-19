@@ -86,6 +86,9 @@
         /*
          * Panel position can be
          *  - e (east)
+         *  - w (west)
+         *  - n (north)
+         *  - s (south)
          *  
          *  (Default e)
          */
@@ -103,6 +106,12 @@
         this.voffset = 100;
         
         /*
+         * Number of pixels from the top of the map to display the panel
+         * This property only affects West and East panels
+         */
+        this.top = 20;
+        
+        /*
          * East/West panel width
          */
         this.w = options.w || 320;
@@ -116,19 +125,13 @@
                 uid = '_o'+self.position+'p';
             
             /*
-             * East panel are over by default
+             * Get Panel characteristics from configuration
              */
-            if (self.position === 'e') {
-                self.over = msp.Config["general"].eastPanelOver;
-                self.voffset = msp.Config["general"].eastPanelOffset || self.voffset;
-            }
-            
-            /*
-             * West panel is always over
-             */
-            if (self.position === 'w') {
-                self.over = true;
-                self.voffset = 100;
+            if (msp.Config.panel) {
+                if (msp.Config.panel[self.position]) {
+                    self.over = msp.Util.getPropertyValue(msp.Config.panel[self.position], "over", self.over);
+                    self.top = msp.Util.getPropertyValue(msp.Config.panel[self.position], "top", self.top);
+                }
             }
             
             /*
@@ -200,7 +203,8 @@
                  */
                 self.$d.css({
                     'right':-self.w,
-                    'width':self.w
+                    'width':self.w,
+                    'top':self.top
                 });
                 
             }
@@ -211,7 +215,8 @@
                  */
                 self.$d.css({
                     'left':-self.w,
-                    'width':self.w
+                    'width':self.w,
+                    'top':self.top
                 });
                 
             }
@@ -230,11 +235,11 @@
                 
                 /*
                  * !! For East and West panels, the height of the panel is
-                 *  - the height of the map minus a constant
+                 *  - the height of the map minus the top and minus an offset
                  *  - the height of the map in other case
                  */
                 else if (scope.position === "e" || scope.position === "w") {
-                    scope.$d.height(msp.$map.height() - (scope.over ? scope.voffset : 0));
+                    scope.$d.height(msp.$map.height() - (scope.over ? scope.voffset + scope.top : 0));
                     
                     /*
                      * Object with an 'expdbl' class have their height constrain
