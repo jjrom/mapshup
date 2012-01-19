@@ -124,6 +124,14 @@
             }
             
             /*
+             * West panel is always over
+             */
+            if (self.position === 'w') {
+                self.over = true;
+                self.voffset = 100;
+            }
+            
+            /*
              * mapshup can have one and only one panel
              * for each position (i.e. n, s, e, w) which
              * are stored respectively under msp.Panel._onp, msp.Panel._osp,
@@ -225,7 +233,7 @@
                  *  - the height of the map minus a constant
                  *  - the height of the map in other case
                  */
-                else if (scope.position === "e") {
+                else if (scope.position === "e" || scope.position === "w") {
                     scope.$d.height(msp.$map.height() - (scope.over ? scope.voffset : 0));
                     
                     /*
@@ -237,9 +245,6 @@
                         $c.css('height', msp.Panel._oep.$d.height() - $c.offset().top + 10)
                     });
                     
-                }
-                else if (scope.position === "w") {
-                    scope.$d.height(msp.$map.height());
                 }
             });
             
@@ -434,7 +439,39 @@
                 }
                 
             }
-            
+            /*
+             * West panel does not have button nor toolbar and can only be set to over
+             */
+            else if (self.position === 'w') {
+                
+                if (action === 'show') {
+                    
+                    /*
+                     * Move the panel to the right
+                     */
+                    self.$d.stop(true,true).animate({
+                        left:parseInt(self.$d.css('left'),10) === -self.$d.outerWidth() ? 0 : -self.$d.outerWidth()
+                    },
+                    {
+                        duration:'slow'
+                    });
+                    
+                }
+                else {
+                    
+                    /*
+                     * Move the panel to the right
+                     */
+                    self.$d.animate({
+                        left:parseInt(self.$d.css('left'),10) === 0 ?  -self.w : 0
+                    },
+                    {
+                        duration:'slow'
+                    });
+                    
+                }
+                
+            }
             /*
              * South Panel
              */
