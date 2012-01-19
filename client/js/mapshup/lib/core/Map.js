@@ -1045,7 +1045,7 @@
             var opt = {
                 id:"__CONTROL_NAVIGATION__",
                 documentDrag: true,
-                /* Disable oncontextmenu on right cliks */
+                /* Disable oncontextmenu on right clicks */
                 handleRightClicks:true,
                 dragPanOptions:{
                     /*
