@@ -224,39 +224,45 @@
             /*
              * !! Panel widths and height follow the width of the map 
              */
-            msp.Map.events.register("resizeend", self, function(scope){
-                
-                /*
-                 * !! For North and South panels, the width of the panel is the width of the container
-                 */
-                if (scope.position === "n" || scope === "s") {
-                    scope.$d.width(msp.$container.width());
-                }
-                
-                /*
-                 * !! For East and West panels, the height of the panel is
-                 *  - the height of the map minus the top and minus an offset
-                 *  - the height of the map in other case
-                 */
-                else if (scope.position === "e" || scope.position === "w") {
-                    scope.$d.height(msp.$map.height() - (scope.over ? scope.voffset + scope.top : 0));
-                    
-                    /*
-                     * Object with an 'expdbl' class have their height constrain
-                     * by the panel height
-                     */
-                    $('.expdbl').each(function(idx){
-                        var $c = $(this);
-                        $c.css('height', msp.Panel._oep.$d.height() - $c.offset().top + 10)
-                    });
-                    
-                }
-            });
+            msp.Map.events.register("resizeend", self, self.resize);
             
             return self;
             
         };
 
+        /*
+         * Resize panel
+         */
+        this.resize = function(scope) {
+            
+            /*
+             * !! For North and South panels, the width of the panel is the width of the container
+             */
+            if (scope.position === "n" || scope === "s") {
+                scope.$d.width(msp.$container.width());
+            }
+
+            /*
+             * !! For East and West panels, the height of the panel is
+             *  - the height of the map minus the top and minus an offset
+             *  - the height of the map in other case
+             */
+            else if (scope.position === "e" || scope.position === "w") {
+
+                scope.$d.height(msp.$map.height() - (scope.over ? scope.voffset + scope.top : 0));
+
+                /*
+                 * Object with an 'expdbl' class have their height constrain
+                 * by the panel height
+                 */
+                $('.expdbl').each(function(idx){
+                    var $c = $(this);
+                    $c.css('height', scope.$d.height() - $c.offset().top + 10)
+                });
+
+            }
+        };
+        
         /**
          * Add an item to the panel
          * 
@@ -536,7 +542,7 @@
          */
         this.show = function(item, btn) {
             
-            var $d;
+            var self = this;
             
             /*
              * Paranoid mode
@@ -548,20 +554,17 @@
             /*
              * Set item the new active item
              */
-            this.setActive(item);
+            self.setActive(item);
             
             /*
              * Compute the .expdbl class height
              */
-            $d = $('.expdbl', item.$d);
-            if ($d.length !== 0) {
-                $d.css('height', this.$d.height() - $d.offset().top + 10);
-            }
+            self.resize(self);
            
             /*
              * Set panel visibility
              */
-            if (this.isVisible) {
+            if (self.isVisible) {
             
                 /*
                  * If onshow callback function is defined, call it
@@ -580,12 +583,12 @@
             /*
              * Animate panel
              */
-            this.animate('show', btn);
+            self.animate('show', btn);
             
             /*
              * Set the visible status to true
              */
-            this.isVisible = true;
+            self.isVisible = true;
             
             return true;
             
