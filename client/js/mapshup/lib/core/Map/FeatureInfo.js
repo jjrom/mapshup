@@ -103,6 +103,25 @@
                 self.updatePosition();
             });
             
+            /*
+             * Hide FeatureInfo panel when layer is removed
+             */
+            msp.Map.events.register("layersend", this, function(action, layer, scope) {
+
+                /*
+                 * If a feature is selected and the corresponding layer is removed,
+                 * then we unselect the feature
+                 */
+                if (action === "remove") {
+                    if (scope.selected && scope.selected.layer.id === layer.id) {
+                        scope.unselect(scope.selected);
+                    }
+                }
+
+                return true;
+        
+            });
+            
             return self;            
             
         };
