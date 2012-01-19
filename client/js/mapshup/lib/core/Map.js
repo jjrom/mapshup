@@ -1045,6 +1045,8 @@
             var opt = {
                 id:"__CONTROL_NAVIGATION__",
                 documentDrag: true,
+                /* Disable oncontextmenu on right cliks */
+                handleRightClicks:true,
                 dragPanOptions:{
                     /*
                      * When drag starts, store the clicked point and the time of click in milliseconds
@@ -1054,7 +1056,8 @@
                             x:e.x,
                             y:e.y,
                             d:(new Date()).getTime()
-                        }
+                        };
+                        return true;
                     },
                     /*
                      * When mouse up, if mouse have not moved and if the time between up and down is large enough,
@@ -1081,11 +1084,12 @@
                                 
                             }
                         }
+                        return true;
                     }
                 }
             };
             _config.mapOptions.controls = msp.Util.device.touch ? [new OpenLayers.Control.TouchNavigation(opt)] : [new OpenLayers.Control.Navigation(opt)];
-
+            
             /**
              * Create the mapfile
              */
@@ -1139,19 +1143,6 @@
                 
             });
 
-            /*
-             * Disable mouse right click within 'msp.$map' div
-             */
-            msp.$map.mousedown(function(e){
-                if (OpenLayers.Event.isLeftClick(e)){
-                    return true;
-                }
-                if (OpenLayers.Event.isRightClick(e)){
-                    return false;
-                }
-                return true;
-            });
-            
             /**
              * onmouseover event definition is only
              * valid if the current device is not a touch device
