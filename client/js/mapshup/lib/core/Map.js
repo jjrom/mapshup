@@ -1401,9 +1401,9 @@
             })();
             
             /*
-             * Set __CONTROL_CLICK__ the default map control
+             * Set __CONTROL_NAVIGATION__ the default map control
              */
-            self.resetControl(self.Util.getControlById("__CONTROL_CLICK__"));
+            self.resetControl(self.Util.getControlById("__CONTROL_NAVIGATION__"));
 
             /*
              * Add msp event : update map size when window size change
@@ -1522,7 +1522,7 @@
 
             if (control) {
                 control.deactivate();
-                this.Util.getControlById("__CONTROL_CLICK__").activate();
+                this.Util.getControlById("__CONTROL_NAVIGATION__").activate();
             }
 
             /*
