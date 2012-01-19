@@ -79,54 +79,17 @@
             );
 
             /*
-             * NorthEast Toolbar triggering East panel
+             * Feature Informartion is displayed within a West panel container
              */
-            if (1 === 1) {
-                self.pn = new msp.Panel('w');
-                self.container = self.pn.add('<div class="header"><div class="title">'+msp.Util._("Feature information")+'</div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
+            self.ctn = (new msp.Panel('w')).add('<div class="header"><div class="title">'+msp.Util._("Feature information")+'</div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
                 
-                /*
-                 * Set references
-                 */
-                self.$t = $('.tabs', self.container.$d); // Tabs
-                self.$b = $('.body', self.container.$d); // Body
-                self.$h = $('.header', self.container.$d); // Header
-                self.$d = $('.pfi', self.container.$d); // Parent div
-                
-            }
-            else {
-                tb = new msp.Toolbar(self.options.position, self.options.orientation);
-                self.pn = new msp.Panel('e',{
-                    tb:tb
-                });
-                self.btn = new msp.Button({
-                    tb:tb,
-                    title:"i",
-                    tt:"Feature information",
-                    /*
-                     * Set the panel container content with the following html structure
-                     * 
-                     * <div id="..." class="pfi">
-                     *      <div class="header"><div class="title"></div></div>
-                     *      <div class="body expdbl">
-                     *      </div>
-                     * </div>
-                     */
-                    container:self.pn.add('<div class="header"><div class="title">'+msp.Util._("Feature information")+'</div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi'),
-                    activable:true,
-                    scope:self
-                });
-            
-            
-                /*
-                 * Set references
-                 */
-                self.$t = $('.tabs', self.btn.container.$d); // Tabs
-                self.$b = $('.body', self.btn.container.$d); // Body
-                self.$h = $('.header', self.btn.container.$d); // Header
-                self.$d = $('.pfi', self.btn.container.$d); // Parent div
-                
-            }
+            /*
+             * Set references
+             */
+            self.$t = $('.tabs', self.ctn.$d); // Tabs
+            self.$b = $('.body', self.ctn.$d); // Body
+            self.$h = $('.header', self.ctn.$d); // Header
+            self.$d = $('.pfi', self.ctn.$d); // Parent div
             
             /*
              * Create feature menu div over the map container div
@@ -139,12 +102,6 @@
             msp.Map.map.events.register('move', msp.Map.map, function(){
                 self.updatePosition();
             });
-            
-            /*
-             * On init, "information" button is hidden
-             * (nothing selected)
-             */
-            //self.btn.$d.hide();
             
             return self;            
             
@@ -923,24 +880,14 @@
             var self = this;
             
             /*
-             * Activate layer button
-             */
-            //self.btn.activate(true);
-
-            /*
              * Show panel content
              */
-            //self.btn.container.pn.show(self.btn.container);
-            self.pn.show(self.container);
+            self.ctn.pn.show(self.ctn);
+            
             /*
              * Hide tabs if empty
              */
             self.$t.is(':empty') ? self.$t.hide() : self.$t.show();
-            
-            /*
-             * Show button
-             */
-            //self.btn.$d.show();
             
         };
 
@@ -977,22 +924,12 @@
             setTimeout(function(){
                  
                 if (self._tun - self._tse > 0) {
-                    
-                    /*
-                     * Activate layer button
-                     */
-                    //self.btn.activate(false);
-
+                   
                     /*
                      * Show panel content
                      */
-                    //self.btn.container.pn.hide(self.btn.container);
-                    self.pn.hide(self.container);
+                    self.ctn.pn.hide(self.ctn);
                     
-                    /*
-                     * Show button
-                     */
-                    //self.btn.$d.hide();
                 }
                 
             }, 100);
