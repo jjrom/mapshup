@@ -158,7 +158,7 @@
                 /*
                  * Show GE terrain layer
                  */
-                terrain:msp.Util.getPropertyValue(self.options, "terrain", false),
+                terrain:msp.Util.getPropertyValue(self.options, "terrain", true),
 
                 /*
                  * Show GE roads layer
@@ -173,7 +173,7 @@
                 /*
                  * Show GE low resolution buildings layer
                  */
-                buildingsLR:msp.Util.getPropertyValue(self.options, "buildingsLR", true),
+                buildingsLR:msp.Util.getPropertyValue(self.options, "buildingsLR", false),
 
                 /*
                  * Synchronize layers

@@ -386,7 +386,7 @@
      *      terrain : true to display terrain layer // default true;
      *      roads : true to display roads layer // default false
      *      buildings : true to display buildings layer // default false;
-     *      buildingsLR : true to display low resolution buildings layer // default true
+     *      buildingsLR : true to display low resolution buildings layer // default false
      *      teleport : true to go instantaneously to location, else fly to location // default false
      *      synchronize : true to synchronize layer between 2D and 3D // default true
      *      synchronizeWMS : true to synchronize WMS layers between 2D and 3D - EXPERIMENTAL // default false
