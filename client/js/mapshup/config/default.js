@@ -519,8 +519,7 @@
                 {
                     type:"GeoRSS",
                     title:"International Disaster Charter - Latest activations",
-                    url:"http://www.disasterscharter.org/DisasterCharter/RssFeed?articleType=activation&locale=en_US&companyId=1&communityId=10729",
-                    icon:"./img/disaster.png"
+                    url:"http://www.disasterscharter.org/DisasterCharter/RssFeed?articleType=activation&locale=en_US&companyId=1&communityId=10729"
                 },
                 {
                     type:"GeoRSS",
