@@ -90,16 +90,19 @@
              */
             $.extend(options,
             {
-                format:OpenLayers.Format.KML,
-                pointRadius:17,
-                formatOptions:{
-                    extractStyles: true,
-                    extractAttributes: true
-                }
+                protocol: new OpenLayers.Protocol.HTTP({
+                    url:layerDescription.url,
+                    format:new OpenLayers.Format.KML({
+                        extractStyles: true, 
+                        extractAttributes: true,
+                        maxDepth: 2
+                    })
+                }),
+                strategies:[new OpenLayers.Strategy.Fixed()]
             }
             );
 
-            newLayer = new OpenLayers.Layer.GML(layerDescription.title, layerDescription.url, options);
+            newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);
 
             /**
              * Store the stringified KML
