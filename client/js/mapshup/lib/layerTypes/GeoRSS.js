@@ -74,6 +74,8 @@
          */
         add: function(layerDescription, options) {
 
+            var newLayer;
+            
             /*
              * Set title
              */
@@ -84,28 +86,51 @@
              */
             options["_msp"].selectable = msp.Util.getPropertyValue(options, "selectable", this.selectable);
 
-            options.format = OpenLayers.Format.GeoRSS;
-
-            options.projection = Map.epsg4326;
-
-            options.styleMap = new OpenLayers.StyleMap({
-                'default' :  new OpenLayers.Style({
-                    externalGraphic : options["_msp"].icon,
-                    graphicWidth:24,
-                    graphicHeight:24
+            /*
+             * Extend options object with Flickr specific properties
+             */
+            $.extend(options,
+            {
+                projection:Map.epsg4326,
+                styleMap:new OpenLayers.StyleMap({
+                    'default' :  new OpenLayers.Style({
+                        externalGraphic : options["_msp"].icon,
+                        graphicWidth:24,
+                        graphicHeight:24
+                    }),
+                    'select' : new OpenLayers.Style({
+                        externalGraphic : msp.Util.getImgUrl('rss_select.png'),
+                        graphicWidth:24,
+                        graphicHeight:24
+                    })
                 }),
-                'select' : new OpenLayers.Style({
-                    externalGraphic : msp.Util.getImgUrl('rss_select.png'),
-                    graphicWidth:24,
-                    graphicHeight:24
-                })
-            });
+                protocol: new OpenLayers.Protocol.HTTP({
+                    url:msp.Util.getAbsoluteUrl(msp.Config["general"].rssToGeoRSSServiceUrl + encodeURIComponent(layerDescription.url) + msp.Util.abc),
+                    format:new OpenLayers.Format.GeoRSS()
+                }),
+                strategies:options.strategies || []
+            }
+            );
+
+            /*
+             * Set a fixed strategy to load KML
+             */
+            options.strategies.push(new OpenLayers.Strategy.Fixed());
 
             /*
              * Layer creation
              */
-            return new OpenLayers.Layer.GML(layerDescription.title, msp.Util.getAbsoluteUrl(msp.Config["general"].rssToGeoRSSServiceUrl + encodeURIComponent(layerDescription.url) + msp.Util.abc), options);
-
+            newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);
+            
+            /*
+             * Add a featuresadded event
+             */
+            newLayer.events.register("featuresadded", newLayer, function() {
+                Map.onFeaturesAdded(this);
+            });
+            
+            return newLayer;
+            
         }
     }
 
