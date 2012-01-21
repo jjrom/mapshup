@@ -98,10 +98,15 @@
                         maxDepth: 2
                     })
                 }),
-                strategies:[new OpenLayers.Strategy.Fixed()]
+                strategies:options.strategies || []
             }
             );
 
+            /*
+             * Set a fixed strategy to load KML
+             */
+            options.strategies.push(new OpenLayers.Strategy.Fixed());
+            
             newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);
 
             /**
