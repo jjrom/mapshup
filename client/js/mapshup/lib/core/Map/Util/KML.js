@@ -183,7 +183,7 @@
                 kmlString = '<?xml version="1.0" encoding="UTF-8"?>'
                 + '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:kml="http://www.opengis.net/kml/2.2">'
                 + '<Document>'
-                + '<name>'+msp.Util._(layer.name)+'</name>'
+                + '<name>'+this.encode(msp.Util._(layer.name))+'</name>'
                 + '<description></description>'
                 + kmlString
                 + '</Document></kml>';
@@ -309,7 +309,7 @@
                  *
                  */
                 attribute = '<name><![CDATA['+name+']]></name><description><![CDATA[<table border="0" cellpadding="0" cellspacing="0" width="300" align="left"><tr><td>'+description+'</td></tr></table>]]></description>';
-
+                
                 /*
                  * Initialize kml string based on the feature
                  * geometry class
@@ -457,7 +457,7 @@
                     if (kmlStyle.substr(0,5) !== 'http:' && kmlStyle.substr(0,1) !== '/') {
                         kmlStyle = msp.Config.general.applicationRootUrl + '/' + kmlStyle;
                     }
-                    kmlStyle = '<Style><IconStyle><Icon><href>'+msp.Util.getAbsoluteUrl(kmlStyle).replace(/\&/g,'&amp;')+'</href></Icon></IconStyle></Style>';
+                    kmlStyle = '<Style><IconStyle><Icon><href>'+this.encode(msp.Util.getAbsoluteUrl(kmlStyle))+'</href></Icon></IconStyle></Style>';
                 }
 
                 /*
@@ -579,11 +579,11 @@
 
             if (layer.url) {
                 return '<GroundOverlay>'
-                + '<name>'+msp.Util._(layer.name)+'</name>'
+                + '<name>'+this.encode(msp.Util._(layer.name))+'</name>'
                 + '<description></description>'
                 + '<drawOrder>0</drawOrder>'
                 + '<Icon>'
-                + '<href>'+layer.url.replace(/\&/g,'&amp;')+'</href>'
+                + '<href>'+this.encode(layer.url)+'</href>'
                 + '</Icon>'
                 + '<LatLonBox>'
                 + '<north>'+geoBounds.top+'</north>'
@@ -630,11 +630,11 @@
 
             if (layer.url) {
                 return '<GroundOverlay>'
-                + '<name>'+msp.Util._(layer.name)+'</name>'
+                + '<name>'+this.encode(msp.Util._(layer.name))+'</name>'
                 + '<description></description>'
                 + '<drawOrder>0</drawOrder>'
                 + '<Icon>'
-                + '<href>'+WMSUrl.replace(/\&/g,'&amp;')+'</href>'
+                + '<href>'+this.encode(WMSUrl)+'</href>'
                 + '</Icon>'
                 + '<LatLonBox>'
                 + '<north>'+geoBounds.top+'</north>'
@@ -647,6 +647,13 @@
             }
 
             return '';
+        },
+        
+        /*
+         * Replace & by &amp; from input string
+         */
+        encode:function(s) {
+            return s.replace(/\&/g,'&amp;');
         }
         
     }
