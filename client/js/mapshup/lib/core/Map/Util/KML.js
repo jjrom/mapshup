@@ -97,7 +97,7 @@
             /*
              * Case 3 : Vector layers
              */
-            else if (layer.CLASS_NAME === "OpenLayers.Layer.Vector" || layer.CLASS_NAME === "OpenLayers.Layer.GML") {
+            else if (layer.CLASS_NAME === "OpenLayers.Layer.Vector") {
 
                 var feature,
                     features = [];
