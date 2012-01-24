@@ -961,7 +961,7 @@
         this.updatePosition = function() {
             var xy,
                 self = this;
-            if (self.selected) {
+            if (self.selected && self.selected.geometry) {
                 self.$m.show();
                 xy = msp.Map.map.getPixelFromLonLat(self.selected.geometry.getBounds().getCenterLonLat());
                 self.$m.css({
