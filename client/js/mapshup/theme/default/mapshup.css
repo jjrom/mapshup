@@ -901,19 +901,11 @@ div.olControlMousePosition {
 .olControlOverviewMapMinimizeButton {
     right:0px;
     bottom:0px;
-    background-color: rgba(0,0,0,0.7);
-    background-image: url("./img/layer-switcher-minimize.png");
 }
 
 .olControlOverviewMapMaximizeButton {
     right:0px;
     bottom:0px;
-    background-color: rgba(0,0,0,0.7);
-    background-image: url("./img/layer-switcher-maximize.png");
-}
-
-.olControlOverviewMapMinimizeButton a:hover, .olControlOverviewMapMaximizeButton a:hover {
-    background-color: #fff;
 }
 
 .olControlOverviewMapExtentRectangle {
