@@ -60,10 +60,12 @@
          */
         this.init = function(options) {
             
+            var self = this;
+            
             /*
              * Init options
              */
-            this.options = options || {};
+            self.options = options || {};
             
             /*
              * Add a "Flickr" search action to the geonames menu
@@ -77,19 +79,70 @@
                     ic:"flickr.png",
                     ti:"Search for related images",
                     cb:function(toponym) {
-                        msp.Map.addLayer({
+                        
+                        /*
+                         * Tell user that flickr search is in progress
+                         */
+                        msp.mask.add({
+                            title:msp.Util._("Flickr")+' : '+msp.Util._("Searching")+" "+ toponym.name,
+                            cancel:true
+                        });
+                        
+                        self._layer = msp.Map.addLayer({
                             type:"Flickr",
                             title:toponym.name+", "+toponym.countryName,
-                            userID:"",
-                            q:msp.Util.encode(toponym.name),
-                            machineTags:""
+                            q:msp.Util.encode(toponym.name)
                         });
                     }
                 }]);
                 
             }
+            else {
+                return null;
+            }
             
-            return this;
+            /*
+             * Event registration when layer end to load
+             * 
+             * If a layersend event occured on the self.layer layer,
+             * then the loading mask is cleared
+             */
+             msp.Map.events.register("layersend", self, function(action, layer, scope) {
+
+                /*
+                 * Process event only if current layer is defined
+                 */
+                if (self._layer) {
+                    
+                    /*
+                     * The event occurs on the current OpenSearch layer
+                     */
+                    if (layer.id === self._layer.id) {
+                       
+                        /*
+                         * The OpenSearch layer is loaded or is due to be destroyed
+                         */
+                        if (layer.hasOwnProperty('_msp') && (layer._msp.isLoaded || layer._tobedestroyed)) {
+                            
+                            /*
+                             * Hide the mask
+                             */
+                            msp.mask.hide();
+                            
+                            /*
+                             * No more OpenSearch layer
+                             */
+                            self._layer = null;
+                            
+                        }
+                    }
+                }
+                
+                return true;
+        
+            });
+            
+            return self;
             
         };
 
