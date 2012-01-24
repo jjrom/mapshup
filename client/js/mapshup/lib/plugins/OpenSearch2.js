@@ -341,7 +341,19 @@
             var self = this;
             
             msp.Util.askFor(msp.Util._("Choose a search service"), null, "list", self.services, function(v){
+                
+                /*
+                 * Activate search service
+                 */
                 self.activate(self.services[v]);
+                
+                /*
+                 * If input text box is not empty, lauch search
+                 */
+                if(self.$input.val().length > 1) {
+                    self.search();
+                }
+                
             }); 
         
         };
