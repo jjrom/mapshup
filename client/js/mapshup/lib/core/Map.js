@@ -1341,10 +1341,10 @@
                     },
                     /* By default, overviewmap is visible */
                     maximized:true,
-                    size:new OpenLayers.Size('300','150'),
+                    size:new OpenLayers.Size('250','125'),
                     layers:[new OpenLayers.Layer.Image('ImageLayer', msp.Util.getImgUrl('overviewmap.png'),
                         overviewMapExtent,
-                        new OpenLayers.Size('300','150')
+                        new OpenLayers.Size('250','125')
                         )]
                 });
                 self.map.addControl(overviewMapControl);
