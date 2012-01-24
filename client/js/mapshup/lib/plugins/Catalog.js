@@ -483,16 +483,23 @@
                 
                 var btn = layer["_msp"].searchContext.btn,
                 self = scope.searchPanel;
-                    
-                /*
-                 * Activate layer button
-                 */
-                btn.activate(true);
                 
                 /*
-                 * Show panel content
+                 * Only display search panel is result is not empty
                  */
-                btn.container.pn.show(btn.container);
+                if (layer.hasOwnProperty("features") && layer.features.length > 0) {
+                    
+                    /*
+                     * Activate layer button
+                     */
+                    btn.activate(true);
+
+                    /*
+                     * Show panel content
+                     */
+                    btn.container.pn.show(btn.container);
+                    
+                }
                 
                 /*
                  * Process filters on panel west side
