@@ -1339,8 +1339,8 @@
                         autoPan:false,
                         restrictedExtent:overviewMapExtent
                     },
-                    /* By default, overviewmap is minimized */
-                    maximized:false,
+                    /* By default, overviewmap is visible */
+                    maximized:true,
                     size:new OpenLayers.Size('300','150'),
                     layers:[new OpenLayers.Layer.Image('ImageLayer', msp.Util.getImgUrl('overviewmap.png'),
                         overviewMapExtent,
