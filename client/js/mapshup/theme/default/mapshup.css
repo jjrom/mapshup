@@ -510,6 +510,9 @@ input {
  *    |           |
  *    +-----------+
  *  actsw        actse
+ *
+ * Inner button are suffixed by i :
+ * (i.e. actnwi actnei actswi actsei)
 */
 .act {
     position: absolute;
@@ -530,6 +533,10 @@ input {
 .actne {
     top: -15px;
     right: -15px;
+}
+.actnei {
+    top: 0px;
+    right: 0px;
 }
 .actnne {
     top: -15px;

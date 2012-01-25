@@ -60,7 +60,8 @@
          */
         this.init = function(options) {
 
-            var tb, self = this;
+            var self = this,
+                id = msp.Util.getId();
             
             /*
              * Init options
@@ -82,7 +83,29 @@
              * Feature Informartion is displayed within a West panel container
              */
             self.ctn = (new msp.Panel('w')).add('<div class="header"><div class="title">'+msp.Util._("Feature information")+'</div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
+            
+            /*
+             * Add an unselect button
+             */
+            self.ctn.$d.append('<div id="'+id+'" class="act actnei icnclose" jtitle="'+msp.Util._("Close")+'"></div>');
+            
+            /*
+             * Add tooltip
+             */
+            msp.tooltip.add($('#'+id).click(function() {
+
+                /*
+                 * Hide tooltip
+                 */
+                msp.tooltip.remove();
                 
+                /*
+                 * Unselect feature
+                 */
+                self.selected ? msp.Map.Util.getControlById("__CONTROL_SELECT__").unselect(self.selected) : self.unselect();
+                
+            }), 'w');
+
             /*
              * Set references
              */
