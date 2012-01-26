@@ -1047,6 +1047,11 @@
                 documentDrag: true,
                 /* Disable oncontextmenu on right clicks */
                 handleRightClicks:true,
+                zoomWheelEnabled:true,
+                mouseWheelOptions:{
+                    interval:200,
+                    cumulative:false
+                },
                 dragPanOptions:{
                     /*
                      * When drag starts, store the clicked point and the time of click in milliseconds
