@@ -212,12 +212,12 @@
         };
 
         /*
-         * Translate input key into its "human readable" equivalent defined in layerDescription.featureInfo.keys array
+         * Replace input key into its "human readable" equivalent defined in layerDescription.featureInfo.keys array
          *
-         * @input {String} key : key to translate
+         * @input {String} key : key to replace
          * @input {OpenLayers.Feature} feature : feature reference
          */
-        this.translate = function(key, feature) {
+        this.replace = function(key, feature) {
 
                 
             /*
@@ -260,7 +260,7 @@
             
             /*
              * If feature layer got a searchContext then use the connector
-             * metadataTranslator array to translate the key
+             * metadataTranslator array to replace the key
              */
             c = feature.layer["_msp"].searchContext;
             if (c && c.connector) {
@@ -548,7 +548,7 @@
                          * Simple case : string
                          */
                         if (t === "string" && msp.Util.isUrl(v)) {
-                            $info.append('<tr><td>' + self.translate(k, feature) + '</td><td>&nbsp;</td><td><a target="_blank" title="'+v+'" href="'+v+'">'+ msp.Util._("Click to see") +'</a></td></tr>');
+                            $info.append('<tr><td>' + self.replace(k, feature) + '</td><td>&nbsp;</td><td><a target="_blank" title="'+v+'" href="'+v+'">'+ msp.Util._("Click to see") +'</a></td></tr>');
                         }
                         /*
                          * Object case
@@ -672,19 +672,19 @@
                                     }
                                     else {
                                         for (kkk in v[kk]) {
-                                            d.append('<tr><td>' + self.translate(kkk, feature) + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
+                                            d.append('<tr><td>' + self.replace(kkk, feature) + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
                                         }
                                     }
 
                                 }
                                 else {
-                                    $info.append('<tr><td>' + self.translate(k, feature) + ' &rarr; ' + self.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
+                                    $info.append('<tr><td>' + self.replace(k, feature) + ' &rarr; ' + self.replace(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
                                 }
                             }
 
                         }
                         else {
-                            $info.append('<tr><td>' + self.translate(k, feature) + '</td><td>&nbsp;</td><td>' + v + '</td></tr>');
+                            $info.append('<tr><td>' + self.replace(k, feature) + '</td><td>&nbsp;</td><td>' + v + '</td></tr>');
                         }
                     }
                 }
