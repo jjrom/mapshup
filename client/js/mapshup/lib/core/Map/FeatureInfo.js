@@ -217,9 +217,8 @@
          * @input {String} key : key to replace
          * @input {OpenLayers.Feature} feature : feature reference
          */
-        this.replace = function(key, feature) {
+        this.translate = function(key, feature) {
 
-                
             /*
              * Paranoid mode
              */
@@ -227,9 +226,7 @@
                 return msp.Util._(key);
             }
 
-            var c,
-            i,
-            l;
+            var c,i,l;
             
             /*
              * Check if keys array is defined
@@ -239,7 +236,12 @@
 
                 /*
                  * Roll over the featureInfo.keys array.
-                 * This array contains a list of {key:, display:} objects
+                 * This array contains a list of objects
+                 * {
+                 *      key:
+                 *      display:
+                 *      value:
+                 * }
                  */
                 for (i = 0, l = feature.layer["_msp"].layerDescription.featureInfo.keys.length; i < l; i++) {
 
@@ -252,6 +254,7 @@
                          * Key value is now "display" value if specified
                          */
                         key = feature.layer["_msp"].layerDescription.featureInfo.keys[i].display || key;
+                        
                         break;
                     }
                 }
@@ -548,7 +551,7 @@
                          * Simple case : string
                          */
                         if (t === "string" && msp.Util.isUrl(v)) {
-                            $info.append('<tr><td>' + self.replace(k, feature) + '</td><td>&nbsp;</td><td><a target="_blank" title="'+v+'" href="'+v+'">'+ msp.Util._("Click to see") +'</a></td></tr>');
+                            $info.append('<tr><td>' + self.translate(k, feature) + '</td><td>&nbsp;</td><td><a target="_blank" title="'+v+'" href="'+v+'">'+ msp.Util._("Click to see") +'</a></td></tr>');
                         }
                         /*
                          * Object case
@@ -672,19 +675,19 @@
                                     }
                                     else {
                                         for (kkk in v[kk]) {
-                                            d.append('<tr><td>' + self.replace(kkk, feature) + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
+                                            d.append('<tr><td>' + self.translate(kkk, feature) + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
                                         }
                                     }
 
                                 }
                                 else {
-                                    $info.append('<tr><td>' + self.replace(k, feature) + ' &rarr; ' + self.replace(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
+                                    $info.append('<tr><td>' + self.translate(k, feature) + ' &rarr; ' + self.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
                                 }
                             }
 
                         }
                         else {
-                            $info.append('<tr><td>' + self.replace(k, feature) + '</td><td>&nbsp;</td><td>' + v + '</td></tr>');
+                            $info.append('<tr><td>' + self.translate(k, feature) + '</td><td>&nbsp;</td><td>' + v + '</td></tr>');
                         }
                     }
                 }
