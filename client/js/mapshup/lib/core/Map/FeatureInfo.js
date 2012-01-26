@@ -239,7 +239,7 @@
 
                 /*
                  * Roll over the featureInfo.keys array.
-                 * This array contains a list of {key:, value:} objects
+                 * This array contains a list of {key:, display:} objects
                  */
                 for (i = 0, l = feature.layer["_msp"].layerDescription.featureInfo.keys.length; i < l; i++) {
 
@@ -247,7 +247,11 @@
                      * If key is found in array, get the corresponding value and exist the loop
                      */
                     if (key === feature.layer["_msp"].layerDescription.featureInfo.keys[i].key) {
-                        key = feature.layer["_msp"].layerDescription.featureInfo.keys[i].value;
+                        
+                        /*
+                         * Key value is now "display" value if specified
+                         */
+                        key = feature.layer["_msp"].layerDescription.featureInfo.keys[i].display || key;
                         break;
                     }
                 }
