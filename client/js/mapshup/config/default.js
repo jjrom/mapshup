@@ -582,6 +582,10 @@
                         {
                             key:"d2p2.d2p2_eq_48hr_sdeview.objectid",
                             display:"Object ID"
+                        },
+                        {
+                            key:"d2p2.d2p2_eq_48hr_sdeview.link	",
+                            display:"Link"
                         }
                         ]
                     }
