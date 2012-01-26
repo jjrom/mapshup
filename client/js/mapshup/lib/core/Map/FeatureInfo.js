@@ -223,7 +223,7 @@
          */
         this.getValue = function(feature, key, value) {
 
-            var i, l, keys;
+            var k, keys;
             
             /*
              * Paranoid mode
@@ -240,31 +240,33 @@
                 keys = feature.layer["_msp"].layerDescription.featureInfo.keys || [];
 
                 /*
-                 * Roll over the featureInfo.keys array.
+                 * Roll over the featureInfo.keys associative array.
+                 * Associative array entry is the attribute name (i.e. key)
+                 * 
                  * This array contains a list of objects
                  * {
-                 *      key:
-                 *      display:
-                 *      transform:
+                 *      v: // Value to display instead of key
+                 *      transform: // function to apply to value before instead of directly displayed it
+                 *            this function should returns a string
                  * }
                  */
-                for (i = 0, l = keys.length; i < l; i++) {
-                    
+                for (k in keys) {
+
                     /*
                      * If key is found in array, get the corresponding value and exist the loop
                      */
-                    if (key === keys[i].key) {
+                    if (key === k) {
                         
                         /*
                          * Transform value if specified
                          */
-                        if ($.isFunction(keys[i].transform)) {
-                            return keys[i].transform(value);
+                        if ($.isFunction(keys[k].transform)) {
+                            return keys[k].transform(value);
                         }
                         break;
                     }
                 }
-                
+               
             }
             
             /*
@@ -274,14 +276,14 @@
         };
 
         /*
-         * Replace input key into its "human readable" equivalent defined in layerDescription.featureInfo.keys array
+         * Replace input key into its "human readable" equivalent defined in layerDescription.featureInfo.keys associative array
          *
          * @input {String} key : key to replace
          * @input {OpenLayers.Feature} feature : feature reference
          */
         this.translate = function(key, feature) {
 
-            var c,i,l, keys;
+            var c, k, keys;
             
             /*
              * Paranoid mode
@@ -299,27 +301,27 @@
                 keys = feature.layer["_msp"].layerDescription.featureInfo.keys || [];
                 
                 /*
-                 * Roll over the featureInfo.keys array.
+                 * Roll over the featureInfo.keys associative array.
+                 * Associative array entry is the attribute name (i.e. key)
+                 * 
                  * This array contains a list of objects
                  * {
-                 *      key:
-                 *      display:
-                 *      transform:
+                 *      v: // Value to display instead of key
+                 *      transform: // function to apply to value before instead of directly displayed it
+                 *            this function should returns a string
                  * }
                  */
-                for (i = 0, l = keys.length; i < l; i++) {
+                for (k in keys) {
 
                     /*
                      * If key is found in array, get the corresponding value and exist the loop
                      */
-                    if (key === keys[i].key) {
+                    if (key === k) {
                         
                         /*
-                         * Key value is now "display" value if specified
+                         * Key value is now "v" value if specified
                          */
-                        key = keys[i].display || key;
-                        
-                        break;
+                        return msp.Util._(keys[k].v || key);
                     }
                 }
                 

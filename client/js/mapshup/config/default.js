@@ -550,44 +550,35 @@
                     version:"1.0.0",
                     featureInfo:{
                         title:"Magnitude {d2p2.d2p2_eq_48hr_sdeview.magnitude} - {d2p2.d2p2_eq_48hr_sdeview.date_time}",
-                        keys:[
-                        {
-                            key:"d2p2.d2p2_eq_48hr_sdeview.date_time",
-                            display:"Date"
-                        },
-                        {
-                            key:"d2p2.d2p2_eq_48hr_sdeview.latitude",
-                            display:"Latitude"
-                        },
-                        {
-                            key:"d2p2.d2p2_eq_48hr_sdeview.longitude",
-                            display:"Longitude"
-                        },
-                        {
-                            key:"d2p2.d2p2_eq_48hr_sdeview.magnitude",
-                            display:"Magnitude"
-                        },
-                        {
-                            key:"d2p2.d2p2_eq_48hr_sdeview.depth",
-                            display:"Depth"
-                        },
-                        {
-                            key:"d2p2.d2p2_eq_48hr_sdeview.region",
-                            display:"Region"
-                        },
-                        {
-                            key:"d2p2.d2p2_eq_48hr_sdeview.incident_id",
-                            display:"Incident"
-                        },
-                        {
-                            key:"d2p2.d2p2_eq_48hr_sdeview.objectid",
-                            display:"Object ID"
-                        },
-                        {
-                            key:"d2p2.d2p2_eq_48hr_sdeview.link	",
-                            display:"Link"
+                        keys:{
+                            "d2p2.d2p2_eq_48hr_sdeview.date_time":{
+                                v:"Date"
+                            },
+                            "d2p2.d2p2_eq_48hr_sdeview.latitude":{
+                                v:"Latitude"
+                            },
+                            "d2p2.d2p2_eq_48hr_sdeview.longitude":{
+                                v:"Longitude"
+                            },
+                            "d2p2.d2p2_eq_48hr_sdeview.magnitude":{
+                                v:"Magnitude"
+                            },
+                            "d2p2.d2p2_eq_48hr_sdeview.depth":{
+                                v:"Depth"
+                            },
+                            "d2p2.d2p2_eq_48hr_sdeview.region":{
+                                v:"Region"
+                            },
+                            "d2p2.d2p2_eq_48hr_sdeview.incident_id":{
+                                v:"Incident"
+                            },
+                            "d2p2.d2p2_eq_48hr_sdeview.objectid":{
+                                v:"Object ID"
+                            },
+                            "d2p2.d2p2_eq_48hr_sdeview.link":{
+                                v:"Link"
+                            }
                         }
-                        ]
                     }
                 },
                 {
