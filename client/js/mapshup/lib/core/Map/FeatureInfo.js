@@ -321,7 +321,12 @@
                         /*
                          * Key value is now "v" value if specified
                          */
-                        return msp.Util._(keys[k].v || key);
+                        if (keys[k].hasOwnProperty("v")){
+                            return msp.Util._(keys[k].v);
+                        }
+                        
+                        break;
+                        
                     }
                 }
                 
