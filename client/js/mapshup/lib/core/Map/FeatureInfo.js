@@ -210,6 +210,68 @@
             return feature.attributes["name"] || feature.attributes["title"] || feature.attributes["identifier"] || feature.id || "";
 
         };
+        
+        /*
+         * Get feature attribute value
+         * 
+         * If layerDescription.featureInfo.keys array is set and if a value attribute is set for "key"
+         * then input value is transformed according to the "value" definition
+         *
+         * @input {OpenLayers.Feature} feature : feature reference
+         * @input {String} key : key attribute name
+         * @input {String} value : value of the attribute
+         */
+        this.getValue = function(feature, key, value) {
+
+            var i, l, keys;
+            
+            /*
+             * Paranoid mode
+             */
+            if (!feature || !key) {
+                return value;
+            }
+
+            /*
+             * Check if keys array is defined
+             */
+            if (feature.layer["_msp"].layerDescription.hasOwnProperty("featureInfo")) {
+                
+                keys = feature.layer["_msp"].layerDescription.featureInfo.keys || [];
+
+                /*
+                 * Roll over the featureInfo.keys array.
+                 * This array contains a list of objects
+                 * {
+                 *      key:
+                 *      display:
+                 *      transform:
+                 * }
+                 */
+                for (i = 0, l = keys.length; i < l; i++) {
+                    
+                    /*
+                     * If key is found in array, get the corresponding value and exist the loop
+                     */
+                    if (key === keys[i].key) {
+                        
+                        /*
+                         * Transform value if specified
+                         */
+                        if ($.isFunction(keys[i].transform)) {
+                            return keys[i].transform(value);
+                        }
+                        break;
+                    }
+                }
+                
+            }
+            
+            /*
+             * In any case returns input value
+             */
+            return value;
+        };
 
         /*
          * Replace input key into its "human readable" equivalent defined in layerDescription.featureInfo.keys array
@@ -219,6 +281,8 @@
          */
         this.translate = function(key, feature) {
 
+            var c,i,l, keys;
+            
             /*
              * Paranoid mode
              */
@@ -226,34 +290,34 @@
                 return msp.Util._(key);
             }
 
-            var c,i,l;
-            
             /*
              * Check if keys array is defined
              * This array has preseance to everything else
              */
-            if (feature.layer["_msp"].layerDescription.featureInfo && typeof feature.layer["_msp"].layerDescription.featureInfo.keys === "object") {
-
+            if (feature.layer["_msp"].layerDescription.hasOwnProperty("featureInfo")) {
+                
+                keys = feature.layer["_msp"].layerDescription.featureInfo.keys || [];
+                
                 /*
                  * Roll over the featureInfo.keys array.
                  * This array contains a list of objects
                  * {
                  *      key:
                  *      display:
-                 *      value:
+                 *      transform:
                  * }
                  */
-                for (i = 0, l = feature.layer["_msp"].layerDescription.featureInfo.keys.length; i < l; i++) {
+                for (i = 0, l = keys.length; i < l; i++) {
 
                     /*
                      * If key is found in array, get the corresponding value and exist the loop
                      */
-                    if (key === feature.layer["_msp"].layerDescription.featureInfo.keys[i].key) {
+                    if (key === keys[i].key) {
                         
                         /*
                          * Key value is now "display" value if specified
                          */
-                        key = feature.layer["_msp"].layerDescription.featureInfo.keys[i].display || key;
+                        key = keys[i].display || key;
                         
                         break;
                     }
@@ -687,7 +751,7 @@
 
                         }
                         else {
-                            $info.append('<tr><td>' + self.translate(k, feature) + '</td><td>&nbsp;</td><td>' + v + '</td></tr>');
+                            $info.append('<tr><td>' + self.translate(k, feature) + '</td><td>&nbsp;</td><td>' + self.getValue(feature,k,v) + '</td></tr>');
                         }
                     }
                 }
