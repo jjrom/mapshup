@@ -613,6 +613,13 @@
             }
             
             /*
+             * Special case for OpenSearch service
+             */
+            if (p.type === "OpenSearch" && msp.Plugins.OpenSearch2._o) {
+                msp.Plugins.OpenSearch2._o.add(p.url);
+            }
+            
+            /*
              * Add layer description to predefined layersDescription.
              */
             msp.Map.predefined.add(p);
