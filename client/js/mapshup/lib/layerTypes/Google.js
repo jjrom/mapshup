@@ -86,12 +86,11 @@
             {
                 isBaseLayer:true,
                 numZoomLevels:msp.Util.getPropertyValue(layerDescription, "numZoomLevels", msp.Map.map.getNumZoomLevels()),
-                name:layerDescription.title,
                 transitionEffect:'resize',
                 type:layerDescription.googleType
             });
 
-            var newLayer = new OpenLayers.Layer.GoogleNG(options);
+            var newLayer = new OpenLayers.Layer.Google(layerDescription.title,options);
 
             /*
              * Set alias projection code for Google layer to be EPSG:3857
