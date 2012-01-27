@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:geo="http://a9.com/-/opensearch/extensions/geo/1.0/">
-	<ShortName>Toponyms</ShortName>
-	<LongName>Geonames</LongName>
-	<Description>Geonames</Description>
-        <Url type="application/json" template="http://engine.mapshup.info/s/plugins/geonames/search.php?q={searchTerms}&amp;lang={lang}"/>
-</OpenSearchDescription>
