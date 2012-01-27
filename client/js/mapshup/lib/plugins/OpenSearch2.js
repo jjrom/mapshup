@@ -312,7 +312,7 @@
                      */
                     d.title = d.name;
                     d.value = d.URLTemplate;
-                    d.icon = msp.Util.getImgUrl(d.icon);
+                    d.icon = d.icon ? msp.Util.getImgUrl(d.icon) : null;
                     
                     /*
                      * Add new service
@@ -373,6 +373,8 @@
             }
 
             self.btn = new msp.Button({
+                /* Title is set if icon is not defined */
+                title:service.icon ? null : msp.Util._(service.name).substring(0,1),
                 tb:self.tb,
                 tt:service.name,
                 switchable:false,
