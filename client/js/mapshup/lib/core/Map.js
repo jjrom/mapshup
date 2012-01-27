@@ -1049,7 +1049,7 @@
                 handleRightClicks:true,
                 zoomWheelEnabled:true,
                 mouseWheelOptions:{
-                    interval:20,
+                    interval:200,
                     cumulative:false
                 },
                 dragPanOptions:{
