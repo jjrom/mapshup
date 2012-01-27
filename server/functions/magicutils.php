@@ -54,10 +54,15 @@ function getExtension($fileName) {
 function getLayerInfosFromXML($doc) {
 
     /*
+     * Get layer type
+     */
+    $type = getLayerType($doc);
+    
+    /*
      * Set default $infos array values
      */
     $infos = array(
-        'type' => getLayerType($doc),
+        'type' => $type,
         'title' => null,
         'description' => null
     );
@@ -65,7 +70,7 @@ function getLayerInfosFromXML($doc) {
     /*
      * Pleiades
      */
-    if ($type == "Pleiades") {      
+    if ($type === "Pleiades") {
         return array(
             'type' => 'Pleiades',
             'title' => $doc->getElementsByTagName('DATASET_NAME')->item(0)->nodeValue,
@@ -76,23 +81,41 @@ function getLayerInfosFromXML($doc) {
     /*
      * OpenSearch service
      */
-    else if ($type == "OpenSearch") {
-        return $infos;
-    }
-    
-    /*
-     * OpenSearch catalog
-     */
-    else if ($type == "Catalog_OpenSearch") {
-        
-        // Change the type to "Catalog" and extract the connector name
-        $infos['type'] = "Catalog";
-        $infos['extras'] = array(
-            'connectorName' => "OpenSearch"
-        );
+    else if ($type === "OpenSearch") {
+
+        /*
+         * Two cases : the OpenSearch description can be an OpenSearch catalog or an OpenSearch service
+         * We assume that OpenSearch description is an OpenSearch service unless the description contains
+         * an <Url> template containing an 'mspdesc' or an 'jeodesc' attribute in which case it is considered
+         * as an OpenSearch catalog
+         */
+        $isCatalog = false;
+        $urls = $doc->getElementsByTagname('Url');
+        foreach ($urls as $url) {
+            $rel = $url->getAttribute('rel');
+            if ($rel === "mspdesc" || $rel === "jeodesc") {
+                $isCatalog = true;
+                break;
+            }
+        }
+
+        /*
+         * Set title and description
+         */
         $infos['title'] = $doc->getElementsByTagName('ShortName')->item(0)->nodeValue;
         $infos['description'] = $doc->getElementsByTagName('Description')->item(0)->nodeValue;
-        
+
+        if ($isCatalog) {
+
+            // Change the type to "Catalog" and extract the connector name
+            $infos['type'] = "Catalog";
+            $infos['extras'] = array(
+                'connectorName' => "OpenSearch"
+            );
+        }
+        else {
+            $infos['type'] = "OpenSearch";
+        }
         return $infos;
     }
 
@@ -125,7 +148,7 @@ function getLayerInfosFromFile($fileName) {
      * get extension
      */
     $ext = strtolower(getExtension($fileName));
-    
+
     /*
      * KML
      */
@@ -147,7 +170,7 @@ function getLayerInfosFromFile($fileName) {
         $doc->load($fileName);
         return getLayerInfosFromXML($doc);
     }
-    
+
     // Set default values
     $infos = array(
         'type' => $type,
@@ -164,14 +187,14 @@ function getLayerInfosFromFile($fileName) {
 function getLayerType($doc) {
 
     $rootName = MSP_UNKNOWN;
-    
+
     /*
      * Get root name element
      */
     if ($doc && $doc->documentElement->nodeName != null) {
         $rootName = strtolower(removeNamespace($doc->documentElement->nodeName));
     }
-    
+
     /*
      * RSS
      */
@@ -181,45 +204,39 @@ function getLayerType($doc) {
 
     /*
      * GPX
-     */
-    else if ($rootName === "gpx") {
+     */ else if ($rootName === "gpx") {
         return "GPX";
     }
 
     /*
      * OpenSearch
-     */
-    else if ($rootName == "opensearchdescription") {
+     */ else if ($rootName == "opensearchdescription") {
         return "OpenSearch";
     }
 
     /*
      * OGC
-     */
-    else if ($rootName === "wfs_capabilities") {
+     */ else if ($rootName === "wfs_capabilities") {
         return "WFS";
     }
-    
+
     /*
      * WMS 1.1.0 => root element = WMT_MS_Capabilities
      * WMS 1.3.0 => root element = WMS_Capabilities
      *
-     */
-    else if ($rootName === "wms_capabilities" || $rootName === "wmt_ms_capabilities") {
+     */ else if ($rootName === "wms_capabilities" || $rootName === "wmt_ms_capabilities") {
         return "WMS";
     }
-    
+
     /*
      * Pleiades
-     */
-    else if (getPHRType($doc) !== null) {
+     */ else if (getPHRType($doc) !== null) {
         return "Pleiades";
     }
-    
+
     /*
      * Sentinel
-     */
-    else if (getSentinelType($doc) !== null) {
+     */ else if (getSentinelType($doc) !== null) {
         return "Sentinel";
     }
 
@@ -237,7 +254,7 @@ function getPHRType($doc) {
     if ($doc && $doc->documentElement->nodeName != null) {
         $rootName = strtolower(removeNamespace($doc->documentElement->nodeName));
     }
-    
+
     /*
      * Valid Pleiades root names
      */
@@ -249,18 +266,18 @@ function getPHRType($doc) {
         "phr_dimap_document",
         "phr_inventory_plan",
         "phr_ip_request"
-        );
+    );
     reset($rootNames);
-    
+
     /*
      * Check if input rootName is a valid Pleiades rootName
      */
-    foreach($rootNames as $v) {
+    foreach ($rootNames as $v) {
         if ($v === $rootName) {
             return $v;
         }
     }
-    
+
     return null;
 }
 
