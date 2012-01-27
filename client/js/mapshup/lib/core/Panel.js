@@ -103,7 +103,7 @@
          * Number of pixels substracted from the map height to compute
          * East/West panel height when "over" boolean is set to true
          */
-        this.voffset = 100;
+        this.voffset = 125;
         
         /*
          * Number of pixels from the top of the map to display the panel
