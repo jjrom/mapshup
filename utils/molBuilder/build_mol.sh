@@ -71,7 +71,7 @@ echo "Populating $moldir directory with theme directory..."
 cp -Rf $oldir/img $moldir/
 cp -Rf $oldir/theme/default/img $moldir/theme/default/
 cp -Rf $oldir/theme/default/style.tidy.css $moldir/theme/default
-cp -Rf $oldir/theme/default/google.tidy.css $moldir/theme/default
+cp -Rf addons/google.tidy.css $moldir/theme/default
 cp -Rf addons/layer-switcher-maximize.png $moldir/img/
 cp -Rf addons/layer-switcher-minimize.png $moldir/img/
 
@@ -81,6 +81,9 @@ rm -Rf $moldir/theme/default/img/.svn
 
 echo "Copying addons to OpenLayers directory..."
 cp -R addons/OL-OS $oldir/lib/
+
+echo "Copying modified class to OpenLayers directory..."
+cp -R addons/DragPan.js $oldir/lib/OpenLayers/Control/
 
 echo "Building OpenLayers.js..."
 cd $oldir/build
