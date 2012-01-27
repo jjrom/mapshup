@@ -6,6 +6,7 @@
     i["Add layer"]="Ajouter une couche";
     i["Add to map"]="Ajouter à la carte";
     i["Add quicklook to map"] = "Ajouter l&#39;image à la carte";
+    i["Add search service"]="Ajout d'un service de recherche";
     i["An error occured during password generation. Registering is currently disable"]="Erreur durant la génération de mot de passe. L&#39;enregistrement est annulé";
     i["A password has been sent to your mailbox"]="Un mot de passe a été envoyé par email";
     i["Area"]="Surface";
@@ -55,6 +56,7 @@
     i["Entering 2D mode"]="Vous entrez en mode 2D";
     i["Entering 3D mode"]="Vous entrez en mode 3D";
     i["entities"]="entités";
+    i["Error : cannot add search service"]="Erreur : ne peut pas ajouter le service de recherche";
     i["Error : cannot export layer"]="Erreur : ne peut pas exporter cette couche";
     i["Error : cannot perform action"]="Erreur : ne peut pas effectuer cette action";
     i["Error : cannot reproject this layer"]="Erreur : ne peut pas reprojeter cette couche";

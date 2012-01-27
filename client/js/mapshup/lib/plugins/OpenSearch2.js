@@ -69,8 +69,8 @@
         this.init = function(options) {
 
             var d,i,l,
-                id = msp.Util.getId(),
-                self = this;
+            id = msp.Util.getId(),
+            self = this;
             
             /*
              * Init options
@@ -126,7 +126,7 @@
                      * one with a value between -180 and 180
                      */
                     var lonlat,
-                        c = $.trim($(this).val()).split(' ');
+                    c = $.trim($(this).val()).split(' ');
                     
                     if (c.length === 2) {
                         
@@ -172,7 +172,10 @@
              */
             for (i = 0, l = self.options.services.length; i < l ;i++){
                 d = self.options.services[i];
-                self.add(d.url,d.stype);
+                self.add(d.url,{
+                    type:d.stype,
+                    msg:false
+                });
             }
 
             /*
@@ -181,7 +184,7 @@
              * If a layersend event occured on the self._layer layer,
              * then the loading mask is cleared
              */
-             msp.Map.events.register("layersend", self, function(action, layer, scope) {
+            msp.Map.events.register("layersend", self, function(action, layer, scope) {
 
                 /*
                  * Process event only if a non loaded OpenSearch layer is defined
@@ -240,11 +243,26 @@
          * Add an OpenSearch service
          * 
          * @input {String} url : url to an OpenSearch XML service description
-         * @input {String} stype : layer subtype (optional)
+         * @input {Object} options : options object (optional)
+         *                           {
+         *                              type: // sub type for this OpenSearch service
+         *                              msg: // boolean - true to display message when successfully load service
+         *                                                false otherwise (default true)
+         *                           }
          */
-        this.add = function(url, stype) {
+        this.add = function(url, options) {
             
             var self = this;
+            
+            /*
+             * Paranoid mode
+             */
+            options = options || {};
+            
+            /*
+             * Default is to display message
+             */
+            options.msg = msp.Util.getPropertyValue(options, "msg", true);
             
             /*
              * Asynchronously retrieve service information from url
@@ -259,7 +277,7 @@
                      * to decode data result
                      */
                     var type,
-                        d = self.reader.read(data);
+                    d = self.reader.read(data);
                     
                     /*
                      * Look for the best type candidate in the description list of available types
@@ -274,10 +292,10 @@
                          * Special case for Flickr and Youtube 
                          * Force the service type
                          */
-                        if (stype === "Youtube") {
+                        if (options.type === "Youtube") {
                             d.type = "Youtube";
                         }
-                        else if (stype === "Flickr") {
+                        else if (options.type === "Flickr") {
                             d.type = "Flickr";
                         }
                         
@@ -324,10 +342,17 @@
                      */
                     self.activate(d);
                     
+                    /*
+                     * Tell user that service is loaded
+                     */
+                    if (options.msg) {
+                        msp.Util.message(msp.Util._("Add search service") + " : " + msp.Util._(d.title));
+                    }
+                    
                     return true;
                 },
                 error:function(e) {
-                    // TODO error message
+                    msp.Util.message(msp.Util._("Error : cannot add search service") + " - " + url);
                 }
             });
             
@@ -493,7 +518,7 @@
         this.setSearchTerms = function(service) {
             
             var e1,e2,bbox,
-                self = this;
+            self = this;
             
             /*
              * Avoid XSS vulnerability
@@ -544,7 +569,7 @@
         this.getRequestUrl = function(service) {
             
             var name,value,regex,
-                url = service.URLTemplate;
+            url = service.URLTemplate;
             
             /*
              * Build url from URLTemplate and searchParams if both are defined

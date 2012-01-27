@@ -5,6 +5,7 @@ Add a description
 Add layer
 Add to map
 Add quicklook to map
+Add search service
 An error occured during password generation. Registering is currently disable
 A password has been sent to your mailbox
 Area
@@ -54,6 +55,7 @@ Enter an url
 Entering 2D mode
 Entering 3D mode
 entities
+Error : cannot add search service
 Error : cannot export layer
 Error : cannot perform action
 Error : cannot reproject this layer
