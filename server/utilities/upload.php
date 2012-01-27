@@ -112,11 +112,6 @@ if (abcCheck($_REQUEST)) {
         $localizedItems = array();
         
         /*
-         * Extras array to pass extras information
-         */
-        $extras = array();
-
-        /*
          * Roll over each file names within the 'file' array
          */
         for ($i = 0; $i < $count; $i++) {
@@ -280,9 +275,6 @@ if (abcCheck($_REQUEST)) {
             }
             if ($ignore == true) {
                 $item['ignore'] = true;
-            }
-            if (count($extras) > 0) {
-                $item['extras'] = $extras;
             }
             array_push($items, $item);
         }

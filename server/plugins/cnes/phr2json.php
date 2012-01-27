@@ -49,12 +49,11 @@ function toGeoJSON($resultFileURI) {
 
     $doc = new DOMDocument();
     $doc->load($resultFileURI);
-    $rootName = strtolower(removeNamespace($doc->documentElement->nodeName));
-
+    
     /*
      * Get the PHR type from XML file root name element
      */
-    $type = getPHRTypeFromRootName($rootName);
+    $type = getPHRType($doc);
 
     /*
      * Initialize GeoJSON

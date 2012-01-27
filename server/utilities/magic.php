@@ -88,9 +88,9 @@ if (abcCheck($_REQUEST) && $url != '') {
     $urlNoParameters = null;
     
     /*
-     * Extras array to pass extras information
+     * Info array
      */
-    $extras = array();
+    $infos = array();
 
     /*
      * Magic part : we try to detect a mapshup valid
@@ -118,7 +118,7 @@ if (abcCheck($_REQUEST) && $url != '') {
          *
          */
         if ($contentType == "application/vnd.google-earth.kml+xml") {
-            $type = "KML";
+            $infos["type"] = "KML";
         }
         /*
          * Image
@@ -129,7 +129,7 @@ if (abcCheck($_REQUEST) && $url != '') {
          *  - image/png
          *
          */ else if ($contentType == "image/png" || $contentType == "image/jpeg" || $contentType == "image/gif") {
-            $type = "Image";
+            $infos["type"] = "Image";
             /*
              * TODO : compute bbox when possible (gdal ?)
              * $extras = array(
@@ -147,22 +147,9 @@ if (abcCheck($_REQUEST) && $url != '') {
          *  - application/atom+xml
          *  - application/rss+xml
          */ else if ($contentType == "application/xml" || $contentType == "text/xml" || $contentType == "application/atom+xml" || $contentType == "application/rss+xml" || $contentType == "text/plain") {
-
-            /*
-             * Create a temporary file
-             */
-            $tmpFile = saveFile($arr["data"], MSP_UPLOAD_DIR . createPassword(10) . ".tmp");
-
             $doc = new DOMDocument;
-            $doc->load($tmpFile);
-            $rootName = strtolower(removeNamespace($doc->documentElement->nodeName));
-            $type = getLayerTypeFromRootName($rootName);
-            $infos = getLayerInfosFromType($type, $doc);
-            
-            /*
-             * Remove temporary file
-             */
-            unlink($tmpFile);
+            $doc->loadXML($arr["data"]);
+            $infos = getLayerInfosFromXML($doc);
         }
     }
 
@@ -172,20 +159,16 @@ if (abcCheck($_REQUEST) && $url != '') {
      */
     $item = array(
         'url' => $urlNoParameters != null ? $urlNoParameters : $url,
-        'type' => $type,
         'id' => $id,
-        'content_type' => $contentType,
-        'extras' => $extras
+        'content_type' => $contentType
     );
 
     /*
      * Infos keys/values
      */
-    if (isset($infos)) {
-        foreach(array_keys($infos) as $key) {
-            if ($infos[$key] != null) {
-                $item[$key] = $infos[$key];
-            }
+    foreach(array_keys($infos) as $key) {
+        if ($infos[$key] != null) {
+            $item[$key] = $infos[$key];
         }
     }
     

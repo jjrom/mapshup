@@ -49,62 +49,41 @@ function getExtension($fileName) {
 }
 
 /**
- * Get mapshup layer title from an XML file
+ * Get mapshup layer info from an XML document
  */
-function getLayerInfosFromType($type, $doc) {
+function getLayerInfosFromXML($doc) {
 
+    /*
+     * Set default $infos array values
+     */
     $infos = array(
-        'type' => $type,
+        'type' => getLayerType($doc),
         'title' => null,
         'description' => null
     );
 
     /*
-     * RSS
-     */
-    if ($type == "GeoRSS") {
-        return $infos;
-    }
-
-    /*
-     * GPX
-     */
-    if ($type == "GPX") {
-        return $infos;
-    }
-
-    /*
      * Pleiades
      */
-    if ($type == "Pleiades") {
-        return getPHRInfos($doc);
+    if ($type == "Pleiades") {      
+        return array(
+            'type' => 'Pleiades',
+            'title' => $doc->getElementsByTagName('DATASET_NAME')->item(0)->nodeValue,
+            'description' => $doc->getElementsByTagName('METADATA_PROFILE')->item(0)->nodeValue
+        );
     }
 
     /*
-     * Sentinel
+     * OpenSearch service
      */
-    if ($type == "Sentinel") {
+    else if ($type == "OpenSearch") {
         return $infos;
     }
-
-    /*
-     * WMS
-     */
-    if ($type == "WMS") {
-        return $infos;
-    }
-
-    /*
-     * WFS
-     */
-    if ($type == "WFS") {
-        return $infos;
-    }
-
+    
     /*
      * OpenSearch catalog
      */
-    if ($type == "Catalog_OpenSearch") {
+    else if ($type == "Catalog_OpenSearch") {
         
         // Change the type to "Catalog" and extract the connector name
         $infos['type'] = "Catalog";
@@ -166,8 +145,7 @@ function getLayerInfosFromFile($fileName) {
          */
         $doc = new DOMDocument();
         $doc->load($fileName);
-        $rootName = strtolower(removeNamespace($doc->documentElement->nodeName));
-        return getLayerInfosFromType(getLayerTypeFromRootName($rootName), $doc);
+        return getLayerInfosFromXML($doc);
     }
     
     // Set default values
@@ -183,84 +161,82 @@ function getLayerInfosFromFile($fileName) {
 /**
  * Get mapshup layer type from an XML file
  */
-function getLayerTypeFromRootName($rootName) {
+function getLayerType($doc) {
 
-    $type = MSP_UNKNOWN;
-
+    $rootName = MSP_UNKNOWN;
+    
+    /*
+     * Get root name element
+     */
+    if ($doc && $doc->documentElement->nodeName != null) {
+        $rootName = strtolower(removeNamespace($doc->documentElement->nodeName));
+    }
+    
     /*
      * RSS
      */
-    if ($rootName == "rss" || $rootName == "rdf") {
+    if ($rootName === "rss" || $rootName === "rdf") {
         return "GeoRSS";
     }
 
     /*
      * GPX
      */
-    if ($rootName == "gpx") {
+    else if ($rootName === "gpx") {
         return "GPX";
     }
 
     /*
      * OpenSearch
      */
-    if ($rootName == "opensearchdescription") {
-        return "Catalog_OpenSearch";
-    }
-
-    /*
-     * Pleiades
-     */
-    $type = getPHRTypeFromRootName($rootName);
-    if ($type != MSP_UNKNOWN) {
-        return "Pleiades";
-    }
-
-    /*
-     * Sentinel
-     */
-    $type = getSentinelTypeFromRootName($rootName);
-    if ($type != MSP_UNKNOWN) {
-        return "Sentinel";
+    else if ($rootName == "opensearchdescription") {
+        return "OpenSearch";
     }
 
     /*
      * OGC
      */
-    $type = getOGCTypeFromRootName($rootName);
-    if ($type != MSP_UNKNOWN) {
-        return $type;
+    else if ($rootName === "wfs_capabilities") {
+        return "WFS";
     }
-
-    return $type;
-}
-
-/**
- * Get mapshup OGC layerType from XML document rootName
- */
-function getOGCTypeFromRootName($rootName) {
-
-    $type = MSP_UNKNOWN;
-
-    if ($rootName === "wfs_capabilities") {
-        $type = "WFS";
-    }
+    
     /*
      * WMS 1.1.0 => root element = WMT_MS_Capabilities
      * WMS 1.3.0 => root element = WMS_Capabilities
      *
-     */ else if ($rootName === "wms_capabilities" || $rootName === "wmt_ms_capabilities") {
-        $type = "WMS";
+     */
+    else if ($rootName === "wms_capabilities" || $rootName === "wmt_ms_capabilities") {
+        return "WMS";
     }
-    return $type;
+    
+    /*
+     * Pleiades
+     */
+    else if (getPHRType($doc) !== null) {
+        return "Pleiades";
+    }
+    
+    /*
+     * Sentinel
+     */
+    else if (getSentinelType($doc) !== null) {
+        return "Sentinel";
+    }
+
+    return $rootName;
 }
 
 /**
- * Get PHR file type from XML document rootName
+ * Return true if input rootname is a PHR document
  */
-function getPHRTypeFromRootName($rootName) {
+function getPHRType($doc) {
 
-    $type = MSP_UNKNOWN;
+    /*
+     * Get root name element
+     */
+    if ($doc && $doc->documentElement->nodeName != null) {
+        $rootName = strtolower(removeNamespace($doc->documentElement->nodeName));
+    }
     
     /*
      * Valid Pleiades root names
@@ -281,37 +257,30 @@ function getPHRTypeFromRootName($rootName) {
      */
     foreach($rootNames as $v) {
         if ($v === $rootName) {
-            return $rootName;
+            return $v;
         }
     }
     
-
-    return $type;
+    return null;
 }
 
 /**
  * Get PHR file type from XML document rootName
  */
-function getPHRInfos($doc) {
-    return array(
-        'type' => 'Pleiades',
-        'title' => $doc->getElementsByTagName('DATASET_NAME')->item(0)->nodeValue,
-        'description' => $doc->getElementsByTagName('METADATA_PROFILE')->item(0)->nodeValue
-    );
-}
+function getSentinelType($doc) {
 
-/**
- * Get PHR file type from XML document rootName
- */
-function getSentinelTypeFromRootName($rootName) {
-
-    $type = MSP_UNKNOWN;
-
-    if ($rootName == "gs2_dimap_document") {
-        $type = $rootName;
+    /*
+     * Get root name element
+     */
+    if ($doc && $doc->documentElement->nodeName != null) {
+        $rootName = strtolower(removeNamespace($doc->documentElement->nodeName));
     }
 
-    return $type;
+    if ($rootName == "gs2_dimap_document") {
+        return $rootName;
+    }
+
+    return null;
 }
 
 /**

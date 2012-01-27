@@ -48,9 +48,8 @@ function toGeoJSON($resultFileURI) {
 
     $doc = new DOMDocument();
     $doc->load($resultFileURI);
-    $rootName = strtolower(removeNamespace($doc->documentElement->nodeName));
-
-    $type = getSentinelTypeFromRootName($rootName);
+    
+    $type = getSentinelType($doc);
 
     /*
      * Initialize GeoJSON
