@@ -63,8 +63,14 @@ then
 	echo ""
 	echo "Create directory $moldir..."
 	mkdir $moldir
+fi
+if [ ! -x $moldir/theme ]
+then
         mkdir $moldir/theme
-        mkdir $moldir/theme/default
+fi
+if [ ! -x $moldir/theme/default ]
+then
+    mkdir $moldir/theme/default
 fi
 
 echo "Populating $moldir directory with theme directory..."
