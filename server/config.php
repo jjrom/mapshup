@@ -45,9 +45,9 @@ define("MSP_DOMAIN","132.149");
 
 /**
  * Set debug mode - If true, all requests/responses are logged
- * (Default = true)
+ * (Default = false)
  */
-define("MSP_DEBUG",true);
+define("MSP_DEBUG",false);
 
 /**
  * Valid admin email adress (for registering)
