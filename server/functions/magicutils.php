@@ -240,6 +240,10 @@ function getLayerType($doc) {
         return "Sentinel";
     }
 
+    else {
+        $rootName = MSP_UNKNOWN;
+    }
+    
     return $rootName;
 }
 
