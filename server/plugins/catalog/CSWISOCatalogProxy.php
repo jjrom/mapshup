@@ -68,10 +68,10 @@ include_once '../../functions/geometry.php';
  *
  */
 
-function outputToGeoJSON($resultFileURI, $theData) {
+function outputToGeoJSON($theData) {
 
     $doc = new DOMDocument();
-    $doc->load($resultFileURI);
+    $doc->loadXML($theData);
 
     /*
      * Get the SearchResults object
@@ -360,17 +360,19 @@ if (isset($_REQUEST["headers"]) && $_REQUEST["headers"] == "false") {
 /**
  * Store request and response
  */
-$tmp = createPassword(10);
-saveFile($request, MSP_UPLOAD_DIR . "csw_" . $tmp . "_request.xml");
-$resultFileURI = saveFile($theData, MSP_UPLOAD_DIR . "csw_" . $tmp . "_response.xml");
+if (MSP_DEBUG) {
+    $tmp = createPassword(10);
+    saveFile($request, MSP_UPLOAD_DIR . "csw_" . $tmp . "_request.xml");
+    $resultFileURI = saveFile($theData, MSP_UPLOAD_DIR . "csw_" . $tmp . "_response.xml");
+}
 
 /**
  *  Check if a SOAP Fault occured
  */
-$error = OWSExceptionToJSON($resultFileURI);
+$error = OWSExceptionToJSON($theData);
 if ($error) {
     echo $error;
 } else {
-    echo outputToGeoJSON($resultFileURI, $theData);
+    echo outputToGeoJSON($theData);
 }
 ?>

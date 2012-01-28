@@ -68,10 +68,10 @@ include_once '../../functions/geometry.php';
  *
  */
 
-function outputToGeoJSON($resultFileURI, $theData) {
+function outputToGeoJSON($theData) {
 
     $doc = new DOMDocument();
-    $doc->load($resultFileURI);
+    $doc->loadXML($theData);
 
     /*
      * Get the SearchResults object
@@ -174,15 +174,15 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 header("Cache-Control: no-cache, must-revalidate");
 header("Content-type: application/json; charset=utf-8");
 
-$resultFileURI = '/Users/jrom/Sites/jeob/bidon.inspire.xml';
+$theData = getRemoteData('/Users/jrom/Sites/jeob/bidon.inspire.xml', null, false);
 
 /**
  *  Check if a SOAP Fault occured
  */
-$error = OWSExceptionToJSON($resultFileURI);
+$error = OWSExceptionToJSON($theData);
 if ($error) {
     echo $error;
 } else {
-    echo outputToGeoJSON($resultFileURI, null);
+    echo outputToGeoJSON($theData);
 }
 ?>

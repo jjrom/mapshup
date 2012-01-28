@@ -224,9 +224,9 @@ function ISO8601($date) {
 /**
  * Return an OWS Exception to JSON format
  */
-function OWSExceptionToJSON($xmlFile) {
+function OWSExceptionToJSON($xmlData) {
     $doc = new DOMDocument;
-    $doc->load($xmlFile);
+    $doc->loadXML($xmlData);
     $error = null;
     foreach ($doc->getElementsByTagNameNS('http://www.opengis.net/ows', 'ExceptionReport') as $element) {
         $error = rawurlencode(trim($element->nodeValue));

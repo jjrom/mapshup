@@ -65,9 +65,9 @@ include_once '../../../functions/geometry.php';
  * Get NumberOfResults from a WFS GetFeatures "hits" request 
  */
 
-function getNbOfResults($resultFileURI) {
+function getNbOfResults($theData) {
     $doc = new DOMDocument();
-    $doc->load($resultFileURI);
+    $doc->loadXML($theData);
     $collection = $doc->getElementsByTagname('FeatureCollection');
     if ($collection->item(0) !== null) {
         return $collection->item(0)->getAttribute('numberOfFeatures');
@@ -79,9 +79,9 @@ function getNbOfResults($resultFileURI) {
  * Load a PHR WFS result document
  */
 
-function loadQuicklook($resultFileURI, $operateur, $result = "") {
+function loadQuicklook($theData, $operateur, $result = "") {
     $doc = new DOMDocument();
-    $doc->load($resultFileURI);
+    $doc->loadXML($theData);
     $datastrips = $doc->getElementsByTagname('DataStrip');
     foreach ($datastrips as $ds) {
         $dsid = $ds->getElementsByTagName('identifier')->item(0)->nodeValue;
@@ -116,11 +116,11 @@ function loadQuicklook($resultFileURI, $operateur, $result = "") {
  * Return a GeoJSON version of the WFS GetFeature result return
  */
 
-function outputToGeoJSON($resultFileURI, $nbOfResults) {
+function outputToGeoJSON($theData, $nbOfResults) {
 
     // Load the GetFeature result document
     $doc = new DOMDocument();
-    $doc->load($resultFileURI);
+    $doc->loadXML($theData);
     
     /*
      * Initialiaze GeoJSON
@@ -324,28 +324,32 @@ $request .= '</ogc:Filter></wfs:Query></wfs:GetFeature>';
 $theData = postRemoteData($url, $requestHits . $request, Array("REMOTE_USER: " . $operateur, "Content-Type: text/xml"));
 
 // Store request and response
-$tmp = createPassword(10);
-saveFile($request, MSP_UPLOAD_DIR . "csw_" . $tmp . "_request.xml");
-$hitsFileURI = saveFile($theData, MSP_UPLOAD_DIR . "csw_" . $tmp . "_response.xml");
+if (MSP_DEBUG) {
+    $tmp = createPassword(10);
+    saveFile($request, MSP_UPLOAD_DIR . "csw_" . $tmp . "_request.xml");
+    saveFile($theData, MSP_UPLOAD_DIR . "csw_" . $tmp . "_response.xml");
+}
 
 // Get the number of results
-$nbOfResults = getNbOfResults($hitsFileURI);
+$nbOfResults = getNbOfResults($theData);
 
 // Send RESULTS request
 $theData = postRemoteData($url, $requestResults . $request, Array("REMOTE_USER: " . $operateur, "Content-Type: text/xml"));
 
 // Store request and response
-$tmp = createPassword(10);
-saveFile($request, MSP_UPLOAD_DIR . "csw_" . $tmp . "_request.xml");
-$resultFileURI = saveFile($theData, MSP_UPLOAD_DIR . "csw_" . $tmp . "_response.xml");
+if (MSP_DEBUG) {
+    $tmp = createPassword(10);
+    saveFile($request, MSP_UPLOAD_DIR . "csw_" . $tmp . "_request.xml");
+    saveFile($theData, MSP_UPLOAD_DIR . "csw_" . $tmp . "_response.xml");
+}
 
 //  Check if a SOAP Fault occured
-$error = OWSExceptionToJSON($resultFileURI);
+$error = OWSExceptionToJSON($theData);
 if ($error) {
     echo $error;
 } else {
 
     // Stream result
-    echo outputToGeoJSON($resultFileURI, $nbOfResults);
+    echo outputToGeoJSON($theData, $nbOfResults);
 }
 ?>

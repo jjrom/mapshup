@@ -43,10 +43,10 @@ include_once '../../functions/geometry.php';
 
 /* ===================== FUNCTIONS ================================= */
 
-function outputToGeoJSON($resultFileURI, $theData, $slotprefix, $objprefix) {
+function outputToGeoJSON($theData, $slotprefix, $objprefix) {
 
     $doc = new DOMDocument();
-    $doc->load($resultFileURI);
+    $doc->loadXML($theData);
 
     /*
      * Number of objects returned
@@ -423,18 +423,20 @@ $theData = postRemoteData($url, $request, true);
 /**
  * Store request and response
  */
-$tmp = createPassword(10);
-saveFile($request, MSP_UPLOAD_DIR . "csw_" . $tmp . "_request.xml");
-$resultFileURI = saveFile($theData, MSP_UPLOAD_DIR . "csw_" . $tmp . "_response.xml");
+if (MSP_DEBUG) {
+    $tmp = createPassword(10);
+    saveFile($request, MSP_UPLOAD_DIR . "csw_" . $tmp . "_request.xml");
+    $resultFileURI = saveFile($theData, MSP_UPLOAD_DIR . "csw_" . $tmp . "_response.xml");
+}
 
 /**
  *  Check if a SOAP Fault occured
  */
-$error = OWSExceptionToJSON($resultFileURI);
+$error = OWSExceptionToJSON($theData);
 if ($error) {
     echo $error;
 } else {
-    echo outputToGeoJSON($resultFileURI, $theData, $slotprefix, $objprefix);
+    echo outputToGeoJSON($theData, $slotprefix, $objprefix);
 }
 ?>
 
