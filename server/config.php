@@ -44,6 +44,12 @@
 define("MSP_DOMAIN","132.149");
 
 /**
+ * Set debug mode - If true, all requests/responses are logged
+ * (Default = true)
+ */
+define("MSP_DEBUG",true);
+
+/**
  * Valid admin email adress (for registering)
  */
 define("MSP_ADMIN_EMAIL","jrom@localhost");
@@ -51,7 +57,7 @@ define("MSP_ADMIN_EMAIL","jrom@localhost");
 /**
  * Flickr API key (for API search through mapshup 
  */
-define("MSP_FLICKR_KEY",""); // api key for jeobrowserTest user
+define("MSP_FLICKR_KEY","6c22e5099af9c5842bf2b7c744fee9d9"); // api key for jeobrowserTest user
 
 /**
  * gdal_translate path
