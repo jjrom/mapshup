@@ -380,8 +380,8 @@
      * Google Earth plugin
      *
      * options :
-     *      navigation : true to display navigation control // default true
-     *      atmosphere : true to display atmosphere // default true
+     *      navigation : true to display navigation control // default false
+     *      atmosphere : true to display atmosphere // default false
      *      borders : true to display borders layer // default false
      *      terrain : true to display terrain layer // default true;
      *      roads : true to display roads layer // default false

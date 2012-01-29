@@ -138,12 +138,12 @@
                 /*
                  * Show navigation control
                  */
-                navigationControl:msp.Util.getPropertyValue(self.options, "navigationControl", true),
+                navigationControl:msp.Util.getPropertyValue(self.options, "navigationControl", false),
 
                 /*
                  * Show atmosphere
                  */
-                atmosphere:msp.Util.getPropertyValue(self.options, "atmosphere", true),
+                atmosphere:msp.Util.getPropertyValue(self.options, "atmosphere", false),
 
                 /*
                  * Teleportation
@@ -181,7 +181,7 @@
                 synchronize:msp.Util.getPropertyValue(self.options, "synchronize", true),
 
                 /*
-                 * Synchronize layers
+                 * Synchronize WMS layers
                  */
                 synchronizeWMS:msp.Util.getPropertyValue(self.options, "synchronizeWMS", false),
                 
