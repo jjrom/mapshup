@@ -93,7 +93,7 @@ function getLayerInfosFromXML($doc) {
         $urls = $doc->getElementsByTagname('Url');
         foreach ($urls as $url) {
             $rel = $url->getAttribute('rel');
-            if ($rel === "mspdesc" || $rel === "jeodesc") {
+            if ($rel === "mspdesc" || $rel === "jeobdesc") {
                 $isCatalog = true;
                 break;
             }
