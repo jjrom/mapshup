@@ -268,7 +268,7 @@
              * Asynchronously retrieve service information from url
              */
             $.ajax({
-                url:msp.Util.getAbsoluteUrl(url),
+                url:msp.Util.proxify(url),
                 async:true,
                 success:function(data) {
                     
