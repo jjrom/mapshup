@@ -5,8 +5,7 @@
         <script type="text/javascript">
             var uagent = navigator.userAgent.toLowerCase();
             if (/msie (\d+\.\d+);/.test(uagent)) { 
-                var ieversion = new Number(RegExp.$1);
-                if (ieversion < 9) {
+                if (9 > new Number(RegExp.$1)) {
                     window.location = 'error.html';
                 }
             }
