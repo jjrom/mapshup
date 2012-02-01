@@ -246,7 +246,7 @@
     i["Colombia"]="Colombie";
     i["Comoros"]="Comores";
     i["Congo"]="Congo";
-    i["Cook Islands"]="Îles Cook";
+    i["Cook Islands"]="Iles Cook";
     i["Costa Rica"]="Costa Rica";
     i["Croatia"]="Croatie";
     i["Cuba"]="Cuba";
@@ -263,7 +263,7 @@
     i["Eritrea"]="Érythrée";
     i["Estonia"]="Estonie";
     i["Ethiopia"]="Ethiopie";
-    i["Falkland Islands (Islas Malvinas)"]="Îles Falkland (Malvinas)";
+    i["Falkland Islands (Islas Malvinas)"]="Iles Falkland (Malvinas)";
     i["Faroe Islands"]="Iles Féroé";
     i["Federated States of Micronesia"]="États fédérés de Micronésie";
     i["Fiji"]="Fidji";
@@ -291,7 +291,7 @@
     i["Guinea-Bissau"]="Guinée-Bissau";
     i["Guyana"]="Guyana";
     i["Haiti"]="Haïti";
-    i["Heard Island & McDonald Islands"]="Île Heard et îles McDonald";
+    i["Heard Island & McDonald Islands"]="Ile Heard et îles McDonald";
     i["Honduras"]="Honduras";
     i["Howland Island"]="Howland Island";
     i["Hungary"]="Hongrie";
@@ -335,7 +335,7 @@
     i["Mali"]="Mali";
     i["Malta"]="Malte";
     i["Man, Isle of"]="Man, Isle of";
-    i["Marshall Islands"]="Îles Marshall";
+    i["Marshall Islands"]="Iles Marshall";
     i["Martinique"]="Martinique";
     i["Mauritania"]="Mauritanie";
     i["Mauritius"]="Ile Maurice";
@@ -363,10 +363,10 @@
     i["Niue"]="Niue";
     i["Norfolk Island"]="Norfolk Island";
     i["North Korea"]="Corée du Nord";
-    i["Northern Mariana Islands"]="Îles Mariannes du Nord";
+    i["Northern Mariana Islands"]="Iles Mariannes du Nord";
     i["Norway"]="Norvège";
     i["Oman"]="Oman";
-    i["Pacific Islands (Palau)"]="Îles du Pacifique (Palau)";
+    i["Pacific Islands (Palau)"]="Iles du Pacifique (Palau)";
     i["Pakistan"]="Pakistan";
     i["Panama"]="Panama";
     i["Papua New Guinea"]="Papouasie-Nouvelle-Guinée";
@@ -397,9 +397,9 @@
     i["Somalia"]="Somalie";
     i["South Africa"]="Afrique du Sud";
     i["South Korea"]="Corée du Sud";
-    i["South Sandwich Island"]="île Sandwich du Sud";
+    i["South Sandwich Island"]="Ile Sandwich du Sud";
     i["Spain"]="Espagne";
-    i["Spratly Islands"]="Îles Spratly";
+    i["Spratly Islands"]="Iles Spratly";
     i["Sri Lanka"]="Sri Lanka";
     i["St. Helena"]="Sainte-Hélène";
     i["St. Kitts and Nevis"]="Saint-Kitts-et-Nevis";
