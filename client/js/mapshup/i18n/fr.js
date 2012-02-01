@@ -274,7 +274,7 @@
     i["French Southern & Antarctic Lands"]="Française Terres australes et antarctiques";
     i["Gabon"]="Gabon";
     i["Gambia, The"]="Gambie";
-    i["Gaza Strip"]="bande de Gaza";
+    i["Gaza Strip"]="Bande de Gaza";
     i["Georgia"]="Géorgie";
     i["Germany"]="Allemagne";
     i["Ghana"]="Ghana";
