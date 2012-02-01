@@ -82,7 +82,7 @@
              * Delete cookie "name"
              */
             remove:function(name) {
-                this.setCookie(name,"",-1);
+                this.set(name,"",-1);
             },
             
             /*
