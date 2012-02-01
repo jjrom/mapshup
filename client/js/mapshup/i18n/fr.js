@@ -260,12 +260,12 @@
     i["Egypt"]="Egypte";
     i["El Salvador"]="El Salvador";
     i["Equatorial Guinea"]="Guinée équatoriale";
-    i["Eritrea"]="Érythrée";
+    i["Eritrea"]="Erythrée";
     i["Estonia"]="Estonie";
     i["Ethiopia"]="Ethiopie";
     i["Falkland Islands (Islas Malvinas)"]="Iles Falkland (Malvinas)";
     i["Faroe Islands"]="Iles Féroé";
-    i["Federated States of Micronesia"]="États fédérés de Micronésie";
+    i["Federated States of Micronesia"]="Etats fédérés de Micronésie";
     i["Fiji"]="Fidji";
     i["Finland"]="Finlande";
     i["France"]="France";
@@ -428,9 +428,9 @@
     i["Tuvalu"]="Tuvalu";
     i["Uganda"]="Ouganda";
     i["Ukraine"]="Ukraine";
-    i["United Arab Emirates"]="Émirats arabes unis";
+    i["United Arab Emirates"]="Emirats arabes unis";
     i["United Kingdom"]="Royaume-Uni";
-    i["United States"]="États-Unis";
+    i["United States"]="Etats-Unis";
     i["Uruguay"]="Uruguay";
     i["Uzbekistan"]="Ouzbékistan";
     i["Vanuatu"]="Vanuatu";
