@@ -268,7 +268,7 @@
              * Asynchronously retrieve service information from url
              */
             $.ajax({
-                url:msp.Util.proxify(url),
+                url:msp.Util.proxify(msp.Util.getAbsoluteUrl(url)),
                 async:true,
                 success:function(data) {
                     
@@ -303,10 +303,10 @@
                     else if (d.formats.KML) {
                         type = "KML";
                     }
-                    else if (this.description.formats.Atom) {
+                    else if (d.formats.Atom) {
                         type = "Atom"
                     }
-                    else if (this.description.formats.GeoRSS) {
+                    else if (d.formats.GeoRSS) {
                         type = "GeoRSS";
                     }
                     else {
