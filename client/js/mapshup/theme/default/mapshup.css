@@ -351,7 +351,7 @@ input {
 
 /* Position for North North toolbar */
 .tbnnh {
-    top:35px;
+    top:-3px;
 }
 
 /* Position for South South toolbar */

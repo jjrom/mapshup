@@ -313,12 +313,11 @@
      *      (The Following should not be overrided)
      *      loginUrl: "/plugins/usermanagement/login.php";
      */
-    /*
     c.add("plugins",
     {
         name:"UserManagement"
     });
-   */
+   
     /**
      *  This plugin requires UserManagement plugin
      *  Options :
@@ -643,6 +642,8 @@
      * options:
      * 
      *      description:// Set the tooltip text displayed on mouse over the input search text box
+     *      inHeader: // if true OpenSearch input text is embeded within the map header
+     *                   (default is true)
      *
      */
     c.add("plugins",

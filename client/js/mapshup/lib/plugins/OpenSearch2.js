@@ -82,17 +82,18 @@
              */
             $.extend(self.options,
             {
+                inHeader:msp.Util.getPropertyValue(self.options, "inHeader", true),
                 position:self.options.position || 'nn',
                 orientation:self.options.orientation || 'h',
                 services:self.options.services || [],
                 description:self.options.description || "Search for one or more comma-delimited <b>keywords</b> (e.g. Toulouse,France) or enter <b>coordinates</b> in decimal degrees (e.g. 44.1 -128.8)"
             }
             );
-
+                
             /*
              * Create OpenSearch feed toolbar
              */
-            self.tb = new msp.Toolbar(self.options.position, self.options.orientation);
+            self.tb = new msp.Toolbar(self.options.position, self.options.orientation, self.options.inHeader ? msp.$header : null);
             
             /*
              * Add input text box button
