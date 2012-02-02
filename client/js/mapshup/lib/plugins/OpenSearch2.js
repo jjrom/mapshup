@@ -407,6 +407,7 @@
                 icon:service.icon,
                 activable:false,
                 nohover:true,
+                first:true,
                 /*
                  * On click, ask user to choose for another search service
                  */
