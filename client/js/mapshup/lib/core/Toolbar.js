@@ -174,7 +174,7 @@
             /*
              * Set content to item.text if defined or item.url in other case
              */
-            var action,i,id,l,$d,content,
+            var c,action,i,id,l,$d,content,
                 self = this;
             
             /*
@@ -189,8 +189,12 @@
                 
             /*
              * Add a <li> element to toolbar
+             * If button 'first' property is set to true,
+             * the button is added at the beginning of the toolbar
+             * otherwise it is added at the end of the toolbar
              */
-            self.$d.append('<div class="'+(btn.nohover ? "" : "hover ")+'item" jtitle="'+(msp.Util._(btn.tt) || "")+'" id="'+btn.id+'">'+content+'</div>');
+            c = '<div class="'+(btn.nohover ? "" : "hover ")+'item" jtitle="'+(msp.Util._(btn.tt) || "")+'" id="'+btn.id+'">'+content+'</div>';
+            btn.first ? self.$d.prepend(c) : self.$d.append(c);
             
             /*
              * Get newly created div reference

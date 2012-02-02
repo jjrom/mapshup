@@ -60,6 +60,9 @@
      *      close: // boolean - if true, add a close button to the panel
      *      container: // Panel container (i.e. returned object of a msp.Panel().add() function
      *      e: // Extras properties - Properties under this property can be anything
+     *      first:// boolean - if true button is added as the first element of the toolbar
+     *                       - if false button is added at the end of the toolbar
+     *                       (default false)
      *      html: // html code to display within the button instead of title - If both html and title
      *               are specified, html has preseance (i.e. title is discarded)
      *      icon: // Url to the icon image (if no text)
@@ -120,6 +123,11 @@
          * Extra properties container
          */
         this.e = options.e || {};
+        
+        /*
+         * Extra properties container
+         */
+        this.first = msp.Util.getPropertyValue(options, "first", false);
         
         /*
          * Html content for the button - replace title
