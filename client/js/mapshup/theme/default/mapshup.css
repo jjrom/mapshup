@@ -171,6 +171,7 @@ input {
 #mheader {
     position:absolute;
     background-color:rgba(0,0,0,0.7);
+    color:#999;
     top:0px;
     left:0px;
     height:35px;
@@ -189,14 +190,12 @@ input {
     width:auto;
     text-align:right;
 }
-
 #mheader h1 {
     text-align:right;
     padding-right:5px;
     font-weight:lighter;
     text-transform: uppercase;
     font-size:1.2em;
-    color:#000;
     letter-spacing: 0.2em;
 }
 
@@ -418,18 +417,10 @@ input {
     background-color:transparent;
     height:40px;
 }
-.tbnnh img {
-    /*height:24px;*/
-}
 .tbnnh .item {
     font-size:1em;
     line-height:37px;
     min-width:40px;
-}
-.tbnnh input {
-    background-color:#000;
-    color:#fff;
-    border:solid 1px #666;
 }
 
 /* Toolbar active class */
@@ -592,10 +583,10 @@ input {
  * OpenSearch input text box
 */
 .ossearch input[type="text"] {
-    background: url(img/ossearch.png) no-repeat 10px 6px #444;
+    background: url(img/ossearch.png) no-repeat 10px 6px #000;
     border: 0 none;
     font:12px Arial,Helvetica,Sans-serif;
-    color: #d7d7d7;
+    color: #999;
     width:250px;
     padding: 6px 15px 6px 35px;
     -webkit-border-radius: 20px;
@@ -762,6 +753,9 @@ span.osclear input {
     box-shadow: inset 0 1px 0 rgba(0,0,0,0.2),0 1px 0 rgba(255,255,255,0.1);
 }
 
+.button.inline {
+    display:inline;
+}
 .button.colored {
     background: #E57300;
     background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#C76400),color-stop(100%,#BD5300));
