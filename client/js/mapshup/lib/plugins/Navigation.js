@@ -453,7 +453,8 @@
                     tt:"Go back to the start view",
                     activable:false,
                     callback:function() {
-                        msp.Map.map.restrictedExtent ? msp.Map.map.zoomToExtent(msp.Map.map.restrictedExtent) : msp.Map.map.setCenter(new OpenLayers.LonLat(0,20), 3);
+                        var l = msp.Config["general"].initialLocation;
+                        msp.Map.map.restrictedExtent ? msp.Map.map.zoomToExtent(msp.Map.map.restrictedExtent) : msp.Map.setCenter(msp.Map.Util.d2p(new OpenLayers.LonLat(l.lon,l.lat)), l.zoom, true);
                     }
                 });
             }
