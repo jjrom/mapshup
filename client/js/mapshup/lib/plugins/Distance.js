@@ -93,7 +93,6 @@
                 OpenLayers.Handler.Path, {
                     id:"__CONTROL_MEASURE__",
                     persist: true,
-                    geodesic:true,
                     handlerOptions: {
                         layerOptions: {
                             styleMap:new OpenLayers.StyleMap({
