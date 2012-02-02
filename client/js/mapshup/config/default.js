@@ -111,8 +111,8 @@
      */
     c["general"].initialLocation = {
         lon:0,
-        lat:43,
-        zoom:3
+        lat:40,
+        zoom:2
     };
 
     /**
@@ -318,8 +318,7 @@
     {
         name:"UserManagement"
     });
-    */
-   
+   */
     /**
      *  This plugin requires UserManagement plugin
      *  Options :
