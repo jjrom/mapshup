@@ -151,6 +151,13 @@ if (abcCheck($_REQUEST) && $url != '') {
             $doc->loadXML($arr["data"]);
             $infos = getLayerInfosFromXML($doc);
         }
+        else {
+            $infos = array(
+                'type' => MSP_UNKNOWN,
+                'title' => null,
+                'description' => null
+            );
+        }
     }
 
     
