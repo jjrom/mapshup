@@ -640,7 +640,6 @@
                 
                 var el,
                 icon,
-                delim,
                 count = 0,
                 $p = popup.$b.append((description ? '<p class="center">'+description+'</p>' : '') + '<p class="center"></p>').children().last();
                 
@@ -650,9 +649,8 @@
                 for (i in value) {
                     id1 = this.getId();
                     el = value[i];
-                    delim = count > 0 ? " | " : "";
                     icon = el.icon ? '<img class="middle" src="'+el.icon+'"/>&nbsp;' : '';
-                    $p.append(delim+icon+'<a href="#" class="hover" id="'+id1+'">'+el.title+'</a>');
+                    $p.append('<a href="#" class="button marged" id="'+id1+'">'+icon+el.title+'</a>');
                     
                     /*
                      * Return item value to callback on click
