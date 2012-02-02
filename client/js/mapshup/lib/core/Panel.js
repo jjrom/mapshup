@@ -154,6 +154,10 @@
                 msp.Panel[uid] = self;
             }
             
+            /*
+             * Add map header height to top value
+             */
+            self.top += msp.$header.height();
             
             /*
              * South and North panel heights is computed from window.height

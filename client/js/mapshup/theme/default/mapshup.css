@@ -139,41 +139,6 @@ input {
 }
 
 /*
- * Map header
- *
-*/
-#wheader {
-    position:absolute;
-    background-color:#000;
-    top:0px;
-    left:0px;
-    height:0px;
-    line-height:35px;
-    width:100%;
-    overflow:hidden;
-}
-
-/* Login class */
-#wheader .login {
-    position:absolute;
-    right:0px;
-    top:0px;
-    height:100%;
-    width:auto;
-    text-align:right;
-}
-
-#wheader h1 {
-    text-align:right;
-    padding-right:5px;
-    font-weight:lighter;
-    text-transform: uppercase;
-    font-size:1.2em;
-    color:#000;
-    letter-spacing: 0.2em;
-}
-
-/*
  * Map container
 */
 .map {
@@ -197,6 +162,42 @@ input {
     padding:0;
     margin:0;
     overflow:hidden;
+}
+
+/*
+ * Map header
+ *
+*/
+#mheader {
+    position:absolute;
+    background-color:rgba(0,0,0,0.7);
+    top:0px;
+    left:0px;
+    height:35px;
+    line-height:35px;
+    width:100%;
+    overflow:hidden;
+    z-index:34500;
+}
+
+/* Login class */
+#mheader .login {
+    position:absolute;
+    right:0px;
+    top:0px;
+    height:100%;
+    width:auto;
+    text-align:right;
+}
+
+#mheader h1 {
+    text-align:right;
+    padding-right:5px;
+    font-weight:lighter;
+    text-transform: uppercase;
+    font-size:1.2em;
+    color:#000;
+    letter-spacing: 0.2em;
 }
 
 /**
@@ -321,7 +322,7 @@ input {
 
 /* Position for North toobar */
 .tbneh, .tbnev, .tbnwh, .tbnwv {
-    top:20px;
+    top:55px;
 }
 
 /* Position for South toolbar */
@@ -351,7 +352,7 @@ input {
 
 /* Position for North North toolbar */
 .tbnnh {
-    top:0px;
+    top:35px;
 }
 
 /* Position for South South toolbar */
@@ -1027,7 +1028,7 @@ div.olControlMousePosition {
 
 /* ScaleLine position */
 .olControlScaleLine {
-    top:65px;
+    top:100px;
     left:20px;
     height:20px;
 }

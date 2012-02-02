@@ -130,6 +130,7 @@
  *      welcome                     :   12000   (plugins/Welcome.js)
  *      .pn                         :   20000   (core/Panel.js)
  *      ddzone                      :   34000   (plugins/AddLayer.js)
+ *      mheader                     :   34500
  *      mask                        :   35000
  *      tooltip                     :   36000
  *      activity                    :   37000
@@ -291,6 +292,11 @@
              * Initialize #map reference
              */
             self.$map = $('#map');
+            
+            /**
+             * Initialize #mheader reference
+             */
+            self.$header = $('#mheader');
             
             /**
              * Initialize map container reference
