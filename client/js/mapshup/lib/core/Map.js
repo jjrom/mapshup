@@ -1428,9 +1428,9 @@
             });
             
             /*
-             * Add mapshup logo on top of the map
+             * Add mapshup logo on the map header
              */
-            msp.Util.$$('#msplogo', msp.$map).append('<a href="http://www.mapshup.info" target="_blank"><img src="img/mapshuplogo.png" class="middle" title="Powered by mapshup"/></a>');
+            msp.Util.$$('#msplogo', msp.$header).append('<a href="http://www.mapshup.info" target="_blank"><img src="img/mapshuplogo.png" class="middle" title="Powered by mapshup"/></a>');
 
         },
 

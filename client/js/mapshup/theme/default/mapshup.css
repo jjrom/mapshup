@@ -118,8 +118,8 @@ input {
 #msplogo {
     position:absolute;
     text-shadow: black 1px 1px 1px;
-    bottom:10px;
-    right:250px;
+    top:0px;
+    left:0px;
     z-index:10000;
 }
 #msplogo a {
