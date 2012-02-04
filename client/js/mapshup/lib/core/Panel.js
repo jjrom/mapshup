@@ -256,12 +256,12 @@
                 scope.$d.height(msp.$map.height() - (scope.over ? scope.voffset + scope.top : 0));
 
                 /*
-                 * Object with an 'expdbl' class have their height constrain
+                 * Object with an 'expdbl' class have their height constrained
                  * by the panel height
                  */
-                $('.expdbl').each(function(idx){
+                $('.expdbl', scope.$d).each(function(idx){
                     var $c = $(this);
-                    $c.css('height', scope.$d.height() - $c.offset().top + 10)
+                    $c.css('height', scope.$d.height() - $c.position().top - 15)
                 });
 
             }
