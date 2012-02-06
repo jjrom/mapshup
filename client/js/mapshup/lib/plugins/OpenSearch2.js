@@ -465,37 +465,10 @@
             layer = msp.Map.Util.getLayerByMspID((new msp.Map.LayerDescription(layerDescription, msp.Map)).getMspID());
             
             /*
-             * Layer already exist...ask for deletion before launching the search
+             * Layer already exist...remove it
              */
             if (layer) {
-                
-                /**
-                 * Ask for deletion if :
-                 *  - it is requested in the query
-                 *  - msp.Config.general.confirmDeletion is set to true
-                 */
-                if (msp.Config["general"].confirmDeletion) {
-
-                    msp.Util.askFor(msp.Util._("Delete layer"), msp.Util._("Do you really want to remove layer")+" "+layer.name, "list", [{
-                        title:msp.Util._("Yes"), 
-                        value:"y"
-                    },
-                    {
-                        title:msp.Util._("No"), 
-                        value:"n"
-                    }
-                    ], function(v){
-                        if (v === "y") {
-                            msp.Map.removeLayer(layer);
-                            self.search(service);
-                        }
-                    });
-                    return null;
-                }
-                else {
-                    msp.Map.removeLayer(layer);
-                }
-                
+                msp.Map.removeLayer(layer);
             }
             
             /*
