@@ -133,6 +133,7 @@ Quit
 Register
 Relief
 Remember me
+Reset filters
 results
 Satellite
 Save

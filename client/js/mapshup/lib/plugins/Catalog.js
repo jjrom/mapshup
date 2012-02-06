@@ -534,7 +534,7 @@
                 /*
                  * Set west panel structure 
                  */
-                sc.btn.$w.html('<div class="title"><p>'+msp.Util._("Search parameters")+'</p><p><input type="checkbox" name="usegeo" '+(sc.useGeo ? "checked" : "")+'/>'+msp.Util._("Limit search to map view extent")+' | <a href="#" id="'+id+'">'+msp.Util._("Clear filters")+'</a></p></div><div class="description filters"></div>');
+                sc.btn.$w.html('<div class="title"><p>'+msp.Util._("Search parameters")+'</p><p><input type="checkbox" name="usegeo" '+(sc.useGeo ? "checked" : "")+'/>'+msp.Util._("Limit search to map view extent")+' | <a href="#" id="'+id+'">'+msp.Util._("Reset filters")+'</a></p></div><div class="description filters"></div>');
                 
                 /*
                  * Clear all filters

@@ -134,6 +134,7 @@
     i["Register"]="S'enregistrer";
     i["Relief"]="Relief";
     i["Remember me"]="Se souvenir de moi";
+    i["Reset filters"]="Effacer les filtres de recherche";
     i["results"]="résultats";
     i["Satellite"]="Satellite";
     i["Save"]="Sauvegarder";
