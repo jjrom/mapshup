@@ -87,24 +87,18 @@
             /*
              * Add an unselect button
              */
-            self.ctn.$d.append('<div id="'+id+'" class="act actnei icnclose" jtitle="'+msp.Util._("Close")+'"></div>');
-            
-            /*
-             * Add tooltip
-             */
-            msp.tooltip.add($('#'+id).click(function() {
-
-                /*
-                 * Hide tooltip
-                 */
-                msp.tooltip.remove();
-                
+            self.ctn.$d.append('<div id="'+id+'" class="close"></div>');
+            $('#'+id).click(function() {
+  
                 /*
                  * Unselect feature
                  */
                 self.selected ? msp.Map.Util.getControlById("__CONTROL_SELECT__").unselect(self.selected) : self.unselect();
                 
-            }), 'w');
+            }).css({
+                'top':'-8px',
+                'right':'-8px'
+            });
 
             /*
              * Set references
