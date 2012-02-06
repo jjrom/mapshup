@@ -178,6 +178,8 @@
                                 type:"Flickr",
                                 title:tag,
                                 q:tag
+                            },{
+                                noDeletionCheck:true
                             });
                             return false;
                         });
