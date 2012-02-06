@@ -506,19 +506,8 @@ input {
     width:100%;
 }
 
-/*
- * Pure CSS close button
- */
 .pn .close {
-    position:absolute;
-    cursor:pointer;
-    width:30px;
-    height:30px;
-    font-size:2em;
-    color:#999;
-}
-.pn .close:before {
-    content:"\00D7";
+    color:#eee;
 }
 
 /*
@@ -689,21 +678,6 @@ span.osclear input {
     width:100%;
 }
 
-/*
- * Pure CSS close button
- */
-.po .close {
-    position:absolute;
-    cursor:pointer;
-    width:30px;
-    height:30px;
-    font-size:2em;
-    color:#666;
-}
-.po .close:before {
-    content:"\00D7";
-}
-
 /* End : "popup" definition */
 
 /*
@@ -815,6 +789,21 @@ span.osclear input {
  */
 .bg {
     background-color: #fff;
+}
+
+/*
+ * Pure CSS close button
+ */
+.close {
+    position:absolute;
+    cursor:pointer;
+    width:30px;
+    height:30px;
+    font-size:2em;
+    color:#666;
+}
+.close:before {
+    content:"\00D7";
 }
 
 /* The "no overflow" class*/
@@ -966,7 +955,7 @@ span.osclear input {
     text-align:center;
     background-color:#fff;
     margin-bottom:5px;
-    padding:10px;
+    padding:15px;
     z-index:38001;
 }
 
