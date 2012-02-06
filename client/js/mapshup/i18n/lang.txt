@@ -91,6 +91,7 @@ Layer added
 Layer detection in progress...
 layers
 Layers manager
+Limit search to map view extent
 Line
 Load
 Load a context

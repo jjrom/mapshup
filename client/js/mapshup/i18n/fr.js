@@ -92,6 +92,7 @@
     i["Layer detection in progress..."]="Détection de la couche en cours...";
     i["layers"]="couches";
     i["Layers manager"]="Couches";
+    i["Limit search to map view extent"]="Limiter la recherche à l'emprise visualisée";
     i["Line"]="Ligne";
     i["Load"]="Charger";
     i["Load a context"]="Charger un contexte";
