@@ -156,6 +156,8 @@
     i["Share"]="Partager";
     i["Show"]="Afficher";
     i["Show quicklook"]="Afficher l'image";
+    i["Sign in"]="Connectez-vous";
+    i["Sign out"]="Déconnecter";
     i["Size"]="Taille";
     i["Somewhere"]="Quelque part";
     i["Status"]="Status";
@@ -189,7 +191,7 @@
     i["Yes"]="Oui";
     i["You are in drawing mode."]="Vous êtes en mode dessin.";
     i["You are in modification mode."]="Vous êtes en mode modification.";
-    i["You're not connected"]="Vous n'êtes pas connecté";
+    i["You are not logged in"]="Vous n'êtes pas connecté";
     i["Youtube"]="Youtube";
     i["Zoom"]="Zoomer";
     i["Zoom here"]="Zoomer ici";

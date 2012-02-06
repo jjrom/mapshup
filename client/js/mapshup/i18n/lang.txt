@@ -155,6 +155,8 @@ Set
 Share
 Show
 Show quicklook
+Sign in
+Sign out
 Size
 Somewhere
 Status
@@ -188,7 +190,7 @@ Yahoo! Streets
 Yes
 You are in drawing mode.
 You are in modification mode.
-You're not connected
+You are not logged in
 Youtube
 Zoom
 Zoom here
