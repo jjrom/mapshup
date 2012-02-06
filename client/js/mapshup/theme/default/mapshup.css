@@ -675,6 +675,18 @@ span.osclear input {
     line-height:40px;
     width:100%;
 }
+.po .close {
+    position:absolute;
+    cursor:pointer;
+    width:30px;
+    height:30px;
+    font-size:2em;
+    color:#666;
+}
+.po .close:before {
+    content:"\00D7";
+}
+
 /* End : "popup" definition */
 
 /*
