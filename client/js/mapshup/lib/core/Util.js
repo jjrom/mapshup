@@ -287,7 +287,11 @@
                 modal:true,
                 resize:false,
                 expand:true,
-                noHeader:true
+                noHeader:true,
+                cssClose:{
+                    'top':'-8px',
+                    'right':'-8px'
+                }
             }),
             image = new Image();
 
@@ -399,7 +403,11 @@
                 modal:true,
                 resize:false,
                 expand:true,
-                noHeader:true
+                noHeader:true,
+                cssClose:{
+                    'top':'-8px',
+                    'right':'-8px'
+                }
             });
 
             /*

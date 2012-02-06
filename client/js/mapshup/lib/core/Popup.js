@@ -73,11 +73,18 @@
          */
         this.noHeader = options.hasOwnProperty("noHeader") ? options.noHeader : false;
         
-        
         /*
          * True to automatically resize popup on window size change
          */
         this.resize = options.hasOwnProperty("resize") ? options.resize : true;
+        
+        /*
+         * Close button css modifier
+         */
+        this.cssClose = options.cssClose || {
+            'top':'0px',
+            'right':'0px'
+        };
         
         /*
          * Parent scope for callback
@@ -90,6 +97,7 @@
         this.init = function() {
             
             var h,
+                id = msp.Util.getId(),
                 self = this;
             
             /*
@@ -124,7 +132,7 @@
              *          <div class="header"> // optional
              *          <div class="body">
              *      </div>
-             *      <div><a class="act actne icnclose" jtitle="'+msp.Util._("Close")+'"></a></div>
+             *      <div class="close"></div>
              *  </div>
              */
             h = self.noHeader ? ''  : '<div class="header"></div>';
@@ -144,10 +152,15 @@
             /*
              * Add a close button
              */
-            msp.Util.addCloseButton(self.$d, function(){
+            self.$d.append('<div id="'+id+'" class="close"></div>');
+            
+            /*
+             * Close window
+             */
+            $('#'+id).click(function() {
                 self.remove();
-            });
-
+            }).css(self.cssClose);
+            
             /*
              * Compute popup position on window resize
              */
