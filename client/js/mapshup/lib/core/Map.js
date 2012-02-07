@@ -444,7 +444,7 @@
                  * If no "loadstart" has been defined
                  * => add a default "loadstart" event, i.e. show the loading indicator for newLayer
                  */
-                if (newLayer.events.listeners.loadstart.length === 0) {
+                if (!newLayer.events.listeners.hasOwnProperty('loadstart') || newLayer.events.listeners['loadstart'].length === 0) {
                     newLayer.events.register("loadstart", newLayer, function() {
                         msp.Map.events.trigger("loadstart", newLayer);
                     });
@@ -454,7 +454,7 @@
                  * If no "loadend" has been defined
                  * => add a default "loadend" event, i.e. hide the loading indicator for newLayer
                  */
-                if (newLayer.events.listeners.loadend.length === 0) {
+                if (!newLayer.events.listeners.hasOwnProperty('loadend') || newLayer.events.listeners['loadend'].length === 0) {
                     newLayer.events.register("loadend", newLayer, function() {
 
                         /* OpenLayers bug with select control ? */
