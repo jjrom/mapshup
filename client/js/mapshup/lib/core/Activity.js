@@ -92,7 +92,7 @@
                 'margin-top':'-20px',
                 'margin-left':'0px',
                 'overflow':'hidden',
-                'z-index':'37000'
+                'z-index':'38500'
             }).html('<div></div>')
             
             /*

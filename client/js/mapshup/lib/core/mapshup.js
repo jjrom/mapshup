@@ -133,10 +133,11 @@
  *      mheader                     :   34500
  *      mask                        :   35000
  *      tooltip                     :   36000
- *      activity                    :   37000
+ *      popup                       :   38000 
  *      message                     :   38000 
  *      drawingAsk                  :   38000   (plugins/Drawing.js)
  *      drawingDesc                 :   38000   (plugins/Drawing.js)
+ *      activity                    :   38500
  *      
  */
 
