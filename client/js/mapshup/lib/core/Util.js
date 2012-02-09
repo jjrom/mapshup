@@ -534,8 +534,7 @@
          */
         askFor:function(title, description, type, value, callback) {
           
-            var id1,
-            id2,
+            var id,
             self = this,
             input = [],
             popup = new msp.Popup({
@@ -558,19 +557,18 @@
                 /*
                  * Get unique ids
                  */
-                id1 = this.getId(),
-                id2 = this.getId();
+                id = this.getId();
                 
                 /*
                  * Append input text box to body
                  */
-                popup.$b.append('<input id="'+id1+'" type="text"/>&nbsp;<a href="#" id="'+id2+'"><img src="'+this.getImgUrl("checkbig.png")+'" class="middle"/></a>');
+                popup.$b.append('<input id="'+id+'" type="text"/>');
                 
                 /*
                  * Set default value if defined
                  * Input value is encoded to avoid javascript code injection
                  */
-                input = $('#'+id1);
+                input = $('#'+id);
                 if (value) {
                     input.val(this.htmlEntitiesEncode(value));
                 }
@@ -581,58 +579,46 @@
                     input.attr('placeholder', description);
                 }
                 
-                /**
-                 * Avoid rewriting of twice the same code - i.e. keypress on #id1 (<input>)
-                 * and click on #id2 (<a> icon)
-                 */
-                var fct = function(i, t, d) {
-                    
-                    /*
-                     * Input value is encoded to avoid javascript code injection
-                     */
-                    var v = self.htmlEntitiesEncode($('#'+i).val());
-                    if (t === "date") {
-                        if (self.isDateOrInterval(v) || self.isISO8601(v)) {
-                            callback(v);
-                            d.remove(); 
-                        }
-                        else {
-                            self.message(self._("Expected format is YYYY-MM-DD for a single date or YYYY-MM-DD/YYYY-MM-DD for a date interval"));
-                        }
-                    }
-                    else if (t === "bbox") {
-                        if (self.isBBOX(v)) {
-                            callback(v);
-                            d.remove(); 
-                        }
-                        else {
-                            self.message(self._("Expected format is lonmin,latmin,lonmax,latmax"));
-                        }
-                    }
-                    else {
-                        callback(v);
-                        d.remove(); 
-                    }
-                   
-                };
-                
                 /*
                  * Add action on input text box (see fct above)
                  */
                 input.keypress(function(e){
+                    
+                    /*
+                     * Input value is encoded to avoid javascript code injection
+                     */   
+                    var v = self.htmlEntitiesEncode($(this).val());
+                    
+                    /*
+                     * Return or tab keys
+                     */
                     if (e.keyCode === 13 || e.keyCode === 9) {
-                        fct(id1, type, popup);
+                        
+                        if (type === "date") {
+                            if (self.isDateOrInterval(v) || self.isISO8601(v)) {
+                                callback(v);
+                                popup.remove(); 
+                            }
+                            else {
+                                self.message(self._("Expected format is YYYY-MM-DD for a single date or YYYY-MM-DD/YYYY-MM-DD for a date interval"));
+                            }
+                        }
+                        else if (type === "bbox") {
+                            if (self.isBBOX(v)) {
+                                callback(v);
+                                popup.remove(); 
+                            }
+                            else {
+                                self.message(self._("Expected format is lonmin,latmin,lonmax,latmax"));
+                            }
+                        }
+                        else {
+                            callback(v);
+                            popup.remove(); 
+                        }
+
                         return false;
                     }
-                });
-                
-                /*
-                 * Add action on icon click (see fct above)
-                 */
-                $('#'+id2).click(function(e){
-                    fct(id1, type, popup);
-                    return false;
-                    
                 });
                 
             }
@@ -655,10 +641,10 @@
                  * Roll over items
                  */
                 for (i in value) {
-                    id1 = this.getId();
+                    id = this.getId();
                     el = value[i];
                     icon = el.icon ? '<img class="middle" src="'+el.icon+'"/>&nbsp;' : '';
-                    $p.append('<a href="#" class="button marged" id="'+id1+'">'+icon+el.title+'</a>');
+                    $p.append('<a href="#" class="button marged" id="'+id+'">'+icon+el.title+'</a>');
                     
                     /*
                      * Return item value to callback on click
@@ -669,7 +655,7 @@
                             d.remove();
                             return false;
                         });
-                    })(popup, $('#'+id1), callback, el.value);
+                    })(popup, $('#'+id), callback, el.value);
                 
                     count++;
                 }
