@@ -44,6 +44,7 @@
     i["Download layer in KML format"]="Télécharger la couche au format KML";
     i["Do you really want to remove layer"]="Voulez-vous vraiment enlever la couche";
     i["Do you really want to remove this tab ?"]="Voulez-vous vraiment enlever cet onglet ?";
+    i["Do you really want to sign out ?"]="Voulez-vous vraiment vous déconnecter ?";
     i["Draw layer"]="Dessiner une couche";
     i["Drawing mode"]="Mode dessin";
     i["Drop !"]="Déposer !";
@@ -131,7 +132,7 @@
     i["Polygon"]="Polygone";
     i["Quicklooks"]="Images";
     i["Quit"]="Quitter";
-    i["Register"]="S'enregistrer";
+    i["Register"]="Enregistrez-vous";
     i["Relief"]="Relief";
     i["Remember me"]="Se souvenir de moi";
     i["Reset filters"]="Effacer les filtres de recherche";
