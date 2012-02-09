@@ -83,7 +83,7 @@ if ($userid == -1) {
  * since it's allready encrypted
  * (cookie check case)
  */
-if (($_POST['username'] == $username) && (isset($_POST['encrypted']) ? $_POST['password'] : md5($_POST['password']) == $password)) {
+if ((strtolower($_POST['username']) == $username) && (isset($_POST['encrypted']) ? $_POST['password'] : md5($_POST['password']) == $password)) {
     $props = array(
         'userid' => $userid,
         'username' => $username,
