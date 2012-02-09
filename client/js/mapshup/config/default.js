@@ -325,24 +325,7 @@
      *      historyUrl: "/plugins/usermanagement/navigationHistory.php";
      *      statsWMSUrl: "http://localhost/cgi-bin/mapserv?map=/Users/jrom/Documents/Devel/j_/src/server/plugins/logger/logger.map&LAYERS=countries&";
      */
-    /*
-    c.add("plugins",
-    {
-        name:"UserManagement_NavigationHistory"
-    });
-    */
-    /**
-     *  This plugin requires UserManagement plugin
-     *  Options :
-     *      (The Following should not be overrided)
-     *      historyUrl: "/plugins/usermanagement/searchHistory.php";
-     *      trendsUrl: "/plugins/usermanagement/searchTrends.php";
-     */
-    /*
-    c.add("plugins", {
-        name:"UserManagement_SearchHistory"
-    });
-    */
+    
     /*
      * Download plugin
      *  options:
