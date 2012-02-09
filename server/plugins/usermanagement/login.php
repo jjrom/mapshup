@@ -1,4 +1,5 @@
 <?php
+
 /*
  * mapshup - Webmapping made easy
  * http://mapshup.info
@@ -84,12 +85,10 @@ if ($userid == -1) {
  * (cookie check case)
  */
 if ((strtolower($_POST['username']) == $username) && (isset($_POST['encrypted']) ? $_POST['password'] : md5($_POST['password']) == $password)) {
-    $props = array(
+    echo json_encode(array(
         'userid' => $userid,
         'username' => $username,
-        'password' => $password);
-    echo json_encode($props);
-    exit();
+        'password' => $password));
 } else {
     die('{"error":{"message":"Invalid password"}}');
 }
