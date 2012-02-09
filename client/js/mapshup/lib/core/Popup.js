@@ -58,6 +58,11 @@
         this.expand = options.hasOwnProperty("expand") ? options.expand : false;
         
         /*
+         * True to hide popup when closing it instead of remove it
+         */
+        this.hideOnClose = msp.Util.getPropertyValue(options, "hideOnClose", false);
+        
+        /*
          * True to set this popup modal.
          * 
          * "In user interface design, a modal window is a child window
@@ -158,7 +163,7 @@
              * Close window
              */
             $('#'+id).click(function() {
-                self.remove();
+                self.hideOnClose ? self.hide() : self.remove();
             }).css(self.cssClose);
             
             /*
