@@ -106,5 +106,5 @@ while ($row = pg_fetch_row($result)) {
 }
 pg_close($dbh);
 
-echo '{"result":[{"uid":"' . $uid . '","location":"' . $location . '","utc":" ' . $utc . ' "}]}';
+echo '{"result":[{"uid":"' . $uid . '","location":"' . $location . '","utc":"' . $utc . '"}]}';
 ?>
