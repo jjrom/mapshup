@@ -130,7 +130,10 @@
              * Store context when user close mapshup
              */
             window.onbeforeunload = function() {
-                self.save(self, null, true);
+                var userid = msp.Util.Cookie.get("userid");
+                if (userid && userid !== -1) {
+                    msp.Util.Cookie.set("context", msp.Map.getContext(), 365);
+                }
             };
             
             return self;
@@ -153,7 +156,7 @@
             /*
              * Save context unless it was already saved
              */
-            if (context !== scope.last["context"]) {
+            if (context !== scope.last["context"] && !noshare) {
 
                 /*
                  * Save the context on the server
@@ -163,8 +166,7 @@
                  */
                 msp.Util.ajax({
                     url:msp.Util.getAbsoluteUrl(scope.options.saveContextServiceUrl+msp.Util.abc),
-                    /* If noshare is set to true then the ajax request is syncrhone */
-                    async:noshare ? false : true,
+                    async:true,
                     dataType:"json",
                     type:"POST",
                     data:{
@@ -194,6 +196,7 @@
                             if (!noshare) {
                                 scope.share();
                             }
+                            
                         }
 
                     }

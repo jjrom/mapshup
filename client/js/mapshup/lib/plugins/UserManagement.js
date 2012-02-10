@@ -249,6 +249,7 @@
                 url:msp.Util.getAbsoluteUrl(self.options.loginUrl),
                 data:msp.abc+"&username=" + username + "&password=" + password + encrypted,
                 success: function(data){
+                    
                     if (data.username) {
 
                         /*
@@ -282,6 +283,13 @@
                          * Hide login popup
                          */
                         self.popup.hide();
+                        
+                        /*
+                         * Load the user last context
+                         */
+                        if (msp.Util.Cookie.get("context")) {
+                            msp.Map.loadContext(msp.Util.extractKVP(msp.Util.Cookie.get("context")));
+                        }
                     }
                     else {
 
