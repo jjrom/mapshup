@@ -48,14 +48,24 @@
         options = options || {};
         
         /*
+         * Html content for body
+         */
+        this.body = options.body;
+        
+        /*
          * Function callback called after popup is removed
          */
-        this.callback = options.callback || null;
+        this.callback = options.callback;
         
         /*
          * True to expand popup size to full window size
          */
-        this.expand = options.hasOwnProperty("expand") ? options.expand : false;
+        this.expand = msp.Util.getPropertyValue(options, "expand", false);
+        
+        /*
+         * Html content for header
+         */
+        this.header = options.header;
         
         /*
          * True to hide popup when closing it instead of remove it
@@ -71,17 +81,17 @@
          * http://en.wikipedia.org/wiki/Modal_window
          * 
          */
-        this.modal = options.hasOwnProperty("modal") ? options.modal : false;
+        this.modal = msp.Util.getPropertyValue(options, "modal", false);
         
         /*
          * True to not set a popup header
          */
-        this.noHeader = options.hasOwnProperty("noHeader") ? options.noHeader : false;
+        this.noHeader = msp.Util.getPropertyValue(options, "noHeader", false);
         
         /*
          * True to automatically resize popup on window size change
          */
-        this.resize = options.hasOwnProperty("resize") ? options.resize : true;
+        this.resize = msp.Util.getPropertyValue(options, "resize", true);
         
         /*
          * Close button css modifier
@@ -153,6 +163,20 @@
              */
             self.$b = $('.body', self.$d);
             self.$h = $('.header', self.$d);
+            
+            /*
+             * Set header content
+             */
+            if (self.header) {
+                self.$h.html(self.header);
+            }
+            
+            /*
+             * Set body content
+             */
+            if (self.body) {
+                self.$b.html(self.body);
+            }
             
             /*
              * Add a close button
