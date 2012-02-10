@@ -67,7 +67,7 @@
          */
         this.init = function(options) {
 
-            var id,
+            var id = msp.Util.getId(),
                 rid = msp.Util.getId(),
                 sid = msp.Util.getId(),
                 self = this;
@@ -91,16 +91,6 @@
                 notlogged:msp.Util._("You are not logged in")
             };
             
-            /*
-             * Create login popup
-             */
-            self.popup = new msp.Popup({
-                modal:true,
-                noHeader:true,
-                hideOnClose:true
-            });
-            
-            id = msp.Util.getId();
             msp.$header.append('<div class="login"><span class="ht">'+self.t["notlogged"]+'</span> <a href="#" class="button inline colored" id="'+id+'"><span class="hb">'+self.t["signin"]+'</span></a></div>');
             $('#'+id).click(function(){
                 
@@ -131,14 +121,19 @@
             });
             
             /*
-             * Set popup header
+             * Create login popup
              */
-            self.popup.$h.html('<p>' + self.t["signin"] + '</p>');
+            self.popup = new msp.Popup({
+                modal:true,
+                noHeader:true,
+                hideOnClose:true,
+                header:'<p>' + self.t["signin"] + '</p>',
+                body:'<form action="#" method="post" class="loginPanel" id="'+id+'"></form>'
+            });
             
             /*
              * Set popup content
              */
-            self.popup.$b.html('<form action="#" method="post" class="loginPanel" id="'+id+'"></form>');
             $('form', self.popup.$b).html('<input id="userName" placeholder="'+msp.Util._("Enter your email")+'" type="text"/><br/><input id="userPassword" type="password" name="pwd" placeholder="'+msp.Util._("Enter your Password")+'" type="text"/><div class="buttons"><a href="#" class="button inline colored" id="'+sid+'">'+msp.Util._("Sign in")+'</a> '+msp.Util._("or")+' <a href="#" class="button inline" id="'+rid+'">'+msp.Util._("Register")+'</a></div><div><input name="rememberme" id="rememberMe" type="checkbox" checked="checked"/>&nbsp;'+msp.Util._("Remember me")+'</div>');
             
             /*
