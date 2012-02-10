@@ -52,6 +52,7 @@ CREATE TABLE users (
     username            VARCHAR(32) UNIQUE NOT NULL,
     password            VARCHAR(32) NOT NULL,
     email               VARCHAR(255) NOT NULL,
+    lastcontextid       INTEGER DEFAULT -1,
     registrationdate    TIMESTAMP NOT NULL
 );
 
