@@ -124,6 +124,15 @@
             
             self.$d = $('.body', self.lbtn.container.$d);
             */
+           
+           
+            /*
+             * Store context when user close mapshup
+             */
+            window.onbeforeunload = function() {
+                self.save(self, null, true);
+            };
+            
             return self;
 
         };
@@ -131,8 +140,8 @@
         /**
          * Save Context
          */
-        this.save = function(scope) {
-
+        this.save = function(scope, button, noshare) {
+            
             /*
              * Get map extent
              */
@@ -154,7 +163,8 @@
                  */
                 msp.Util.ajax({
                     url:msp.Util.getAbsoluteUrl(scope.options.saveContextServiceUrl+msp.Util.abc),
-                    async:true,
+                    /* If noshare is set to true then the ajax request is syncrhone */
+                    async:noshare ? false : true,
                     dataType:"json",
                     type:"POST",
                     data:{
@@ -181,7 +191,9 @@
                             /*
                              * Display share popup
                              */
-                            scope.share();
+                            if (!noshare) {
+                                scope.share();
+                            }
                         }
 
                     }
@@ -192,7 +204,9 @@
 
             }
             else {
-                scope.share();
+                if (!noshare) {
+                    scope.share();
+                }
             }
 
         };
