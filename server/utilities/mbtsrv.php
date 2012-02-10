@@ -1,4 +1,4 @@
-<?php
+    <?php
 /*
  * mapshup - Webmapping made easy
  * http://mapshup.info
