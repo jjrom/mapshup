@@ -538,13 +538,9 @@
             self = this,
             input = [],
             popup = new msp.Popup({
-                modal:true
+                modal:true,
+                header:'<p>'+title+'</p>'
             }); // Create popup
-            
-            /*
-             * Set header
-             */
-            popup.$h.html('<p>'+title+'</p>');
             
             /*
              * Switch type. Can be one of :
