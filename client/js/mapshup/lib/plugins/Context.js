@@ -344,7 +344,7 @@
             /*
              * Embed code
              */
-            $('.code', popup.$b).val('<iframe width="500" height="300" frameBorder="0" src="'+url+'"></iframe>');
+            $('.code', popup.$b).val('<iframe width="1024" height="600" frameBorder="0" src="'+url+'"></iframe>');
             
             popup.show();
 
