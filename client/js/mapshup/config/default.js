@@ -858,7 +858,6 @@
     /**
      * Map context management
      * options:
-     *      share : // True to share context - default true
      *      saveContextServiceUrl : // Url to the save context service. Default /plugins/logger/saveContext.php?
      *      getContextsServiceUrl : // Url to the save context service. Default /plugins/logger/getContexts.php?
      *      position: // Toolbar position (nw, ne, sw, se) - default nw

@@ -55,14 +55,9 @@
         }
         
         /**
-         * Store the last serialized saved context
+         * Last context
          */
-        this.lastSerializedContext = "";
-
-        /**
-         * Store the last uid corresponding to he last saved context
-         */
-        this.lastUID = null;
+        this.last = {}
 
         /**
          * Initialize plugin
@@ -83,7 +78,6 @@
              * Default toolbar is North West Horizontal
              */
             $.extend(self.options, {
-                share:self.options.share || true,
                 saveContextServiceUrl:self.options.saveContextServiceUrl || "/plugins/logger/saveContext.php?",
                 getContextsServiceUrl:self.options.getContextsServiceUrl || "/plugins/logger/getContexts.php?",
                 position:self.options.position || 'nw',
@@ -131,13 +125,6 @@
             return self;
 
         };
-        
-        /*
-         * Return the current redirectUrl for last saved context
-         */
-        this.getRedirectUrl = function() {
-            return msp.Config["general"].indexUrl+"?uid="+this.lastUID;
-        };
 
         /**
          * Save Context
@@ -149,13 +136,13 @@
              */
             var projected = msp.Map.Util.p2d(msp.Map.map.getExtent().clone()),
             bbox = projected.left+","+projected.bottom+","+projected.right+","+projected.top,
-            serializedContext = msp.Map.getContext(), // Get current context
+            context = msp.Map.getContext(), // Get current context
             userid = msp.Util.Cookie.get("userid") || -1; // Get userid
 
             /*
              * Save context unless it was already saved
              */
-            if (serializedContext !== scope.lastSerializedContext) {
+            if (context !== scope.last["context"]) {
 
                 /*
                  * Save the context on the server
@@ -170,7 +157,7 @@
                     type:"POST",
                     data:{
                         userid:userid,
-                        context:serializedContext,
+                        context:context,
                         bbox:bbox
                     },
                     success: function(data) {
@@ -178,39 +165,21 @@
                             msp.Util.message(data.error["message"]);
                         }
                         else {
-                            scope.lastUID = data.result[0].uid;
-                            scope.lastSerializedContext = serializedContext;
-
+                            
                             /*
-                             * Prepare message
+                             * Store context unique identifier
                              */
-                            var content = msp.Util._("Map context successfully saved")+'<br/><span>' + data.result[0].utc + ' : ' + msp.Util._(data.result[0].location) +'</span>';
-
-                            /*
-                             * Sharing is enabled - display info message without closing it
-                             */
-                            if (scope.options.share) {
-                                content += '<br/>'+msp.Util._("Share")+'&nbsp;<a class="email" href="#" title="'+msp.Util._("Share context by email")+'"><img class="middle" src="'+msp.Util.getImgUrl("email.png")+'"</a>';
-
-                                /*
-                                 * This only work if sharing is enabled
-                                 */
-                                $('a.email', msp.Util.message(content, -1)).click(function() {
-
-                                    /*
-                                     * Create url from the saved context
-                                     */
-                                    $(this).attr('href', 'mailto:?subject=[msp] '+ msp.Util._("Interesting map context")+'&body='+msp.Util._("Take a look at this map context ")+scope.getRedirectUrl());
-                                    return true;
-                                });
-                            }
-                            /*
-                             * No sharing - just display info message
-                             */
-                            else {
-                                msp.Util.message(content);
+                            scope.last = {
+                                uid:data.result[0].uid,
+                                utc:data.result[0].utc,
+                                location:data.result[0].location,
+                                context:context
                             }
 
+                            /*
+                             * Display share popup
+                             */
+                            scope.share();
                         }
 
                     }
@@ -221,7 +190,7 @@
 
             }
             else {
-                msp.Util.message(msp.Util._("Map context successfully saved"));
+                scope.share();
             }
 
         };
@@ -302,22 +271,26 @@
                             /*
                              * Add link to load context
                              */
-                            (function(scope, div, context, uid) {
+                            (function(scope, div, context) {
                                 div.click(function() {
 
                                     /*
                                      * Load the context
                                      */
-                                    msp.Map.loadContext(msp.Util.extractKVP(context));
+                                    msp.Map.loadContext(msp.Util.extractKVP(context.context));
 
                                     /*
                                      * Set this new context as the last saved/load context
                                      */
-                                    scope.lastSerializedContext = context;
-                                    scope.lastUID = uid;
+                                    scope.last = {
+                                        uid:context.uid,
+                                        utc:context.utc,
+                                        location:context.location,
+                                        context:context.context
+                                    };
 
                                 })
-                            })(scope, $('#'+id), data.contexts[i].context, data.contexts[i].uid);
+                            })(scope, $('#'+id), data.contexts[i]);
                         }
                     }
 
@@ -326,6 +299,47 @@
                 title:msp.Util._("Contexts retrieving"),
                 cancel:true
             });
+
+        };
+        
+        /*
+         * Display share popup
+         */
+        this.share = function() {
+            
+            var self = this,
+                url = msp.Config["general"].indexUrl+"?uid="+self.last["uid"],
+                popup = new msp.Popup({
+                    modal:true,
+                    header:'<p>'+msp.Util._("Share")+' : ' + self.last["location"] + ' - ' + self.last["utc"].substring(0,10) + '</p>',
+                    body:'<div class="share"><div><a href="#" target="_blank" class="button inline facebook">&nbsp;&nbsp;Facebook&nbsp;&nbsp;</a><a href="#" target="_blank" class="button inline twitter">&nbsp;&nbsp;Twitter&nbsp;&nbsp;</a><a href="#" class="button inline email">&nbsp;&nbsp;Email&nbsp;&nbsp;</a></div><div class="embed"><h1>Embed code</h1>Copy and paste the HTML fragment into your web site<br/><code>'+url+'</code></div></div>'
+                });
+
+            /*
+             * Share to facebook
+             */
+            $('.facebook', popup.$b).click(function() {
+                $(this).attr('href', 'https://www.facebook.com/sharer.php?u='+encodeURIComponent(url)+'&t='+encodeURIComponent(self.last["location"]));
+                return true;
+            });
+            
+            /*
+             * Share to twitter
+             */
+            $('.twitter', popup.$b).click(function() {
+                $(this).attr('href', 'http://twitter.com/intent/tweet?status='+encodeURIComponent(self.last["location"] + " - " + url));
+                return true;
+            });
+            
+            /*
+             * Share by email
+             */
+            $('.email', popup.$b).click(function() {
+                $(this).attr('href', 'mailto:?subject=[mapshup] '+ msp.Util._("Look at this map")+'&body='+msp.Util._("Take a look at  ")+url);
+                return true;
+            });
+
+            popup.show();
 
         };
         
