@@ -60,7 +60,7 @@ $dbh = getVerifiedConnection($_REQUEST, array($_POST['username'], $_POST['passwo
 /**
  * Prepare query
  */
-$query = "SELECT userid,username,password,lastcontextid FROM users WHERE username='" . pg_escape_string(strtolower($_POST['username'])) . "'";
+$query = "SELECT userid,username,password FROM users WHERE username='" . pg_escape_string(strtolower($_POST['username'])) . "'";
 $result = pg_query($dbh, $query) or die('{"error":{"message":"Error"}}');
 $userid = -1;
 $username = "";
@@ -70,21 +70,7 @@ while ($user = pg_fetch_row($result)) {
     $userid = $user[0];
     $username = $user[1];
     $password = $user[2];
-    $lastcontextid = $user[3];
 }
-
-/*
- * Get lastcontext
- */
-$context = "";
-if ($lastcontextid) {
-    $query = "SELECT context FROM contexts WHERE uid ='" . pg_escape_string($lastcontextid) . "' LIMIT 1";
-    $results = pg_query($dbh, $query) or die('{"error":{"message":"Error"}}');
-    while ($result = pg_fetch_row($results)) {
-        $context = $result[0];
-    }
-}
-
 pg_close($dbh);
 
 /**
@@ -105,8 +91,7 @@ if ((strtolower($_POST['username']) == $username) && (isset($_POST['encrypted'])
     echo json_encode(array(
         'userid' => $userid,
         'username' => $username,
-        'password' => $password,
-        'context' => $context)
+        'password' => $password)
     );
 } else {
     die('{"error":{"message":"Invalid password"}}');

@@ -107,14 +107,6 @@ while ($row = pg_fetch_row($result)) {
     $utc = $row[0];
 }
 
-/*
- * Store this context as the last store context for user
- */
-if ($userid !== -1) {
-    $query = "UPDATE users SET lastcontextid='" . pg_escape_string($uid) . "' WHERE userid = ". pg_escape_string($userid);
-    $result = pg_query($dbh, $query) or die($error);
-}
-
 pg_close($dbh);
 
 echo '{"result":[{"uid":"' . $uid . '","location":"' . $location . '","utc":"' . $utc . '"}]}';
