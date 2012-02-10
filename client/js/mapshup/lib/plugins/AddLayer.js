@@ -682,13 +682,9 @@
                         $('.list a', scope.btn.container.$d).removeClass('active');
                         scope.popup = null;
                     },
+                    header:'<p>'+msp.Util._("Add layer")+'</p>',
                     scope:self
                 });
-                
-                /*
-                 * Set title
-                 */
-                self.popup.$h.html('<p>'+msp.Util._("Add layer")+'</p>');
                 
             }
                 
