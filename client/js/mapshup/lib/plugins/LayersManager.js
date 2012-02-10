@@ -136,7 +136,7 @@
                 /*
                  * Register events on layersend
                  */
-                msp.Map.events.register("layersend", scope, function(action,layer,scope) {
+                msp.Map.events.register("layersend", self, function(action,layer,scope) {
                     if (action === "add" && layer) {
                         if (layer.isBaseLayer && layer.displayInLayerSwitcher) {
                             id = 'lm'+msp.Util.encode(layer.id);
