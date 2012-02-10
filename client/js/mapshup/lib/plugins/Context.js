@@ -70,8 +70,8 @@
         this.init = function(options) {
 
             var tb,
-                pn,
-                self = this;
+            pn,
+            self = this;
             
             /*
              * Init options
@@ -97,12 +97,12 @@
              * The 'save' button is displayed under a North West toolbar
              */
             self.sbtn = new msp.Button({
-               tb:new msp.Toolbar(self.options.position, self.options.orientation),
-               icon:"save.png",
-               tt:"Save this context",
-               callback:self.save,
-               activable:false,
-               scope:self
+                tb:new msp.Toolbar(self.options.position, self.options.orientation),
+                icon:"share.png",
+                tt:"Share",
+                callback:self.save,
+                activable:false,
+                scope:self
             });
             
             /*
@@ -113,16 +113,18 @@
              * and the result is displayed within an East panel
              */
             tb = new msp.Toolbar('ne', 'v');
-            pn = new msp.Panel('e',{tb:tb});
+            pn = new msp.Panel('e',{
+                tb:tb
+            });
             
             self.lbtn = new msp.Button({
-               tb:tb,
-               icon:"bookmark.png",
-               tt:"Load a context",
-               container:pn.add('<div class="header">'+msp.Util._("Contexts")+'</div><div class="body block expdbl"></div>'), //  AddLayer plugin is displayed within an East msp.Panel
-               activable:true,
-               callback:self.load,
-               scope:self
+                tb:tb,
+                icon:"bookmark.png",
+                tt:"Load a context",
+                container:pn.add('<div class="header">'+msp.Util._("Contexts")+'</div><div class="body block expdbl"></div>'), //  AddLayer plugin is displayed within an East msp.Panel
+                activable:true,
+                callback:self.load,
+                scope:self
             });
             
             self.$d = $('.body', self.lbtn.container.$d);
@@ -146,9 +148,9 @@
              * Get map extent
              */
             var projected = msp.Map.Util.p2d(msp.Map.map.getExtent().clone()),
-                bbox = projected.left+","+projected.bottom+","+projected.right+","+projected.top,
-                serializedContext = msp.Map.getContext(), // Get current context
-                userid = msp.Util.Cookie.get("userid") || -1; // Get userid
+            bbox = projected.left+","+projected.bottom+","+projected.right+","+projected.top,
+            serializedContext = msp.Map.getContext(), // Get current context
+            userid = msp.Util.Cookie.get("userid") || -1; // Get userid
 
             /*
              * Save context unless it was already saved
@@ -261,11 +263,11 @@
                          * ]
                          */
                         var i,
-                            l,
-                            id,
-                            date,
-                            time,
-                            lastDate = "";
+                        l,
+                        id,
+                        date,
+                        time,
+                        lastDate = "";
 
                         for (i = 0, l = data.contexts.length; i < l; i++) {
 
