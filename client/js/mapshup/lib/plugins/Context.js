@@ -106,6 +106,7 @@
              * The 'load' button is displayed under a North East toolbar
              * and the result is displayed within an East panel
              */
+            /*
             tb = new msp.Toolbar('ne', 'v');
             pn = new msp.Panel('e',{
                 tb:tb
@@ -122,6 +123,7 @@
             });
             
             self.$d = $('.body', self.lbtn.container.$d);
+            */
             return self;
 
         };
