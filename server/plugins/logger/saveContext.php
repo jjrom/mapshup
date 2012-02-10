@@ -62,11 +62,13 @@ $dbh = getVerifiedConnection($_REQUEST, array($_POST["bbox"], $_POST["context"])
 $wktCenter = bboxToWKTCenter($_POST["bbox"]);
 $context = $_POST["context"];
 
+$error = '{"error":{"message":"Error : cannot save context"}}';
+
 /*
  * No context
  */
 if ($context == "") {
-    echo '{"error":{"message":"Error : cannot save context"}}';
+    echo $error;
     exit(0);
 }
 
@@ -88,7 +90,7 @@ $uid = md5($context);
  * relative to countries table
  */
 $query = "SELECT cntry_name FROM countries WHERE st_intersects(GeomFromText('" . $wktCenter . "',4326),the_geom)";
-$result = pg_query($dbh, $query) or die("Error in SQL query: " . pg_last_error());
+$result = pg_query($dbh, $query) or die($error);
 $location = "Somewhere";
 while ($row = pg_fetch_row($result)) {
     $location = $row[0];
@@ -100,10 +102,19 @@ while ($row = pg_fetch_row($result)) {
 $fields = "(userid, location, context, uid)";
 $values = "(" . pg_escape_string($userid) . ",'" . pg_escape_string($location) . "','" . pg_escape_string($context) . "','" . pg_escape_string($uid) . "')";
 $query = "INSERT INTO contexts " . $fields . " VALUES " . $values . " RETURNING utc";
-$result = pg_query($dbh, $query) or die("Error in SQL query: " . pg_last_error());
+$result = pg_query($dbh, $query) or die($error);
 while ($row = pg_fetch_row($result)) {
     $utc = $row[0];
 }
+
+/*
+ * Store this context as the last store context for user
+ */
+if ($userid !== -1) {
+    $query = "UPDATE users SET lastcontextid='" . pg_escape_string($uid) . "' WHERE userid = ". pg_escape_string($userid);
+    $result = pg_query($dbh, $query) or die($error);
+}
+
 pg_close($dbh);
 
 echo '{"result":[{"uid":"' . $uid . '","location":"' . $location . '","utc":"' . $utc . '"}]}';
