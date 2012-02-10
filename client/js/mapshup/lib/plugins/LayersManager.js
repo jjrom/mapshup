@@ -61,36 +61,36 @@
             
             var tb,
                 id,
-                scope = this;
+                self = this;
             
             /*
              * Init options
              */
-            this.options = options || {};
+            self.options = options || {};
 
             /*
              * Set options
              * Default toolbar is North East Horizontal
              */
-            $.extend(this.options, {
-                opacitySteps:this.options.opacitySteps || 5, // Number of opacity steps for raster layers - Opacity range is from 0 (transparent) to 1 (opaque)
-                position:this.options.position || 'ne',
-                orientation:this.options.orientation || 'v',
-                backgrounds:msp.Util.getPropertyValue(this.options, "backgrounds", true)
+            $.extend(self.options, {
+                opacitySteps:self.options.opacitySteps || 5, // Number of opacity steps for raster layers - Opacity range is from 0 (transparent) to 1 (opaque)
+                position:self.options.position || 'ne',
+                orientation:self.options.orientation || 'v',
+                backgrounds:msp.Util.getPropertyValue(self.options, "backgrounds", true)
             });
             
             /*
              * Register open layers list action within Toolbar and store
              * the reference of the created <li> element
              */
-            tb = new msp.Toolbar(this.options.position, this.options.orientation);
-            this.btn = new msp.Button({
+            tb = new msp.Toolbar(self.options.position, self.options.orientation);
+            self.btn = new msp.Button({
                 tb:tb,
                 icon:"layers.png",
                 tt:"Layers manager",
                 container:(new msp.Panel('e', {tb:tb})).add(), //  Layers list is displayed within an East msp.Panel
                 activable:true,
-                scope:this
+                scope:self
             });
             
             /*
@@ -106,28 +106,28 @@
              *      </div>
              * </div>
              */
-            this.btn.container.$d.addClass("pglm").html('<div class="body block expdbl"><h1>'+msp.Util._("Overlays")+'</h1><ul></ul></div>');
+            self.btn.container.$d.addClass("pglm").html('<div class="body block expdbl"><h1>'+msp.Util._("Overlays")+'</h1><ul></ul></div>');
             
             /*
              * Get the body.ul reference
              */
-            this.$oul = $('.body ul', this.btn.container.$d);
+            self.$oul = $('.body ul', self.btn.container.$d);
            
             /*
              * Background toolbar reference
              */
-            if (this.options.backgrounds) {
+            if (self.options.backgrounds) {
                 
                 /*
                  * Create backgrounds toolbar
                  */
-                this.bgtb = new msp.Toolbar('fr', 'h', this.btn.container.$d.prepend('<div class="backgrounds block"><h1>'+msp.Util._("Backgrounds")+'</h1></div>').children().first());
+                self.bgtb = new msp.Toolbar('fr', 'h', self.btn.container.$d.prepend('<div class="backgrounds block"><h1>'+msp.Util._("Backgrounds")+'</h1></div>').children().first());
                 
                 /**
                  * Register changebaselayer
                  */
                 msp.Map.map.events.register('changebaselayer', msp.Map.map, function(e){
-                    var btn = scope.bgtb.get('lm'+msp.Util.encode(e.layer.id));
+                    var btn = self.bgtb.get('lm'+msp.Util.encode(e.layer.id));
                     if (btn) {
                         btn.activate(true);
                     }
@@ -168,7 +168,7 @@
             /*
              * Add header
              */
-            this.btn.container.$d.prepend('<div class="header">'+msp.Util._("Layers manager")+'</div>');
+            self.btn.container.$d.prepend('<div class="header">'+msp.Util._("Layers manager")+'</div>');
             
             /*
              * Event registration when layer end to load
@@ -182,7 +182,7 @@
              *   - update
              *   - features
              */
-             msp.Map.events.register("layersend", this, function(action, layer, scope) {
+             msp.Map.events.register("layersend", self, function(action, layer, scope) {
 
                 /**
                  * Case 1 : layers list changed because a layer was added or updated
@@ -205,14 +205,13 @@
             /*
              * Event on a change in layer visibility
              */
-            msp.Map.events.register("visibilitychanged", this, function (layer, scope) {
+            msp.Map.events.register("visibilitychanged", self, function (layer, scope) {
                 scope.update(layer);
             });
             
-            msp.Map.events.register("indexchanged", this, this.updateIndex);
+            msp.Map.events.register("indexchanged", self, self.updateIndex);
             
-
-            return this;
+            return self;
         };
         
         /**
