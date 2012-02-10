@@ -220,7 +220,8 @@
         /* West */
         w:{
             over:true, // West panel is displayed over the map
-            top:100
+            top:100,
+            bottom:60
         }
     };
     

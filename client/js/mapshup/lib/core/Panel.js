@@ -103,7 +103,7 @@
          * Number of pixels substracted from the map height to compute
          * East/West panel height when "over" boolean is set to true
          */
-        this.voffset = 125;
+        this.bottom = 125;
         
         /*
          * Number of pixels from the top of the map to display the panel
@@ -131,6 +131,7 @@
                 if (msp.Config.panel[self.position]) {
                     self.over = msp.Util.getPropertyValue(msp.Config.panel[self.position], "over", self.over);
                     self.top = msp.Util.getPropertyValue(msp.Config.panel[self.position], "top", self.top);
+                    self.bottom = msp.Util.getPropertyValue(msp.Config.panel[self.position], "bottom", self.bottom);
                 }
             }
             
@@ -253,7 +254,7 @@
              */
             else if (scope.position === "e" || scope.position === "w") {
 
-                scope.$d.height(msp.$map.height() - (scope.over ? scope.voffset + scope.top : 0));
+                scope.$d.height(msp.$map.height() - (scope.over ? scope.bottom + scope.top : 0));
 
                 /*
                  * Object with an 'expdbl' class have their height constrained
