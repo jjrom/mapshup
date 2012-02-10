@@ -31,6 +31,7 @@
     i["Close"]="Fermer";
     i["Close menu"]="Fermer le menu";
     i["Connector"]="Connecteur";
+    i["Copy and paste the HTML fragment into your web site"]="Copier/coller le fragment de code dans votre site web";
     i["Data automatic detection"]="Détection automatique de données";
     i["Define a search area"]="Définir une zone de recherche";
     i["Delete"]="Supprimer";
@@ -52,6 +53,7 @@
     i["Drop files or url on the map"]="Déposer des fichiers ou une url sur la carte";
     i["Elevation (m)"]="Altitude (m)";
     i["Email"]="Email";
+    i["Embed code in your website"]="Intégrer le code dans votre site web";
     i["Enter an url"]="Entrer une URL";
     i["Entering 2D mode"]="Vous entrez en mode 2D";
     i["Entering 3D mode"]="Vous entrez en mode 3D";
@@ -139,7 +141,6 @@
     i["results"]="résultats";
     i["Satellite"]="Satellite";
     i["Save"]="Sauvegarder";
-    i["Save this context"]="Sauvegarder ce contexte";
     i["Saving layer"]="Enregistrement de la couche";
     i["Search"]="Rechercher";
     i["Search Area"]="Zone de recherche";

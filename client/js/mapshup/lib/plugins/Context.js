@@ -314,7 +314,7 @@
                 popup = new msp.Popup({
                     modal:true,
                     header:'<p>'+msp.Util._("Share")+' : ' + self.last["location"] + ' - ' + self.last["utc"].substring(0,10) + '</p>',
-                    body:'<div class="share"><div><a href="#" target="_blank" class="button inline facebook">&nbsp;&nbsp;Facebook&nbsp;&nbsp;</a><a href="#" target="_blank" class="button inline twitter">&nbsp;&nbsp;Twitter&nbsp;&nbsp;</a><a href="#" class="button inline email">&nbsp;&nbsp;Email&nbsp;&nbsp;</a></div><div class="embed"><h1>Embed code</h1>Copy and paste the HTML fragment into your web site<br/><code>'+url+'</code></div></div>'
+                    body:'<div class="share"><div><a href="#" target="_blank" class="button inline facebook">&nbsp;&nbsp;Facebook&nbsp;&nbsp;</a><a href="#" target="_blank" class="button inline twitter">&nbsp;&nbsp;Twitter&nbsp;&nbsp;</a><a href="#" class="button inline email">&nbsp;&nbsp;Email&nbsp;&nbsp;</a></div><div class="embed"><h1>'+msp.Util._("Embed code in your website")+'</h1><textarea rows="4" class="code"></textarea></div></div>'
                 });
 
             /*
@@ -341,6 +341,11 @@
                 return true;
             });
 
+            /*
+             * Embed code
+             */
+            $('.code', popup.$b).val('<iframe width="500" height="300" frameBorder="0" src="'+url+'"></iframe>');
+            
             popup.show();
 
         };

@@ -30,6 +30,7 @@ close
 Close
 Close menu
 Connector
+Copy and paste the HTML fragment into your web site
 Data automatic detection
 Define a search area
 Delete
@@ -51,6 +52,7 @@ Drop a file here
 Drop files or url on the map
 Elevation (m)
 Email
+Embed code in your website
 Enter an url
 Entering 2D mode
 Entering 3D mode
@@ -138,7 +140,6 @@ Reset filters
 results
 Satellite
 Save
-Save this context
 Saving layer
 Search
 Search Area

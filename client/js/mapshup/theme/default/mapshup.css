@@ -683,14 +683,15 @@ span.osclear input {
 
 /* For share popup */
 .po .share {
-     margin:5px 0px;
+     margin:10px 0px;
 }
 .po .share .embed {
-     margin-top:20px;
+     margin-top:25px;
 }
-.po .share .embed code {
-     font-size:0.8em;
-     font-color:#999;
+.po .share textarea {
+     margin-top:10px;
+     width:100%;
+     resize:none;
 }
 .po .share a {
      margin-right:10px;
