@@ -35,96 +35,17 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-/* sliding panel */
-#jUMPanel {
-    position:absolute;
-    top:0;
-    width:100%;
-    text-align:center;
-    margin-left:auto;
-    margin-right:auto;
-    z-index:10700;
-}
-
-#jUMPanelMain {
-    width: 100%;
-    height: 300px;
-    overflow: hidden;
-    position: relative;
-    display: none;
-    z-index: 3;
-}
-
-#jUMPanelMain a.previous, #jUMPanelMain a.next{
-    border-left : 1px solid #FFF;
-    padding-left: 5px;
-    margin-left: 5px;
-}
-
-#jUMPanelMain h1 {
-    font-size: 1.5em;
-    padding: 5px 0px 20px 0px;
-}
-
-#jUMPanelMain h2{
-    padding: 10px 0px 5px 0px;
-    font-weight:bold;
-}
-
-#jUMPanelMain p {
-    margin: 5px 0;
-    padding: 0;
-}
-
-#jUMPanelMain .content {
-    width: 90%;
-    margin: 0 auto;
-    padding: 15px 0px 15px 0px;
-    text-align: left;
-}
-
-#jUMPanelMain .content .left {
-    width: 30%;
-    max-height:240px;
-    float: left;
-    padding: 0 15px;
-    /*border-left: 1px solid #333;*/
-}
-
-#jUMPanelMain .content .center {
-    width: 30%;
-    max-height:240px;
-    float: left;
-    padding: 0 15px;
-    border-left: 1px solid #333;
-}
-
-#jUMPanelMain .content input {
-    margin:10px 0px 10px 0px;
-    font-size:1em;
-}
-
-#jUMPanelMain .content input.bt_login {
-    display: block;
-    float: left;
-    clear: left;
-    height: 24px;
-    text-align: center;
-    cursor: pointer;
-    border: none;
-    font-weight: bold;
-    margin: 10px 0;
-    width:auto
-}
-
-#jUMPanelTab {
-    position:relative;
-    top:0px;
-    z-index:11000;
-}
-#jUMPanelTab ul {
-    float:right;
-}
-#jUMPanelTab ul li {
-    padding:10px 5px 5px 5px;
-}
+ .loginPanel {
+     margin-top:30px;
+     text-align:center;
+ }
+ .loginPanel input[type="text"], .loginPanel input[type="password"] {
+     margin:10px 0px;
+     background-color:#999;
+     font-size:1.5em;
+     color:white;
+     width:80%;
+ }
+ .loginPanel .buttons {
+     margin:20px 0px;
+ }

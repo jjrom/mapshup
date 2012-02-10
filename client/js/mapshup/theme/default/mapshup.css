@@ -656,7 +656,7 @@ span.osclear input {
 .po .description {
     padding:5px 0px 5px 10px;
 }
-.po input {
+.po input[type="text"],.po input[type="password"]  {
     width:100%;
     font-size:1em;
 }
