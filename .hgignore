@@ -4,3 +4,4 @@
 ^client/js/mapshup/config/phr\.js$
 ^client/phr\.html$
 ^client/js/mapshup/config/engine\.mapshup\.info\.js$
+^client/js/moldev$
