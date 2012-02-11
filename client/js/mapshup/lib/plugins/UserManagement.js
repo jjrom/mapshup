@@ -165,7 +165,15 @@
          */
         this.disconnect = function() {
             
-            var self = this;
+            var userid = msp.Util.Cookie.get("userid"),
+                self = this;
+            
+            /*
+             * Save context
+             */
+            if (userid && userid !== -1) {
+                msp.Util.Cookie.set("context", msp.Map.getContext(), 365);
+            }
             
             /*
              * Remove connection cookies
