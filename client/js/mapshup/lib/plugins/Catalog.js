@@ -287,16 +287,22 @@
                 return false;
             }
 
-            var layer = connector.catalog,
-            _msp = layer["_msp"],
-            filters = layer["_msp"].layerDescription["filters"],
-            cFilters = connector.filters,
-            i,
-            j,
-            l,
-            m,
-            add;
+            var i,j,l,m,add,_msp,filters,cFilters,
+                layer = connector.catalog;
 
+            /*
+             * !! Layer was removed before registration !!
+             * Do not register it
+             */
+            if (layer._tobedestroyed) {
+                connector.catalog = null;
+                return false;
+            }
+            
+            _msp = layer["_msp"];
+            filters = layer["_msp"].layerDescription["filters"];
+            cFilters = connector.filters;
+            
             /*
              * If layer layerDescription set filters, add it to
              * the layer connector
@@ -430,7 +436,7 @@
          * @output boolean : true if the catalog is successfully unregistered
          */ 
         this.remove = function(catalog) {
-
+            
             /*
              * Roll over catalogs description within the connector
              */
@@ -457,7 +463,7 @@
                      * Remove the search panel
                      */
                     catalog['_msp'].searchContext.btn.remove();
-
+                    
                     /**
                      * Catalog is removed
                      */
@@ -525,6 +531,13 @@
              */
             displayFilters:function(scope, layer) {
 
+                /*
+                 * Paranoid mode
+                 */
+                if (!layer) {
+                    return false;
+                }
+                
                 var d,
                 id = msp.Util.getId(),
                 sc = layer["_msp"].searchContext,
@@ -611,6 +624,8 @@
                     });
 
                 }
+                
+                return true;
 
             },
             
@@ -636,6 +651,13 @@
              */
             displayResults:function(scope, layer) {
 
+                /*
+                 * Paranoid mode
+                 */
+                if (!layer) {
+                    return false;
+                }
+                
                 /*
                  * Get the container div reference
                  * based on the layer.id prefixed by sr
@@ -769,6 +791,7 @@
 
                 }
 
+                return true;
             },
 
             /**
