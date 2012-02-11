@@ -110,12 +110,13 @@
                 slash = stripped.indexOf('/');
                 if (slash === -1) {
                     domain = stripped;
+                    path = "/";
                 }
                 else {
                     domain = stripped.substr(0,slash);
                     path = stripped.substr(slash, stripped.length);
                 }
-                document.cookie = name+"="+value+expires+"; domain="+domain+"; path="+path+msp.Config["general"].indexPath;
+                document.cookie = name+"="+value+expires+"; domain="+domain+"; path="+path;
             }
         },
 
