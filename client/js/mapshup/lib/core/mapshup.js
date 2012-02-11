@@ -277,16 +277,7 @@
          */
         init:function(urlParameters) {
             
-            var doNotAdd,
-            i,
-            j,
-            mspID,
-            mspIDs,
-            key,
-            l,
-            name,
-            options,
-            plugin,
+            var fn,doNotAdd,i,j,mspID,mspIDs,key,l,name,options,plugin,
             self = this;
   
             /**
@@ -510,7 +501,7 @@
                 'width':self.$mcontainer.width(),
                 'height':self.$mcontainer.height()
             });
-            var fn;
+            
             $(window).bind('resize', function(){
                 
                 /*
