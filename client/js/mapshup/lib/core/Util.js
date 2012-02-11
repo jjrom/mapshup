@@ -90,8 +90,9 @@
              */
             set: function(name,value,days) {
 
-                var expires,
+                var expires, domain, slash, stripped, path = "",
                 date = new Date();
+                
                 if (days) {
                     date.setTime(date.getTime()+(days*24*60*60*1000));
                     expires = "; expires="+date.toGMTString();
@@ -99,7 +100,22 @@
                 else {
                     expires = "";
                 }
-                document.cookie = name+"="+value+expires+"; path=/";
+                
+                /*
+                 * Compute domain and path from configuration properties
+                 * rootUrl and indexPath
+                 * It is assumes that rootUrl always start with "http//"
+                 */
+                stripped = msp.Config["general"].rootUrl.substr(7, msp.Config["general"].rootUrl.length);
+                slash = stripped.indexOf('/');
+                if (slash === -1) {
+                    domain = stripped;
+                }
+                else {
+                    domain = stripped.substr(0,slash);
+                    path = stripped.substr(slash, stripped.length);
+                }
+                document.cookie = name+"="+value+expires+"; domain="+domain+"; path="+path+msp.Config["general"].indexPath;
             }
         },
 
