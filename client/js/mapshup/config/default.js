@@ -863,6 +863,7 @@
      * options:
      *      saveContextServiceUrl : // Url to the save context service. Default /plugins/logger/saveContext.php?
      *      getContextsServiceUrl : // Url to the save context service. Default /plugins/logger/getContexts.php?
+     *      geocode: // True to save context with a geocoded name instead of lat/lon - default true
      *      position: // Toolbar position (nw, ne, sw, se) - default nw
      *      orientation: // Toolbar orientation (h, v) - default h
      *      

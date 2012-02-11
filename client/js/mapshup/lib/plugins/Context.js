@@ -80,6 +80,7 @@
             $.extend(self.options, {
                 saveContextServiceUrl:self.options.saveContextServiceUrl || "/plugins/logger/saveContext.php?",
                 getContextsServiceUrl:self.options.getContextsServiceUrl || "/plugins/logger/getContexts.php?",
+                geocode:msp.Util.getPropertyValue(self.options, "geocode", true),
                 position:self.options.position || 'nw',
                 orientation:self.options.orientation || 'h'
             });
@@ -147,16 +148,29 @@
             /*
              * Get map extent
              */
-            var projected = msp.Map.Util.p2d(msp.Map.map.getExtent().clone()),
-            bbox = projected.left+","+projected.bottom+","+projected.right+","+projected.top,
-            context = msp.Map.getContext(), // Get current context
-            userid = msp.Util.Cookie.get("userid") || -1; // Get userid
-
+            var p,data,
+            context = msp.Map.getContext(); // Get current context
+            
             /*
              * Save context unless it was already saved
              */
             if (context !== scope.last["context"] && !noshare) {
 
+                /*
+                 * Get projected map extend
+                 */
+                p = msp.Map.Util.p2d(msp.Map.map.getExtent().clone());
+                
+                data = {
+                    userid:msp.Util.Cookie.get("userid") || -1, // Get userid
+                    context:context,
+                    bbox:p.left+","+p.bottom+","+p.right+","+p.top
+                }
+                
+                if (scope.options.geocode) {
+                    data.geocode = ""
+                }
+                
                 /*
                  * Save the context on the server
                  *
@@ -168,11 +182,7 @@
                     async:true,
                     dataType:"json",
                     type:"POST",
-                    data:{
-                        userid:userid,
-                        context:context,
-                        bbox:bbox
-                    },
+                    data:data,
                     success: function(data) {
                         if (data.error) {
                             msp.Util.message(data.error["message"]);
