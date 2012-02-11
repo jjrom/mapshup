@@ -405,6 +405,7 @@
     /**
      *  Options :
      *     
+     *     active: // True to have the LayersManager panel open on startup (default false)
      *     opacitySteps: 5 // for raster layers, number of opacity steps (from transparent to opaque)
      *     position: // Toolbar position (nw, ne, sw, se) - default ne
      *     orientation: // Toolbar orientation (h, v) - default v

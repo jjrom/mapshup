@@ -73,6 +73,7 @@
              * Default toolbar is North East Horizontal
              */
             $.extend(self.options, {
+                active:msp.Util.getPropertyValue(self.options, "active", false),
                 opacitySteps:self.options.opacitySteps || 5, // Number of opacity steps for raster layers - Opacity range is from 0 (transparent) to 1 (opaque)
                 position:self.options.position || 'ne',
                 orientation:self.options.orientation || 'v',
@@ -210,6 +211,13 @@
             });
             
             msp.Map.events.register("indexchanged", self, self.updateIndex);
+            
+            /*
+             * Show panel if active option tells so
+             */
+            if (self.options.active) {
+                self.btn.trigger();
+            }
             
             return self;
         };
