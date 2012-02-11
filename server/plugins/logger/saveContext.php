@@ -85,15 +85,23 @@ if (isset($_POST["userid"])) {
  */
 $uid = md5($context);
 
-/**
- * Get the search location name
- * relative to countries table
+/*
+ * Set location from latitude/longitude rounded to two digits
  */
-$query = "SELECT cntry_name FROM countries WHERE st_intersects(GeomFromText('" . $wktCenter . "',4326),the_geom)";
-$result = pg_query($dbh, $query) or die($error);
-$location = "Somewhere";
-while ($row = pg_fetch_row($result)) {
-    $location = $row[0];
+$coords = preg_split('/,/', $_POST["bbox"]);
+$location = number_format((($coords[3] + $coords[1]) / 2.0),2) . "/" . number_format((($coords[2] + $coords[0]) / 2.0), 2);
+    
+/**
+ * If geocode is set, location name
+ * is retrieve from countries table
+ */
+if (isset($_POST["geocode"])) {
+    $query = "SELECT cntry_name FROM countries WHERE st_intersects(GeomFromText('" . $wktCenter . "',4326),the_geom)";
+    $result = pg_query($dbh, $query) or die($error);
+    $location = "Somewhere";
+    while ($row = pg_fetch_row($result)) {
+        $location = $row[0];
+    }
 }
 
 /**
