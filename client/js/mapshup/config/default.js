@@ -198,9 +198,10 @@
     c["i18n"].lang = "auto";
 
     /**
-     * Absolute or relative url to the i18n directory
+     * Path to i18n directory
+     * This path should be relative to the rootUrl
      */
-    c["i18n"].url = "js/mapshup/i18n";
+    c["i18n"].path = "/js/mapshup/i18n";
 
     /** 
      * Panel configuration

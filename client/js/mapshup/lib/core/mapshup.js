@@ -248,7 +248,7 @@
              * Asynchronous call : load the lang file
              */
             $.ajax({
-                url:self.Config["i18n"].url+"/"+lang+".js",
+                url:self.Config["general"].rootUrl + self.Config["i18n"].path+"/"+lang+".js",
                 async:true,
                 dataType:"script",
                 success:function() {
@@ -258,7 +258,7 @@
                 /* Lang does not exist - load english */
                 error:function() {
                     $.ajax({
-                        url:self.Config["i18n"].url+"/en.js",
+                        url:self.Config["general"].rootUrl + self.Config["i18n"].path+"/en.js",
                         async:true,
                         dataType:"script",
                         success:function() {
