@@ -100,7 +100,7 @@
              * This action launch a search on all registered catalogs
              * on a 1x1 square degrees box around the toponym
              */
-            if (msp.Plugins.Geonames._o) {
+            if (msp.Plugins.Geonames && msp.Plugins.Geonames._o) {
                 
                 /**
                  * Search all catalogs within the map view
