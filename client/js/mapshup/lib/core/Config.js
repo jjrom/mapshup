@@ -153,6 +153,7 @@
                  */
                 if (this.plugins[i].name === pluginName) {
                     p = this.plugins[i];
+                    p.options = p.options || {};
                     $.extend(p.options,options);
                 }
             }
