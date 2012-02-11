@@ -125,7 +125,6 @@
             self.$d = $('.body', self.lbtn.container.$d);
             */
            
-           
             /*
              * Store context when user close mapshup
              */

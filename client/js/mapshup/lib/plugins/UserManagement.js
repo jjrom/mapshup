@@ -288,7 +288,19 @@
                          * Load the user last context
                          */
                         if (msp.Util.Cookie.get("context")) {
-                            msp.Map.loadContext(msp.Util.extractKVP(msp.Util.Cookie.get("context")));
+                            msp.Util.askFor(msp.Util._("Hello") + " " + data.username, msp.Util._("Do you want to restore your map context ?"), "list", [{
+                                title:msp.Util._("Yes"), 
+                                value:"y"
+                            },
+                            {
+                                title:msp.Util._("No"), 
+                                value:"n"
+                            }
+                            ], function(v){
+                                if (v === "y") {
+                                    msp.Map.loadContext(msp.Util.extractKVP(msp.Util.Cookie.get("context")));
+                                }
+                            });
                         }
                     }
                     else {
