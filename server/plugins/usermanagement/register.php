@@ -91,7 +91,7 @@ if ($userid == -1) {
 $to = $email;
 $subject = "[mapshup] Requested password for user " . $email;
 $message = "Hi,\r\n\r\n" .
-        "You have requested a password for mapshup application on " . MSP_DB_HOST . "\r\n\r\n" .
+        "You have requested a password for mapshup application at " . MSP_DOMAIN . "\r\n\r\n" .
         "Your password is " . $password . "\r\n\r\n" .
         "Regards" . "\r\n\r\n" .
         "The mapshup team";
