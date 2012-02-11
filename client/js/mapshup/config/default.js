@@ -58,7 +58,7 @@
 
     /**
      * Application index path
-     * The path is considered to be absolute from application rootUrl
+     * The path should be relative to the application rootUrl
      */
     c["general"].indexPath = "/index.html";
 
@@ -172,9 +172,10 @@
     c["general"].mbtilesServiceUrl = "/utilities/mbtsrv.php?zxy=${z}/${x}/${y}&t=";
 
     /**
-     * Absolute url to the theme directory
+     * Theme path
+     * The path should be relative to the application rootUrl
      */
-    c["general"].themeUrl = c["general"].rootUrl+"/js/mapshup/theme/default";
+    c["general"].themePath = "/js/mapshup/theme/default";
 
     /**
      * If teleport is set to true, recentering the map is immediate. Otherwise, it

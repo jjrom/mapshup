@@ -55,7 +55,7 @@
      */
     c["general"].rootUrl = "http://localhost/mapshup";
     c["general"].serverRootUrl = c["general"].rootUrl+"/s";
-    c["general"].themeUrl = c["general"].rootUrl+"/js/mapshup/theme/default";
+    c["general"].themePath = "/js/mapshup/theme/default";
     c["general"].indexPath = "/index.html";
     c["general"].mapserverUrl = "http://localhost/cgi-bin/mapserv?";
     c['upload'].allowedMaxSize = 5000000;

@@ -807,7 +807,7 @@
              *  - a fully qualified url (i.e. starts with http:)
              *  - a base64 encoded image stream (i.e. starts with data:)
              */
-            return (!f || f.substr(0,5) ==='http:' || f.substr(0,5) ==='data:') ? f : msp.Config["general"].themeUrl+"/img/"+f;
+            return (!f || f.substr(0,5) ==='http:' || f.substr(0,5) ==='data:') ? f : msp.Config["general"].rootUrl + msp.Config["general"].themePath+"/img/"+f;
         },
         
         /**
