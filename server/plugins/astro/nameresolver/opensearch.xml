@@ -4,5 +4,5 @@
 	<LongName>Astronomical NameResolver</LongName>
 	<Description>Astronomical NameResolver from the Canadian Virtual Observatory</Description>
         <Image height="32" width="32" type="image/x-icon">geonames.png</Image>
-	<Url type="application/json" template="http://localhost/mspsrv/plugins/astro/nameresolver/search.php?q={searchTerms}&amp;lang={lang}"/>
+	<Url type="application/json" template="http://space.engine.info/s/plugins/astro/nameresolver/search.php?q={searchTerms}&amp;lang={lang}"/>
 </OpenSearchDescription>
