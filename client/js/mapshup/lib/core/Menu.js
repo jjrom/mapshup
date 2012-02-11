@@ -72,6 +72,11 @@
         this.limit = limit || 0;
         
         /**
+         * Set to true to disable menu
+         */
+        this.isNull = false;
+        
+        /**
          * Menu initialisation
          *
          * <div id="jMenu">
@@ -102,6 +107,7 @@
              */
             if (!msp.Config["general"].displayContextualMenu) {
                 self.isLoaded = true;
+                self.isNull = true;
                 return self;
             }
 
@@ -174,6 +180,10 @@
          */
         this.add = function(items) {
             
+            if (this.isNull) {
+                return false;
+            }
+            
             if ($.isArray(items)) {
                 /*
                  * Add new item
@@ -188,6 +198,8 @@
                 this.refresh();
             }
             
+            return true;
+            
         };
         
         /**
@@ -199,10 +211,7 @@
              * Items are displayed on a circle.
              * Position from above and below 60 degrees are forbidden
              */
-            var i,
-                x,
-                y,
-                rad,
+            var i,x,y,rad,
                 scope = this,
                 start = 45,
                 offsetX = 80,
@@ -273,8 +282,11 @@
          */
         this.show = function() {
 
-            var x,
-            y;
+            var x,y;
+            
+            if (this.isNull) {
+                return false;
+            }
 
             /**
              * menu is displayed at "pixel" position
@@ -323,11 +335,18 @@
          * Update menu position
          */
         this.updatePosition = function() {
+            
+            if (this.isNull) {
+                return false;
+            }
+            
             var xy = msp.Map.map.getPixelFromLonLat(this.lonLat);
             this.$m.css({
                 'left': xy.x,
                 'top': xy.y
             });
+            
+            return true;
         };
         
 
@@ -335,7 +354,14 @@
          * Hide menu
          */
         this.hide = function() {
+            
+            if (this.isNull) {
+                return false;
+            }
+            
             this.$m.hide();
+            
+            return true;
         }
         
         /*
