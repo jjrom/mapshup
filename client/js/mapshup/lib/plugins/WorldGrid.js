@@ -85,6 +85,8 @@
                 title:self.options.title || "Lat/Lon Grid",
                 /* Allowed intervals */
                 intervals:self.options.intervals || [45, 30, 20, 10, 5, 1],
+                /* Allowed intervals */
+                hidden:msp.Util.getPropertyValue(self.options, "hidden", false),
                 /* Default label display is degrees/minutes */
                 labelFormat:self.options.labelFormat || "dm",
                 /* Display label or no - default true */
@@ -131,7 +133,7 @@
                 layer:self.layer,
                 unremovable:true,
                 initialLayer:true,
-                hidden:false
+                hidden:self.options.hidden
             });
 
             /*
