@@ -327,7 +327,7 @@
         this.share = function() {
             
             var self = this,
-                url = msp.Config["general"].indexUrl+"?uid="+self.last["uid"],
+                url = msp.Config["general"].rootUrl+msp.Config["general"].indexPath+"?uid="+self.last["uid"],
                 popup = new msp.Popup({
                     modal:true,
                     header:'<p>'+msp.Util._("Share")+' : ' + self.last["location"] + ' - ' + self.last["utc"].substring(0,10) + '</p>',

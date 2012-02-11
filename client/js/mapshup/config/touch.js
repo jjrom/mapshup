@@ -40,7 +40,7 @@
  ************************************************/
 (function (c) {
     
-    c["general"].indexUrl = c["general"].applicationRootUrl + "/indext.html";
+    c["general"].indexPath = "/indext.html";
     c.remove("plugins", "Welcome");
     c.remove("plugins", "GoogleEarth");
     c.remove("plugins", "Download");

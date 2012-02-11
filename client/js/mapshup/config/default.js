@@ -54,12 +54,13 @@
     /**
      * Application root url
      */
-    c["general"].applicationRootUrl = 'http://localhost/msp';
+    c["general"].rootUrl = 'http://localhost/msp';
 
     /**
-     * Application index url
+     * Application index path
+     * The path is considered to be absolute from application rootUrl
      */
-    c["general"].indexUrl = "http://localhost/msp/index.html";
+    c["general"].indexPath = "/index.html";
 
     /**
      * True to ask user when deleting a layer
@@ -173,7 +174,7 @@
     /**
      * Absolute url to the theme directory
      */
-    c["general"].themeUrl = c["general"].applicationRootUrl+"/js/mapshup/theme/default";
+    c["general"].themeUrl = c["general"].rootUrl+"/js/mapshup/theme/default";
 
     /**
      * If teleport is set to true, recentering the map is immediate. Otherwise, it

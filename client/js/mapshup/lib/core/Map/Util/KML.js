@@ -455,7 +455,7 @@
                      * Style for OpenLayers.Geometry.Point
                      */
                     if (kmlStyle.substr(0,5) !== 'http:' && kmlStyle.substr(0,1) !== '/') {
-                        kmlStyle = msp.Config.general.applicationRootUrl + '/' + kmlStyle;
+                        kmlStyle = msp.Config.general.rootUrl + '/' + kmlStyle;
                     }
                     kmlStyle = '<Style><IconStyle><Icon><href>'+this.encode(msp.Util.getAbsoluteUrl(kmlStyle))+'</href></Icon></IconStyle></Style>';
                 }
