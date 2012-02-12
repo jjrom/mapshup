@@ -577,6 +577,13 @@
                     action:"add",
                     layer:newLayer
                 });
+                
+                /*
+                 * Set opacity
+                 */
+                if (layerDescription.opacity) {
+                    newLayer.setOpacity(layerDescription.opacity);
+                }
 
             }
 
