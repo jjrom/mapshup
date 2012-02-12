@@ -108,6 +108,7 @@
             if (!msp.Config["general"].displayContextualMenu) {
                 self.isLoaded = true;
                 self.isNull = true;
+                self.$m = $();
                 return self;
             }
 
