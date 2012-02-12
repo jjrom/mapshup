@@ -159,4 +159,76 @@ function posListToGeoJSONGeometry($posList, $order) {
 
     return $geometry;
 }
+
+/**
+ * Transforms galactical coordinates into equatorial coordinates
+ * into equatorial projection. Assuming J2000 referential
+ * 
+ * @param <Array> $pos : RA = pos[0] and DEC = pos[1] 
+ */
+function gal2eq($pos) {
+    return astroTransform($pos, 1);
+}
+
+/**
+ * Transforms equatorial coordinates into galactical coordinates
+ * into equatorial projection. Assuming J2000 referential
+ * 
+ * @param <Array> $pos : RA = pos[0] and DEC = pos[1] 
+ */
+function eq2gal($pos) {
+    return astroTransform($pos, 0);
+}
+
+/**
+ *
+ * Code derived from the HEALPix Java code supported by the Gaia project.
+ * Copyright (C) 2006-2011 Gaia Data Processing and Analysis Consortium
+ * Astrometric transformation gal2eq or eq2gal
+ * 
+ * @param array $pos Position in galactical or equatorial
+ * @param integer $t Order of transformation (1: gal2eq, 0:eq2gal)
+ * @return array $pos transformed
+ */
+function astroTransform($pos, $t) {
+    
+    /*
+     * Constants
+     */
+    $psi = array(
+        array(0.57595865315,4.92619181360,0.00000000000,0.00000000000,0.11129056012,4.70053728340),
+        array(0.57477043300,4.93682924650,0.00000000000,0.00000000000,0.11142137093,4.71279419371)
+    );
+    $phi = array(
+        array(4.92619181360,0.57595865315,0.00000000000,0.00000000000,4.70053728340,0.11129056012),
+        array(4.93682924650,0.57477043300,0.00000000000,0.00000000000,4.71279419371,0.11142137093)
+    );
+    $stheta = array(
+        array(0.88781538514,-0.88781538514, 0.39788119938,-0.39788119938, 0.86766174755,-0.86766174755),
+        array(0.88998808748,-0.88998808748, 0.39777715593,-0.39777715593, 0.86766622025,-0.86766622025)
+    );
+    $ctheta = array(
+        array(0.46019978478,0.46019978478,0.91743694670,0.91743694670,0.49715499774,0.49715499774),
+        array(0.45598377618,0.45598377618,0.91748206207,0.91748206207,0.49714719172,0.49714719172)
+    );
+    
+    $J2000 = 1; //by setting J2000 = 0, RA-Dec are intended in Equinox 1950.
+    $deg2rad = 180.0 / pi();
+    
+    $a = ($pos[0] / $deg2rad) - $phi[$J2000][$t];
+    $b = $pos[1] / $deg2rad;
+    $sb = sin($b);
+    $cb = cos($b);
+    $cbsa = $cb * sin($a);
+    $b = -$stheta[$J2000][$t] * $cbsa + $ctheta[$J2000][$t] * $sb;
+    $b = max(-1.0,min($b,1.0));
+    $bo = asin($b)*$deg2rad;
+
+    $a = atan2($ctheta[$J2000][$t] * $cbsa + $stheta[$J2000][$t] * $sb, $cb * cos($a));
+    $ao = modulus_of(($a + $psi[$J2000][$t] + (4 * pi())),2 * pi()) * $deg2rad;
+    
+    return array($ao,$bo);
+				      
+}
+
 ?>
