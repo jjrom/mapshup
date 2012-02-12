@@ -66,6 +66,12 @@ header("Content-type: application/json; charset=utf-8");
 $q = isset($_REQUEST["q"]) ? $_REQUEST["q"] : "";
 
 /*
+ * Set referential for resulting coordinates (Galactical or Equatorial)
+ * Possible values are "g" for Galactical and "e" for equatorial (default is "g")
+ */
+$r = isset($_REQUEST["r"]) ? $_REQUEST["r"] : "g";
+
+/*
  * Results are requested in XML
  */
 $url = 'http://www3.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/NameResolver/find?format=xml&target='.$q;
@@ -109,12 +115,24 @@ if ($doc->loadXML(getRemoteData($url, null, false))) {
          * Only exploitable results are processed
          */
         if ($ra && $dec) {
+            
+            /*
+             * Galactic to Equatorial coordinates transformation
+             */
+            if ($r === "g") {
+                $geometry = pointToGeoJSONGeometry($ra, $dec);
+            }
+            else {
+                $pos = gal2eq(array($ra,$dec));
+                $geometry = pointToGeoJSONGeometry($pos[0], $pos[1]);
+            }
+            
             /*
              * Add feature
              */
             $feature = array(
                 'type' => 'Feature',
-                'geometry' => pointToGeoJSONGeometry($ra, $dec),
+                'geometry' => $geometry,
                 'properties' => array(
                     'name' => $result->getElementsByTagname('target')->item(0)->nodeValue,
                     'ra' => $ra,
