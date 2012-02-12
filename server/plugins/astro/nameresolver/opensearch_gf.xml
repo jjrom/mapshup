@@ -4,5 +4,5 @@
 	<LongName>Astronomical NameResolver (Equatorial reference)</LongName>
 	<Description>Astronomical NameResolver from the Canadian Virtual Observatory</Description>
         <Image height="32" width="32" type="image/x-icon">geonames.png</Image>
-	<Url type="application/json" template="http://space.mapshup.info/s/plugins/astro/nameresolver/search.php?q={searchTerms}&amp;lang={lang}&amp;r=e"/>
+	<Url type="application/json" template="http://space.mapshup.info/s/plugins/astro/nameresolver/search.php?q={searchTerms}&amp;lang={lang}&amp;r=g"/>
 </OpenSearchDescription>

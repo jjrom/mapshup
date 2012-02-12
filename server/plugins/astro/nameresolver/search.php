@@ -67,9 +67,9 @@ $q = isset($_REQUEST["q"]) ? $_REQUEST["q"] : "";
 
 /*
  * Set referential for resulting coordinates (Galactical or Equatorial)
- * Possible values are "g" for Galactical and "e" for equatorial (default is "g")
+ * Possible values are "g" for Galactical and "e" for equatorial (default is "e")
  */
-$r = isset($_REQUEST["r"]) ? $_REQUEST["r"] : "g";
+$r = isset($_REQUEST["r"]) ? $_REQUEST["r"] : "e";
 
 /*
  * Results are requested in XML
@@ -119,11 +119,11 @@ if ($doc->loadXML(getRemoteData($url, null, false))) {
             /*
              * Galactic to Equatorial coordinates transformation
              */
-            if ($r === "g") {
+            if ($r === "e") {
                 $geometry = pointToGeoJSONGeometry($ra, $dec);
             }
             else {
-                $pos = gal2eq(array($ra,$dec));
+                $pos = eq2gal(array($ra,$dec));
                 $geometry = pointToGeoJSONGeometry($pos[0], $pos[1]);
             }
             
