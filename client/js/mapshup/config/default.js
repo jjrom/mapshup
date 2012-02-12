@@ -425,6 +425,13 @@
 
     /**
      * This plugin requires the LayersManager plugin
+     * 
+     * options:
+     * 
+     *      allowedLayerTypes: // mandatory - see below
+     *      magicServiceUrl: // url to magic service - default "/utilities/magic.php?"
+     *      invisible: // if true only drag&drop is activated (no addlayer panel)
+     *                    Default is false
      */
     c.add("plugins",
     {

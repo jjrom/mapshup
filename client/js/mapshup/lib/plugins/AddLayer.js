@@ -94,9 +94,9 @@
                 magicServiceUrl:self.options.magicServiceUrl || "/utilities/magic.php?",
                 uploadServiceUrl:msp.Config["upload"].serviceUrl || "/utilities/upload.php?",
                 position:self.options.position || 'ne',
-                orientation:self.options.orientation || 'v'
-            }
-            );
+                orientation:self.options.orientation || 'v',
+                invisible:msp.Util.getPropertyValue(self.options, "invisible", true)
+            });
 
             /*
              * Firefox < 4 does not support HTML 5 Drag&Drop
@@ -180,7 +180,14 @@
                     });
 
             }
-
+            /*
+             * If drag&drop is disable and invisible is set to true...then addLayer
+             * will not work at all. So remove it
+             */
+            else if (self.options.invisible) {
+                return null;
+            }
+            
             /**
              * Update layerTypes with the list of available layers
              */
@@ -207,48 +214,52 @@
             /*
              * Register AddLayer action within NorthEast Toolbar triggering East panel 
              */
-            tb = new msp.Toolbar(self.options.position, self.options.orientation);
-            self.pn = new msp.Panel('e',{tb:tb});
+            if (!self.options.invisible) {
+                
             
-            self.btn = new msp.Button({
-                tb:tb,
-                icon:"add.png",
-                tt:"Add layer",
-                /*
-                 * Set the panel container content with the following html structure
-                 * 
-                 * <div id="..." class="pgal">
-                 *      <div class="header"></div>
-                 *      <div class="body expdbl">
-                 *          <div class="list"></div>
-                 *      </div>
-                 * </div>
-                 */
-                container:self.pn.add('<div class="header">'+msp.Util._("Add layer")+'</div><h1 class="block"><a href="#" class="hover" id="'+id+'">'+msp.Util._("Enter an url")+'</a></h1><div class="body block expdbl"><div class="list"></div></div>', 'pgal'), //  AddLayer plugin is displayed within an East msp.Panel
-                activable:true,
-                scope:self
-            });
-            
-            /*
-             * When user enter an url, mapshup try to
-             * determine magically what kind of url it is...
-             */
-            $('#'+id).click(function(e) {
-                msp.Util.askFor(msp.Util._("Add layer"), msp.Util._("Enter an url"), "text", null, function(url){
-                    self.guess(url);
-                });
-                return false;
-            });
-            
-            /*
-             * Set the list reference
-             */
-            self.btn.$list = $('.list', self.btn.container.$d);
+                tb = new msp.Toolbar(self.options.position, self.options.orientation);
+                self.pn = new msp.Panel('e',{tb:tb});
 
-            /*
-             * Update list content
-             */
-            self.update(self, self.btn, null);
+                self.btn = new msp.Button({
+                    tb:tb,
+                    icon:"add.png",
+                    tt:"Add layer",
+                    /*
+                     * Set the panel container content with the following html structure
+                     * 
+                     * <div id="..." class="pgal">
+                     *      <div class="header"></div>
+                     *      <div class="body expdbl">
+                     *          <div class="list"></div>
+                     *      </div>
+                     * </div>
+                     */
+                    container:self.pn.add('<div class="header">'+msp.Util._("Add layer")+'</div><h1 class="block"><a href="#" class="hover" id="'+id+'">'+msp.Util._("Enter an url")+'</a></h1><div class="body block expdbl"><div class="list"></div></div>', 'pgal'), //  AddLayer plugin is displayed within an East msp.Panel
+                    activable:true,
+                    scope:self
+                });
+
+                /*
+                 * When user enter an url, mapshup try to
+                 * determine magically what kind of url it is...
+                 */
+                $('#'+id).click(function(e) {
+                    msp.Util.askFor(msp.Util._("Add layer"), msp.Util._("Enter an url"), "text", null, function(url){
+                        self.guess(url);
+                    });
+                    return false;
+                });
+
+                /*
+                 * Set the list reference
+                 */
+                self.btn.$list = $('.list', self.btn.container.$d);
+
+                /*
+                 * Update list content
+                 */
+                self.update(self, self.btn, null);
+            }
             
             return self;            
             
@@ -263,22 +274,13 @@
          */
         this.update = function(scope, btn, mspID) {
            
+            var i,key,list,p,l,img,id;
+
             /*
              * Empty list
              */
             btn.$list.empty();
-
-            /*
-             * Add an action for input url
-             */
-            var i,
-            key,
-            list,
-            p,
-            l,
-            img,
-            id = msp.Util.getId();
-
+            
             /*
              * Populate div with predefined layers list if any
              * The list is generated from predefined layers from each layerTypes
@@ -316,7 +318,7 @@
                     id = 'al' + (new msp.Map.LayerDescription(p, msp.Map)).getMspID();
 
                     if (i > 0) {
-                        btn.$list.append("</br>")
+                        btn.$list.append("</br>");
                     }
 
                     /*
@@ -350,6 +352,7 @@
                 $('#al'+mspID).trigger('click');
             }
 
+            return true;
         };
         
         /*
@@ -628,8 +631,13 @@
              * Update layers list and trigger getInfo
              * for this result
              */
-            scope.update(scope, scope.btn, (new msp.Map.LayerDescription(p, msp.Map)).getMspID());
-
+            if (scope.options.invisible) {
+                scope.getInfo(p);
+            }
+            else {
+                scope.update(scope, scope.btn, (new msp.Map.LayerDescription(p, msp.Map)).getMspID());
+            }
+            
             return true;
 
         };
@@ -679,7 +687,9 @@
                 self.popup = new msp.Popup({
                     modal:true,
                     callback:function(scope){
-                        $('.list a', scope.btn.container.$d).removeClass('active');
+                        if (scope.btn) {
+                            $('.list a', scope.btn.container.$d).removeClass('active');
+                        }
                         scope.popup = null;
                     },
                     header:'<p>'+msp.Util._("Add layer")+'</p>',
