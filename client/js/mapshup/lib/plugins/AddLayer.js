@@ -95,7 +95,7 @@
                 uploadServiceUrl:msp.Config["upload"].serviceUrl || "/utilities/upload.php?",
                 position:self.options.position || 'ne',
                 orientation:self.options.orientation || 'v',
-                invisible:msp.Util.getPropertyValue(self.options, "invisible", true)
+                invisible:msp.Util.getPropertyValue(self.options, "invisible", false)
             });
 
             /*
