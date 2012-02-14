@@ -303,7 +303,7 @@
             var popup = new msp.Popup({
                 modal:true,
                 resize:false,
-                expand:true,
+                autoSize:true,
                 noHeader:true,
                 cssClose:{
                     'top':'-8px',
@@ -419,7 +419,7 @@
             popup = new msp.Popup({
                 modal:true,
                 resize:false,
-                expand:true,
+                autoSize:true,
                 noHeader:true,
                 cssClose:{
                     'top':'-8px',

@@ -48,6 +48,11 @@
         options = options || {};
         
         /*
+         * True to adapt popup size to its content 
+         */
+        this.autoSize = msp.Util.getPropertyValue(options, "autoSize", false);
+        
+        /*
          * Html content for body
          */
         this.body = options.body;
@@ -56,11 +61,6 @@
          * Function callback called after popup is removed
          */
         this.callback = options.callback;
-        
-        /*
-         * True to expand popup size to full window size
-         */
-        this.expand = msp.Util.getPropertyValue(options, "expand", false);
         
         /*
          * Html content for header
@@ -121,7 +121,7 @@
             self.$m = $();
             
             /*
-             * If popup if modal, set a semi transparent mask
+             * If popup is modal, set a semi transparent mask
              * under the popup
              */
             if (self.modal) {
@@ -154,9 +154,9 @@
             self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$mcontainer).addClass('po').html('<div class="whole shadow">'+h+'<div class="body"></div></div>');
 
             /*
-             * Expand popup or not expand ?
+             * Set automatic popup size or not ?
              */
-            self.expand ? self.$d.addClass('poe') : self.$d.addClass('pone'); 
+            self.autoSize ? self.$d.addClass('poa') : self.$d.addClass('pona'); 
             
             /*
              * Set body and header reference

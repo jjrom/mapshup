@@ -633,15 +633,15 @@ span.osclear input {
     z-index:38000;
 }
 
-/* Popup non expandable */
-.pone {
+/* Popup fixed size */
+.pona {
     top:150px;
     width:500px;
     height:auto;
 }
 
-/* Popup expandable */
-.poe {
+/* Popup auto size */
+.poa {
     width:auto;
     height:auto;
 }
