@@ -56,17 +56,24 @@
          */
         this.init = function(options) {
             
-            var self = this;
+            var controls, key,
+                self = this;
             
             /**
              * Init options
              */
-            this.options = options || {};
+            self.options = options || {};
 
             /*
              * Default export service url
              */
-            this.options.exportServiceUrl = this.options.exportServiceUrl || "/utilities/export.php?";
+            self.options.exportServiceUrl = self.options.exportServiceUrl || "/utilities/export.php?";
+
+             /*
+             * Create the drawingInfo dialog box
+             * This dialog box indicates current mode
+             */
+            self.$d = msp.Util.$$('#drawingInfo', msp.$mcontainer).addClass("boxShadow");
 
             /*
              * Add "Drawing" item in menu
@@ -78,78 +85,13 @@
                     ic:"drawing.png",
                     ti:"Draw layer",
                     cb:function() {
-                        self.startDrawing();
+                        self.askType();
                     }
                 }
                 ]);
             }
-            
-            /*
-             * Create the drawingAsk and drawingDesc dialog boxes
-             * The first lets user define the drawn object type.
-             * The second lets the user to add information on drawn feature
-             *
-             * Structure:
-             *
-             *          <div id="drawingAsk" class="bg">
-             *              <div class="description">
-             *              [...]
-             *              </div>
-             *          </div>
-             *          <div id="drawingDesc">
-             *              <form id="drawingDescForm">
-             *              [...]
-             *              </form>
-             *          </div>
-             */
-            this.$ask = msp.Util.$$('#drawingAsk', msp.$mcontainer).css(
-            {
-                'position':'absolute',
-                'height':'auto',
-                'display':'none',
-                'z-index':'38000'    
-            }).addClass("bg").append('<div class="description"><a href="#" class="point">'+msp.Util._("Point")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_point.png")+'"/>&nbsp;<a href="#" class="line">'+msp.Util._("Line")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_line.png")+'"/><a href="#" class="polygon">'+msp.Util._("Polygon")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_polygon.png")+'"/></div>');
-            this.$des = msp.Util.$$('#drawingDesc').css(
-            {
-                'position':'absolute',
-                'display':'none',
-                'z-index':'38000'    
-            }).append('<form id="drawingDescForm"></form>');
-
-            /*
-             * Create action for drawingAsk dialog box
-             */
-            $('a.point',this.$ask).click(function() {
-                self.startDrawing("__CONTROL_DRAWPOINT__");
-                return false;
-            });
-            $('a.line',this.$ask).click(function() {
-                self.startDrawing("__CONTROL_DRAWLINE__");
-                return false;
-            });
-            $('a.polygon',this.$ask).click(function() {
-                self.startDrawing("__CONTROL_DRAWPOLYGON__");
-                return false;
-            });
-
-            /*
-             * Create the drawingInfo dialog box
-             * This dialog box indicates current mode
-             */
-            this.$inf = msp.Util.$$('#drawingInfo', msp.$mcontainer).addClass("boxShadow");
-
-            /*
-             * Add close buttons
-             */
-            msp.Util.addCloseButton(this.$ask, function() {
-                msp.mask.hide();
-            });
-
-            msp.Util.addCloseButton(this.$des, function() {
-                msp.mask.hide();
-            });
-
-            this.layer = new OpenLayers.Layer.Vector("__LAYER_DRAWING__", {
+           
+            self.layer = new OpenLayers.Layer.Vector("__LAYER_DRAWING__", {
                 projection:msp.Map.epsg4326,
                 displayInLayerSwitcher:false,
                 styleMap:new OpenLayers.StyleMap({
@@ -168,59 +110,80 @@
              */
             msp.Map.addLayer({
                 type:"Generic",
-                title:this.layer.name,
+                title:self.layer.name,
                 unremovable:true,
                 initialLayer:true,
-                layer:this.layer
+                layer:self.layer
             });
 
             /**
              * Event on sketchcomplete
              */
-            this.layer.events.on({
-
+            self.layer.events.on({
                 "sketchcomplete": function(event) {
-
-                    /**
-                     * Reset '#drawingDesc' description form
+                    
+                    /*
+                     * Hide ask popup if any
                      */
-                    $('#drawingDescForm').html('<div class="description"><table><tr><td>'+msp.Util._("Title")+'</td><td><input id="featureTitle" type="text" style="width:150px;"></td></tr><tr><td>'+msp.Util._("Description")+'</td><td><textarea id="featureDescription" rows="3" style="width:150px;"></textarea></td></tr><tr><td colspan="2"><a href="#" class="ok">'+msp.Util._("Validate")+'</a></td></table>');
-                    $('a.ok',self.$des).click(function() {
-                        if (event.feature) {
-                            event.feature.attributes.name = $('#featureTitle').val();
-                            event.feature.attributes.description = $('#featureDescription').val();
-                        }
-                        msp.mask.hide();
-                        self.$des.hide();
-                        return false;
-                    });
+                    if (self.askPopup) {
+                        self.askPopup.hide();
+                    }
 
                     /*
-                     * Show jMask
+                     * Show mask
                      */
                     msp.mask.show(true);
 
                     /*
-                     * Hide drawingAsk
+                     * Ask user description of newly created feature
                      */
-                    self.$ask.hide();
+                    if (!self.descriptionPopup) {
+                        var id = msp.Util.getId();
+                        self.descriptionPopup = new msp.Popup({
+                            modal:false,
+                            noHeader:true,
+                            hideOnClose:true,
+                            autoSize:true,
+                            onClose:function() {
+                                msp.mask.hide();
+                            },
+                            cssClose:{
+                                'top':'-8px',
+                                'right':'-8px'
+                            },
+                            body:'<form class="drawingask"><label>'+msp.Util._("Feature title")+'<br/><input id="featureTitle" type="text"/></label><br/><label>'+msp.Util._("Feature description")+'<br/><input id="featureDesc" type="text"/></label><div style="margin:10px 0px;"><a href="#" class="button inline colored" id="'+id+'">'+msp.Util._("Validate")+'</a></div></form>'
+                        });
+                    }
+                    
+                    /*
+                     * Initialize value
+                     */
+                    $('#featureTitle').val("").focus();
+                    $('#featureDesc').val("");
 
+                    $('#'+id).click(function() {
+                        if (event.feature) {
+                            event.feature.attributes.name = $('#featureTitle').val();
+                            event.feature.attributes.description = $('#featureDesc').val();
+                        }
+                        msp.mask.hide();
+                        self.descriptionPopup.hide();
+                        return false;
+                    });
+                    
                     /*
                      * Show drawingDesc
                      */
-                    self.$des.show();
+                    self.descriptionPopup.moveTo(msp.Map.mousePosition);
+                    self.descriptionPopup.show();
 
-                    /*
-                     * Center drawingDesc dialog box over last mouse click
-                     */
-                    self.centerBox(msp.Map.mousePosition, self.$des);
                 }
             });
 
-            /**
+            /*
              * Add controls tool to Map.map object
              */
-            var controls = (function (layer) {
+            controls = (function (layer) {
                 return {
                     point: new OpenLayers.Control.DrawFeature(layer, OpenLayers.Handler.Point, {
                         id:"__CONTROL_DRAWPOINT__"
@@ -245,23 +208,23 @@
                     /*mode:OpenLayers.Control.ModifyFeature.RESHAPE | OpenLayers.Control.ModifyFeature.RESIZE | OpenLayers.Control.ModifyFeature.ROTATE | OpenLayers.Control.ModifyFeature.DRAG*/
                     })
                 }
-            })(this.layer);
-
-            for (var key in controls) {
+            })(self.layer);
+            
+            for (key in controls) {
                 msp.Map.map.addControl(controls[key]);
             }
 
             /*
-             * Register resizeend event
+             * Register events 'resizeend' and 'layersend'
              */
             msp.Map.events.register("resizeend", self, function(scope) {
                 
                 /*
                  * drawingInfo alignment is centered from the top of the map
                  */
-                scope.$inf.css({
-                    'left':((msp.$mcontainer.width() - scope.$inf.width()) / 2) + msp.$mcontainer.offset().left,
-                    'top': msp.$mcontainer.offset().top + 30
+                scope.$d.css({
+                    'left':((msp.$mcontainer.width() - scope.$d.width()) / 2) + msp.$mcontainer.offset().left,
+                    'top': msp.$mcontainer.offset().top + 50
                 });
 
                 return;
@@ -277,16 +240,98 @@
                 }
             });
 
-            return this;
+            return self;
             
         };
+        
+        /*
+         * Ask feature type to user
+         * 
+         */
+        this.askType = function() {
+            
+            var idPoint,idLine,idPolygon,
+                self = this;
+            
+            if (!self.askPopup) {
+                idPoint = msp.Util.getId();
+                idLine = msp.Util.getId();
+                idPolygon = msp.Util.getId();
+                self.askPopup = new msp.Popup({
+                    modal:false,
+                    noHeader:true,
+                    hideOnClose:true,
+                    autoSize:true,
+                    cssClose:{
+                        'top':'-8px',
+                        'right':'-8px'
+                    },
+                    body:'<div class="drawingask"><a href="#" id="'+idPoint+'">'+msp.Util._("Point")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_point.png")+'"/>&nbsp;<a href="#" id="'+idLine+'">'+msp.Util._("Line")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_line.png")+'"/><a href="#" id="'+idPolygon+'">'+msp.Util._("Polygon")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_polygon.png")+'"/></div>'
+                });
+                /*
+                 * Create action for drawingAsk dialog box
+                 */
+                $('#'+idPoint).click(function() {
+                    self.startDrawing("__CONTROL_DRAWPOINT__");
+                    return false;
+                });
+                $('#'+idLine).click(function() {
+                    self.startDrawing("__CONTROL_DRAWLINE__");
+                    return false;
+                });
+                $('#'+idPolygon).click(function() {
+                    self.startDrawing("__CONTROL_DRAWPOLYGON__");
+                    return false;
+                });
+            }
+            
+            /*
+             * Show popup to the right position
+             */
+            self.askPopup.moveTo(msp.Map.mousePosition);
+            self.askPopup.show();
+            
+        };
+        
+        /*
+         * Show drawing info dialog
+         */
+        this.showStatus = function(type) {
+            
+            var self = this,
+                id = msp.Util.getId();
+            
+            /*
+             * Update the '#drawingInfo' html content
+             * => drawing mode
+             */
+            id = msp.Util.getId();
+            if (type === "draw") {
+                self.$d.html(msp.Util._("You are in drawing mode.")+'<br/><a href="#" id="'+id+'">'+msp.Util._("Modification mode")+'</a>');
+                self.addActions(self.$d);
+                $('#'+id).click(function() {
+                    self.startDrawing();
+                    return false;
+                });
+            }
+            else {
+                self.$d.html(msp.Util._("You are in modification mode.")+'<br/><a href="#" id="'+id+'">'+msp.Util._("Drawing mode")+'</a>');
+                self.addActions(self.$d);
+                $('#'+id).click(function() {
+                    self.startModifying();
+                    return false;
+                });
+            }
+            
+        };
+        
         
         /*
          * Add buttons
          */
         this.addActions = function(div) {
         
-            var scope = this;
+            var self = this;
 
             /*
              * Add the close button
@@ -296,12 +341,12 @@
                 /*
                  * Stop drawing
                  */
-                scope.stopDrawing();
+                self.stopDrawing();
 
                 /*
                  * Reset the layer
                  */
-                scope.layer.destroyFeatures();
+                self.layer.destroyFeatures();
             });
 
             /*
@@ -310,8 +355,8 @@
             div.append('<div class="act actse icncheck" jtitle="'+msp.Util._("Save")+'"></div>');
             msp.tooltip.add($('.icncheck', div), 'w');
             $('.icncheck', div).click(function() {
-                scope.stopDrawing();
-                scope.saveLayer();
+                self.stopDrawing();
+                self.saveLayer();
             });
 
         };
@@ -321,16 +366,18 @@
          */
         this.saveLayer = function() {
 
-            if (this.layer.features.length === 0) {
+            var title,kml,
+                self = this;
+                
+            if (self.layer.features.length === 0) {
                 return false;
             }
 
-            var scope = this,
-                title = "MyLayer #"+msp.Util.getId(),
-                kml = msp.Map.Util.KML.layerToKML(this.layer, {
-                    color:msp.Util.randomColor(), 
-                    opacity:0.4
-                });
+            title = "MyLayer #"+msp.Util.getId();
+            kml = msp.Map.Util.KML.layerToKML(self.layer, {
+                color:msp.Util.randomColor(), 
+                opacity:0.4
+            });
 
             /*
              * Save KML layer to the server
@@ -353,8 +400,8 @@
                         /*
                          * Empty the drawing layer
                          */
-                        if (scope && scope.layer) {
-                            scope.layer.destroyFeatures();
+                        if (self && self.layer) {
+                            self.layer.destroyFeatures();
                         }
 
                         /*
@@ -389,47 +436,33 @@
          */
         this.startDrawing = function(type) {
 
-            var id,
-                scope = this,
-                d = scope.$inf;
+            var self = this;
 
             /*
              * First reset control
              */
-            msp.Map.resetControl(this.control);
+            msp.Map.resetControl(self.control);
 
+            /*
+             * Show dialog drawing mode
+             */
+            self.showStatus("draw");
+                
             /*
              * Drawn object type is not defined => ask user
              */
             if (!type) {
 
                 /*
-                 * Update the '#drawingInfo' html content
-                 * => drawing mode
-                 */
-                id = msp.Util.getId();
-                d.html(msp.Util._("You are in drawing mode.")+'<br/><a href="#" id="'+id+'">'+msp.Util._("Modification mode")+'</a>');
-                this.addActions(d);
-
-                $('#'+id).click(function() {
-                    scope.startModifying();
-                    return false;
-                });
-
-                /*
                  * Display the '#drawingAsk' 
                  */
-                scope.$des.hide();
-                msp.mask.show(true);
-                scope.$ask.show();
-
-                /**
-                 * Center drawingAsk dialog box over last mouse click
-                 */
-                this.centerBox(msp.Map.mousePosition, scope.$ask);
+                if (self.descriptionPopup) {
+                    self.descriptionPopup.hide();
+                }
+                self.askType();
 
             }
-            /**
+            /*
              * Drawn object type is defined => trigger corresponding control
              */
             else {
@@ -438,16 +471,18 @@
                  * Hide mask
                  */
                 msp.mask.hide();
-                this.$ask.hide();
+                if (self.askPopup) {
+                    self.askPopup.hide();
+                }
 
                 /*
                  * Set active control to 'type' control
                  */
-                this.control = msp.Map.Util.getControlById(type);
+                self.control = msp.Map.Util.getControlById(type);
 
-                if (this.control) {
-                    scope.$inf.show();
-                    this.control.activate();
+                if (self.control) {
+                    self.$d.show();
+                    self.control.activate();
                 }
             }
         };
@@ -458,37 +493,31 @@
         this.startModifying = function() {
 
             var hlt,
-                scope = this,
+                self = this,
                 id = msp.Util.getId();
 
             /*
              * Reset control => OpenLayers bug ??
              */
-            this.control.deactivate();
+            self.control.deactivate();
             msp.Map.Util.getControlById("__CONTROL_SELECT__").deactivate();
             hlt = msp.Map.Util.getControlById("__CONTROL_HIGHLITE__");
             if (hlt) {
                 hlt.deactivate();
             }
 
-            this.control = msp.Map.Util.getControlById("__CONTROL_MODIFY__");
+            self.control = msp.Map.Util.getControlById("__CONTROL_MODIFY__");
 
             /*
-             * Update the $inf html content
+             * Update the $d html content
              * => modification mode
              */
-            this.$inf.html(msp.Util._("You are in modification mode.")+'<br/><a href="#" id="'+id+'">'+msp.Util._("Drawing mode")+'</a>');
-            this.addActions(this.$inf);
-
-            $('#'+id).click(function() {
-                scope.startDrawing();
-                return false;
-            });
-
+            self.showStatus("modify");
+            
             /*
              * Activate control
              */
-            this.control.activate();
+            self.control.activate();
         };
         
         /**
@@ -505,91 +534,7 @@
             /*
              * Close drawingInfo
              */
-            this.$inf.hide();
-
-        };
-        
-        /**
-         * Force input div to be :
-         *  1. centered closest from xy
-         *  2. completely inside the '#Map' object
-         */
-        this.centerBox = function(MapPixel, div) {
-
-            var x,
-                y,
-                pixel,
-                parent = msp.$map,
-                offset = parent.offset();
-
-            /*
-             * (0,0) origin of MapPixel is #Map
-             * (0,0) origin of pixel is window
-             */
-            pixel = {
-                x:MapPixel.x + offset.left,
-                y:MapPixel.y + offset.top
-            }
-
-            /*
-             * If xy is not (or uncorrectly) defined,
-             * div is centered on "#Map" div
-             */
-            if (!pixel || !pixel.x || !pixel.y) {
-                x = offset.left + ((parent.width() - div.width()) / 2);
-                y = offset.top + ((parent.height() - div.height()) / 2);
-            }
-
-            /*
-             * Check if div can be centered on xy
-             */
-            else {
-                /*
-                 * div left is far too left
-                 */
-                if ((pixel.x - (div.width()/2) < offset.left)) {
-                    x = offset.left;
-                }
-                /**
-                 * div left is far too right
-                 */
-                else if ((pixel.x + (div.width()/2) > (offset.left + parent.width()))) {
-                    x = offset.left + parent.width() - div.width();
-                }
-                /**
-                 * div left is ok
-                 */
-                else {
-                    x = pixel.x - (div.width() / 2);
-                }
-
-                /**
-                 * div top is far too top
-                 */
-                if ((pixel.y - (div.height()/2) < offset.top)) {
-                    y = offset.top;
-                }
-                /**
-                 * div top is far too bottom
-                 */
-                else if ((pixel.y + (div.height()/2) > (offset.top + parent.height()))) {
-                    y = offset.top + parent.height() - div.height();
-                }
-                /**
-                 * div top is ok
-                 */
-                else {
-                    y = pixel.y - (div.height() / 2)
-                }
-            }
-
-            /*
-             * Apply div css top/left modifications
-             */
-            div.css({
-                'top':y,
-                'left':x
-            });
+            this.$d.hide();
 
         };
         
