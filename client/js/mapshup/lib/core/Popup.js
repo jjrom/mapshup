@@ -245,6 +245,99 @@
         };
         
         /**
+         * 
+         * Move popup to be centered on pixel
+         * 
+         * @input {Object} MapPixel : pixel in {x,y} relative to the map
+         * 
+         */
+        this.moveTo = function(MapPixel) {
+
+            var x,y,pixel,
+                $d = this.$d,
+                parent = msp.$map,
+                offset = parent.offset();
+
+            /*
+             * If popup is not resizable it cannot be moved
+             */
+            if (!this.resize) {
+                return false;
+            }
+            
+            /*
+             * (0,0) origin of MapPixel is msp.$map
+             * (0,0) origin of pixel is window
+             */
+            pixel = {
+                x:MapPixel.x + offset.left,
+                y:MapPixel.y + offset.top
+            }
+
+            /*
+             * If xy is not (or uncorrectly) defined,
+             * div is centered on "#Map" div
+             */
+            if (!pixel || !pixel.x || !pixel.y) {
+                x = offset.left + ((parent.width() - $d.width()) / 2);
+                y = offset.top + ((parent.height() - $d.height()) / 2);
+            }
+
+            /*
+             * Check if div can be centered on xy
+             */
+            else {
+                /*
+                 * div left is far too left
+                 */
+                if ((pixel.x - ($d.width()/2) < offset.left)) {
+                    x = offset.left;
+                }
+                /**
+                 * div left is far too right
+                 */
+                else if ((pixel.x + ($d.width()/2) > (offset.left + parent.width()))) {
+                    x = offset.left + parent.width() - $d.width();
+                }
+                /**
+                 * div left is ok
+                 */
+                else {
+                    x = pixel.x - ($d.width() / 2);
+                }
+
+                /**
+                 * div top is far too top
+                 */
+                if ((pixel.y - ($d.height()/2) < offset.top)) {
+                    y = offset.top;
+                }
+                /**
+                 * div top is far too bottom
+                 */
+                else if ((pixel.y + ($d.height()/2) > (offset.top + parent.height()))) {
+                    y = offset.top + parent.height() - $d.height();
+                }
+                /**
+                 * div top is ok
+                 */
+                else {
+                    y = pixel.y - ($d.height() / 2)
+                }
+            }
+
+            /*
+             * Apply div css top/left modifications
+             */
+            $d.css({
+                'top':y,
+                'left':x
+            });
+
+            return true;
+        };
+        
+        /**
          * Remove popup
          */
         this.remove = function() {
