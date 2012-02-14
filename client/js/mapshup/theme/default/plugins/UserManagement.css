@@ -38,12 +38,8 @@
  .loginPanel {
      margin:30px;
  }
- .loginPanel input[type="text"], .loginPanel input[type="password"] {
+ .loginPanel input {
      margin:10px 0px;
-     background-color:#999;
-     font-size:1.5em;
-     color:white;
-     width:100%;
  }
  .loginPanel .signin {
      margin:20px 0px;
