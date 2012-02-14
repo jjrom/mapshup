@@ -117,6 +117,7 @@
                  */
                 else {
                     self.popup.show();
+                    $('#userName').focus();
                 }
             });
             
