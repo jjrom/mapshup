@@ -686,7 +686,7 @@
                  */
                 self.popup = new msp.Popup({
                     modal:true,
-                    callback:function(scope){
+                    onClose:function(scope){
                         if (scope.btn) {
                             $('.list a', scope.btn.container.$d).removeClass('active');
                         }
