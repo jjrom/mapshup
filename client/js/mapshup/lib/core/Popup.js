@@ -60,7 +60,7 @@
         /*
          * Function callback called after popup is removed
          */
-        this.callback = options.callback;
+        this.onClose = options.onClose;
         
         /*
          * Html content for header
@@ -240,8 +240,13 @@
          * Hide popup
          */
         this.hide = function() {
-            this.$d.hide();
-            this.$m.hide();
+            var self = this;
+            self.$d.hide();
+            self.$m.hide();
+            if ($.isFunction(self.onClose)) {
+                self.onClose(self.scope);
+            }
+            
         };
         
         /**
@@ -342,9 +347,6 @@
          */
         this.remove = function() {
             this.hide();
-            if ($.isFunction(this.callback)) {
-                this.callback(this.scope);
-            }
             msp.remove(this);
         };
         
