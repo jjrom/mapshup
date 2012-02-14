@@ -134,7 +134,7 @@
             /*
              * Set popup content
              */
-            $('form', self.popup.$b).html('<input id="userName" placeholder="'+msp.Util._("Enter your email")+'" type="text"/><br/><input id="userPassword" type="password" name="pwd" placeholder="'+msp.Util._("Enter your Password")+'" type="text"/><div class="buttons"><a href="#" class="button inline colored" id="'+sid+'">'+msp.Util._("Sign in")+'</a> '+msp.Util._("or")+' <a href="#" class="button inline" id="'+rid+'">'+msp.Util._("Register")+'</a></div><div><input name="rememberme" id="rememberMe" type="checkbox" checked="checked"/>&nbsp;'+msp.Util._("Remember me")+'</div>');
+            $('form', self.popup.$b).html('<label>'+msp.Util._("Enter your email")+'<br/><input id="userName" type="text"/></label><br/><label>'+msp.Util._("Enter your Password")+'<br/><input id="userPassword" type="password" name="pwd" type="text"/></label><div class="signin"><a href="#" class="button inline colored" id="'+sid+'">'+msp.Util._("Sign in")+'</a> <input name="rememberme" id="rememberMe" type="checkbox" checked="checked"/>&nbsp;'+msp.Util._("Remember me")+'</div><div class="register">'+msp.Util._("No account yet ?")+'&nbsp;<a href="#" id="'+rid+'">'+msp.Util._("Register")+'</a></div>');
             
             /*
              * Login button

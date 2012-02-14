@@ -36,16 +36,20 @@
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
  .loginPanel {
-     margin-top:30px;
-     text-align:center;
+     margin:30px;
  }
  .loginPanel input[type="text"], .loginPanel input[type="password"] {
      margin:10px 0px;
      background-color:#999;
      font-size:1.5em;
      color:white;
-     width:80%;
+     width:100%;
  }
- .loginPanel .buttons {
+ .loginPanel .signin {
      margin:20px 0px;
  }
+ .loginPanel .register {
+     margin:20px 0px;
+     color:#999;
+ }
+ 
