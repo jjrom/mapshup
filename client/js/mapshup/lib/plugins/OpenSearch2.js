@@ -301,11 +301,11 @@
                         }
                         
                     }
-                    else if (d.formats.KML) {
-                        type = "KML";
-                    }
                     else if (d.formats.Atom) {
                         type = "Atom"
+                    }
+                    else if (d.formats.KML) {
+                        type = "KML";
                     }
                     else if (d.formats.GeoRSS) {
                         type = "GeoRSS";
