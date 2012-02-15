@@ -57,7 +57,7 @@
         this.init = function(options) {
             
             var controls, key,
-                self = this;
+            self = this;
             
             /**
              * Init options
@@ -69,7 +69,7 @@
              */
             self.options.exportServiceUrl = self.options.exportServiceUrl || "/utilities/export.php?";
 
-             /*
+            /*
              * Create the drawingInfo dialog box
              * This dialog box indicates current mode
              */
@@ -137,45 +137,42 @@
                     /*
                      * Ask user description of newly created feature
                      */
-                    if (!self.descriptionPopup) {
-                        var id = msp.Util.getId();
-                        self.descriptionPopup = new msp.Popup({
-                            modal:false,
-                            noHeader:true,
-                            hideOnClose:true,
-                            autoSize:true,
-                            onClose:function() {
-                                msp.mask.hide();
-                            },
-                            cssClose:{
-                                'top':'-8px',
-                                'right':'-8px'
-                            },
-                            body:'<form class="drawingask"><label>'+msp.Util._("Feature title")+'<br/><input id="featureTitle" type="text"/></label><br/><label>'+msp.Util._("Feature description")+'<br/><input id="featureDesc" type="text"/></label><div style="margin:10px 0px;"><a href="#" class="button inline colored" id="'+id+'">'+msp.Util._("Validate")+'</a></div></form>'
-                        });
-                    }
-                    
-                    /*
-                     * Initialize value
-                     */
-                    $('#featureTitle').val("").focus();
-                    $('#featureDesc').val("");
-
-                    $('#'+id).click(function() {
-                        if (event.feature) {
-                            event.feature.attributes.name = $('#featureTitle').val();
-                            event.feature.attributes.description = $('#featureDesc').val();
-                        }
-                        msp.mask.hide();
-                        self.descriptionPopup.hide();
-                        return false;
+                    var popup = new msp.Popup({
+                        modal:false,
+                        noHeader:true,
+                        autoSize:true,
+                        onClose:function() {
+                            msp.mask.hide();
+                        },
+                        cssClose:{
+                            'top':'-8px',
+                            'right':'-8px'
+                        },
+                        body:'<form class="drawingask"><label>'+msp.Util._("Feature title")+'<br/><input id="featureTitle" type="text"/></label><br/><label>'+msp.Util._("Feature description")+'<br/><input id="featureDesc" type="text"/></label><div style="margin:10px 0px;"><a href="#" class="button inline colored" id="featureDescV">'+msp.Util._("Validate")+'</a></div></form>'
                     });
                     
                     /*
                      * Show drawingDesc
                      */
-                    self.descriptionPopup.moveTo(msp.Map.mousePosition);
-                    self.descriptionPopup.show();
+                    popup.moveTo(msp.Map.mousePosition);
+                    popup.show();
+                    
+                    $('#featureDescV').click(function() {
+                        var f = event.feature;
+                        if (f) {
+                            f.attributes.name = $('#featureTitle').val();
+                            f.attributes.description = $('#featureDesc').val();
+                        }
+                        msp.mask.hide();
+                        popup.remove();
+                        return false;
+                    });
+
+                    /*
+                     * Initialize value
+                     */
+                    $('#featureTitle').val("").focus();
+                    $('#featureDesc').val("");
 
                 }
             });
@@ -251,7 +248,7 @@
         this.askType = function() {
             
             var idPoint,idLine,idPolygon,
-                self = this;
+            self = this;
             
             if (!self.askPopup) {
                 idPoint = msp.Util.getId();
@@ -299,7 +296,7 @@
         this.showStatus = function(type) {
             
             var self = this,
-                id = msp.Util.getId();
+            id = msp.Util.getId();
             
             /*
              * Update the '#drawingInfo' html content
@@ -367,12 +364,12 @@
         this.saveLayer = function() {
 
             var title,kml,
-                self = this;
+            self = this;
                 
             if (self.layer.features.length === 0) {
                 return false;
             }
-
+            
             title = "MyLayer #"+msp.Util.getId();
             kml = msp.Map.Util.KML.layerToKML(self.layer, {
                 color:msp.Util.randomColor(), 
@@ -456,9 +453,6 @@
                 /*
                  * Display the '#drawingAsk' 
                  */
-                if (self.descriptionPopup) {
-                    self.descriptionPopup.hide();
-                }
                 self.askType();
 
             }
@@ -493,8 +487,8 @@
         this.startModifying = function() {
 
             var hlt,
-                self = this,
-                id = msp.Util.getId();
+            self = this,
+            id = msp.Util.getId();
 
             /*
              * Reset control => OpenLayers bug ??

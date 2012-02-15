@@ -245,7 +245,7 @@
                  * Get name and description
                  */
                 for(attribute in feature.attributes) {
-
+                    
                     /*
                      * Name is easy to find :)
                      */
