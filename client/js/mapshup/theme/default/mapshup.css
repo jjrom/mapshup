@@ -398,6 +398,10 @@ input[type="password"]:hover,input[type="text"]:hover {
     height:100%;
     display:inline-block;
 }
+.tbh .item img {
+    max-width:40px;
+    max-height:40px;
+}
 /* Vertical toolbar */
 .tbv {
     height:auto;
