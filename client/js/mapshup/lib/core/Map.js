@@ -640,6 +640,21 @@
 
         /**
          * Load a context
+         * 
+         * Note : every property in a context is optional
+         * 
+         * Context structure :
+         * {
+         *      id: // Unique context identifier
+         *      bg: // Active background layer identifier
+         *      lat: // Latitude of map center
+         *      lon: // Longitude of map center
+         *      zoom: // zoom level of map
+         *      layers: // List of layerDescription to add
+         *      remove: // List of layers to remove (array of identifiers)
+         *      hiddens: // List of hidden layers (array of identifiers)
+         *      searchs: // Search contexts
+         * }
          */
         loadContext: function(context) {
 
