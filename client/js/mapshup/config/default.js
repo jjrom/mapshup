@@ -503,6 +503,10 @@
                 ]
             },
             {
+                name:"Atom",
+                predefined:[]
+            },
+            {
                 name:"GeoJSON",
                 predefined:[]
             },
