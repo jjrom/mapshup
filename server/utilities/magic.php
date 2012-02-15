@@ -141,12 +141,13 @@ if (abcCheck($_REQUEST) && $url != '') {
         /*
          * XML (The Big one :)
          *
-         *  One of
+         *  One contains xml i.e.
          *  - application/xml
          *  - text/xml
          *  - application/atom+xml
          *  - application/rss+xml
-         */ else if ($contentType == "application/xml" || $contentType == "text/xml" || $contentType == "application/atom+xml" || $contentType == "application/rss+xml" || $contentType == "text/plain") {
+         *  - application/rdf+xml
+         */ else if (strrpos($contentType, "xml") !== -1) {
             $doc = new DOMDocument;
             $doc->loadXML($arr["data"]);
             $infos = getLayerInfosFromXML($doc);
