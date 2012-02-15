@@ -26,6 +26,7 @@ lib/core/Map/FeatureInfo.js
 lib/core/Map/LayerDescription.js
 lib/core/Map/SearchContext.js
 
+lib/layerTypes/Atom.js
 lib/layerTypes/Bing.js
 lib/layerTypes/Catalog.js
 lib/layerTypes/Flickr.js
