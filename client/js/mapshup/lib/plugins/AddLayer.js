@@ -669,6 +669,13 @@
             }
             
             /*
+             * Special case for OpenSearch do not show this dialog box
+             */
+            if (a.type === "OpenSearch") {
+                return false;
+            }
+            
+            /*
              * If a is not an array move it to array
              */
             if (!a.length) {
