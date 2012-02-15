@@ -302,12 +302,11 @@
              * Update the '#drawingInfo' html content
              * => drawing mode
              */
-            id = msp.Util.getId();
             if (type === "draw") {
                 self.$d.html(msp.Util._("You are in drawing mode.")+'<br/><a href="#" id="'+id+'">'+msp.Util._("Modification mode")+'</a>');
                 self.addActions(self.$d);
                 $('#'+id).click(function() {
-                    self.startDrawing();
+                    self.startModifying();
                     return false;
                 });
             }
@@ -315,7 +314,7 @@
                 self.$d.html(msp.Util._("You are in modification mode.")+'<br/><a href="#" id="'+id+'">'+msp.Util._("Drawing mode")+'</a>');
                 self.addActions(self.$d);
                 $('#'+id).click(function() {
-                    self.startModifying();
+                    self.startDrawing();
                     return false;
                 });
             }
