@@ -70,12 +70,6 @@
             self.options.exportServiceUrl = self.options.exportServiceUrl || "/utilities/export.php?";
 
             /*
-             * Create the drawingInfo dialog box
-             * This dialog box indicates current mode
-             */
-            self.$d = msp.Util.$$('#drawingInfo', msp.$mcontainer).addClass("boxShadow");
-
-            /*
              * Add "Drawing" item in menu
              */
             if (msp.menu) {
@@ -148,7 +142,7 @@
                             'top':'-8px',
                             'right':'-8px'
                         },
-                        body:'<form class="drawingask"><label>'+msp.Util._("Feature title")+'<br/><input id="featureTitle" type="text"/></label><br/><label>'+msp.Util._("Feature description")+'<br/><input id="featureDesc" type="text"/></label><div style="margin:10px 0px;"><a href="#" class="button inline colored" id="featureDescV">'+msp.Util._("Validate")+'</a></div></form>'
+                        body:'<form class="marged"><label>'+msp.Util._("Feature title")+'<br/><input id="featureTitle" type="text"/></label><br/><label>'+msp.Util._("Feature description")+'<br/><input id="featureDesc" type="text"/></label><div style="margin:10px 0px;"><a href="#" class="button inline colored" id="featureDescV">'+msp.Util._("Validate")+'</a></div></form>'
                     });
                     
                     /*
@@ -211,22 +205,6 @@
                 msp.Map.map.addControl(controls[key]);
             }
 
-            /*
-             * Register events 'resizeend' and 'layersend'
-             */
-            msp.Map.events.register("resizeend", self, function(scope) {
-                
-                /*
-                 * drawingInfo alignment is centered from the top of the map
-                 */
-                scope.$d.css({
-                    'left':((msp.$mcontainer.width() - scope.$d.width()) / 2) + msp.$mcontainer.offset().left,
-                    'top': msp.$mcontainer.offset().top + 50
-                });
-
-                return;
-            });
-            
             msp.Map.events.register("layersend", self, function(action, layer, scope) {
                 
                 /*
@@ -263,7 +241,7 @@
                         'top':'-8px',
                         'right':'-8px'
                     },
-                    body:'<div class="drawingask"><a href="#" id="'+idPoint+'">'+msp.Util._("Point")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_point.png")+'"/>&nbsp;<a href="#" id="'+idLine+'">'+msp.Util._("Line")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_line.png")+'"/><a href="#" id="'+idPolygon+'">'+msp.Util._("Polygon")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_polygon.png")+'"/></div>'
+                    body:'<div class="marged"><a href="#" id="'+idPoint+'">'+msp.Util._("Point")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_point.png")+'"/>&nbsp;<a href="#" id="'+idLine+'">'+msp.Util._("Line")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_line.png")+'"/><a href="#" id="'+idPolygon+'">'+msp.Util._("Polygon")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_polygon.png")+'"/></div>'
                 });
                 /*
                  * Create action for drawingAsk dialog box
@@ -295,66 +273,63 @@
          */
         this.showStatus = function(type) {
             
-            var self = this,
-            id = msp.Util.getId();
+            var txt,
+                id = msp.Util.getId(),
+                self = this;
             
-            /*
-             * Update the '#drawingInfo' html content
-             * => drawing mode
-             */
             if (type === "draw") {
-                self.$d.html(msp.Util._("You are in drawing mode.")+'<br/><a href="#" id="'+id+'">'+msp.Util._("Modification mode")+'</a>');
-                self.addActions(self.$d);
-                $('#'+id).click(function() {
-                    self.startModifying();
-                    return false;
-                });
+                txt = msp.Util._("You are in drawing mode")+'<br/><br/><a href="#" class="button" id="'+id+'">'+msp.Util._("Switch to modification mode")+'</a>';
             }
             else {
-                self.$d.html(msp.Util._("You are in modification mode.")+'<br/><a href="#" id="'+id+'">'+msp.Util._("Drawing mode")+'</a>');
-                self.addActions(self.$d);
-                $('#'+id).click(function() {
-                    self.startDrawing();
-                    return false;
+                txt = msp.Util._("You are in modification mode")+'<br/><br/><a href="#" class="button" id="'+id+'">'+msp.Util._("Switch to drawing mode")+'</a>';
+            }
+            
+            if (!self.infoPopup) {
+                self.infoPopup = new msp.Popup({
+                    modal:false,
+                    noHeader:true,
+                    hideOnClose:true,
+                    autoSize:true,
+                    onClose: function() {
+
+                        /*
+                         * Switch back to Map default control
+                         */
+                        msp.Map.resetControl(self.control);
+                        self.control = null;
+
+                        /*
+                         * Save layer
+                         */
+                        self.saveLayer();
+
+                    },
+                    cssClose:{
+                        'top':'-8px',
+                        'right':'-8px'
+                    }
                 });
             }
             
-        };
-        
-        
-        /*
-         * Add buttons
-         */
-        this.addActions = function(div) {
-        
-            var self = this;
-
             /*
-             * Add the close button
+             * Set popup body
              */
-            msp.Util.addCloseButton(div, function() {
-                
-                /*
-                 * Stop drawing
-                 */
-                self.stopDrawing();
-
-                /*
-                 * Reset the layer
-                 */
-                self.layer.destroyFeatures();
-            });
-
+            self.infoPopup.$b.html('<div class="marged">'+txt+'</div>');
+            
             /*
-             * Add the save and exit button
+             * Display popup
              */
-            div.append('<div class="act actse icncheck" jtitle="'+msp.Util._("Save")+'"></div>');
-            msp.tooltip.add($('.icncheck', div), 'w');
-            $('.icncheck', div).click(function() {
-                self.stopDrawing();
-                self.saveLayer();
+            self.infoPopup.show();
+            self.infoPopup.moveTo({x:msp.$map.width() / 2,y:100});
+            
+            /*
+             * Set popup action
+             */
+            $('#'+id).click(function() {
+                type === "draw" ? self.startModifying() : self.startDrawing();
+                return false;
             });
-
+            
         };
         
         /*
@@ -474,7 +449,6 @@
                 self.control = msp.Map.Util.getControlById(type);
 
                 if (self.control) {
-                    self.$d.show();
                     self.control.activate();
                 }
             }
@@ -486,8 +460,7 @@
         this.startModifying = function() {
 
             var hlt,
-            self = this,
-            id = msp.Util.getId();
+            self = this;
 
             /*
              * Reset control => OpenLayers bug ??
@@ -502,8 +475,7 @@
             self.control = msp.Map.Util.getControlById("__CONTROL_MODIFY__");
 
             /*
-             * Update the $d html content
-             * => modification mode
+             * Change info status
              */
             self.showStatus("modify");
             
@@ -511,24 +483,6 @@
              * Activate control
              */
             self.control.activate();
-        };
-        
-        /**
-         * Exit drawing mode
-         */
-        this.stopDrawing = function() {
-
-            /*
-             * Switch back to Map default control
-             */
-            msp.Map.resetControl(this.control);
-            this.control = null;
-
-            /*
-             * Close drawingInfo
-             */
-            this.$d.hide();
-
         };
         
         /*

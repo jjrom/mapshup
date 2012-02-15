@@ -167,6 +167,8 @@
     i["Stop tracking"]="Stopper le suivi";
     i["Streets"]="Rues";
     i["Streetview"]="Streetview";
+    i["Switch to drawing mode"]="Passer en mode dessin";
+    i["Switch to modification mode"]="Passer en mode modification";
     i["Tags"]="Tags";
     i["The layer cannot be saved"]="La couche ne peut pas être sauvegardée";
     i["this layer already exists. Do you want to replace it ?"]="cette couche existe déjà. Voulez-vous la remplacer?";
@@ -191,8 +193,8 @@
     i["WMS"]="WMS";
     i["Yahoo! Streets"]="Yahoo! : rues";
     i["Yes"]="Oui";
-    i["You are in drawing mode."]="Vous êtes en mode dessin.";
-    i["You are in modification mode."]="Vous êtes en mode modification.";
+    i["You are in drawing mode"]="Vous êtes en mode dessin";
+    i["You are in modification mode"]="Vous êtes en mode modification";
     i["You are not logged in"]="Vous n'êtes pas connecté";
     i["Youtube"]="Youtube";
     i["Zoom"]="Zoomer";

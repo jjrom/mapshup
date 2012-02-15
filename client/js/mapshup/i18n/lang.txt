@@ -46,7 +46,6 @@ Do you really want to remove layer
 Do you really want to remove this tab ?
 Do you really want to sign out ?
 Draw layer
-Drawing mode
 Drop !
 Drop a file here
 Drop files or url on the map
@@ -104,7 +103,6 @@ Log in
 Log out
 Map context successfully saved
 Measure distance
-Modification mode
 My history
 My searches
 Navigation history
@@ -166,6 +164,8 @@ Start tracking
 Stop tracking
 Streets
 Streetview
+Switch to drawing mode
+Switch to modification mode
 Tags
 The layer cannot be saved
 this layer already exists. Do you want to replace it ?
@@ -190,8 +190,8 @@ Wrong login/password - Connection refused
 WMS
 Yahoo! Streets
 Yes
-You are in drawing mode.
-You are in modification mode.
+You are in drawing mode
+You are in modification mode
 You are not logged in
 Youtube
 Zoom

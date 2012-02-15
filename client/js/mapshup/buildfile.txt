@@ -1,5 +1,4 @@
 plugins/Catalog.css
-plugins/Drawing.css
 plugins/Geonames.css
 plugins/LayersManager.css
 plugins/AddLayer.css
