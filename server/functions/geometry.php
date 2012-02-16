@@ -231,4 +231,56 @@ function astroTransform($pos, $t) {
 				      
 }
 
+/*
+ * This is why astro and geo scientists cannot understand themself :)
+ * 
+ * The geo community : longitudes in ESPG:4326 go from -180 to 180 degrees
+ * Damn logical !
+ * 
+ *            --------->
+ * 
+ *    +-----------+-------------+
+ *    |                         |
+ *    |                         |
+ *    |                         |
+ *    |                         |
+ *    |                         |
+ *    +-----------+-------------+
+ *  -180          0            180
+ * 
+ * 
+ * The astro community : longitudes goes from 180 to 0 and 360 to 180 degrees
+ * ...
+ * 
+ *    <----------- <-------------
+ * 
+ *    +-----------+-------------+
+ *    |                         |
+ *    |                         |
+ *    |                         |
+ *    |                         |
+ *    |                         |
+ *    +-----------+-------------+
+ *   180        0/360          180
+ * 
+ * 
+ * @param array $pos Coordinates in spherical reference
+ * @return array $pos Coordinates transformed in EPSG:4326
+ */
+function spheric2proj($pos) {
+    
+    /*
+     * 1. latitude does not change
+     * 2. longitude are processed as follow
+     */
+    if ($pos[0] >= 0 and $pos[0] <= 180) {
+        $pos[0] = -$pos[0];
+    }
+    else {
+        $pos[0] = 360 - $pos[0];
+    }
+    
+    return $pos;
+}
+
 ?>

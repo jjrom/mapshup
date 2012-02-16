@@ -119,12 +119,14 @@ if ($doc->loadXML(getRemoteData($url, null, false))) {
             /*
              * Galactic to Equatorial coordinates transformation
              */
+            $pos = array($ra,$dec);
             if ($r === "e") {
-                $geometry = pointToGeoJSONGeometry($ra, $dec);
+                /* Important : see geometry.php */
+                $pos = spheric2proj($pos);
             }
             else {
-                $pos = eq2gal(array($ra,$dec));
-                $geometry = pointToGeoJSONGeometry($pos[0], $pos[1]);
+                /* Important : see geometry.php */
+                $pos = spheric2proj(eq2gal(array($ra,$dec)));
             }
             
             /*
@@ -132,7 +134,7 @@ if ($doc->loadXML(getRemoteData($url, null, false))) {
              */
             $feature = array(
                 'type' => 'Feature',
-                'geometry' => $geometry,
+                'geometry' => pointToGeoJSONGeometry($pos[0], $pos[1]),
                 'properties' => array(
                     'name' => $result->getElementsByTagname('target')->item(0)->nodeValue,
                     'ra' => $ra,
