@@ -781,34 +781,18 @@ span.osclear input {
 */
 
 .button {
-    background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#5C6166),color-stop(100%,#45494D));
-    background: -webkit-linear-gradient(top,#5C6166,#45494D);
-    background: -moz-linear-gradient(top,#5C6166,#45494D);
-    background: -ms-linear-gradient(top,#5C6166,#45494D);
-    background: -o-linear-gradient(top,#5C6166,#45494D);
-    background: linear-gradient(top,#5C6166,#45494D);
-    border: 1px solid #4E5257;
-    border-radius: 4px 4px 4px 4px;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 1px 0 rgba(255, 255, 255, 0.1);
+    background: #5C6166;
+    border-radius: 2px 2px 2px 2px;
+    font-family:arial, sans-serif;
     color: #FFFFFF;
     display: block;
-    line-height: 18px;
     padding: 6px;
     position: relative;
     text-align: center;
     text-decoration: none;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
 }
 .button:hover {
-    background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#939CA3),color-stop(100%,#7C838A));
-    background: -webkit-linear-gradient(top,#939CA3,#7C838A);
-    background: -moz-linear-gradient(top,#939CA3,#7C838A);
-    background: -ms-linear-gradient(top,#939CA3,#7C838A);
-    background: -o-linear-gradient(top,#939CA3,#7C838A);
-    background: linear-gradient(top,#939CA3,#7C838A);
-    -webkit-box-shadow: inset 0 1px 0 rgba(0,0,0,0.2),0 1px 0 rgba(255,255,255,0.1);
-    -moz-box-shadow: inset 0 1px 0 rgba(0,0,0,0.2),0 1px 0 rgba(255,255,255,0.1);
-    box-shadow: inset 0 1px 0 rgba(0,0,0,0.2),0 1px 0 rgba(255,255,255,0.1);
+    background:#939CA3;
 }
 
 .button.inline {
@@ -816,27 +800,9 @@ span.osclear input {
 }
 .button.colored {
     background: #E57300;
-    background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#C76400),color-stop(100%,#BD5300));
-    background: -webkit-linear-gradient(top,#C76400,#BD5300);
-    background: -moz-linear-gradient(top,#C76400,#BD5300);
-    background: -ms-linear-gradient(top,#C76400,#BD5300);
-    background: -o-linear-gradient(top,#C76400,#BD5300);
-    background: linear-gradient(top,#C76400,#BD5300);
-    -webkit-box-shadow: inset 0 1px rgba(255,156,0,0.5),0 1px 0 rgba(255,255,255,0.1);
-    -moz-box-shadow: inset 0 1px rgba(255,156,0,0.5),0 1px 0 rgba(255,255,255,0.1);
-    box-shadow: inset 0 1px rgba(255,156,0,0.5),0 1px 0 rgba(255,255,255,0.1);
 }
 .button.colored:hover {
     background: #D17000;
-    background: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#D17000),color-stop(100%,#212529));
-    background: -webkit-linear-gradient(top,#D17000,#C66000);
-    background: -moz-linear-gradient(top,#D17000,#C66000);
-    background: -ms-linear-gradient(top,#D17000,#C66000);
-    background: -o-linear-gradient(top,#D17000,#C66000);
-    background: linear-gradient(top,#D17000,#C66000);
-    -webkit-box-shadow: inset 0 1px 0 0 rgba(0,0,0,0.4),0 1px 0 rgba(255,255,255,0.1);
-    -moz-box-shadow: inset 0 1px 0 0 rgba(0,0,0,0.4),0 1px 0 rgba(255,255,255,0.1);
-    box-shadow: inset 0 1px 0 0 rgba(0,0,0,0.4),0 1px 0 rgba(255,255,255,0.1);
 }
 
 .button.facebook {
