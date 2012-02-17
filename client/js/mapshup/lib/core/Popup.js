@@ -143,7 +143,7 @@
              * Popup structure
              * 
              * <div id="..." class="po">
-             *      <div class="shadow">
+             *      <div class="whole">
              *          <div class="header"> // optional
              *          <div class="body">
              *      </div>
@@ -151,7 +151,7 @@
              *  </div>
              */
             h = self.noHeader ? ''  : '<div class="header"></div>';
-            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$mcontainer).addClass('po').html('<div class="whole shadow">'+h+'<div class="body"></div></div>');
+            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$mcontainer).addClass('po').html('<div class="whole">'+h+'<div class="body"></div></div>');
 
             /*
              * Set automatic popup size or not ?
