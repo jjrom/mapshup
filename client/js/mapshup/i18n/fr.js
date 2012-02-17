@@ -55,6 +55,8 @@
     i["Email"]="Email";
     i["Embed code in your website"]="Intégrer le code dans votre site web";
     i["Enter an url"]="Entrer une URL";
+    i["Enter your email"]="Entrer votre email";
+    i["Enter your password"]="Entrer votre mot de passe";
     i["Entering 2D mode"]="Vous entrez en mode 2D";
     i["Entering 3D mode"]="Vous entrez en mode 3D";
     i["entities"]="entités";
@@ -111,6 +113,7 @@
     i["Navigation history"]="Historique de navigation";
     i["Next view"]="Vue suivante";
     i["No"]="Non";
+    i["No account yet ?"]="Pas encore de compte ?";
     i["No description available"]="Pas de description disponible";
     i["No information available here"]="Pas d'information disponible à cet endroit";
     i["No layers available"]="Pas de couches disponibles";

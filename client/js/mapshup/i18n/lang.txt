@@ -53,6 +53,8 @@ Elevation (m)
 Email
 Embed code in your website
 Enter an url
+Enter your email
+Enter your password
 Entering 2D mode
 Entering 3D mode
 entities
@@ -108,6 +110,7 @@ My searches
 Navigation history
 Next view
 No
+No account yet ?
 No description available
 No information available here
 No layers available
