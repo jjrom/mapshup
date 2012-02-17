@@ -85,13 +85,6 @@ a.image:hover {
     border-bottom:1px solid #c76400;
 }
 
-a:hover, .mask .loading a {
-    background-color:#666;
-    color:#fff;
-    box-shadow: 1px 1px 5px 0 rgba(128,128,128,0.5);
-    text-shadow: black 1px 1px 3px;
-}
-
 img {
     border-width:0px;
 }
@@ -311,6 +304,12 @@ input[type="password"]:hover,input[type="text"]:hover {
 }
 .mask .loading {
     margin-top:10px;
+}
+.mask .loading a {
+    background-color:#666;
+    color:#fff;
+    box-shadow: 1px 1px 5px 0 rgba(128,128,128,0.5);
+    text-shadow: black 1px 1px 3px;
 }
 
 /**
@@ -779,7 +778,6 @@ span.osclear input {
 /**
  * Button
 */
-
 .button {
     background: #5C6166;
     border-radius: 2px 2px 2px 2px;
