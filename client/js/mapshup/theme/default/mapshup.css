@@ -54,8 +54,7 @@ html,body {
     height:100%;
 }
 body {
-    /*font: 14px Verdana,Arial,sans-serif;*/
-    font: 14px Tahoma,sans-serif;
+    font: 14px Arial,Sans-serif;
     color:#000;
     background-color:transparent;
     /* Everything is on one page */
@@ -785,7 +784,7 @@ span.osclear input {
 .button {
     background: #5C6166;
     border-radius: 2px 2px 2px 2px;
-    font-family:arial, sans-serif;
+    font-family:Arial, sans-serif;
     color: #FFFFFF;
     display: block;
     padding: 6px;
@@ -1003,7 +1002,7 @@ span.osclear input {
  * OpenLayers css #c76400efinition
 */
 div.olControlMousePosition {
-    font:normal 12px arial,tahoma,sans-serif;
+    font:normal 12px Arial,Tahoma,Sans-serif;
     position: absolute;
     top: 0px;
 }
