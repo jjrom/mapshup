@@ -624,7 +624,7 @@ input:focus {
     font:12px Arial,Helvetica,Sans-serif;
     color: #999;
     width:250px;
-    height: 16px;
+    height:auto;
     padding: 6px 15px 6px 35px;
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
