@@ -130,7 +130,7 @@
                  * then we unselect the feature
                  */
                 if (action === "remove") {
-                    if (scope.selected && scope.selected.layer.id === layer.id) {
+                    if (scope.selected && scope.selected.layer && scope.selected.layer.id === layer.id) {
                         scope.unselect(scope.selected);
                     }
                 }
