@@ -69,6 +69,38 @@ $type = MSP_UNKNOWN;
  */
 if (abcCheck($_REQUEST) && $url != '') {
 
+    /*
+     * Parse url to extract request=GetCapabilities
+     */
+    
+    $elems = parse_url($url);
+    if ($elems["query"]) {
+        
+        /*
+         * Extract key/value pairs from url
+         */
+        $kvps = explode('&', html_entity_decode($elems["query"]));
+        foreach ($kvps as $kvp) {
+            
+            $k = explode('=', $kvp);
+            
+            /*
+             * Check for a request key
+             */
+            if ($k[0] === "request" && strtolower($k[1]) === "getcapabilities") {
+
+                /*
+                 * Rebuild url without request=GetCapabilities 
+                 */
+                 $url = str_replace("request=".$k[1], "", $url);
+                 break;
+            }
+            
+        }
+        
+    }
+    
+    
     /**
      * Send a GET request $url
      *
@@ -84,8 +116,6 @@ if (abcCheck($_REQUEST) && $url != '') {
     else {
         $arr = getRemoteData($url . "&request=GetCapabilities", null, true);
     }
-    // TODO
-    $urlNoParameters = null;
     
     /*
      * Info array
@@ -166,7 +196,7 @@ if (abcCheck($_REQUEST) && $url != '') {
      * Push items
      */
     $item = array(
-        'url' => $urlNoParameters != null ? $urlNoParameters : $url,
+        'url' => $url,
         'id' => $id,
         'content_type' => $contentType
     );
