@@ -46,6 +46,7 @@ lib/layerTypes/TMS.js
 lib/layerTypes/WFS.js
 lib/layerTypes/WMS.js
 lib/layerTypes/Wikipedia.js
+lib/layerTypes/XYZ.js
 lib/layerTypes/Youtube.js
 
 #lib/plugins/BackgroundsManager.js
