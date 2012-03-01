@@ -1473,7 +1473,7 @@
              *  - if it is requested in the query
              *  - and if msp.Config.general.confirmDeletion is set to true
              */
-            if (confirm) {
+            if (confirm && msp.Config["general"].confirmDeletion) {
 
                 msp.Util.askFor(msp.Util._("Delete layer"), msp.Util._("Do you really want to remove layer")+" "+layer.name, "list", [{
                     title:msp.Util._("Yes"), 
