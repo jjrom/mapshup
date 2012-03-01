@@ -178,8 +178,10 @@
             $.extend(options,
             {
                 buffer:0,
+                wrapDateLine:true,
+                transitionEffect:'resize',
                 /* WMS can be set as background (isBaseLayer:true) or as overlay */
-                isBaseLayer:layerDescription.hasOwnProperty('isBaseLayer') ? layerDescription.isBaseLayer : false
+                isBaseLayer:msp.Util.getPropertyValue(layerDescription, "isBaseLayer", false)
             }
             );
             
