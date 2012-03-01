@@ -70,8 +70,10 @@
              */
             $.extend(options,
             {
-                isBaseLayer:true,
+                /* MBT can be set as background (isBaseLayer:true) or as overlay */
+                isBaseLayer:msp.Util.getPropertyValue(layerDescription, "isBaseLayer", true),
                 sphericalMercator:true,
+                wrapDateLine:true,
                 numZoomLevels:msp.Util.getPropertyValue(layerDescription, "numZoomLevels", msp.Map.map.getNumZoomLevels()),
                 transitionEffect:'resize'
             }
