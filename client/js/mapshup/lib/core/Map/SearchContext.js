@@ -56,6 +56,12 @@
     msp.Map.SearchContext = function(layer, connector, nextRecord, numRecordsPerPage, btn, callback, scope) {
 
         /**
+         * If autoSearch is set to true, search() functionis triggered
+         * each time an item is added/removed/updated from the items list
+         */
+        this.autoSearch = false;
+
+        /**
          * Layer reference
          */
         this.layer = layer;
@@ -232,8 +238,15 @@
                              * newItem son is already defined
                              */
                             if (newItem.son[0].id === item.son[j].id) {
+                                
                                 item.son[j].value = newItem.son[0].value;
                                 item.son[j].title = newItem.son[0].title;
+                                
+                                /* Automatically trigger search() function if requested */
+                                if (this.autoSearch) {
+                                    this.search();
+                                }
+                                
                                 return true;
                             }
                         }
@@ -244,6 +257,10 @@
                         item.son.push(newItem.son[0]);
                     }
 
+                    /* Automatically trigger search() function if requested */
+                    if (this.autoSearch) {
+                        this.search();
+                    }
                     return true;
                 }
             }
@@ -254,6 +271,11 @@
              */
             this.items.push(newItem);
 
+            /* Automatically trigger search() function if requested */
+            if (this.autoSearch) {
+                this.search();
+            }
+            
             return true;
         };
 
@@ -261,7 +283,14 @@
          * Clear the search context
          */
         this.clear = function() {
+            
             this.items = [];
+            
+            /* Automatically trigger search() function if requested */
+            if (this.autoSearch) {
+                this.search();
+            }
+            
         };
 
         /**
@@ -381,11 +410,14 @@
          * at father level
          */
         this.remove = function(id, fatherId) {
-
+            
+            var i,j,l,m,
+                self=this;
+                
             /*
              * Roll over items
              */
-            for (var i = 0, l = this.items.length; i < l; i++){
+            for (i = 0, l = self.items.length; i < l; i++){
 
                 /*
                  * fatherId is null means that 'id' is a father
@@ -395,13 +427,18 @@
                     /*
                      * id is found
                      */
-                    if (id === this.items[i].id) {
+                    if (id === self.items[i].id) {
 
                         /*
                          * Remove item id from items list
                          */
-                        this.items.splice(i,1);
+                        self.items.splice(i,1);
 
+                        /* Automatically trigger search() function if requested */
+                        if (self.autoSearch) {
+                            self.search();
+                        }
+                        
                         return true;
                     }
                 }
@@ -414,31 +451,34 @@
                     /*
                      * father "fatherId" is found
                      */
-                    if (fatherId === this.items[i].id) {
+                    if (fatherId === self.items[i].id) {
 
                         /*
                          * Roll over each father's son(s)
                          */
-                        var m = this.items[i].son.length;
-                        for (var j = 0; j < m; j++) {
+                        for (j = 0, m = self.items[i].son.length; j < m; j++) {
 
                             /*
                              * son "id" is found
                              */
-                            if (id === this.items[i].son[j].id) {
+                            if (id === self.items[i].son[j].id) {
 
                                 /*
                                  * Remove the son from sons
                                  */
-                                this.items[i].son.splice(j,1);
+                                self.items[i].son.splice(j,1);
 
                                 /*
                                  * If there is no more son, remove the son array
                                  */
-                                if (this.items[i].son.length === 0) {
-                                    this.items.splice(i,1);
+                                if (self.items[i].son.length === 0) {
+                                    self.items.splice(i,1);
                                 }
 
+                                /* Automatically trigger search() function if requested */
+                                if (self.autoSearch) {
+                                    self.search();
+                                }
                                 return true;
                             }
                         }
@@ -457,9 +497,9 @@
         this.search = function(bounds, nextRecord) {
 
             var key,
-                extras = "",
-                layer = this.layer,
-                self = this;
+            extras = "",
+            layer = this.layer,
+            self = this;
 
             /*
              * Set nextRecord
@@ -616,7 +656,7 @@
                  * Create the geographical equivalent to the given bounds
                  */
                 var geoBounds = msp.Map.Util.p2d(bounds.clone()),
-                    item = {
+                item = {
                     id:"bbox",
                     title:msp.Util._("Search Area"),
                     son: [{
