@@ -99,6 +99,11 @@
             layerDescription.srs = msp.Util.getPropertyValue(layerDescription, "srs", Map.epsg4326.projCode);
 
             /*
+             * Set version default to 1.1.1 if not specified
+             */
+            version = layerDescription.version || "1.1.0";
+            
+            /*
              * Check mandatory properties
              */
             if (!(new Map.LayerDescription(layerDescription, Map)).isValid()) {
@@ -154,24 +159,16 @@
                 avoidBoundError = 1;
             }
 
-            /*
-             * Set version default to 1.1.1 if not specified
-             */
-            version = layerDescription.version || "1.1.0";
+            $.extend(options["_msp"],
+            {
+                /* A WMS cannot be "selectable" */
+                selectable:false,
+                bounds:Map.Util.d2p(new OpenLayers.Bounds(parseFloat(BBOX[0]) + avoidBoundError, parseFloat(BBOX[1])  + avoidBoundError, parseFloat(BBOX[2])  - avoidBoundError, parseFloat(BBOX[3]) - avoidBoundError)),
+                allowChangeOpacity:true,
+                /* A WMS should have a GetLegendGraphic function to retrieve a Legend */
+                legend:layerDescription.url + "service=WMS&&version="+version+"&format=image/png&request=GetLegendGraphic&layer="+layerDescription.layers
+            });
             
-            /*
-             * A WMS cannot be "selectable"
-             * Thus this property cannot be overriden
-             */
-            options["_msp"].selectable = false;
-            options["_msp"].bounds = Map.Util.d2p(new OpenLayers.Bounds(parseFloat(BBOX[0]) + avoidBoundError, parseFloat(BBOX[1])  + avoidBoundError, parseFloat(BBOX[2])  - avoidBoundError, parseFloat(BBOX[3]) - avoidBoundError));
-            options["_msp"].allowChangeOpacity = true;
-            
-            /*
-             * A WMS should have a GetLegendGraphic function to retrieve a Legend
-             */
-            options["_msp"].legend = layerDescription.url + "service=WMS&&version="+version+"&format=image/png&request=GetLegendGraphic&layer="+layerDescription.layers;
-                
             /*
              * Extend options object with WMS specific properties
              */
