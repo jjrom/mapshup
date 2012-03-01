@@ -61,14 +61,21 @@
                 numZoomLevels:msp.Util.getPropertyValue(layerDescription, "numZoomLevels", msp.Map.map.getNumZoomLevels()),
                 sphericalMercator: true,
                 wrapDateLine:true,
-                transitionEffect:'resize'
+                transitionEffect:'resize',
+                /* XYZ can be set as background (isBaseLayer:true) or as overlay */
+                isBaseLayer:msp.Util.getPropertyValue(layerDescription, "isBaseLayer", true)
             }
             );
-
+                
             /*
              * selectable cannot be overriden
              */
             options["_msp"].selectable = false;
+            
+            /*
+             * Transparency selection cannot be overriden
+             */
+            options["_msp"].allowChangeOpacity = true;
 
             /*
              * Layer creation
