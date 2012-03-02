@@ -68,7 +68,7 @@
          * If autoSearch is set to true, search() function is triggered
          * each time an item is added/removed/updated from the items list
          */
-        this.autoSearch = msp.Util.getPropertyValue(options, "autosearch", false);
+        this.autoSearch = msp.Util.getPropertyValue(options, "autoSearch", false);
 
         /**
          * msp.Button attached to the search results
