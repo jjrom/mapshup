@@ -40,27 +40,46 @@
  * Search context function
  * One searchContext should be initialized for each catalog layer within the
  * _msp.searchContext property
- * (i.e. layer["_msp"].searchContext = new msp.plugins["Catalog"].SearchContext(layer,connector,nextRecord,numRecordsPerPage); )
+ * (i.e. layer["_msp"].searchContext = new msp.plugins["Catalog"].SearchContext(layer,connector,btn,options);)
  *
  * @input layer : catalog layer
  * @input connector : catalog connector
- * @input nextRecord : next record value
- * @input numRecordsPerPage : Maximum number of records per page
- * @input btn : msp.Button to store search results
- * @input callback : function to call after a successfull search
- * @input scope : scope of the callback function
- *
+ * @input btn: reference to button
+ * @input options : possible options are
+ * {
+ *      autosearch : true to set an auto search mode
+ *      nextRecord : next record value
+ *      numRecordsPerPage : Maximum number of records per page
+ *      callback : function to call after a successfull search
+ *      scope : scope of the callback function
+ * }
+ * 
  */
 (function(msp) {
     
-    msp.Map.SearchContext = function(layer, connector, nextRecord, numRecordsPerPage, btn, callback, scope) {
+    msp.Map.SearchContext = function(layer, connector, btn, options) {
 
+        /*
+         * Paranoid mode
+         */
+        options = options || {};
+        
         /**
-         * If autoSearch is set to true, search() functionis triggered
+         * If autoSearch is set to true, search() function is triggered
          * each time an item is added/removed/updated from the items list
          */
-        this.autoSearch = false;
+        this.autoSearch = msp.Util.getPropertyValue(options, "autosearch", false);
 
+        /**
+         * msp.Button attached to the search results
+         */
+        this.btn = btn;
+        
+        /**
+         * Connector reference
+         */
+        this.connector = connector;
+        
         /**
          * Layer reference
          */
@@ -69,12 +88,12 @@
         /**
          * Next record value
          */
-        this.nextRecord = nextRecord || 1;
+        this.nextRecord = msp.Util.getPropertyValue(options, "nextRecord", 1);
 
         /**
          * Maximum number of records per page
          */
-        this.numRecordsPerPage = numRecordsPerPage || 20;
+        this.numRecordsPerPage = msp.Util.getPropertyValue(options, "numRecordsPerPage", 20);
 
         /**
          * Maximum number of results for this search context
@@ -82,29 +101,14 @@
         this.totalResults = 0;
 
         /**
-         * Connector reference
-         */
-        this.connector = connector;
-
-        /**
-         * Set catalog endPoint url (i.e. search url)
-         */
-        this.catalogUrl = msp.Util.getAbsoluteUrl(msp.Util.repareUrl(layer["_msp"].layerDescription.url));
-
-        /**
-         * msp.Button attached to the search results
-         */
-        this.btn = btn;
-
-        /**
          * Callback function to be called when search is successfully performed
          */
-        this.callback = callback;
+        this.callback = options.callback;
 
         /**
          * Scope for the Callback function
          */
-        this.scope = scope;
+        this.scope = options.scope;
         
         /**
          * When useGeo is set to true, search is restricted to the map view extent

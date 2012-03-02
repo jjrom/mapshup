@@ -288,7 +288,7 @@
             }
 
             var i,j,l,m,add,_msp,filters,cFilters,
-                layer = connector.catalog;
+            layer = connector.catalog;
 
             /*
              * !! Layer was removed before registration !!
@@ -397,7 +397,13 @@
                 /*
                  * Set new SearchContext
                  */ 
-                _msp.searchContext = new msp.Map.SearchContext(layer, connector, layer["_msp"].layerDescription.nextRecord || scope.options.nextRecord, layer["_msp"].layerDescription.numRecordsPerPage || scope.options.numRecordsPerPage, btn, scope.searchPanel.show, scope);
+                _msp.searchContext = new msp.Map.SearchContext(layer, connector, btn, {
+                    autoSearch:msp.Util.getPropertyValue(layer["_msp"].layerDescription, "autoSearch", false),
+                    nextRecord:layer["_msp"].layerDescription.nextRecord || scope.options.nextRecord, 
+                    numRecordsPerPage:layer["_msp"].layerDescription.numRecordsPerPage || scope.options.numRecordsPerPage, 
+                    callback:scope.searchPanel.show, 
+                    scope:scope
+                });
 
                 /*
                  * Clean layerDescription.nextRecord and layerDescription.numRecordsPerPage to avoid confusion
