@@ -277,10 +277,10 @@
                 }
             }
             /*
-             * By default call WMS with version set to 1.3.0
+             * By default call WMS with version set to 1.1.0
              */
             msp.Util.ajax({
-                url:msp.Util.proxify(msp.Util.repareUrl(layerDescription.url+"request=GetCapabilities&service=WMS&version=1.3.0"), "XML"),
+                url:msp.Util.proxify(msp.Util.repareUrl(layerDescription.url+"request=GetCapabilities&service=WMS&version=1.1.0"), "XML"),
                 async:true,
                 success:function(data, textStatus, XMLHttpRequest) {
 
