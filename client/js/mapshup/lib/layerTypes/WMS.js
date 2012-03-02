@@ -373,7 +373,16 @@
              */
             capabilities = layerDescription.capabilities;
 
+            /*
+             * Error
+             */
             if (!capabilities || !capabilities.capability) {
+                a = {
+                    type:"error",
+                    error:{
+                        message:"Error performing GetCapabilities operation"
+                    }
+                };
                 return a;
             }
             else {
