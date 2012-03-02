@@ -243,7 +243,7 @@
                                 item.son[j].title = newItem.son[0].title;
                                 
                                 /* Automatically trigger search() function if requested */
-                                if (this.autoSearch) {
+                                if (this.autoSearch && newItem.id !== "bbox") {
                                     this.search();
                                 }
                                 
@@ -258,9 +258,10 @@
                     }
 
                     /* Automatically trigger search() function if requested */
-                    if (this.autoSearch) {
+                    if (this.autoSearch && newItem.id !== "bbox") {
                         this.search();
                     }
+                                
                     return true;
                 }
             }
@@ -272,7 +273,7 @@
             this.items.push(newItem);
 
             /* Automatically trigger search() function if requested */
-            if (this.autoSearch) {
+            if (this.autoSearch && newItem.id !== "bbox") {
                 this.search();
             }
             
@@ -283,14 +284,8 @@
          * Clear the search context
          */
         this.clear = function() {
-            
             this.items = [];
-            
-            /* Automatically trigger search() function if requested */
-            if (this.autoSearch) {
-                this.search();
-            }
-            
+            this.setGeo(this.useGeo);
         };
 
         /**
@@ -412,7 +407,7 @@
         this.remove = function(id, fatherId) {
             
             var i,j,l,m,
-                self=this;
+            self=this;
                 
             /*
              * Roll over items
@@ -435,7 +430,7 @@
                         self.items.splice(i,1);
 
                         /* Automatically trigger search() function if requested */
-                        if (self.autoSearch) {
+                        if (self.autoSearch && fatherId !== "bbox") {
                             self.search();
                         }
                         
@@ -476,7 +471,7 @@
                                 }
 
                                 /* Automatically trigger search() function if requested */
-                                if (self.autoSearch) {
+                                if (self.autoSearch  && fatherId !== "bbox") {
                                     self.search();
                                 }
                                 return true;
@@ -623,15 +618,19 @@
             return true;
 
         };
-
+                                
         /*
          * Set use of search bbox 
          * 
          * @input <booelean> b: true to use search bbox. false otherwise
+         * 
          */
         this.setGeo = function(b) {
             this.useGeo = b;
             this.setBBOX(this.useGeo ? msp.Map.map.getExtent() : null);
+            if (this.autoSearch) {
+                this.search();
+            }
         };
         
         /**

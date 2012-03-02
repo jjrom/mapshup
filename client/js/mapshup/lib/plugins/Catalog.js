@@ -1077,7 +1077,7 @@
                  * Set back search BBOX to the map bounds
                  */
                 if (bounds) {
-                    sc.setGeo(sc.useGeo);
+                    sc.setBBOX(sc.useGeo ? msp.Map.map.getExtent() : null);
                 }
             }  
 
