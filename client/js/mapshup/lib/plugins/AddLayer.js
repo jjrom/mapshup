@@ -676,6 +676,14 @@
             }
             
             /*
+             * Special case for error
+             */
+            if (a.type === "error") {
+                msp.Util.message(msp.Util._(a.error["message"]));
+                return false;
+            }
+            
+            /*
              * If a is not an array move it to array
              */
             if (!a.length) {
