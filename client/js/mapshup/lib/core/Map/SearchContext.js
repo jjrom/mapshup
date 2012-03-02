@@ -375,7 +375,7 @@
             /*
              * Launch a search
              */
-            return this.search(null, p);
+            return this.search(p);
         };
 
         /**
@@ -399,7 +399,7 @@
             /*
              * Launch a search
              */
-            return this.search(null, p);
+            return this.search(p);
 
         };
 
@@ -494,7 +494,7 @@
          *
          * @input <int> nextRecord : nextRecord to search (optional)
          */
-        this.search = function(bounds, nextRecord) {
+        this.search = function(nextRecord) {
 
             var key,
             extras = "",
@@ -506,19 +506,6 @@
              */
             nextRecord = nextRecord || 1;
 
-            /*
-             * Set bounds if defined
-             */
-            if (bounds) {
-                self.setBBOX(bounds);
-            }
-            /*
-             * else bounds is set depending on useGeo value
-             */
-            else {
-                self.setBBOX(self.useGeo ? msp.Map.map.getExtent() : null);
-            }
-            
             /*
              * Set extras parameters
              */
@@ -637,8 +624,18 @@
 
         };
 
+        /*
+         * Set use of search bbox 
+         * 
+         * @input <booelean> b: true to use search bbox. false otherwise
+         */
+        this.setGeo = function(b) {
+            this.useGeo = b;
+            this.setBBOX(this.useGeo ? msp.Map.map.getExtent() : null);
+        };
+        
         /**
-         * Set the boox to the given bounds
+         * Set the bbox to the given bounds
          *
          * @input <OpenLayers.Bounds> bounds : bounds in map projection
          */
@@ -721,6 +718,17 @@
 
         };
         
+        /*
+         * Change search BBOX on map move
+         */
+        msp.Map.events.register("moveend", this, function(map, scope) {
+            scope.setBBOX(scope.useGeo ? map.getExtent() : null);
+        });
+        
+        /*
+         * Return this object
+         */
+        return this;
     };
     
 })(window.msp);

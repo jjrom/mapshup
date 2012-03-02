@@ -834,7 +834,7 @@
                              * a zoom on catalog result after a successfull search
                              */
                             layer["_msp"].zoomOnAfterLoad = false;
-                            searchContext.search(null,searchs[i].nextRecord);
+                            searchContext.search(searchs[i].nextRecord);
 
                         }
                     }
@@ -1519,6 +1519,13 @@
              */
             if (layer["_msp"] && layer["_msp"].group) {
                 layer["_msp"].group.remove(layer);
+            }
+            
+            /*
+             * Remove SearchContext within layer
+             */
+            if (layer["_msp"] && layer["_msp"].SearchContext) {
+                msp.remove(layer["_msp"].SearchContext);
             }
 
             /*

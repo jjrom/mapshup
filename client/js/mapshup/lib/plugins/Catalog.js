@@ -565,7 +565,7 @@
                     /*
                      * Swap search restriction between map view extent or to full extent
                      */
-                    sc.useGeo = $(this).attr("checked") === "checked" ? true : false;
+                    sc.setGeo($(this).attr("checked") === "checked" ? true : false);
                 });
                 
                 /*
@@ -1045,26 +1045,40 @@
          */
         this.searchAll = function (bounds,initialize) {
 
-            var j,l,catalog;
+            var j,l,sc;
             
             /**
              * Roll over each catalogs
              */
             for (j = 0, l = this.registeredCatalogs.length; j < l; j++) {
-                catalog = this.registeredCatalogs[j];
+                sc = this.registeredCatalogs[j]["_msp"].searchContext;
 
                 /**
                  * initialize is set to true => force nextRecord to 1
                  * (i.e. start a new search for each catalog)
                  */
                 if (initialize) {
-                    catalog["_msp"].searchContext.nextRecord = 1;
+                    sc.nextRecord = 1;
                 }
 
                 /**
+                 * Set the search BBOX to the current bounds
+                 */
+                if (bounds) {
+                    sc.setBBOX(bounds);
+                }
+                
+                /**
                  * Launch an unitary search for catalog
                  */
-                catalog["_msp"].searchContext.search(bounds);
+                sc.search();
+                
+                /**
+                 * Set back search BBOX to the map bounds
+                 */
+                if (bounds) {
+                    sc.setGeo(sc.useGeo);
+                }
             }  
 
             return true;
