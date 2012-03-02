@@ -904,7 +904,7 @@
                                         if (father.unique) {
                                             $(this).parent().children().removeClass('active');
                                             for (var i = 0, l = father.son.length; i < l; i++) {
-                                                sc.remove(father.son[i].id, father.id);
+                                                sc.remove(father.son[i].id, father.id, true);
                                             }
                                         }
 

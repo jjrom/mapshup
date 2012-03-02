@@ -407,12 +407,14 @@
          *
          * If fatherId is null then it is assumes that 'id' is already
          * at father level
+         * 
+         * @input <boolean> noauto : if true, autosearch is deactivated
          */
-        this.remove = function(id, fatherId) {
+        this.remove = function(id, fatherId, noauto) {
             
             var i,j,l,m,
             self=this;
-                
+             
             /*
              * Roll over items
              */
@@ -434,8 +436,10 @@
                         self.items.splice(i,1);
 
                         /* Automatically trigger search() function if requested */
-                        if (self.autoSearch && fatherId !== "bbox") {
-                            self.search();
+                        if (!noauto) {
+                            if (self.autoSearch && fatherId !== "bbox") {
+                                self.search();
+                            }
                         }
                         
                         return true;
@@ -475,8 +479,10 @@
                                 }
 
                                 /* Automatically trigger search() function if requested */
-                                if (self.autoSearch  && fatherId !== "bbox") {
-                                    self.search();
+                                if (!noauto) {
+                                    if (self.autoSearch  && fatherId !== "bbox") {
+                                        self.search();
+                                    }
                                 }
                                 return true;
                             }
