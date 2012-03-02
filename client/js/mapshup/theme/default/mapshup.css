@@ -751,6 +751,16 @@ span.osclear input {
 /* End : for popup image */
 
 
+/*
+ * CSS definition for subscript text
+ */
+.subscript {
+    font-size:xx-small;
+    vertical-align:bottom;
+    top:1em;
+    position:relative;
+}
+
 /* Expand width and height to the max */
 .whole {
     height:100%;
