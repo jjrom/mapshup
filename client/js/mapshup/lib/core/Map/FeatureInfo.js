@@ -791,17 +791,20 @@
          */
         this.select = function(feature, _triggered) {
 
-            var c,
-            i,
-            bounds,
-            length,
-            ran,
-            self = this;
+            var c,i,bounds,length,ran,self = this;
             
             /*
              * Set select time (see unselect function)
              */
             self._tse = (new Date()).getTime();
+            
+            /*
+             * Get Lon/Lat click position
+             * If global _triggered is set to true then previous select was triggered by a process
+             * and not by a user click. In this case the Lon/Lat click position is set on the middle
+             * of the map
+             */
+            self._ll = self._triggered ? msp.Map.map.getCenter() : msp.Map.map.getLonLatFromPixel(msp.Map.mousePosition);
             
             /*
              * This is a bit tricky...
@@ -820,6 +823,11 @@
                 }
                 return c.select(feature);
             }
+            
+            /*
+             * Set _triggered to false (see above)
+             */
+            self._triggered = false;
             
             /*
              * If the feature belongs to a layer with a SearchContext
@@ -886,11 +894,6 @@
             msp.menu.hide();
             
             /*
-             * Set _triggered to false (see trick above)
-             */
-            self._triggered = false;
-            
-            /*
              * Set the current selected object
              */
             msp.Map.featureInfo.selected = feature;
@@ -927,13 +930,10 @@
                     onclose:function(btn) {
                         
                         /*
-                         * Unselect feature with the _triggered trick to avoid display
-                         * of menu when unselect the feature
+                         * Unselect feature
                          */
                         if (btn.feature && btn.feature.layer) {
-                            msp.Map.featureInfo._triggered = true;
                             msp.Map.Util.getControlById("__CONTROL_SELECT__").unselect(btn.feature);
-                            msp.Map.featureInfo._triggered = false;
                         }
                         
                         /*
@@ -1058,7 +1058,7 @@
                 self = this;
             if (self.selected && self.selected.geometry) {
                 self.$m.show();
-                xy = msp.Map.map.getPixelFromLonLat(self.selected.geometry.getBounds().getCenterLonLat());
+                xy = msp.Map.map.getPixelFromLonLat(self._ll);
                 self.$m.css({
                     'left': xy.x - self.$m.width() / 2,
                     'top': xy.y - 80
