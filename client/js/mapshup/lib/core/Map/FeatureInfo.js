@@ -473,7 +473,7 @@
             /*
              * Set title
              */
-            self.$m.append('<div class="title">'+msp.Util._("Layer")+" : " + layer.name+'</div><div>'+self.getTitle(feature)+'</div><div class="actions"></div>');
+            self.$m.append('<div>'+self.getTitle(feature)+'</div><div class="title">('+msp.Util._("Layer")+" : " + layer.name+')</div><div class="actions"></div>');
             
             /*
              * Set actions

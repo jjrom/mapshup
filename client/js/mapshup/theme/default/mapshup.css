@@ -73,17 +73,6 @@ a {
     padding:5px;
 }
 
-a.image {
-    padding:0px;
-    background-color:transparent;
-}
-
-a.image:hover {
-    background-color:transparent;
-    box-shadow: 0px 0px 0px 0 transparent;
-    border-bottom:1px solid #c76400;
-}
-
 img {
     border-width:0px;
 }
@@ -269,25 +258,31 @@ input:focus {
 #fmenu {
     position:absolute;
     font-size:0.9em;
-    cursor:pointer;
     width:auto;
     height:auto;
     display:none;
+    border:1px solid #666;
+    color:#fff;
+    background-color:rgba(0,0,0,0.7);
+    text-align:center;
+    padding:10px;
     z-index:10000;
 }
+#fmenu .title {
+    font-style: italic;
+}
+#fmenu .actions {
+    height:30px;
+    line-height:30px;
+}
 #fmenu .item {
+    cursor:pointer;
     height:20px;
     width:auto;
     padding:5px;
-    border:1px solid #666;
     margin:0px 5px;
-    color:#fff;
-    background-color:rgba(0,0,0,0.7);
 }
-#fmenu .item:hover  {
-    background-color:#c76400;
-    text-shadow: black 1px 1px 3px;
-}
+
 /**
  * Loading mask
 */
@@ -849,6 +844,17 @@ span.osclear input {
     height:99%;
     width:99%;
     overflow:auto;
+}
+
+.image {
+    padding:0px;
+    background-color:transparent;
+}
+
+.image:hover {
+    background-color:transparent;
+    box-shadow: 0px 0px 0px 0 transparent;
+    border-bottom:1px solid #c76400;
 }
 
 .center {
