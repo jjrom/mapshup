@@ -111,7 +111,7 @@
             /*
              * Create feature menu div over the map container div
              */
-            self.$m = msp.Util.$$("#fmenu", msp.$mcontainer);
+            self.$m = msp.Util.$$("#fmenu", msp.$mcontainer).addClass("shadow");
             
             /*
              * Update menu position on map move
@@ -346,9 +346,10 @@
          */
         this.setActions = function(feature) {
             
-            var a,d,i,l,connector,
+            var a,d,i,l,connector,key,plugin,menuactions,
             self = this,
             actions = [],
+            layer = feature.layer,
             fi = feature.layer["_msp"].layerDescription.featureInfo;
             
             /*
@@ -368,7 +369,43 @@
                     return false;
                 }
             });
-                    
+            
+            /**
+             * Add item from other plugins
+             */
+            for(key in msp.plugins) {
+                plugin = msp.plugins[key];
+                if (plugin) {
+                    if ($.isFunction(plugin.getLmngActions)) {
+                        menuactions = plugin.getLmngActions(layer);
+                        if (menuactions) {
+                            if (menuactions instanceof Array) {
+                                for (i = 0, l = menuactions.length; i < l;i++) {
+                                    actions.push(menuactions[i]);
+                                }
+                            }
+                            else {
+                                actions.push(menuactions);
+                            }
+                        }
+                    }
+                }
+            }
+
+            /**
+             * Remove layer
+             */
+            if (!layer["_msp"].unremovable) {
+                actions.push({
+                    id:msp.Util.getId(),
+                    icon:"trash.png",
+                    title:"Delete",
+                    callback:function() {
+                        msp.Map.removeLayer(layer, true);
+                    }
+                });
+            }
+            
             /*
              * If a layerDescription.featureInfo.action, add an action button
              */
@@ -434,12 +471,21 @@
             }
             
             /*
+             * Set title
+             */
+            self.$m.append('<div class="title">'+msp.Util._("Layer")+" : " + layer.name+'</div><div>'+self.getTitle(feature)+'</div><div class="actions"></div>');
+            
+            /*
              * Set actions
              */
             for (i = 0, l = actions.length;i < l; i++) {
                 a = actions[i];
-                self.$m.append('<span class="item shadow" id="'+a.id+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/>&nbsp;'+msp.Util._(a.title)+'</span>');
+                $('.actions', self.$m).append('<span class="item image" jtitle="'+msp.Util._(a.title)+'" id="'+a.id+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/></span>');
                 d = $('#'+a.id);
+                
+                /* Add tooltip */
+                msp.tooltip.add(d, 'n');
+                
                 (function(d,a,f){
                     d.click(function() {
                         return a.callback(a,f);
@@ -1068,7 +1114,7 @@
                 xy = msp.Map.map.getPixelFromLonLat(self._ll);
                 self.$m.css({
                     'left': xy.x - self.$m.width() / 2,
-                    'top': xy.y - 80
+                    'top': xy.y - 120
                 });
             }
             
