@@ -169,7 +169,7 @@
          * This method is called by LayersManager plugin
          * Add a "Search" action to the LayersManager menu item
          */
-        this.getLmngActions = function(layer,li) {
+        this.getLmngActions = function(layer) {
 
             /**
              * layers of type catalogs get a "Search" action

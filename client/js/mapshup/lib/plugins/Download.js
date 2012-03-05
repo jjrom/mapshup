@@ -74,7 +74,7 @@
          * This method is called by LayersManager plugin
          * Add two actions - "Search" and a "Search+" - to the LayersManager menu item
          */
-        this.getLmngActions = function(layer,li) {
+        this.getLmngActions = function(layer) {
 
             var scope = this;
         

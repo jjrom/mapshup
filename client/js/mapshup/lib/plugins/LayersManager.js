@@ -295,7 +295,7 @@
                      * Get actions class
                      */
                     c = $('.actions', $id);
-                    actions = this.getActions(layer, $id);
+                    actions = this.getActions(layer);
                     
                     /*
                      * Add or remove hidden class
@@ -353,7 +353,7 @@
         /**
          * Return an array of layer menu items
          */
-        this.getActions = function(layer,li) {
+        this.getActions = function(layer) {
   
             var bounds,
                 j,
@@ -511,7 +511,7 @@
                 plugin = msp.plugins[key];
                 if (plugin) {
                     if ($.isFunction(plugin.getLmngActions)) {
-                        menuactions = plugin.getLmngActions(layer, li);
+                        menuactions = plugin.getLmngActions(layer);
                         if (menuactions) {
                             if (menuactions instanceof Array) {
                                 for (j = 0, l = menuactions.length; j < l;j++) {
