@@ -178,9 +178,9 @@
                 return [
                 {
                     id:msp.Util.getId(),
-                    ic:"search.png",
-                    ti:"Search",
-                    cb:function() {
+                    icon:"search.png",
+                    title:"Search",
+                    callback:function() {
                         layer["_msp"].searchContext.search();
                     }
                 }

@@ -84,9 +84,9 @@
             if (layer && layer.features && layer.features.length > 0) {
                 return {
                     id:msp.Util.getId(),
-                    ic:"download.png",
-                    ti:"Download",
-                    cb:function() {
+                    icon:"download.png",
+                    title:"Download",
+                    callback:function() {
                         msp.Util.askFor(msp.Util._("Download")+ ' : '+layer.name, msp.Util._("Choose download format"), "list", [
                         {
                             title:"CSV", 

@@ -69,9 +69,9 @@
 
             return {
                 id:msp.Util.getId(),
-                ic:"info.png",
-                ti:"Information",
-                cb:function() {
+                icon:"info.png",
+                title:"Information",
+                callback:function() {
                     scope.displayInfo(layer);
                 }
             }

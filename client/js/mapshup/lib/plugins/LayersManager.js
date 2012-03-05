@@ -334,12 +334,12 @@
 
                         }
                         else {
-                            c.append('<a href="#" id="'+a.id+'" jtitle="'+msp.Util._(a.ti)+'"><img class="middle" src="'+msp.Util.getImgUrl(a.ic)+'"/></a>');
+                            c.append('<a href="#" id="'+a.id+'" jtitle="'+msp.Util._(a.title)+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/></a>');
                             d = $('#'+a.id);
                             msp.tooltip.add(d, 'n');
                             (function(d,a){
                                 d.click(function() {
-                                    a.cb();
+                                    a.callback();
                                     return false;
                                 })
                             })(d,a);
@@ -371,9 +371,9 @@
             if (layer.getVisibility()) {
                 actions.push({
                     id:id+"visibility",
-                    ic:"hide.png",
-                    ti:"Hide",
-                    cb:function() {
+                    icon:"hide.png",
+                    title:"Hide",
+                    callback:function() {
                         
                         /*
                          * Hide layer
@@ -386,9 +386,9 @@
             else {
                 actions.push({
                     id:id+"visibility",
-                    ic:"show.png",
-                    ti:"Show",
-                    cb:function() {
+                    icon:"show.png",
+                    title:"Show",
+                    callback:function() {
                         
                         /*
                          * Show layer
@@ -414,9 +414,9 @@
                 if (!layer["_msp"].noZoomOn) {
                     actions.push({
                         id:id+"zoomon",
-                        ic:"plus.png",
-                        ti:"Zoom",
-                        cb:function() {
+                        icon:"plus.png",
+                        title:"Zoom",
+                        callback:function() {
                             msp.Map.zoomTo(bounds);
                         }
                     });
@@ -430,9 +430,9 @@
                 if (layer["_msp"].refresh) {
                     actions.push({
                         id:id+"refresh",
-                        ic:"loading.gif",
-                        ti:"Stop tracking",
-                        cb:function() {
+                        icon:"loading.gif",
+                        title:"Stop tracking",
+                        callback:function() {
                             layer["_msp"].refresh = false;
                             self.update(layer);
                         }
@@ -441,9 +441,9 @@
                 else {
                     actions.push({
                         id:id+"refresh",
-                        ic:"spin.png",
-                        ti:"Start tracking",
-                        cb:function() {
+                        icon:"spin.png",
+                        title:"Start tracking",
+                        callback:function() {
                             layer["_msp"].refresh = true;
                             self.update(layer);
                         }
@@ -457,9 +457,9 @@
             if (layer["_msp"].layerDescription.time) {
                 actions.push({
                     id:id+"time",
-                    ic:"time.png",
-                    ti:"Time",
-                    cb:function() {
+                    icon:"time.png",
+                    title:"Time",
+                    callback:function() {
                         msp.Util.askFor(msp.Util._("Set date"), msp.Util._("Enter ISO 8601 date..."), "date", layer["_msp"].layerDescription.time.value, function(time) {
                             if (layer) {
                                 var layerType = msp.Map.layerTypes[layer["_msp"].layerDescription["type"]];
@@ -486,7 +486,7 @@
 
                 actions.push({
                     id:id+"opacity",
-                    ti:"Opacity"
+                    title:"Opacity"
                 });
             }
             
@@ -496,9 +496,9 @@
             if (layer["_msp"].legend) {
                 actions.push({
                     id:id+"legend",
-                    ic:"legend.png",
-                    ti:"Legend",
-                    cb:function() {
+                    icon:"legend.png",
+                    title:"Legend",
+                    callback:function() {
                         msp.Util.showPopupImage(layer["_msp"].legend, layer.name);
                     }
                 });
@@ -532,9 +532,9 @@
             if (!layer["_msp"].unremovable) {
                 actions.push({
                     id:id+"trash",
-                    ic:"trash.png",
-                    ti:"Delete",
-                    cb:function() {
+                    icon:"trash.png",
+                    title:"Delete",
+                    callback:function() {
                         msp.Map.removeLayer(layer, true);
                     }
                 });
