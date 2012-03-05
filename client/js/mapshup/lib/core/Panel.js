@@ -504,7 +504,23 @@
                         duration:'slow',
                         queue:true,
                         step:function(now,fx) {
-                            mc.css('height', mch - self.h - now);
+                            
+                            /*
+                             * Push the map
+                             */ 
+                            if (!self.over) {
+                                mc.css('height', mch - self.h - now);
+                            }
+                            /*
+                             * or move toolbar
+                             */
+                            else {
+                                if (self.tb) {
+                                    self.tb.$d.css('bottom', self.h + now);
+                                }
+                            }
+                            
+                            
                         },
                         complete:fcpl
                     });
@@ -517,7 +533,22 @@
                         duration:'slow',
                         queue:true,
                         step:function(now,fx) {
-                            mc.css('height', mch - now);
+                            
+                            /*
+                             * Push the map
+                             */ 
+                            if (!self.over) {
+                                mc.css('height', mch - now);
+                            }
+                            /*
+                             * or move toolbar
+                             */
+                            else {
+                                if (self.tb) {
+                                    self.tb.$d.css('bottom', self.h + now);
+                                }
+                            }
+                            
                         },
                         complete:fcpl
                     });
