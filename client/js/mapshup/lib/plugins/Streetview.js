@@ -136,9 +136,11 @@
             }
             
             var self = this,
-                pn = new msp.Panel('s'), // Create new South panel
-                ctn = pn.add(), // Add container within panel
-                lonlat = msp.Map.map.getCenter();
+            pn = new msp.Panel('s',{
+                tb:new msp.Toolbar('ss', 'h')
+                }), // Create new South panel
+            ctn = pn.add(), // Add container within panel
+            lonlat = msp.Map.map.getCenter();
             
             /*
              * Set container content
@@ -191,7 +193,7 @@
                  */
                 update: function(scope) {
                     var pointLatLon,
-                        feature;
+                    feature;
                         
                     if (scope.msp.layer.getVisibility() && scope.position) {
                         scope.msp.layer.destroyFeatures();
@@ -266,7 +268,7 @@
              */
             self.btn = new msp.Button({
                 tt:"Show/Hide Streetview",
-                tb:new msp.Toolbar('ss', 'h'),
+                tb:pn.tb,
                 title:"Streetview",
                 container:ctn,
                 close:true,
@@ -301,10 +303,10 @@
         this.remove = function(btn) {
             
             var i,
-                l,
-                event,
-                scope = btn.scope,
-                obj = scope.svw.msp;
+            l,
+            event,
+            scope = btn.scope,
+            obj = scope.svw.msp;
                
             /*
              * Remove the google streetview events

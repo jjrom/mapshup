@@ -66,7 +66,7 @@
 
             if (self.options.url) {
 
-                var pn = new msp.Panel('s'), // Create new South panel
+                var pn = new msp.Panel('s',{tb:new msp.Toolbar('ss', 'h')}), // Create new South panel
                     ctn = pn.add('<iframe class="frame" src="'+msp.Util.getAbsoluteUrl(self.options.url)+'" width="100%" height="100%"></iframe>'); // Add container within panel
 
                 /*
@@ -82,7 +82,7 @@
                  */
                 (new msp.Button({
                     tt:"Welcome",
-                    tb:new msp.Toolbar('ss', 'h'),
+                    tb:pn.tb,
                     title:msp.Util._("Welcome"),
                     container:ctn,
                     close:true,

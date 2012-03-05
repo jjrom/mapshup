@@ -61,7 +61,7 @@
         this.init = function(options) {
 
             var self = this,
-                id = msp.Util.getId();
+            id = msp.Util.getId();
             
             /*
              * Init options
@@ -771,7 +771,7 @@
          */
         this.setHeader = function(feature) {
             var self = this,
-                title = self.getTitle(feature);
+            title = self.getTitle(feature);
                 
             $('.title', self.$h).attr('title',feature.layer.name + ' | ' + title).html(msp.Util.shorten(title, 25))
             .click(function(){
@@ -906,7 +906,9 @@
             if (ran) {
                 
                 var btn,
-                pn = new msp.Panel('s'), // Create new South panel
+                pn = new msp.Panel('s',{
+                    tb:new msp.Toolbar('ss', 'h')
+                    }), // Create new South panel
                 ctn = pn.add('<iframe class="frame" src="'+feature.attributes[ran]+'" width="100%" height="100%"></iframe>'),
                 extent = feature.geometry.getBounds().clone(); // Add container within panel
 
@@ -923,7 +925,7 @@
                  */
                 btn = new msp.Button({
                     tt:self.getTitle(feature),
-                    tb:new msp.Toolbar('ss', 'h'),
+                    tb:pn.tb,
                     title:self.getTitle(feature),
                     container:ctn,
                     close:true,
@@ -1055,7 +1057,7 @@
          */
         this.updatePosition = function() {
             var xy,
-                self = this;
+            self = this;
             if (self.selected && self.selected.geometry) {
                 self.$m.show();
                 xy = msp.Map.map.getPixelFromLonLat(self._ll);

@@ -115,8 +115,7 @@
          */
         this.init = function(options) {
             
-            var tb,
-            self = this;
+            var self = this;
             
             /*
              * !! Google Earth needs to be loaded !!
@@ -209,7 +208,7 @@
              */
             if (self.options.embeded) {
                 
-                var pn = new msp.Panel('s'), // Create new South panel
+                var pn = new msp.Panel('s',{tb:new msp.Toolbar('ss', 'h')}), // Create new South panel
                     ctn = pn.add(); // Add container within panel
                 
                 /*
@@ -230,7 +229,7 @@
                  */
                 self.btn = new msp.Button({
                     tt:"Show/Hide GoogleEarth",
-                    tb:new msp.Toolbar('ss', 'h'),
+                    tb:pn.tb,
                     title:"3D view",
                     container:ctn,
                     close:false,

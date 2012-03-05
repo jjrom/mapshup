@@ -124,9 +124,9 @@
                     eventListeners: {
                         measure: function(e) {
                             var units = e.units,
-                                order = e.order,
-                                measure = e.measure,
-                                out = "";
+                            order = e.order,
+                            measure = e.measure,
+                            out = "";
                             if(order === 1) {
                                 out += msp.Util._("Distance")+" : " + measure.toFixed(3) + " " + units;
                             } else {
@@ -198,14 +198,14 @@
              */
             if (msp.menu) {
                 msp.menu.add([
-                    {
-                        id:msp.Util.getId(),
-                        ic:"distance.png",
-                        ti:"Measure distance",
-                        cb:function() {
-                            msp.Map.Util.getControlById("__CONTROL_MEASURE__").activate();
-                        }
+                {
+                    id:msp.Util.getId(),
+                    ic:"distance.png",
+                    ti:"Measure distance",
+                    cb:function() {
+                        msp.Map.Util.getControlById("__CONTROL_MEASURE__").activate();
                     }
+                }
                 ]);
             }
             
@@ -244,15 +244,15 @@
                  * First transform array of vertices into a google elevation path
                  */
                 var i,
-                    l,
-                    isFirst = true,
-                    path = "",
-                    latlonVertice = null,
-                    lonMin = Number.MAX_VALUE,
-                    lonMax = Number.MIN_VALUE,
-                    latMin = Number.MAX_VALUE,
-                    latMax = Number.MIN_VALUE,
-                    self = this;
+                l,
+                isFirst = true,
+                path = "",
+                latlonVertice = null,
+                lonMin = Number.MAX_VALUE,
+                lonMax = Number.MIN_VALUE,
+                latMin = Number.MAX_VALUE,
+                latMax = Number.MIN_VALUE,
+                self = this;
 
                 for(i = 0, l = vertices.length; i < l; i++) {
                     latlonVertice = msp.Map.Util.p2d(vertices[i]);
@@ -284,14 +284,14 @@
                     dataType:"json",
                     success:function(data){
                         var i,
-                            l,
-                            xy,
-                            feature,
-                            result,
-                            layer = self.layer,
-                            plots = [];
-                            msp.Map.Util.setVisibility(layer, true);
-                            layer.destroyFeatures();
+                        l,
+                        xy,
+                        feature,
+                        result,
+                        layer = self.layer,
+                        plots = [];
+                        msp.Map.Util.setVisibility(layer, true);
+                        layer.destroyFeatures();
 
                         /**
                          * data is valid
@@ -348,8 +348,10 @@
                              */
                             if (!self.btn) {
 
-                                var pn = new msp.Panel('s'), // Create new South panel
-                                    ctn = pn.add(); // Add container within panel
+                                var pn = new msp.Panel('s',{
+                                    tb:new msp.Toolbar('ss', 'h')
+                                    }), // Create new South panel
+                                ctn = pn.add(); // Add container within panel
                                 
                                 /*
                                  * Set container content
@@ -361,7 +363,7 @@
                                  */
                                 self.btn = new msp.Button({
                                     tt:"Show/Hide Distance",
-                                    tb:new msp.Toolbar('ss', 'h'),
+                                    tb:pn.tb,
                                     title:"Elevation",
                                     container:ctn,
                                     close:true,
@@ -373,12 +375,12 @@
                                         layer:self.layer
                                     },
                                     actions:[
-                                        {
-                                            cssClass:"actnnw icnzoom",
-                                            callback:function(btn) {
-                                                msp.Map.zoomTo(btn.layer.getDataExtent());
-                                            }
+                                    {
+                                        cssClass:"actnnw icnzoom",
+                                        callback:function(btn) {
+                                            msp.Map.zoomTo(btn.layer.getDataExtent());
                                         }
+                                    }
                                     ]
                                 });
                                 
@@ -474,10 +476,10 @@
              */
             scope.refreshElevation();
             
-            /*
+        /*
              * Add dowload elevation capability
              */
-            /* TODO
+        /* TODO
             if (msp.plugins["Download"]) {
                 $('a.jActionButton', self.$d).click(function(){
                     msp.plugins["Download"].download(elevations, msp.Util._('Elevation'), "csv");
