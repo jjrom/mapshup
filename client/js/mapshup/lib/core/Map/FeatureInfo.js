@@ -799,12 +799,50 @@
             self._tse = (new Date()).getTime();
             
             /*
+             * If feature is a cluster, the map is zoomed on the cluster
+             * extent upon click
+             * 
+             */
+            if (feature.cluster) {
+                
+                length = feature.cluster.length;
+                
+                if (length > 0) {
+                
+                    /*
+                     * Initialize cluster bounds with first item bounds
+                     */
+                    bounds = feature.cluster[0].geometry.getBounds().clone();
+
+                    /*
+                     * Add each cluster item bounds to the cluster bounds
+                     */
+                    for (i=1;i<length;i++) {
+                        bounds.extend(feature.cluster[i].geometry.getBounds());
+                    }
+
+                    /*
+                     * Zoom on the cluster bounds
+                     */
+                    msp.Map.map.zoomToExtent(bounds);
+
+                    return false;
+                    
+                }
+            }
+            
+            /*
              * Get Lon/Lat click position
              * If global _triggered is set to true then previous select was triggered by a process
              * and not by a user click. In this case the Lon/Lat click position is set on the middle
              * of the map
              */
-            self._ll = self._triggered ? msp.Map.map.getCenter() : msp.Map.map.getLonLatFromPixel(msp.Map.mousePosition);
+            if (self._triggered) {
+                self._ll = msp.Map.map.getCenter();
+            }
+            else {
+                self._ll = feature.geometry && feature.geometry.CLASS_NAME === "OpenLayers.Geometry.Point" ? feature.geometry.getBounds().getCenterLonLat() : msp.Map.map.getLonLatFromPixel(msp.Map.mousePosition);
+            }
             
             /*
              * This is a bit tricky...
@@ -853,39 +891,6 @@
                         }
                     });
                 }     
-            }
-            
-            /*
-             * If feature is a cluster, the map is zoomed on the cluster
-             * extent upon click
-             * 
-             */
-            if (feature.cluster) {
-                
-                length = feature.cluster.length;
-                
-                if (length > 0) {
-                
-                    /*
-                     * Initialize cluster bounds with first item bounds
-                     */
-                    bounds = feature.cluster[0].geometry.getBounds().clone();
-
-                    /*
-                     * Add each cluster item bounds to the cluster bounds
-                     */
-                    for (i=1;i<length;i++) {
-                        bounds.extend(feature.cluster[i].geometry.getBounds());
-                    }
-
-                    /*
-                     * Zoom on the cluster bounds
-                     */
-                    msp.Map.map.zoomToExtent(bounds);
-
-                    return false;
-                    
-                }
             }
             
             /*
