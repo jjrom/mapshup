@@ -80,6 +80,7 @@
             $.extend(self.options, {
                 saveContextServiceUrl:self.options.saveContextServiceUrl || "/plugins/logger/saveContext.php?",
                 getContextsServiceUrl:self.options.getContextsServiceUrl || "/plugins/logger/getContexts.php?",
+                shareEmbed:msp.Util.getPropertyValue(self.options, "shareEmbed", true),
                 geocode:msp.Util.getPropertyValue(self.options, "geocode", true),
                 position:self.options.position || 'nw',
                 orientation:self.options.orientation || 'h'
@@ -340,7 +341,7 @@
                 popup = new msp.Popup({
                     modal:true,
                     header:'<p>'+msp.Util._("Share")+' : ' + self.last["location"] + ' - ' + self.last["utc"].substring(0,10) + '</p>',
-                    body:'<div class="share"><div><a href="#" target="_blank" class="button inline facebook">&nbsp;&nbsp;Facebook&nbsp;&nbsp;</a><a href="#" target="_blank" class="button inline twitter">&nbsp;&nbsp;Twitter&nbsp;&nbsp;</a><a href="#" class="button inline email">&nbsp;&nbsp;Email&nbsp;&nbsp;</a></div><div class="embed"><h1>'+msp.Util._("Embed code in your website")+'</h1><textarea rows="4" class="code"></textarea></div></div>'
+                    body:'<div class="share"><div><a href="#" target="_blank" class="button inline facebook">&nbsp;&nbsp;Facebook&nbsp;&nbsp;</a><a href="#" target="_blank" class="button inline twitter">&nbsp;&nbsp;Twitter&nbsp;&nbsp;</a><a href="#" class="button inline email">&nbsp;&nbsp;Email&nbsp;&nbsp;</a></div></div>'
                 });
 
             /*
@@ -370,7 +371,10 @@
             /*
              * Embed code
              */
-            $('.code', popup.$b).val('<iframe width="1024" height="600" frameBorder="0" src="'+url+'"></iframe>');
+            if (self.options.shareEmbed) {
+                $('.share', popup.$b).append('<div class="embed"><h1>'+msp.Util._("Embed code in your website")+'</h1><textarea rows="4" class="code"></textarea></div>');
+                $('.code', popup.$b).val('<iframe width="1024" height="600" frameBorder="0" src="'+url+'"></iframe>');
+            }
             
             popup.show();
 
