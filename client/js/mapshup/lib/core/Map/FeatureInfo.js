@@ -80,21 +80,16 @@
             );
 
             /*
-             * Feature Informartion is displayed within a West panel container
+             * Feature Information is displayed within a West panel container
              */
             self.ctn = (new msp.Panel('w')).add('<div class="header"><div class="title">'+msp.Util._("Feature information")+'</div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
             
             /*
-             * Add an unselect button
+             * Add a close panel button
              */
             self.ctn.$d.append('<div id="'+id+'" class="close"></div>');
             $('#'+id).click(function() {
-  
-                /*
-                 * Unselect feature
-                 */
-                self.selected ? msp.Map.Util.getControlById("__CONTROL_SELECT__").unselect(self.selected) : self.unselect();
-                
+                self.ctn.pn.hide(self.ctn);
             }).css({
                 'top':'-8px',
                 'right':'-8px'
@@ -386,6 +381,24 @@
                 title:"Zoom on feature",
                 callback:function(a, f) {
                     self.zoomOn();
+                    return false;
+                }
+            });
+            
+            /*
+             * Display feature information action
+             */
+            actions.push({
+                id:msp.Util.getId(),
+                icon:"info.png",
+                title:"Feature information",
+                callback:function(a, f) {
+                    
+                    /*
+                     * Display feature information
+                     */
+                    self.show();
+                    
                     return false;
                 }
             });
@@ -1008,7 +1021,7 @@
                 var btn,
                 pn = new msp.Panel('s',{
                     tb:new msp.Toolbar('ss', 'h')
-                    }), // Create new South panel
+                }), // Create new South panel
                 ctn = pn.add('<iframe class="frame" src="'+feature.attributes[ran]+'" width="100%" height="100%"></iframe>'),
                 extent = feature.geometry.getBounds().clone(); // Add container within panel
 
@@ -1063,26 +1076,21 @@
                 
             }
             else {
-                
+               
                 /*
                  * Set header for feature
                  */
                 self.setHeader(feature);
-                
-                /*
-                 * Set actions for feature
-                 */
-                self.setActions(feature);
-                
+
                 /*
                  * Set body for feature
                  */
                 self.setBody(feature);
 
                 /*
-                 * Display feature information
+                 * Set actions for feature
                  */
-                self.show();
+                self.setActions(feature);
                 
             }
             return true;
@@ -1142,7 +1150,7 @@
                 if (self._tun - self._tse > 0) {
                    
                     /*
-                     * Show panel content
+                     * Hide panel content
                      */
                     self.ctn.pn.hide(self.ctn);
                     
