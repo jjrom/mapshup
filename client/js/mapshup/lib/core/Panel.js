@@ -229,9 +229,11 @@
             else if (self.position === 'f') {
                 
                 /*
-                 * Free panel width is set to 0
+                 * Free panel width is set to w and hidden by default
                  */
-                self.$d.width(0).hide();
+                self.$d.css({
+                   'width':self.w 
+                }).hide();
             }
             
             /*
@@ -570,36 +572,17 @@
                 if (action === 'show') {
                     
                     /*
-                     * Set free toolbar width to 0 and show div
+                     * Show free toolbar
                      */
-                    self.$d.width(0).show();
-                    
-                    /*
-                     * Change panel width from 0 to max-width
-                     */
-                    self.$d.stop(true,true).animate({
-                        width:self.w
-                    },
-                    {
-                        duration:'slow'
-                    });
+                    self.$d.show();
                     
                 }
                 else {
                     
                     /*
-                     * Move the panel to the right
+                     * Hide free toolbar
                      */
-                    self.$d.animate({
-                        width:0
-                    },
-                    {
-                        duration:'slow',
-                        complete: function(){
-                            self.$d.hide();
-                        }
-                    });
-                    
+                    self.$d.hide();
                 }
                 
             }
