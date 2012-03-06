@@ -501,6 +501,15 @@
         },
         
         /**
+         * Strip HTML tags from input string
+         *
+         * @input <String> html : an html input string
+         */
+        stripTags: function(html) {
+            return $(html).text();
+        },
+        
+        /**
          * Launch an ajax call
          * This function relies on jquery $.ajax function
          */
