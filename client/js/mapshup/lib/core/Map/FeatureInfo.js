@@ -177,6 +177,8 @@
          */
         this.getTitle = function(feature) {
 
+            var self = this;
+            
             /*
              * Paranoid mode
              */
@@ -195,7 +197,25 @@
              * User can define is own title with layerDescription.featureInfo.title property
              */
             if (feature.layer["_msp"].layerDescription.featureInfo && feature.layer["_msp"].layerDescription.featureInfo.title) {
-                return msp.Util.replaceKeys(feature.layer["_msp"].layerDescription.featureInfo.title, feature.attributes);
+                
+                /*
+                 * The tricky part :
+                 * 
+                 * Parse title and replace keys between brackets {} with the corresponding value
+                 * eventually transformed with the getValue() function
+                 *
+                 * Example :
+                 *      title = "Hello my name is {name} {surname}"
+                 *      feature.attributes = {name:"Jerome", surname:"Gasperi"}
+                 *
+                 *      will return "Hello my name is Jerome Gasperi"
+                 * 
+                 */
+                return feature.layer["_msp"].layerDescription.featureInfo.title.replace(/{+([^}])+}/g, function(m,key,value) {
+                    var k = m.replace(/[{}]/g, '');
+                    return self.getValue(feature, k, feature.attributes[k]);
+                });
+                
             }
 
             /*
