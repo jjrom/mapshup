@@ -85,7 +85,7 @@
                 return {
                     id:msp.Util.getId(),
                     icon:"download.png",
-                    title:"Download",
+                    title:"Download layer",
                     callback:function() {
                         msp.Util.askFor(msp.Util._("Download")+ ' : '+layer.name, msp.Util._("Choose download format"), "list", [
                         {

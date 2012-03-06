@@ -40,6 +40,7 @@ Description
 Display full resolution product on map
 Distance
 Download
+Download layer
 Download in progress
 Download layer in CSV format
 Download layer in KML format

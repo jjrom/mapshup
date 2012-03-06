@@ -41,6 +41,7 @@
     i["Display full resolution product on map"]="Voir le produit pleine résolution sur la carte";
     i["Distance"]="Distance";
     i["Download"]="Télécharger";
+    i["Download layer"]="Télécharger la couche";
     i["Download in progress"]="Téléchargement en cours";
     i["Download layer in CSV format"]="Télécharger la couche au format CSV";
     i["Download layer in KML format"]="Télécharger la couche au format KML";
