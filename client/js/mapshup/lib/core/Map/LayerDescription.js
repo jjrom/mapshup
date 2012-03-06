@@ -190,7 +190,7 @@
 
             var icon = null, // Determines if point must be represented by an icon
                 obj = this.obj, // Object reference
-                opacity = obj.opacity || 0.4; // Set opacity - 0.4 by default
+                opacity = obj.opacity || 0; // Set opacity - 0.4 by default
 
             /*
              * Features got a 'icon' attribute => use it as symbol
@@ -215,6 +215,7 @@
                 externalGraphic: icon,
                 fillOpacity: icon ? 1 : opacity,
                 strokeColor:"#222222",
+                strokeWidth:2,
                 fillColor:"${color}"
             }, OpenLayers.Feature.Vector.style["default"]), {
 
@@ -310,7 +311,6 @@
                     pointRadius:30
                 } : {
                     strokeColor:"#ffff00",
-                    strokeWidth:3,
                     fillOpacity: opacity <= 0.9 ? opacity + 0.1 : opacity - 0.1
                 }
             });
