@@ -272,7 +272,6 @@ input:focus {
     width:300px;
     height:auto;
     display:none;
-    border:1px solid #666;
     color:#fff;
     background-color:rgba(0,0,0,0.7);
     text-align:center;
