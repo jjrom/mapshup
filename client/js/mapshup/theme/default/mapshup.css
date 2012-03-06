@@ -929,7 +929,7 @@ span.osclear input {
     color:#fff;
     font-size:0.8em;
     border: 1px solid #ccc;
-    background-color:#c76400;
+    background-color:rgba(0,0,0,0.7);
     max-width:250px;
     padding:10px;
     overflow:hidden;
