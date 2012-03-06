@@ -546,6 +546,11 @@
             }
             
             /*
+             * Hide featureHilite menu
+             */
+            msp.Map.$featureHilite.empty().hide();
+            
+            /*
              * Display menu
              */
             self.updatePosition();

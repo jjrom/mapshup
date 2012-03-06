@@ -1105,7 +1105,7 @@
                                     self.mouseClick = {
                                         x:e.x,
                                         y:e.y
-                                        };
+                                    };
                                     msp.menu.show();
                                 }
                                 
@@ -1324,6 +1324,16 @@
                              */
                             if (e.feature) {
 
+                                /*
+                                 * Never hilite an already selected feature
+                                 */
+                                if (msp.Map.featureInfo.selected) {
+                                    if (msp.Map.featureInfo.selected.id === e.feature.id) {
+                                        self.$featureHilite.empty().hide();
+                                        return false;
+                                    }
+                                }
+                                
                                 /*
                                  * Title is first 'name' or 'title' or 'identifier' or 'id'
                                  */
