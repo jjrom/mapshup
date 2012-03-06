@@ -141,7 +141,7 @@
             if (self.position !== 'fr') {
                 self.$d.css({
                     'position':'absolute',
-                    'z-index':'10250'
+                    'z-index':'20250'
                 });
             }
             
