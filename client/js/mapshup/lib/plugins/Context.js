@@ -80,7 +80,7 @@
             $.extend(self.options, {
                 saveContextServiceUrl:self.options.saveContextServiceUrl || "/plugins/logger/saveContext.php?",
                 getContextsServiceUrl:self.options.getContextsServiceUrl || "/plugins/logger/getContexts.php?",
-                shareEmbed:msp.Util.getPropertyValue(self.options, "shareEmbed", true),
+                shareEmbed:msp.Util.getPropertyValue(self.options, "shareEmbed", false),
                 geocode:msp.Util.getPropertyValue(self.options, "geocode", true),
                 position:self.options.position || 'nw',
                 orientation:self.options.orientation || 'h'
