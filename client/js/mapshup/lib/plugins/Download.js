@@ -71,11 +71,24 @@
         };
         
         /**
+         * This method is called by FeatureInfo
+         */
+        this.getFeatureActions = function(layer) {
+            return this.getActions(layer);
+        };
+        
+        /**
          * This method is called by LayersManager plugin
-         * Add two actions - "Search" and a "Search+" - to the LayersManager menu item
          */
         this.getLmngActions = function(layer) {
-
+            return this.getActions(layer);
+        };
+        
+        /**
+         * Generic action menu
+         */
+        this.getActions = function(layer) {
+            
             var scope = this;
         
             /*
@@ -108,7 +121,7 @@
 
         };
         
-         /*
+        /*
          * Download layer in the given format
          */
         this.download = function(a, name, format) {
