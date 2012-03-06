@@ -210,7 +210,7 @@
                 scope.update(layer);
             });
             
-            msp.Map.events.register("indexchanged", self, self.updateIndex);
+            //msp.Map.events.register("indexchanged", self, self.updateIndex);
             
             /*
              * Show panel if active option tells so
@@ -248,7 +248,7 @@
                 return false;
             }
             
-            return scope.add();
+            return scope.update(layer);
 
         };
         
