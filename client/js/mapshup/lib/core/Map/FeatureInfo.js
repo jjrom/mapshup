@@ -434,7 +434,7 @@
                 plugin = msp.plugins[key];
                 if (plugin) {
                     if ($.isFunction(plugin.getFeatureActions)) {
-                        menuactions = plugin.getFeatureActions(layer);
+                        menuactions = plugin.getFeatureActions(feature);
                         if (menuactions) {
                             if (menuactions instanceof Array) {
                                 for (i = 0, l = menuactions.length; i < l;i++) {

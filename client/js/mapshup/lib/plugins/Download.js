@@ -73,8 +73,8 @@
         /**
          * This method is called by FeatureInfo
          */
-        this.getFeatureActions = function(layer) {
-            return this.getActions(layer);
+        this.getFeatureActions = function(feature) {
+            return this.getActions(feature ? feature.layer : null);
         };
         
         /**

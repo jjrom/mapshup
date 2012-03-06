@@ -300,7 +300,7 @@
         /**
          * This method is called by FeatureInfo actions popup
          */
-        this.getFeatureActions = function(layer) {
+        this.getFeatureActions = function(feature) {
 
             var scope = this;
 
