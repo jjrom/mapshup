@@ -269,6 +269,7 @@ input:focus {
     position:absolute;
     font-size:0.9em;
     width:auto;
+    max-width:300px;
     height:auto;
     display:none;
     border:1px solid #666;
