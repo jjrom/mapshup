@@ -346,7 +346,7 @@
          */
         this.setActions = function(feature) {
             
-            var a,d,i,l,connector,key,plugin,menuactions,
+            var a,bounds,d,i,l,connector,key,plugin,menuactions,
             self = this,
             actions = [],
             layer = feature.layer,
@@ -363,12 +363,36 @@
             actions.push({
                 id:msp.Util.getId(),
                 icon:"plus.png",
-                title:"Zoom to extent",
+                title:"Zoom on feature",
                 callback:function(a, f) {
                     self.zoomOn();
                     return false;
                 }
             });
+            
+            /*
+             * Center on layer
+             * Vector layers should have a layer.getDataExtent() function that returns
+             * the layer bounds
+             * Raster layer (e.g. WMS, Image) should have a layer["_msp"].getDataExtent()
+             */
+            if ((bounds = layer.getDataExtent()) || (bounds = layer["_msp"].bounds)) {
+                
+                /**
+                 * Do not set a zoomOn capability on layer
+                 * with _msp.noZoomOn set to true
+                 */
+                if (!layer["_msp"].noZoomOn) {
+                    actions.push({
+                        id:msp.Util.getId(),
+                        icon:"center.png",
+                        title:"Center view on layer",
+                        callback:function() {
+                            msp.Map.zoomTo(bounds);
+                        }
+                    });
+                }
+            }
             
             /**
              * Add item from other plugins

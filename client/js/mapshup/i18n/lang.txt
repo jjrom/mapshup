@@ -201,4 +201,4 @@ Youtube
 Zoom
 Zoom here
 Zoom out
-Zoom to extent
+Zoom on feature

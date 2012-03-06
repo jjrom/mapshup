@@ -204,7 +204,7 @@
     i["Zoom"]="Zoomer";
     i["Zoom here"]="Zoomer ici";
     i["Zoom out"]="Dézoomer";
-    i["Zoom to extent"]="Zoomer sur l&#39;emprise";
+    i["Zoom on feature"]="Zoomer sur l&#39;objet";
     
     i["Afghanistan"]="Afghanistan";
     i["Albania"]="Albanie";
