@@ -180,7 +180,7 @@
                     
                     scope._layer = msp.Map.addLayer({
                         type:"Flickr",
-                        title:feature.id,
+                        title:msp.Util.stripTags(msp.Map.featureInfo.getTitle(feature)),
                         bbox:bounds.toBBOX(),
                         q:""
                     });
