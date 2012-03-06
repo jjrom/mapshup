@@ -151,6 +151,16 @@ input:focus {
 }
 
 /*
+ * Main wrapper header
+ */
+#wheader {
+    width:100%;
+    height:0px;
+    padding:0;
+    margin:0; 
+}
+ 
+/*
  * Map container
 */
 .map {
