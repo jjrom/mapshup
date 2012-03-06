@@ -80,6 +80,7 @@ Error performing GetCapabilities operation
 Error performing DescribeFeatureType operation
 Expected format is YYYY-MM-DD for a single date or YYYY-MM-DD/YYYY-MM-DD for a date interval
 Expected format is lonmin,latmin,lonmax,latmax
+Feature information
 Flickr
 Get capabilities
 Get elevation profile
