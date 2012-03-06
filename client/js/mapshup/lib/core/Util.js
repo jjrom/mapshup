@@ -506,7 +506,7 @@
          * @input <String> html : an html input string
          */
         stripTags: function(html) {
-            return $(html).text();
+            return msp.Util.$$('#___').hide().html(html).text();
         },
         
         /**
