@@ -89,12 +89,12 @@ Google libraries not loaded. Streetview is disabled
 Hi
 Hide
 Initializing 3D mode
-Information
 Item
 Keywords or coordinates
 Layer
 Layer added
 Layer detection in progress...
+Layer information
 layers
 Layers manager
 Limit search to map view extent

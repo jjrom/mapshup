@@ -90,13 +90,13 @@
     i["Google libraries not loaded. Streetview is disabled"]="La bibliothèque Google n&#39;est pas chargée. Streetview est désactivé";
     i["Hi"]="Salut";
     i["Hide"]="Masquer";
-    i["Information"]="Information";
     i["Initializing 3D mode"]="Initialisation du mode 3D";
     i["Item"]="Element";
     i["Keywords or coordinates"]="Mots clés ou coordonnées";
     i["Layer"]="Couche";
     i["Layer added"]="Couche ajoutée";
     i["Layer detection in progress..."]="Détection de la couche en cours...";
+    i["Layer information"]="Information sur la couche";
     i["layers"]="couches";
     i["Layers manager"]="Couches";
     i["Limit search to map view extent"]="Limiter la recherche à l'emprise visualisée";
