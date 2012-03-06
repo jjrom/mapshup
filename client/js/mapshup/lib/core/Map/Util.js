@@ -400,10 +400,8 @@
      *    on top Polygonal vector layers
      */
     Map.Util.updateIndex = function(layer) {
-        // TODO : on ne s'en sert plus
-        return;
-        var i,
-        tmpLayer,
+        
+        var i,tmpLayer,
         index = Map.map.getLayerIndex(layer), //Set index to the layer index
         l = Map.map.layers.length;
 
