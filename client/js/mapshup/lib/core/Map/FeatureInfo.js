@@ -879,7 +879,7 @@
          */
         this.setHeader = function(feature) {
             var self = this,
-            title = self.getTitle(feature);
+            title = msp.Util.stripTags(self.getTitle(feature));
                 
             $('.title', self.$h).attr('title',feature.layer.name + ' | ' + title).html(msp.Util.shorten(title, 25))
             .click(function(){
