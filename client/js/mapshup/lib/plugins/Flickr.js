@@ -146,6 +146,49 @@
             
         };
 
+        /**
+         * This method is called by FeatureInfo actions popup
+         */
+        this.getFeatureActions = function(feature) {
+
+            var scope = this;
+
+            return {
+                id:msp.Util.getId(),
+                icon:"flickr.png",
+                title:"Flickr",
+                callback:function() {
+                    
+                    /*
+                     * Tell user that flickr search is in progress
+                     */
+                    msp.mask.add({
+                        title:msp.Util._("Flickr")+' : '+msp.Util._("Searching"),
+                        cancel:true
+                    });
+                    
+                    /*
+                     * Search within bbox
+                     * If bbox is a point, then add 0.5 degree in all directions
+                     */
+                    var add = 0.5,
+                        bounds = msp.Map.Util.p2d(feature.geometry.getBounds().clone());
+                        
+                    if (bounds.top === bounds.bottom || bounds.right === bounds.left) {
+                        bounds = new OpenLayers.Bounds(bounds.left - add, bounds.bottom - add, bounds.right + add, bounds.top + add)
+                    }
+                    
+                    scope._layer = msp.Map.addLayer({
+                        type:"Flickr",
+                        title:feature.id,
+                        bbox:bounds.toBBOX(),
+                        q:""
+                    });
+                    
+                }
+            }
+        };
+        
         /*
          * Set unique instance
          */
