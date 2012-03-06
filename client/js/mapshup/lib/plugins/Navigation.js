@@ -449,7 +449,7 @@
             if (self.options.home) {
                 new msp.Button({
                     tb:tb,
-                    icon:"fullscreen.png",
+                    icon:"center.png",
                     tt:"Go back to the start view",
                     activable:false,
                     callback:function() {
