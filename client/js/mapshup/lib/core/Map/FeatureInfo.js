@@ -395,9 +395,9 @@
                 callback:function(a, f) {
                     
                     /*
-                     * Display feature information
+                     * ShowHide feature information
                      */
-                    self.show();
+                    self.ctn.pn.isVisible ? self.ctn.pn.hide(self.ctn) : self.show();
                     
                     return false;
                 }
