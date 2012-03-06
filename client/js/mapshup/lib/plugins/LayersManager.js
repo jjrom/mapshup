@@ -400,7 +400,7 @@
             }
 
             /*
-             * Zoom on layer
+             * Center on layer
              * Vector layers should have a layer.getDataExtent() function that returns
              * the layer bounds
              * Raster layer (e.g. WMS, Image) should have a layer["_msp"].getDataExtent()
@@ -414,8 +414,8 @@
                 if (!layer["_msp"].noZoomOn) {
                     actions.push({
                         id:id+"zoomon",
-                        icon:"plus.png",
-                        title:"Zoom",
+                        icon:"center.png",
+                        title:"Center view on layer",
                         callback:function() {
                             msp.Map.zoomTo(bounds);
                         }

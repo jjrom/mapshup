@@ -19,6 +19,7 @@
     i["Catalog"]="Catalogue";
     i["Catalogs"]="Catalogues";
     i["Center"]="Centrer";
+    i["Center view on layer"]="Centrer la vue sur la couche";
     i["Center map on one of the following countries"]="Centrer la carte sur un des pays suivants";
     i["Checking"]="Vérification";
     i["Choose a search service"]="Choisir un service de recherche";

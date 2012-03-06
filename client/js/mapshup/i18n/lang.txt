@@ -18,6 +18,7 @@ Cannot zoom : this feature is outside authorized extent
 Catalog
 Catalogs
 Center
+Center view on layer
 Center map on one of the following countries
 Choose a search service
 Choose download format
