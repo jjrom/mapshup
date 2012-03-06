@@ -420,8 +420,8 @@
             for(key in msp.plugins) {
                 plugin = msp.plugins[key];
                 if (plugin) {
-                    if ($.isFunction(plugin.getLmngActions)) {
-                        menuactions = plugin.getLmngActions(layer);
+                    if ($.isFunction(plugin.getFeatureActions)) {
+                        menuactions = plugin.getFeatureActions(layer);
                         if (menuactions) {
                             if (menuactions instanceof Array) {
                                 for (i = 0, l = menuactions.length; i < l;i++) {
