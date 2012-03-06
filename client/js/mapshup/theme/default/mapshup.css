@@ -1075,7 +1075,7 @@ div.olControlMousePosition {
 .olControlOverviewMapRectReplacement {
     overflow: hidden;
     cursor: move;
-    background-image: url("./img/overview_replacement.png");
+    background-image: url("./img/center.png");
     background-repeat: no-repeat;
     background-position: center;
 }
