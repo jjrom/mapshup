@@ -727,6 +727,7 @@ span.osclear input {
 
 /* For share popup */
 .po .share {
+    text-align:center;
     margin:10px 0px;
 }
 .po .share .embed {
