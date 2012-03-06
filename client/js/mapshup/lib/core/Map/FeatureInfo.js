@@ -567,7 +567,7 @@
                 self.clear();
             }).css({
                 'top':'-8px',
-                'right':'-8px'
+                'right':'-6px'
             });
             
             /*
