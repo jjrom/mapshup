@@ -98,6 +98,11 @@
      * (Note : this option is automatically set to false for touch devices)
      */
     c["general"].featureHilite = true;
+    
+    /*
+     * Feature Info metadata position - default is 'f'
+     */
+    c["general"].featureInfoPosition = "f";
 
     /**
      * Set the initial location for the map

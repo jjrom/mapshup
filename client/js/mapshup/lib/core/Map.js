@@ -1142,7 +1142,9 @@
             /*
              * Initialize featureInfo
              */
-            self.featureInfo = new self.FeatureInfo();
+            self.featureInfo = new self.FeatureInfo({
+                position:_config["general"].featureInfoPosition
+            });
             
             /*
              * Update menu position on map move
