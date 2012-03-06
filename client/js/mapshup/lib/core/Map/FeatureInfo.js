@@ -82,26 +82,34 @@
              * Feature Information is displayed within a "Free" panel container or a "West" panel container
              */
             self.ctn = (new msp.Panel(self.options.position)).add('<div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
-            
+                
             /*
              * Panels get a header and a close button except "Free" panels
              */
             if (self.options.position !== "f") {
-
                 self.ctn.$d.prepend('<div class="header"><div class="title">'+msp.Util._("Feature information")+'</div></div>');
+            }
+            
+            /*
+             * Add a close panel button
+             */
+            self.ctn.$d.append('<div id="'+id+'" class="close"></div>');
+            $('#'+id).click(function() {
                 
                 /*
-                 * Add a close panel button
+                 * Two cases - 'Free' panel and others
                  */
-                self.ctn.$d.append('<div id="'+id+'" class="close"></div>');
-                $('#'+id).click(function() {
+                if (self.options.position === "f") {
+                    self.clear();
+                }
+                else {
                     self.ctn.pn.hide(self.ctn);
-                }).css({
-                    'top':'-8px',
-                    'right':'-8px'
-                });
-
-            }
+                }
+                
+            }).css({
+                'top':'-8px',
+                'right':'-8px'
+            });
             
             /*
              * Set div references
@@ -379,7 +387,7 @@
          */
         this.setActions = function(feature) {
             
-            var a,bounds,d,i,id,l,connector,key,plugin,menuactions,
+            var a,bounds,d,i,l,connector,key,plugin,menuactions,
             self = this,
             actions = [],
             layer = feature.layer,
@@ -406,20 +414,22 @@
             /*
              * Display feature information action
              */
-            actions.push({
-                id:msp.Util.getId(),
-                icon:"info.png",
-                title:"Feature information",
-                callback:function(a, f) {
-                    
-                    /*
-                     * ShowHide feature information
-                     */
-                    self.ctn.pn.isVisible ? self.ctn.pn.hide(self.ctn) : self.show();
-                    
-                    return false;
-                }
-            });
+            if (self.options.position !== "f") {
+                actions.push({
+                    id:msp.Util.getId(),
+                    icon:"info.png",
+                    title:"Feature information",
+                    callback:function(a, f) {
+
+                        /*
+                         * ShowHide feature information
+                         */
+                        self.ctn.pn.isVisible ? self.ctn.pn.hide(self.ctn) : self.show();
+
+                        return false;
+                    }
+                });
+            }
             
             /*
              * Center on layer
@@ -575,18 +585,6 @@
                 }
                 
             }
-            
-            /*
-             * Add close button
-             */
-            id = msp.Util.getId();
-            self.$m.append('<div id="'+id+'" class="close"></div>');
-            $('#'+id).click(function() {
-                self.clear();
-            }).css({
-                'top':'-8px',
-                'left':'-6px'
-            });
             
             /*
              * Hide featureHilite menu
@@ -910,7 +908,7 @@
         this.setHeader = function(feature) {
             var self = this,
             title = msp.Util.stripTags(self.getTitle(feature));
-                
+            
             $('.title', self.$h).attr('title',feature.layer.name + ' | ' + title).html(msp.Util.shorten(title, 25))
             .click(function(){
                 self.zoomOn(feature);
@@ -963,7 +961,12 @@
                      * Zoom on the cluster bounds
                      */
                     msp.Map.map.zoomToExtent(bounds);
-
+                    
+                    /*
+                     * Hide metadata panel
+                     */
+                    self.ctn.pn.hide(self.ctn);
+                    
                     return false;
                     
                 }
@@ -1122,6 +1125,13 @@
                  */
                 self.setActions(feature);
                 
+                /*
+                 * Show metadata panel
+                 */
+                if (self.options.position === "f") {
+                    self.show();
+                }
+                
             }
             return true;
         };
@@ -1212,7 +1222,7 @@
                 if (self.options.position === 'f') {
                     self.ctn.pn.$d.css({
                         'left': self.$m.position().left + self.$m.outerWidth(),
-                        'top': xy.y - 140
+                        'top': self.$m.position().top - 50
                     });
                 }
                 
