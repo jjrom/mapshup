@@ -361,7 +361,7 @@
          */
         this.setActions = function(feature) {
             
-            var a,bounds,d,i,l,connector,key,plugin,menuactions,
+            var a,bounds,d,i,id,l,connector,key,plugin,menuactions,
             self = this,
             actions = [],
             layer = feature.layer,
@@ -557,6 +557,18 @@
                 }
                 
             }
+            
+            /*
+             * Add close button
+             */
+            id = msp.Util.getId();
+            self.$m.append('<div id="'+id+'" class="close"></div>');
+            $('#'+id).click(function() {
+                self.clear();
+            }).css({
+                'top':'-8px',
+                'right':'-8px'
+            });
             
             /*
              * Hide featureHilite menu
