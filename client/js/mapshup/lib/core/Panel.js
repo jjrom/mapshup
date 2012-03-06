@@ -89,6 +89,7 @@
          *  - w (west)
          *  - n (north)
          *  - s (south)
+         *  - f (free)
          *  
          *  (Default e)
          */
@@ -224,6 +225,13 @@
                     'top':self.top
                 });
                 
+            }
+            else if (self.position === 'f') {
+                
+                /*
+                 * Free panel width is set to 0
+                 */
+                self.$d.width(0).hide();
             }
             
             /*
@@ -554,7 +562,48 @@
                     });
                 }
             }
-           
+            /*
+             * Free panel
+             */
+            if (self.position === 'f') {
+                
+                if (action === 'show') {
+                    
+                    /*
+                     * Set free toolbar width to 0 and show div
+                     */
+                    self.$d.width(0).show();
+                    
+                    /*
+                     * Change panel width from 0 to max-width
+                     */
+                    self.$d.stop(true,true).animate({
+                        width:self.w
+                    },
+                    {
+                        duration:'slow'
+                    });
+                    
+                }
+                else {
+                    
+                    /*
+                     * Move the panel to the right
+                     */
+                    self.$d.animate({
+                        width:0
+                    },
+                    {
+                        duration:'slow',
+                        complete: function(){
+                            self.$d.hide();
+                        }
+                    });
+                    
+                }
+                
+            }
+            
             return true;
            
         };

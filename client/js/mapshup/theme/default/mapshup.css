@@ -530,17 +530,17 @@ input:focus {
 /*
  * East and West panel
 */
-.pne, .pnw {
+.pne, .pnw, .pnf {
     color:#fff;
 }
 .pne input {
     width:240px;
 }
-.pne a, .pnw a {
+.pne a, .pnw a, .pnf a {
     padding:0px;
     background-color:transparent;
 }
-.pne a:hover, .pnw a:hover{
+.pne a:hover, .pnw a:hover, .pnf a:hover{
     background-color:transparent;
     box-shadow: 0px 0px 0px 0 transparent;
     border-bottom:1px solid #c76400;
