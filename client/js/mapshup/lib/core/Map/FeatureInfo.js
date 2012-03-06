@@ -172,7 +172,8 @@
          */
         this.getTitle = function(feature) {
 
-            var self = this;
+            var k,
+            self = this;
             
             /*
              * Paranoid mode
@@ -216,7 +217,16 @@
             /*
              * Otherwise returns name or title or identifier or id
              */
-            return feature.attributes["name"] || feature.attributes["title"] || feature.attributes["identifier"] || feature.id || "";
+            for (k in {
+                name:1, 
+                title:1, 
+                identifier:1
+            }) {
+                if (feature.attributes[k]) {
+                    return self.getValue(feature, k, feature.attributes[k]);
+                }
+            }
+            return feature.id || "";
 
         };
         
