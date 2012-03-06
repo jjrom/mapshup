@@ -74,29 +74,37 @@
              */
             $.extend(self.options,
             {
-                position:self.options.position || 'ne',
-                orientation:self.options.orientation || 'v'
+                position:self.options.position || 'f'
             }
             );
 
             /*
-             * Feature Information is displayed within a West panel container
+             * Feature Information is displayed within a "Free" panel container or a "West" panel container
              */
-            self.ctn = (new msp.Panel('w')).add('<div class="header"><div class="title">'+msp.Util._("Feature information")+'</div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
+            self.ctn = (new msp.Panel(self.options.position)).add('<div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
             
             /*
-             * Add a close panel button
+             * Panels get a header and a close button except "Free" panels
              */
-            self.ctn.$d.append('<div id="'+id+'" class="close"></div>');
-            $('#'+id).click(function() {
-                self.ctn.pn.hide(self.ctn);
-            }).css({
-                'top':'-8px',
-                'right':'-8px'
-            });
+            if (self.options.position !== "f") {
 
+                self.ctn.$d.prepend('<div class="header"><div class="title">'+msp.Util._("Feature information")+'</div></div>');
+                
+                /*
+                 * Add a close panel button
+                 */
+                self.ctn.$d.append('<div id="'+id+'" class="close"></div>');
+                $('#'+id).click(function() {
+                    self.ctn.pn.hide(self.ctn);
+                }).css({
+                    'top':'-8px',
+                    'right':'-8px'
+                });
+
+            }
+            
             /*
-             * Set references
+             * Set div references
              */
             self.$t = $('.tabs', self.ctn.$d); // Tabs
             self.$b = $('.body', self.ctn.$d); // Body
@@ -577,7 +585,7 @@
                 self.clear();
             }).css({
                 'top':'-8px',
-                'right':'-6px'
+                'left':'-6px'
             });
             
             /*
@@ -1186,8 +1194,10 @@
          * Update fmenu position
          */
         this.updatePosition = function() {
+            
             var xy,
             self = this;
+            
             if (self.selected && self.selected.geometry) {
                 self.$m.show();
                 xy = msp.Map.map.getPixelFromLonLat(self._ll);
@@ -1195,6 +1205,17 @@
                     'left': xy.x - self.$m.width() / 2,
                     'top': xy.y - 120
                 });
+                
+                /*
+                 * Update 'Free' panel position
+                 */
+                if (self.options.position === 'f') {
+                    self.ctn.pn.$d.css({
+                        'left': self.$m.position().left + self.$m.outerWidth(),
+                        'top': xy.y - 140
+                    });
+                }
+                
             }
             
         };
