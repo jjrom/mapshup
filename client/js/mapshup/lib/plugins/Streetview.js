@@ -298,6 +298,23 @@
         };
         
         /**
+         * This method is called by FeatureInfo actions popup
+         */
+        this.getFeatureActions = function(layer) {
+
+            var scope = this;
+
+            return {
+                id:msp.Util.getId(),
+                icon:"streetview.png",
+                title:"Streetview",
+                callback:function() {
+                    scope.show(scope, msp.Map.Util.p2d(msp.Map.featureInfo._ll.clone()));
+                }
+            }
+        };
+        
+        /**
          * Remove the streetview object
          */
         this.remove = function(btn) {
