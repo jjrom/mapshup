@@ -81,7 +81,7 @@
             /*
              * Feature Information is displayed within a "Free" panel container or a "West" panel container
              */
-            self.ctn = (new msp.Panel(self.options.position)).add('<div class="header"><div class="title">'+msp.Util._("Feature information")+'</div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
+            self.ctn = (new msp.Panel(self.options.position)).add('<div class="header"><div class="title"></div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
             
             /*
              * Add a close panel button
@@ -1151,7 +1151,7 @@
                  * Set 'Free' panel position and height
                  */
                 self.ctn.pn.$d.css({
-                    'max-height': Math.round(msp.$map.height() * 0.8)
+                    'max-height': Math.round(msp.$map.height() * 0.9)
                 });
             }
             
