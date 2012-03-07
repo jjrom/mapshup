@@ -56,6 +56,11 @@
         this.selected = null;
         
         /**
+         * Default metadata panel is a free panel
+         */
+        this.position = "f";
+        
+        /**
          * Initialization
          */
         this.init = function(options) {
@@ -66,22 +71,14 @@
             /*
              * Init options
              */
-            self.options = options || {};
+            options = options || {};
 
-            /*
-             * By default, feature information is displayed wihtin
-             * a North East vertical panel
-             */
-            $.extend(self.options,
-            {
-                position:self.options.position || 'f'
-            }
-            );
-
+            self.position = msp.Util.getPropertyValue(options, "position", self.position);
+            
             /*
              * Feature Information is displayed within a "Free" panel container or a "West" panel container
              */
-            self.ctn = (new msp.Panel(self.options.position)).add('<div class="header"><div class="title"></div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
+            self.ctn = (new msp.Panel(self.position)).add('<div class="header"><div class="title"></div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
             
             /*
              * Add a close panel button
@@ -92,7 +89,7 @@
                 /*
                  * Two cases - 'Free' panel and others
                  */
-                if (self.options.position === "f") {
+                if (self.position === "f") {
                     self.clear();
                 }
                 else {
@@ -147,7 +144,7 @@
              * Register resizeend after panel resizeend
              */
             msp.Map.events.register("resizeend", self, function() {
-                if (self.options.position === 'f' && self.ctn.pn.isVisible) {
+                if (self.position === 'f' && self.ctn.pn.isVisible) {
                     self.show();
                 }
             });
@@ -416,7 +413,7 @@
             /*
              * Display feature information action
              */
-            if (self.options.position !== "f") {
+            if (self.position !== "f") {
                 actions.push({
                     id:msp.Util.getId(),
                     icon:"info.png",
@@ -609,7 +606,7 @@
             /*
              * Set header
              */
-            if (self.options.position !== "f") {
+            if (self.position !== "f") {
                 title = msp.Util.stripTags(self.getTitle(feature));
                 $('.title', self.$h).attr('title', feature.layer.name + ' | ' + title)
                 .html(msp.Util.shorten(title, 25))
@@ -911,7 +908,7 @@
              * Be sure that free panel height is recomputed
              * after an image is loaded
              */
-            if (self.options.position === 'f') {
+            if (self.position === 'f') {
                 $('img', self.$b).each(function(idx){
                     $(this).load(function(){
                         if (self.ctn.pn.isVisible){
@@ -1131,7 +1128,7 @@
                 /*
                  * Show metadata panel
                  */
-                if (self.options.position === "f") {
+                if (self.position === "f") {
                     
                     /*
                      * Show panel
@@ -1156,7 +1153,7 @@
             
             var self = this;
             
-            if (self.options.position === "f") {
+            if (self.position === "f") {
                 
                 /*
                  * Hide metadata panel
@@ -1247,7 +1244,7 @@
                 /*
                  * Update 'Free' panel position
                  */
-                if (self.options.position === 'f') {
+                if (self.position === 'f') {
                     
                     top = self.$m.position().top - 50;
                     delta = msp.$map.height() - top - self.ctn.pn.$d.height();
