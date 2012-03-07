@@ -123,7 +123,7 @@
         this.init = function() {
             
             var self = this,
-                uid = '_o'+self.position+'p';
+            uid = '_o'+self.position+'p';
             
             /*
              * Get Panel characteristics from configuration
@@ -232,7 +232,7 @@
                  * Free panel width is set to w and hidden by default
                  */
                 self.$d.css({
-                   'width':self.w 
+                    'width':self.w 
                 }).hide();
             }
             
@@ -315,17 +315,17 @@
         this.add = function(content, extras) {
             
             var style,
-                id = msp.Util.getId(),
-                self = this,
-                /* Panel inner padding depends on Panel position */
-                padding = (self.position === 'n' || self.position === 's') ? self.padding.top+'px 0px '+self.padding.bottom+'px 0px' : '0px '+self.padding.right+'px 0px '+self.padding.left+'px',
-                item = {
-                    id:id,
-                    pn:self,
-                    $d:msp.Util.$$('#'+id, self.$d).css({
-                        'padding':padding
-                    }) // by default newly created div is not visible
-                };
+            id = msp.Util.getId(),
+            self = this,
+            /* Panel inner padding depends on Panel position */
+            padding = (self.position === 'n' || self.position === 's') ? self.padding.top+'px 0px '+self.padding.bottom+'px 0px' : '0px '+self.padding.right+'px 0px '+self.padding.left+'px',
+            item = {
+                id:id,
+                pn:self,
+                $d:msp.Util.$$('#'+id, self.$d).css({
+                    'padding':padding
+                }) // by default newly created div is not visible
+            };
             
             /*
              * Set content if specified
