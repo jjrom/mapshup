@@ -81,14 +81,7 @@
             /*
              * Feature Information is displayed within a "Free" panel container or a "West" panel container
              */
-            self.ctn = (new msp.Panel(self.options.position)).add('<div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
-                
-            /*
-             * Panels get a header and a close button except "Free" panels
-             */
-            if (self.options.position !== "f") {
-                self.ctn.$d.prepend('<div class="header"><div class="title">'+msp.Util._("Feature information")+'</div></div>');
-            }
+            self.ctn = (new msp.Panel(self.options.position)).add('<div class="header"><div class="title">'+msp.Util._("Feature information")+'</div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
             
             /*
              * Add a close panel button
@@ -148,6 +141,15 @@
 
                 return true;
         
+            });
+            
+            /*
+             * Register resizeend after panel resizeend
+             */
+            msp.Map.events.register("resizeend", self, function() {
+                if (self.options.position === 'f' && self.ctn.pn.isVisible) {
+                    self.show();
+                }
             });
             
             return self;            
@@ -591,11 +593,6 @@
              */
             msp.Map.$featureHilite.empty().hide();
             
-            /*
-             * Display menu
-             */
-            self.updatePosition();
-
         };
         
         /**
@@ -1116,10 +1113,20 @@
                 self.setActions(feature);
                 
                 /*
+                 * Update menu position
+                 */
+                self.updatePosition();
+
+                /*
                  * Show metadata panel
                  */
                 if (self.options.position === "f") {
+                    
+                    /*
+                     * Show panel
+                     */
                     self.show();
+                    
                 }
                 
             }
@@ -1133,8 +1140,23 @@
             
             var self = this;
             
+            if (self.options.position === "f") {
+                
+                /*
+                 * Hide metadata panel
+                 */
+                self.ctn.pn.hide(self.ctn);
+                
+                /*
+                 * Set 'Free' panel position and height
+                 */
+                self.ctn.pn.$d.css({
+                    'max-height': Math.round(msp.$map.height() * 0.8)
+                });
+            }
+            
             /*
-             * Show panel content
+             * Show metadata panel
              */
             self.ctn.pn.show(self.ctn);
             
@@ -1210,10 +1232,15 @@
                  * Update 'Free' panel position
                  */
                 if (self.options.position === 'f') {
+                    
+                    /*
+                     * Set 'Free' panel position and height
+                     */
                     self.ctn.pn.$d.css({
                         'left': self.$m.position().left + self.$m.outerWidth(),
                         'top': self.$m.position().top - 50
                     });
+                    
                 }
                 
             }
