@@ -265,16 +265,37 @@
             else if (scope.position === "e" || scope.position === "w") {
 
                 scope.$d.height(msp.$map.height() - (scope.over ? scope.bottom + scope.top : 0));
-
+                
                 /*
                  * Object with an 'expdbl' class have their height constrained
                  * by the panel height
                  */
                 $('.expdbl', scope.$d).each(function(idx){
                     var $c = $(this);
-                    $c.css('height', scope.$d.height() - $c.position().top - 15)
+                    $c.css('height', scope.$d.height() - $c.position().top - 15);
                 });
 
+            }
+            else if (scope.position === "f") {
+                
+                /*
+                 * Object with an 'expdbl' class have their height constrained
+                 * by the panel height
+                 */
+                $('.expdbl', scope.$d).each(function(idx){
+
+                    var $c = $(this);
+
+                    /*
+                     * Tricky part...
+                     * 1. First set '.expdbl' class height to auto
+                     * so the parent height can be computed (otherwise the height would be
+                     * incorrectly computed).
+                     * 2. Then force the '.expdbl' class height relatively to
+                     * the parent height
+                     */
+                    $c.css('height', 'auto').css('height', scope.$d.height() - $c.position().top - 15);
+                });
             }
         };
         
