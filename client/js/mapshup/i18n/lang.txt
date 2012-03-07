@@ -21,7 +21,7 @@ Center
 Center view on layer
 Center map on one of the following countries
 Choose a search service
-Choose download format
+Choose export format
 Choose the catalog type
 Checking
 Clear
@@ -40,10 +40,6 @@ Description
 Display full resolution product on map
 Distance
 Download
-Download layer
-Download in progress
-Download layer in CSV format
-Download layer in KML format
 Do you really want to remove layer
 Do you really want to remove this tab ?
 Do you really want to sign out ?
@@ -80,6 +76,11 @@ Error performing GetCapabilities operation
 Error performing DescribeFeatureType operation
 Expected format is YYYY-MM-DD for a single date or YYYY-MM-DD/YYYY-MM-DD for a date interval
 Expected format is lonmin,latmin,lonmax,latmax
+Export
+Export layer
+Export in progress
+Export layer in CSV format
+Export layer in KML format
 Feature information
 Flickr
 Get capabilities

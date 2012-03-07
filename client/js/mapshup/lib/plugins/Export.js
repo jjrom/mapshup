@@ -36,19 +36,19 @@
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
 /*
- * Download plugin.
- * Add a "download" action in the LayersManager action list
- * to download vector layers within a well known format (CSV, KML, etc.)
+ * Export plugin.
+ * Add an "export" action in the LayersManager action list
+ * to export vector layers within a well known format (CSV, KML, etc.)
  */
 (function(msp) {
     
-    msp.Plugins.Download = function() {
+    msp.Plugins.Export = function() {
         
         /*
-         * Only one Download object instance is created
+         * Only one Export object instance is created
          */
-        if (msp.Plugins.Download._o) {
-            return msp.Plugins.Download._o;
+        if (msp.Plugins.Export._o) {
+            return msp.Plugins.Export._o;
         }
         
         /*
@@ -92,15 +92,15 @@
             var scope = this;
         
             /*
-             * Only vector layers with features can be downloaded
+             * Only vector layers with features can be exported
              */
             if (layer && layer.features && layer.features.length > 0) {
                 return {
                     id:msp.Util.getId(),
-                    icon:"download.png",
-                    title:"Download layer",
+                    icon:"export.png",
+                    title:"Export layer",
                     callback:function() {
-                        msp.Util.askFor(msp.Util._("Download")+ ' : '+layer.name, msp.Util._("Choose download format"), "list", [
+                        msp.Util.askFor(msp.Util._("Export")+ ' : '+layer.name, msp.Util._("Choose export format"), "list", [
                         {
                             title:"CSV", 
                             value:"csv"
@@ -122,12 +122,12 @@
         };
         
         /*
-         * Download layer in the given format
+         * Export layer in the given format
          */
         this.download = function(a, name, format) {
 
             /*
-             * Create an hidden link to store the download url
+             * Create an hidden link to store the export url
              */
             var hidden = msp.Util.$$('#'+msp.Util.getId()).html('<a href="#" style="diplay:none;"></a>'),
                 scope = this,
@@ -155,7 +155,7 @@
             });
 
             /*
-             * Ajax query to prepare the download file
+             * Ajax query to prepare the export file
              */
             msp.Util.ajax({
                 url:msp.Util.getAbsoluteUrl(scope.options.exportServiceUrl+msp.Util.abc),
@@ -186,7 +186,7 @@
                     }
                 }
             },{
-                title:msp.Util._("Download in progress"),
+                title:msp.Util._("Export in progress"),
                 cancel:true
             });
 
@@ -283,7 +283,7 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Download._o = this;
+        msp.Plugins.Export._o = this;
         
         return this;
         

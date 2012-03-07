@@ -59,8 +59,8 @@ lib/plugins/Catalog/CSWEOr5ebRR.js
 lib/plugins/Catalog/SPOTRest.js
 lib/plugins/Catalog/OpenSearch.js
 lib/plugins/Distance.js
-lib/plugins/Download.js // NOTOUCH
 lib/plugins/Drawing.js
+lib/plugins/Export.js // NOTOUCH
 lib/plugins/Flickr.js
 lib/plugins/Geonames.js
 #lib/plugins/GetFeatureInfo.js

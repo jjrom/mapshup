@@ -23,7 +23,7 @@
     i["Center map on one of the following countries"]="Centrer la carte sur un des pays suivants";
     i["Checking"]="Vérification";
     i["Choose a search service"]="Choisir un service de recherche";
-    i["Choose download format"]="Choisir le format de téléchargement";
+    i["Choose export format"]="Choisir le format d'export";
     i["Choose the catalog type"]="Choix du type de catalogue";
     i["Clear"]="Effacer";
     i["Click the mouse left button to define the measure point"]="Cliquez sur le bouton gauche de la souris pour définir le point de mesure";
@@ -41,10 +41,6 @@
     i["Display full resolution product on map"]="Voir le produit pleine résolution sur la carte";
     i["Distance"]="Distance";
     i["Download"]="Télécharger";
-    i["Download layer"]="Télécharger la couche";
-    i["Download in progress"]="Téléchargement en cours";
-    i["Download layer in CSV format"]="Télécharger la couche au format CSV";
-    i["Download layer in KML format"]="Télécharger la couche au format KML";
     i["Do you really want to remove layer"]="Voulez-vous vraiment enlever la couche";
     i["Do you really want to remove this tab ?"]="Voulez-vous vraiment enlever cet onglet ?";
     i["Do you really want to sign out ?"]="Voulez-vous vraiment vous déconnecter ?";
@@ -82,6 +78,11 @@
     i["Error performing DescribeFeatureType operation"]="Erreur de l'opération DescribeFeatureType";
     i["Expected format is YYYY-MM-DD for a single date or YYYY-MM-DD/YYYY-MM-DD for a date interval"]="Le format attendu est AAAA-MM-JJ pour une date seule ou AAAA-MM-JJ/AAAA-MM-JJ pour un intervalle";
     i["Expected format is lonmin,latmin,lonmax,latmax"]="Le format attendu est lonmin,latmin,lonmax,latmax";
+    i["Export"]="Exporter";
+    i["Export layer"]="Exporter la couche";
+    i["Export in progress"]="Export en cours";
+    i["Export layer in CSV format"]="Exporter la couche au format CSV";
+    i["Export layer in KML format"]="Exporter la couche au format KML";
     i["Feature information"]="Information sur l'objet";
     i["Flickr"]="Flickr";
     i["Get capabilities"]="Récupération du fichier Capabilities";
