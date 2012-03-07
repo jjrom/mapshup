@@ -599,20 +599,28 @@
         };
         
         /**
-         * Set $b html content
+         * Set info popup html content
          */
-        this.setBody = function(feature) {
+        this.setInfo = function(feature) {
             
-            var id,
-            content,
-            $info,
-            $thumb,
-            layerType,
+            var id,title,content,$info,$thumb,layerType,
             self = this,
             typeIsUnknown = true,
             // Thumbnail of quicklook attributes
             thumb = feature.attributes['thumbnail'] || feature.attributes['quicklook'] || null;
 
+            /*
+             * Set header
+             */
+            if (self.options.position !== "f") {
+                title = msp.Util.stripTags(self.getTitle(feature));
+                $('.title', self.$h).attr('title', feature.layer.name + ' | ' + title)
+                .html(msp.Util.shorten(title, 25))
+                .click(function(){
+                    self.zoomOn(feature);
+                });      
+            }
+                
             /*
              * Clean body
              */
@@ -901,19 +909,6 @@
             }
             
         };
-        
-        /**
-         * Set $h html content
-         */
-        this.setHeader = function(feature) {
-            var self = this,
-            title = msp.Util.stripTags(self.getTitle(feature));
-            
-            $('.title', self.$h).attr('title',feature.layer.name + ' | ' + title).html(msp.Util.shorten(title, 25))
-            .click(function(){
-                self.zoomOn(feature);
-            });    
-        };
 
         /**
          * Select feature and get its information
@@ -927,7 +922,7 @@
          */
         this.select = function(feature, _triggered) {
 
-            var c,i,bounds,length,ran,self = this;
+            var c,i,bounds,length,ran,title,self = this;
             
             /*
              * Set select time (see unselect function)
@@ -1111,14 +1106,9 @@
             else {
                
                 /*
-                 * Set header for feature
+                 * Set info for feature
                  */
-                self.setHeader(feature);
-
-                /*
-                 * Set body for feature
-                 */
-                self.setBody(feature);
+                self.setInfo(feature);
 
                 /*
                  * Set actions for feature
