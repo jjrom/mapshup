@@ -527,7 +527,7 @@ input:focus {
     margin-bottom:5px;
 } 
 /*
- * East and West panel
+ * East, Free and West panel
 */
 .pne, .pnw, .pnf {
     color:#fff;
@@ -545,6 +545,13 @@ input:focus {
     border-bottom:1px solid #c76400;
 }
 
+/*
+ * Free panel
+ */
+ .pnf {
+    min-height: 200px; 
+ }
+ 
 /*
  * South panel
 */
