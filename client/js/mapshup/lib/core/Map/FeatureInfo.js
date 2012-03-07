@@ -1129,11 +1129,6 @@
                 self.setActions(feature);
                 
                 /*
-                 * Update menu position
-                 */
-                self.updatePosition();
-
-                /*
                  * Show metadata panel
                  */
                 if (self.options.position === "f") {
@@ -1145,6 +1140,11 @@
                     
                 }
                 
+                /*
+                 * Update menu position
+                 */
+                self.updatePosition();
+
             }
             return true;
         };
@@ -1233,7 +1233,7 @@
          */
         this.updatePosition = function() {
             
-            var xy,
+            var xy,top,delta,
             self = this;
             
             if (self.selected && self.selected.geometry) {
@@ -1249,12 +1249,15 @@
                  */
                 if (self.options.position === 'f') {
                     
+                    top = self.$m.position().top - 50;
+                    delta = msp.$map.height() - top - self.ctn.pn.$d.height();
+                    
                     /*
                      * Set 'Free' panel position and height
                      */
                     self.ctn.pn.$d.css({
                         'left': self.$m.position().left + self.$m.outerWidth(),
-                        'top': self.$m.position().top - 50
+                        'top': delta < 0 ? top + delta : top
                     });
                     
                 }
