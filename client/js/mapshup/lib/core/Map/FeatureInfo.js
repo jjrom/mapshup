@@ -905,6 +905,22 @@
 
             }
             
+            /*
+             * Tricky...
+             * 
+             * Be sure that free panel height is recomputed
+             * after an image is loaded
+             */
+            if (self.options.position === 'f') {
+                $('img', self.$b).each(function(idx){
+                    $(this).load(function(){
+                        if (self.ctn.pn.isVisible){
+                            self.show();
+                        }
+                    });
+                });
+            }
+            
         };
 
         /**
