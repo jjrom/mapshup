@@ -277,11 +277,35 @@
     });
     
     c.add("layers", {
-        type:"OSMT",
+        type:"XYZ",
         title:"OpenStreetMap",
         url:["http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
         "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
         "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"]
+    });
+    
+    c.add("layers", {
+        type:"XYZ",
+        title:"MapQuest OSM",
+        url:["http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
+        "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
+        "http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
+        "http://otile4.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png"],
+        ol:{
+            attribution:'<p>Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png"></p>'
+        }
+    });
+    
+    c.add("layers", {
+        type:"XYZ",
+        title:"MapQuest Aerial",
+        url:["http://oatile1.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
+        "http://oatile2.mqcdn.com/tiles/1.0.0/sat${z}/${x}/${y}.png",
+        "http://oatile3.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png",
+        "http://oatile4.mqcdn.com/tiles/1.0.0/sat/${z}/${x}/${y}.png"],
+        ol:{
+            attribution:'<p>Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png"></p>'
+        }
     });
     
     /**
@@ -293,7 +317,7 @@
      *
      */
 
-     /*
+    /*
      * Welcome plugin
      */
     c.add("plugins",
@@ -471,29 +495,29 @@
                         headers:false
                     },
                     filters:[
+                    {
+                        id:"collection",
+                        title:"Collection",
+                        type:"enumeration",
+                        unique:true,
+                        son:[
                         {
-                            id:"collection",
-                            title:"Collection",
-                            type:"enumeration",
-                            unique:true,
-                            son:[
-                                {
-                                    id:'MODIS1',
-                                    title:'MODIS/Aqua 8-Day Clear Sky Radiance Bias Daily',
-                                    value:'NASA:MODIS/Aqua 8-Day Clear Sky Radiance Bias Daily L3 Global 1Deg Zonal Bands V005'
-                                },
-                                {
-                                    id:'NOAA:GVAR_SND',
-                                    title:'NOAA - GVAR_SND',
-                                    value:'NOAA:GVAR_SND'
-                                },
-                                {
-                                    id:'NASA:ASTER_L1B',
-                                    title:'NASA - ASTER L1B',
-                                    value:'NASA:ASTER L1B Registered Radiance at the Sensor V003'
-                                }
-                            ]
+                            id:'MODIS1',
+                            title:'MODIS/Aqua 8-Day Clear Sky Radiance Bias Daily',
+                            value:'NASA:MODIS/Aqua 8-Day Clear Sky Radiance Bias Daily L3 Global 1Deg Zonal Bands V005'
+                        },
+                        {
+                            id:'NOAA:GVAR_SND',
+                            title:'NOAA - GVAR_SND',
+                            value:'NOAA:GVAR_SND'
+                        },
+                        {
+                            id:'NASA:ASTER_L1B',
+                            title:'NASA - ASTER L1B',
+                            value:'NASA:ASTER L1B Registered Radiance at the Sensor V003'
                         }
+                        ]
+                    }
                     ]
                 },
                 {
@@ -785,70 +809,70 @@
             nextRecord:1,
             numRecordsPerPage:20,
             connectors:[
-                /**
+            /**
                  * CSW ISO Catalog connector
                  * Options :
                  *  description:"Generic ISO CSW catalog connector"
                  *  url:"/plugins/catalog/CSWISOCatalogProxy.php?"
                  *
                  */
-                {
-                    name:"CSWISO"
-                },
-                /**
+            {
+                name:"CSWISO"
+            },
+            /**
                  * CSW EO Charter Catalog connector
                  * Options :
                  *  description:"International Charter catalog connector"
                  *  url:"/plugins/catalog/CSWEOCharterCatalogProxy.php?"
                  *  slotComboProxyServiceUrl:"plugins/catalog/charter/DisastersCharter_SlotComboProxy.php?action="
                  */
-                {
-                    name:"CSWEOCharter"
-                },
-                /**
+            {
+                name:"CSWEOCharter"
+            },
+            /**
                  * CSW EO Generic Catalog connector
                  * Options :
                  *  description:"CSW EO catalog connector"
                  *  url:"/plugins/catalog/CSWEOCatalogProxy.php?"
                  */
-                {
-                    name:"CSWEO"
-                },
-                /**
+            {
+                name:"CSWEO"
+            },
+            /**
                  * CSW EO Generic Catalog connector
                  * Options :
                  *  description:"CSW EO catalog connector"
                  *  url:"/plugins/catalog/CSWEOCatalogProxy.php?version=06-131r5&"
                  */
-                {
-                    name:"CSWEOr5"
-                },
-                /**
+            {
+                name:"CSWEOr5"
+            },
+            /**
                  * CSW EO Generic Catalog connector
                  * Options :
                  *  description:"CSW EO catalog connector"
                  *  url:"/plugins/catalog/CSWEOCatalogProxy.php?version=06-131r5ebRR&"
                  */
-                {
-                    name:"CSWEOr5ebRR"
-                },
-                /**
+            {
+                name:"CSWEOr5ebRR"
+            },
+            /**
                  * SPOT Rest catalog connector
                  * Options :
                  *  description:"SPOT Dali Catalog"
                  *  url:"/plugins/catalog/SPOTRestCatalogProxy.php?"
                  */
-                {
-                    name:"SPOTRest"
-                },
-                /**
+            {
+                name:"SPOTRest"
+            },
+            /**
                  * OpenSearch catalog connector
                  * Options :
                  *  description:"OpenSearch catalog"
                  */
-                {
-                    name:"OpenSearch"
-                }
+            {
+                name:"OpenSearch"
+            }
             ]
         }
     });
