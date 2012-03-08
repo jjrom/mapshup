@@ -349,21 +349,21 @@
                 height = sizes[1];
 
                 /*
-                 * Image width is bigger than window width
-                 * => reduce width/height to the window width preserving ratio
-                 */
-                if (width > sizes[2]) {
-                    width = sizes[2];
-                    height = (height * width) / sizes[0];
-                }
-
-                /*
                  * Image height is bigger than window height
                  * => reduce width/height to the window height preserving ratio
                  */
                 if (height > sizes[3]) {
                     height = sizes[3];
                     width = (width * height) / sizes[1];
+                }
+
+                /*
+                 * Image width is bigger than window width
+                 * => reduce width/height to the window width preserving ratio
+                 */
+                if (width > sizes[2]) {
+                    width = sizes[2];
+                    height = (height * width) / sizes[0];
                 }
 
                 popup.$b.html('<div class="imageContent"><div class="padded"><img src="'+href+'" height="'+height+'" width="'+width+'"/><div class="innerTitle" style="width:'+width+'px;">'+title+'</div></div></div>');
