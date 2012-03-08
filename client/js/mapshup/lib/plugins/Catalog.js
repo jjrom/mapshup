@@ -351,7 +351,7 @@
                         tb:scope.pn.tb,
                         tt:msp.Util._("Catalog") + " : " + layer.name,
                         title:layer.name,
-                        container:scope.pn.add('<div class="west"><div style="width:99%;height:99%;overflow:auto;"></div></div><div class="east"><div style="height:99%;overflow:auto;"></div></div>'),
+                        container:scope.pn.add('<div class="west"><div style="width:99%;height:99%;overflow:auto;"></div></div><div class="east"><div style="height:99%;overflow:auto;"></div></div>', 'bg'),
                         /* Add a search action */
                         actions:[
                         {   
