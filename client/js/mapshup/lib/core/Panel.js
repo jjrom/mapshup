@@ -133,6 +133,8 @@
                     self.over = msp.Util.getPropertyValue(msp.Config.panel[self.position], "over", self.over);
                     self.top = msp.Util.getPropertyValue(msp.Config.panel[self.position], "top", self.top);
                     self.bottom = msp.Util.getPropertyValue(msp.Config.panel[self.position], "bottom", self.bottom);
+                    self.h = msp.Util.getPropertyValue(msp.Config.panel[self.position], "height", self.h);
+                    self.w = msp.Util.getPropertyValue(msp.Config.panel[self.position], "width", self.w);
                 }
             }
             
