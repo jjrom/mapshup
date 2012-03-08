@@ -275,7 +275,40 @@
                 })(scope.items[i], scope.$m);
             }
 
-        },
+        };
+        
+        /*
+         * Remove an item from the menu
+         * 
+         * @input id : id of item to remove
+         * 
+         */
+        this.remove = function(id) {
+            
+            /*
+             * Roll over items
+             */
+            for (var i = 0, l = this.items.length;i<l;i++) {
+                
+                /*
+                 * Remove item with corresponding id
+                 */
+                if (this.items.id === id) {
+                    
+                    this.items.splice(i,1);
+                    
+                    /*
+                     * Recompute items position within the menu
+                     */
+                    this.refresh();
+                    
+                    return true;
+                }
+            }
+            
+            return false;
+
+        };
 
         /**
          * menu display function
