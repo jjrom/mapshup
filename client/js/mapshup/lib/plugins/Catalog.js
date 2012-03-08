@@ -197,10 +197,7 @@
             /*
              * Get layer _msp object
              */
-            var i, 
-            l,
-            c,
-            options,
+            var i,l,c,options,
             _msp = layer["_msp"],
             scope = this,
             name = _msp.layerDescription.connectorName;
@@ -273,7 +270,7 @@
                 return false;
             }
 
-            var i,j,l,m,add,_msp,filters,cFilters,
+            var btn,i,j,l,m,add,_msp,filters,cFilters,
             layer = connector.catalog;
 
             /*
@@ -286,7 +283,7 @@
             }
             
             _msp = layer["_msp"];
-            filters = layer["_msp"].layerDescription["filters"];
+            filters = _msp.layerDescription["filters"];
             cFilters = connector.filters;
             
             /*
@@ -345,40 +342,44 @@
              */
             if (!_msp.searchContext) {
                 
-                /*
-                 * Get the "South" panel reference
-                 */
-                var btn = new msp.Button({
-                    tb:scope.pn.tb,
-                    tt:msp.Util._("Catalog") + " : " + layer.name,
-                    title:layer.name,
-                    container:scope.pn.add('<div class="west"><div style="width:99%;height:99%;overflow:auto;"></div></div><div class="east"><div style="height:99%;overflow:auto;"></div></div>'),
-                    /* Add a search action */
-                    actions:[
-                    {   
-                        cssClass:"actnnw icnsearch",
-                        callback:function(btn){
-                            btn.layer["_msp"].searchContext.search()
-                        }
-                    }
-                    ],
-                    activable:true,
-                    scope:scope,
-                    /* Important : on button click,
-                     * call the onResizeEnd function to ensure
-                     * that results table size is well computed
+                if (!_msp.layerDescription.callback) {
+                    
+                    /*
+                     * Get the "South" panel reference
                      */
-                    callback:scope.onResizeEnd,
-                    e:{
-                        layer:layer // Important : add the layer reference to the button
-                    }
-                }); 
- 
-                /*
-                 * Add $w and $e reference to btn
-                 */
-                btn.$w = $('.west', btn.container.$d).children().first();
-                btn.$e = $('.east', btn.container.$d).children().first();
+                    btn = new msp.Button({
+                        tb:scope.pn.tb,
+                        tt:msp.Util._("Catalog") + " : " + layer.name,
+                        title:layer.name,
+                        container:scope.pn.add('<div class="west"><div style="width:99%;height:99%;overflow:auto;"></div></div><div class="east"><div style="height:99%;overflow:auto;"></div></div>'),
+                        /* Add a search action */
+                        actions:[
+                        {   
+                            cssClass:"actnnw icnsearch",
+                            callback:function(btn){
+                                btn.layer["_msp"].searchContext.search()
+                            }
+                        }
+                        ],
+                        activable:true,
+                        scope:scope,
+                        /* Important : on button click,
+                         * call the onResizeEnd function to ensure
+                         * that results table size is well computed
+                         */
+                        callback:scope.onResizeEnd,
+                        e:{
+                            layer:layer // Important : add the layer reference to the button
+                        }
+                    }); 
+
+                    /*
+                     * Add $w and $e reference to btn
+                     */
+                    btn.$w = $('.west', btn.container.$d).children().first();
+                    btn.$e = $('.east', btn.container.$d).children().first();
+                
+                }
                 
                 /*
                  * Set new SearchContext
@@ -387,7 +388,7 @@
                     autoSearch:msp.Util.getPropertyValue(layer["_msp"].layerDescription, "autoSearch", false),
                     nextRecord:layer["_msp"].layerDescription.nextRecord || scope.options.nextRecord, 
                     numRecordsPerPage:layer["_msp"].layerDescription.numRecordsPerPage || scope.options.numRecordsPerPage, 
-                    callback:scope.searchPanel.show, 
+                    callback:layer["_msp"].layerDescription.callback || scope.searchPanel.show, 
                     scope:scope
                 });
 
@@ -477,7 +478,9 @@
                     /*
                      * Remove the search panel
                      */
-                    catalog['_msp'].searchContext.btn.remove();
+                    if (catalog['_msp'].searchContext.btn) {
+                        catalog['_msp'].searchContext.btn.remove();
+                    }
                     
                     /*
                      * Remove searchAll action from msp.menu
@@ -519,6 +522,13 @@
                 
                 var btn = layer["_msp"].searchContext.btn,
                 self = scope.searchPanel;
+                
+                /*
+                 * No button specified - do nothing
+                 */
+                if (!btn) {
+                    return false;
+                }
                 
                 /*
                  * Only display search panel is result is not empty
@@ -573,7 +583,14 @@
                 sc = layer["_msp"].searchContext,
                 connector = sc.connector,
                 self = scope.searchPanel;
-                    
+                
+                /*
+                 * No button specified - do nothing
+                 */
+                if (!sc.btn) {
+                    return false;
+                }
+                
                 /*
                  * Set west panel structure 
                  */
@@ -698,6 +715,13 @@
                 nid = msp.Util.getId(),
                 sc = layer["_msp"].searchContext,
                 features = msp.Map.Util.getFeatures(layer); // Important ! Get unclusterized features
+                
+                /*
+                 * No button specified - do nothing
+                 */
+                if (!sc.btn) {
+                    return false;
+                }
                 
                 /*
                  * Create the east side panel structure:
