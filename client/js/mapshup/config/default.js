@@ -230,6 +230,10 @@
             over:true, // West panel is displayed over the map
             top:100,
             bottom:60
+        },
+        /* Free */
+        f:{
+            over:true
         }
     };
     
@@ -336,14 +340,14 @@
      */
     
     /*
-     * Download plugin
+     * Export plugin
      *  options:
      *      exportServiceUrl:"/utilities/export.php?"
-     *      // Download service
+     *      // Export service
      */
     c.add("plugins",
     {
-        name:"Download"
+        name:"Export"
     });
 
     /**
