@@ -293,7 +293,7 @@
                 /*
                  * Remove item with corresponding id
                  */
-                if (this.items.id === id) {
+                if (this.items[i].id === id) {
                     
                     this.items.splice(i,1);
                     
