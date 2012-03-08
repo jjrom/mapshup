@@ -955,9 +955,6 @@ span.osclear input {
 /**
  * FeatureInfo panel
 */
-.pfi .header {
-    margin-top:20px;
-}
 .pfi .title {
     cursor:pointer;
 }
