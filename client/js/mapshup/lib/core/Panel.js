@@ -56,7 +56,7 @@
         /*
          * North/South panel height
          */
-        this.h = options.h || 350;
+        this.h = options.h;
         
         /*
          * List of panel items
@@ -165,7 +165,9 @@
              * South and North panel heights is computed from window.height
              * with a minimum value of 300px
              */
-            self.h = Math.max(Math.round(2 * msp.$map.height() / 5), 300);
+            if (!self.h) {
+                self.h = Math.max(Math.round(2 * msp.$map.height() / 5), 300);
+            }
             
             /*
              * Create a Panel div within msp.$container
