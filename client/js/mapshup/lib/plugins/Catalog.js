@@ -60,41 +60,27 @@
             /*
              * Init options
              */
-            this.options = options || {};
+            self.options = options || {};
 
             /*
              * Default options
              */
-            $.extend(this.options, {
-                nextRecord:this.options.nextRecord || 1,
-                numRecordsPerPage:this.options.numRecordsPerPage || 20,
-                connectors:this.options.connectors || []
+            $.extend(self.options, {
+                nextRecord:self.options.nextRecord || 1,
+                numRecordsPerPage:self.options.numRecordsPerPage || 20,
+                connectors:self.options.connectors || []
             });
 
             /*
-             * Set the south panel
+             * Store unique identifier for search menu
              */
-            this.pn = new msp.Panel('s',{tb:new msp.Toolbar('ss', 'h')});
+            self._menuId = msp.Util.getId();
             
             /*
-             * Add items to msp.menu
+             * Set the south panel
              */
-            if (msp.menu) {
-                
-                /**
-                 * Search all catalogs within the map view
-                 */       
-                msp.menu.add([{
-                    id:msp.Util.getId(),
-                    ic:"search.png",
-                    ti:"Search in catalogs",
-                    cb:function() {
-                        self.searchAll(null, true);
-                    }
-                }]);
-                
-            }
-           
+            self.pn = new msp.Panel('s',{tb:new msp.Toolbar('ss', 'h')});
+            
             /*
              * Add a "Search" action to the geonames menu
              * This action launch a search on all registered catalogs
@@ -125,8 +111,8 @@
             /*
              * Register events
              */
-            msp.Map.events.register("layersend", this, this.onLayersEnd);
-            msp.Map.events.register("resizeend", this, this.onResizeEnd);
+            msp.Map.events.register("layersend", self, self.onLayersEnd);
+            msp.Map.events.register("resizeend", self, self.onResizeEnd);
 
             return true;
         };
@@ -428,6 +414,29 @@
             scope.registeredCatalogs.push(layer);
             
             /*
+             * Add searchAll action to msp.menu
+             */
+            if (msp.menu) {
+                
+                if (scope.registeredCatalogs.length === 1) {
+                
+                    /**
+                     * Search all catalogs within the map view
+                     */       
+                    msp.menu.add([{
+                        id:scope.menuId,
+                        ic:"search.png",
+                        ti:"Search in catalogs",
+                        cb:function() {
+                            scope.searchAll(null, true);
+                        }
+                    }]);
+                
+                }
+                
+            }
+            
+            /*
              * Process filters on panel west side
              */
             scope.searchPanel.displayFilters(scope, layer);
@@ -469,6 +478,21 @@
                      * Remove the search panel
                      */
                     catalog['_msp'].searchContext.btn.remove();
+                    
+                    /*
+                     * Remove searchAll action from msp.menu
+                     */
+                    if (msp.menu) {
+
+                        if (this.registeredCatalogs.length === 0) {
+
+                            /**
+                             * Search all catalogs within the map view
+                             */       
+                            msp.menu.remove(this.menuId);
+                        }
+
+                    }
                     
                     /**
                      * Catalog is removed
