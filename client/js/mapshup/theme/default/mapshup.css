@@ -490,7 +490,7 @@ input:focus {
  * Panel normal (i.e. "over" attribute false)
 */
 .pnnorm {
-    background-color:#fff;
+    background-color:#000;
 }
 /*
  * Panel over (i.e. "over" attribute true)
@@ -561,6 +561,10 @@ input:focus {
 
 .pn .close {
     color:#eee;
+}
+
+.pn .bg {
+    background-color:#fff;
 }
 
 /*
