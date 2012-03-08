@@ -342,7 +342,7 @@
              */
             if (!_msp.searchContext) {
                 
-                if (!_msp.layerDescription.callback) {
+                if (!_msp.layerDescription.hasOwnProperty("callback")) {
                     
                     /*
                      * Get the "South" panel reference
@@ -385,10 +385,10 @@
                  * Set new SearchContext
                  */ 
                 _msp.searchContext = new msp.Map.SearchContext(layer, connector, btn, {
-                    autoSearch:msp.Util.getPropertyValue(layer["_msp"].layerDescription, "autoSearch", false),
-                    nextRecord:layer["_msp"].layerDescription.nextRecord || scope.options.nextRecord, 
-                    numRecordsPerPage:layer["_msp"].layerDescription.numRecordsPerPage || scope.options.numRecordsPerPage, 
-                    callback:layer["_msp"].layerDescription.callback || scope.searchPanel.show, 
+                    autoSearch:msp.Util.getPropertyValue(_msp.layerDescription, "autoSearch", false),
+                    nextRecord:_msp.layerDescription.nextRecord || scope.options.nextRecord, 
+                    numRecordsPerPage:_msp.layerDescription.numRecordsPerPage || scope.options.numRecordsPerPage, 
+                    callback:_msp.layerDescription.hasOwnProperty("callback") ? _msp.layerDescription.callback : scope.searchPanel.show, 
                     scope:scope
                 });
 
