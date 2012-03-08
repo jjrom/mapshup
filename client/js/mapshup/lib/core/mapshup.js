@@ -51,12 +51,6 @@
  * --- Released under the MIT License
  * --- http://www.opensource.org/licenses/mit-license.php
  *
- *
- * --- Sliding Panel from Jeremie Tisseau
- * --- http://web-kreation.com/index.php/tutorials/nice-clean-sliding-login-panel-built-with-jquery
- * --- The CSS, XHTML and design released under Creative Common License 3.0
- * --- http://creativecommons.org/licenses/by-sa/3.0/
- *
  */
 
 /*
