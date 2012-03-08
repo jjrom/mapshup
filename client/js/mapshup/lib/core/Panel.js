@@ -294,7 +294,7 @@
                      * 2. Then force the '.expdbl' class height relatively to
                      * the parent height
                      */
-                    $c.css('height', 'auto').css('height', scope.$d.height() - $c.position().top - 15);
+                    $c.css('height', 'auto').css('height', scope.$d.height() - $c.position().top);
                 });
             }
         };
