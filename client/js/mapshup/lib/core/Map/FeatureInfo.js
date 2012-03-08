@@ -476,7 +476,26 @@
                 }
             }
 
-            /**
+            /*
+             * Download feature
+             */
+            if (feature.attributes.hasOwnProperty("_download")) {
+                actions.push({
+                    id:msp.Util.getId(),
+                    icon:"download.png",
+                    title:"Download feature",
+                    sla:function(a,f) {
+                        if (f && f["attributes"]) {
+                            a.attr("target", "_blank").attr("href", feature.attributes["_download"]);
+                        }
+                    },
+                    callback:function(a,f) {
+                        return true;
+                    }
+                });
+            }
+            
+            /*
              * Remove layer
              */
             if (!layer["_msp"].unremovable) {
@@ -564,7 +583,7 @@
              */
             for (i = 0, l = actions.length;i < l; i++) {
                 a = actions[i];
-                $('.actions', self.$m).append('<span class="item image" jtitle="'+msp.Util._(a.title)+'" id="'+a.id+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/></span>');
+                $('.actions', self.$m).append('<a class="item image" jtitle="'+msp.Util._(a.title)+'" id="'+a.id+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/></a>');
                 d = $('#'+a.id);
                 
                 /* Add tooltip */
