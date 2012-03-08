@@ -1254,7 +1254,7 @@
                      */
                     self.ctn.pn.$d.css({
                         'left': self.$m.position().left + self.$m.outerWidth(),
-                        'top': delta < 0 ? top + delta : top
+                        'top': delta < 0 ? top + Math.max(delta,-100) : top
                     });
                     
                 }
