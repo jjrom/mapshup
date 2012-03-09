@@ -386,7 +386,7 @@
          */
         this.setActions = function(feature) {
             
-            var a,bounds,d,i,l,connector,key,plugin,menuactions,
+            var a,bounds,d,i,l,connector,key,plugin,menuactions,down,
             self = this,
             actions = [],
             layer = feature.layer,
@@ -479,20 +479,23 @@
             /*
              * Download feature
              */
-            if (feature.attributes.hasOwnProperty("_download")) {
-                actions.push({
-                    id:msp.Util.getId(),
-                    icon:"download.png",
-                    title:"Download feature",
-                    sla:function(a,f) {
-                        if (f && f["attributes"]) {
-                            a.attr("target", "_blank").attr("href", feature.attributes["_download"]);
+            if (feature.attributes.hasOwnProperty("_mapshup")) {
+                down = feature.attributes["_mapshup"]["download"];
+                if(down) {
+                    actions.push({
+                        id:msp.Util.getId(),
+                        icon:"download.png",
+                        title:"Download feature",
+                        sla:function(a,f) {
+                            if (f && f["attributes"]) {
+                                a.attr("target", "_blank").attr("href", down);
+                            }
+                        },
+                        callback:function(a,f) {
+                            return true;
                         }
-                    },
-                    callback:function(a,f) {
-                        return true;
-                    }
-                });
+                    });
+                }
             }
             
             /*
@@ -781,32 +784,39 @@
                         else if (t === "object") {
 
                             /*
-                             * Special case for _madd property
-                             * _madd defines an action to add layer
-                             * and should contains to properties :
-                             *  - title : action title to display
-                             *  - layer : layer parameters
+                             * Special case for _mapshup property
+                             * _mapshup defines specific actions and should contains optional properties
+                             *      - download : to add a download action
+                             *      - add : to add a layer
+                             *
                              */
-                            if (k === '_madd') {
-                                id = msp.Util.getId();
-                                $thumb.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._(v["title"])+'</a>');
-                                (function(id,obj){
-                                    $('#'+id).click(function(){
+                            if (k === "_mapshup") {
+                                
+                                /*
+                                 * Add a layer action
+                                 */
+                                if (v["add"]) {
+                                    id = msp.Util.getId();
+                                    $thumb.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._(v["add"]["title"])+'</a>');
+                                    (function(id,obj){
+                                        $('#'+id).click(function(){
 
-                                        /*
-                                         * Do not zoom on layer after load
-                                         */
-                                        if (obj) {
-                                            obj.zoomOnAfterLoad = false;
-                                        }
+                                            /*
+                                             * Do not zoom on layer after load
+                                             */
+                                            if (obj) {
+                                                obj.zoomOnAfterLoad = false;
+                                            }
 
-                                        /*
-                                         * Add layer obj
-                                         */
-                                        msp.Map.addLayer(obj);
-                                        return false;
-                                    });
-                                })(id,v["layer"]);
+                                            /*
+                                             * Add layer obj
+                                             */
+                                            msp.Map.addLayer(obj);
+                                            return false;
+                                        });
+                                    })(id,v["add"]["layer"]);
+                                }
+                                
                                 continue;
                             }
 
