@@ -120,7 +120,7 @@ input[type="password"]:hover,input[type="text"]:hover {
     border-width: 1px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
 }
-input:focus {
+input:focus, textarea:focus {
     border: 1px solid #c76400;
 }
 
@@ -719,7 +719,7 @@ span.osclear input {
 .po .description {
     padding:5px 0px 5px 10px;
 }
-.po input[type="text"],.po input[type="password"]  {
+.po input[type="text"],.po input[type="password"],.po textarea  {
     width:95%;
     font-size:1em;
 }

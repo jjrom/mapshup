@@ -142,7 +142,7 @@
                             'top':'-8px',
                             'right':'-8px'
                         },
-                        body:'<form class="marged"><label>'+msp.Util._("Feature title")+'<br/><input id="featureTitle" type="text"/></label><br/><label>'+msp.Util._("Feature description")+'<br/><input id="featureDesc" type="text"/></label><div style="margin:10px 0px;"><a href="#" class="button inline colored" id="featureDescV">'+msp.Util._("Validate")+'</a></div></form>'
+                        body:'<form class="marged"><label>'+msp.Util._("Feature title")+'<br/><input id="featureTitle" type="text"/></label><br/><label>'+msp.Util._("Feature description")+'<br/><textarea id="featureDesc"/></label><div style="margin:10px 0px;"><a href="#" class="button inline colored" id="featureDescV">'+msp.Util._("Validate")+'</a></div></form>'
                     });
                     
                     /*
