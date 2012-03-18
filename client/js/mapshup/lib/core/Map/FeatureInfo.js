@@ -1222,11 +1222,6 @@
              */
             self._tun = (new Date()).getTime();
             
-            /*
-             * Hide menu and fmenu
-             */
-            msp.menu.hide();
-            self.$m.hide();
             
             msp.Map.featureInfo.selected = null;
             
@@ -1242,7 +1237,13 @@
             setTimeout(function(){
                  
                 if (self._tun - self._tse > 0) {
-                   
+                    
+                    /*
+                     * Hide menu and fmenu
+                     */
+                    msp.menu.hide();
+                    self.$m.hide();
+            
                     /*
                      * Hide panel content
                      */
