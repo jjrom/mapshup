@@ -1346,20 +1346,6 @@
         unserialize: function(str) {
             //return new Function("return " + str === "" ? '""' : str)();
             return eval("(" + (str === "" ? '""' : str) + ")");
-        },
-        
-        /*
-         * Return the following html string
-         *  <div id="i" class="l">c</div>
-         *  
-         *  TODO : remove this function ??
-         */
-        w: function(o) {
-            if (typeof o !== "object") {
-                return '';
-            }
-            return '<div' + (o.id ? ' id="' + o.id + '"' : '') + (o.cl ? ' class="' + o.cl + '"' : '') +'>' + o.co + '</div>';
-            
         }
     };
 
