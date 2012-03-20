@@ -220,9 +220,11 @@ if (abcCheck($_REQUEST)) {
                                     exec(MSP_GDAL_TRANSLATE_PATH . ' -of JPEG -outsize 50 50 ' . MSP_UPLOAD_DIR . $fileName . ' ' . MSP_UPLOAD_DIR . $iconName);
                                     
                                     $feature['properties']['title'] = $fileNameOri;
-                                    $feature['properties']['url'] = MSP_GETFILE_URL . $fileName . $stream;
                                     $feature['properties']['thumbnail'] = MSP_GETFILE_URL . $fileName . $stream;
                                     $feature['properties']['icon'] = MSP_GETFILE_URL . $iconName . $stream;
+                                    $feature['properties']['_mapshup'] = array(
+                                        'download' => MSP_GETFILE_URL . $fileName . $stream
+                                    );
                                     array_push($localizedItems, $feature);
                                 }
                                 /*
