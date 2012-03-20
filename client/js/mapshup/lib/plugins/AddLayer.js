@@ -556,7 +556,7 @@
                                     /*
                                      * If the type is unknown we ask user for some usefull help :)
                                      */
-                                    if (result.items[i]["type"] === "unknown") {
+                                    if (!result.items[i]["ignore"] && result.items[i]["type"] === "unknown") {
                                         scope.askType(result.items[i]);
                                     }
                                     else {
