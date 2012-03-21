@@ -295,7 +295,7 @@
             attribution:'<p>Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png"></p>'
         }
     });
-    
+    /*
     c.add("layers", {
         type:"XYZ",
         title:"MapQuest Aerial",
@@ -307,7 +307,7 @@
             attribution:'<p>Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png"></p>'
         }
     });
-    
+    */
     /**
      * Plugins description
      *
