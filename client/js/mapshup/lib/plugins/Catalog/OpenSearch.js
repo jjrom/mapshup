@@ -240,7 +240,7 @@
             
         };
         
-         /*
+        /*
          * Return an array of the attributes to
          * present in the brief view
          * title is the name of the column to display
