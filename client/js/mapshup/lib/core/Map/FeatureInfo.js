@@ -961,7 +961,7 @@
          */
         this.select = function(feature, _triggered) {
 
-            var c,i,bounds,length,ran,title,self = this;
+            var c,i,bounds,length,ran,self = this;
             
             /*
              * Set select time (see unselect function)
@@ -1264,6 +1264,9 @@
             self = this;
             
             if (self.selected && self.selected.geometry) {
+                if (msp.Map.layerTypes[self.selected.layer["_msp"].layerDescription["type"]].resolvedUrlAttributeName){
+                    return;
+                }
                 self.$m.show();
                 xy = msp.Map.map.getPixelFromLonLat(self._ll);
                 self.$m.css({
