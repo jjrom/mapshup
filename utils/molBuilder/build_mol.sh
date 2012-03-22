@@ -96,9 +96,14 @@ cd $oldir/build
 ./build.py ../../../jOpenLayers_build.cfg
 cp OpenLayers.js ../../../mol/OpenLayers.js
 
-echo "Building OpenLayersMobile.js..."
+echo "Building OpenLayers mobile structure..."
+rm -Rf ../../../mol/m
+mkdir ../../../mol/m
 ./build.py ../../../jOpenLayersMobile_build.cfg
-cp OpenLayers.js ../../../mol/OpenLayersMobile.js
+cp OpenLayers.js ../../../mol/m/OpenLayers.js
+cp -R ../../../mol/img ../../../mol/m/img
+cp -R ../../../mol/theme ../../../mol/m/theme
+
 
 cd $here
 echo "Done !"
