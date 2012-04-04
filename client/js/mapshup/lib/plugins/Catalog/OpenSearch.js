@@ -169,11 +169,19 @@
                                 }
                                 
                                 /*
-                                 * If value = count then this should replace the numRecordsPerPage
+                                 * If value = count then corresponding key should replace "numRecordsPerPage" property name
                                  */
-                                if (kvps[key].indexOf('{count') === 1) {
-                                    // TODO : replace "numRecordsPerPage" by "key" 
+                                if (kvps[key].indexOf('count') === 1) {
+                                    self.numRecordsPerPageAlias = key;
                                 }
+                                
+                                /*
+                                 * If value = startIndex then corresponding key should replace "nextRecord" property name
+                                 */
+                                if (kvps[key].indexOf('startIndex') === 1) {
+                                    self.nextRecordAlias = key;
+                                }
+                                
                             }
                             
                             /*
