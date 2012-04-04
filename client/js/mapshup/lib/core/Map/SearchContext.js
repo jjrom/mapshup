@@ -95,7 +95,7 @@
         /**
          * Next record alias value
          */
-        this.nextRecordAlias = msp.Util.getPropertyValue(options, "nextRecordAlias", "nextRecord");
+        this.nextRecordAlias = options.nextRecordAlias || "nextRecord";
         
         /**
          * Maximum number of records per page
@@ -105,7 +105,7 @@
         /**
          * Maximum number of records per page
          */
-        this.numRecordsPerPageAlias = msp.Util.getPropertyValue(options, "numRecordsPerPageAlias", "numRecordsPerPage");
+        this.numRecordsPerPageAlias = options.numRecordsPerPageAlias || "numRecordsPerPage";
         
         /**
          * Maximum number of results for this search context
