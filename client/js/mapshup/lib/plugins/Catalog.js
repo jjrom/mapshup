@@ -386,8 +386,10 @@
                  */ 
                 _msp.searchContext = new msp.Map.SearchContext(layer, connector, btn, {
                     autoSearch:msp.Util.getPropertyValue(_msp.layerDescription, "autoSearch", false),
-                    nextRecord:_msp.layerDescription.nextRecord || scope.options.nextRecord, 
+                    nextRecord:_msp.layerDescription.nextRecord || scope.options.nextRecord,
+                    nextRecordAlias:connector.nextRecordAlias,
                     numRecordsPerPage:_msp.layerDescription.numRecordsPerPage || scope.options.numRecordsPerPage, 
+                    numRecordsPerPageAlias:connector.numRecordsPerPageAlias,
                     callback:_msp.layerDescription.hasOwnProperty("callback") ? _msp.layerDescription.callback : scope.searchPanel.show, 
                     scope:scope
                 });
