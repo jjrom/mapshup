@@ -49,7 +49,9 @@
  * {
  *      autosearch : true to set an auto search mode
  *      nextRecord : next record value
+ *      nextRecordAlias : alias name for "nextRecord" property - see OpenSearch catalog connector
  *      numRecordsPerPage : Maximum number of records per page
+ *      numRecordsPerPageAlias : alias name for "numRecordsPerPage" property - see OpenSearch catalog connector
  *      callback : function to call after a successfull search
  *      scope : scope of the callback function
  * }
@@ -91,10 +93,20 @@
         this.nextRecord = msp.Util.getPropertyValue(options, "nextRecord", 1);
 
         /**
+         * Next record alias value
+         */
+        this.nextRecordAlias = msp.Util.getPropertyValue(options, "nextRecordAlias", "nextRecord");
+        
+        /**
          * Maximum number of records per page
          */
         this.numRecordsPerPage = msp.Util.getPropertyValue(options, "numRecordsPerPage", 20);
-
+        
+        /**
+         * Maximum number of records per page
+         */
+        this.numRecordsPerPageAlias = msp.Util.getPropertyValue(options, "numRecordsPerPageAlias", "numRecordsPerPage");
+        
         /**
          * Maximum number of results for this search context
          */
@@ -300,7 +312,7 @@
             /*
              * Initialize serializedParams string
              */
-            var serializedParams = "numRecordsPerPage=" + this.numRecordsPerPage;
+            var serializedParams = this.numRecordsPerPageAlias + "=" + this.numRecordsPerPage;
 
             /*
              * Roll over items
@@ -525,7 +537,7 @@
              * The result is a GeoJSON object
              */
             msp.Util.ajax({
-                url:msp.Util.proxify(this.connector.searchUrl + this.getSerializedParams() + "&nextRecord=" + nextRecord + extras),
+                url:msp.Util.proxify(this.connector.searchUrl + this.getSerializedParams() + "&" + self.nextRecordAlias + "=" + nextRecord + extras),
                 async:true,
                 dataType:"json",
                 success: function(data) {
