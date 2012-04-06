@@ -570,6 +570,17 @@
                 name:"WFS",
                 predefined:[
                 {
+                   type:"WFS",
+                   title:"Dummy Satellite #1",
+                   url:"/plugins/tracking/dummywfs.php?orbit=orbit1.txt&max=540&",
+                   typeName:"DummySatellite",
+                   icon:"./img/satellite.png",
+                   refreshable:true,
+                   featureNS:"http://www.superbidon.com/superbidon",
+                   version:"1.0.0",
+                   filterOn:""
+                },
+                {
                     type:"WFS",
                     title:"Latest earthquakes",
                     url:"http://www.pdc.org/wfs/wfs/PDC_Active_Hazards_WFS?",
