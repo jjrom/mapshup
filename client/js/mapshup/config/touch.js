@@ -54,13 +54,13 @@
     c.add("layers", {
         type:"Bing",
         title:"Satellite",
-        key:"ArTtvpQL8h3Uobxd76y1fLjoKiAEfTxA5PFPRXTETxnKJssWQVTLR9I3vZJb8GHU",
+        key:"AmraZAAcRFVn6Vbxk_TVhhVZNt66x4_4SV_EvlfzvRC9qZ_2y6k1aNsuuoYS0UYy",
         bingType:"Aerial"
     });
     c.add("layers", {
         type:"Bing",
         title:"Streets",
-        key:"ArTtvpQL8h3Uobxd76y1fLjoKiAEfTxA5PFPRXTETxnKJssWQVTLR9I3vZJb8GHU",
+        key:"AmraZAAcRFVn6Vbxk_TVhhVZNt66x4_4SV_EvlfzvRC9qZ_2y6k1aNsuuoYS0UYy",
         bingType:"Road"
     });
 })(window.msp.Config);
