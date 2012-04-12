@@ -1320,7 +1320,7 @@
                 xy = msp.Map.map.getPixelFromLonLat(self._ll);
                 self.$m.css({
                     'left': xy.x - self.$m.width() / 2,
-                    'top': xy.y - 120
+                    'top': xy.y - 90
                 });
                 
                 /*
