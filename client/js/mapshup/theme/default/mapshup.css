@@ -268,7 +268,6 @@ input:focus, textarea:focus {
 #fmenu {
     position:absolute;
     font-size:0.9em;
-    width:auto;
     width:300px;
     height:auto;
     display:none;
