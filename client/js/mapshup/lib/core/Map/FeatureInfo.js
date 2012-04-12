@@ -386,10 +386,9 @@
          */
         this.setActions = function(feature) {
             
-            var a,bounds,d,i,l,connector,key,plugin,menuactions,down,
+            var a,d,i,l,connector,key,plugin,menuactions,down,
             self = this,
             actions = [],
-            layer = feature.layer,
             fi = feature.layer["_msp"].layerDescription.featureInfo;
             
             /*
@@ -398,11 +397,11 @@
             self.$m.empty();
             
             /*
-             * Add "zoom on feature" action
+             * Add "Center on feature" action
              */
             actions.push({
                 id:msp.Util.getId(),
-                icon:"plus.png",
+                icon:"center.png",
                 title:"Zoom on feature",
                 callback:function(a, f) {
                     self.zoomOn();
@@ -428,30 +427,6 @@
                         return false;
                     }
                 });
-            }
-            
-            /*
-             * Center on layer
-             * Vector layers should have a layer.getDataExtent() function that returns
-             * the layer bounds
-             * Raster layer (e.g. WMS, Image) should have a layer["_msp"].getDataExtent()
-             */
-            if ((bounds = layer.getDataExtent()) || (bounds = layer["_msp"].bounds)) {
-                
-                /**
-                 * Do not set a zoomOn capability on layer
-                 * with _msp.noZoomOn set to true
-                 */
-                if (!layer["_msp"].noZoomOn) {
-                    actions.push({
-                        id:msp.Util.getId(),
-                        icon:"center.png",
-                        title:"Center view on layer",
-                        callback:function() {
-                            msp.Map.zoomTo(bounds);
-                        }
-                    });
-                }
             }
             
             /**
@@ -496,20 +471,6 @@
                         }
                     });
                 }
-            }
-            
-            /*
-             * Remove layer
-             */
-            if (!layer["_msp"].unremovable) {
-                actions.push({
-                    id:msp.Util.getId(),
-                    icon:"trash.png",
-                    title:"Delete",
-                    callback:function() {
-                        msp.Map.removeLayer(layer, true);
-                    }
-                });
             }
             
             /*
@@ -579,7 +540,7 @@
             /*
              * Set title
              */
-            self.$m.append('<div>'+self.getTitle(feature)+'</div><div class="title">('+msp.Util._("Layer")+" : " + layer.name+')</div><div class="actions"></div>');
+            self.$m.append('<div>'+self.getTitle(feature)+'</div><div class="actions"></div>');
             
             /*
              * Set actions
@@ -611,6 +572,94 @@
              * Hide featureHilite menu
              */
             msp.Map.$featureHilite.empty().hide();
+            
+        };
+        
+        
+        /**
+         * Set $a html content
+         */
+        this.setLayerActions = function(feature) {
+            
+            var a,bounds,d,i,l,
+            self = this,
+            actions = [],
+            layer = feature.layer;
+  
+            /*
+             * Clear layer info menu
+             */
+            self.$l.empty();
+            
+            /*
+             * Center on layer
+             * Vector layers should have a layer.getDataExtent() function that returns
+             * the layer bounds
+             * Raster layer (e.g. WMS, Image) should have a layer["_msp"].getDataExtent()
+             */
+            if ((bounds = layer.getDataExtent()) || (bounds = layer["_msp"].bounds)) {
+                
+                /**
+                 * Do not set a zoomOn capability on layer
+                 * with _msp.noZoomOn set to true
+                 */
+                if (!layer["_msp"].noZoomOn) {
+                    actions.push({
+                        id:msp.Util.getId(),
+                        icon:"center.png",
+                        title:"Center view on layer",
+                        callback:function() {
+                            msp.Map.zoomTo(bounds);
+                        }
+                    });
+                }
+            }
+           
+            /*
+             * Remove layer
+             */
+            if (!layer["_msp"].unremovable) {
+                actions.push({
+                    id:msp.Util.getId(),
+                    icon:"trash.png",
+                    title:"Delete",
+                    callback:function() {
+                        msp.Map.removeLayer(layer, true);
+                    }
+                });
+            }
+            
+            
+            /*
+             * Set title
+             */
+            self.$l.append('<div class="title">('+msp.Util._("Layer")+" : " + layer.name+')</div><div class="actions"></div>');
+            
+            /*
+             * Set actions
+             */
+            for (i = 0, l = actions.length;i < l; i++) {
+                a = actions[i];
+                $('.actions', self.$l).append('<a class="item image" jtitle="'+msp.Util._(a.title)+'" id="'+a.id+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/></a>');
+                d = $('#'+a.id);
+                
+                /* Add tooltip */
+                msp.tooltip.add(d, 'n');
+                
+                (function(d,a,f){
+                    d.click(function() {
+                        return a.callback(a,f);
+                    })
+                })(d,a,feature);
+                
+                /*
+                 * The "sla" function can be used to set href
+                 */
+                if (a.sla) {
+                    a.sla(d, feature);
+                }
+                
+            }
             
         };
         
