@@ -386,7 +386,7 @@
          */
         this.setActions = function(feature) {
             
-            var a,d,i,l,connector,key,plugin,menuactions,down,
+            var a,d,i,l,connector,key,plugin,menuactions,_a,
             self = this,
             actions = [],
             fi = feature.layer["_msp"].layerDescription.featureInfo;
@@ -429,6 +429,66 @@
                 });
             }
             
+            /*
+             * _mapshup defines specific actions and should contains optional properties
+             *      - download : to add a download action
+             *      - add : to add a layer
+             * These actions are displayed within the actions list
+             *
+             */
+            if (feature.attributes.hasOwnProperty("_mapshup")) {
+                
+                /*
+                 * Download feature
+                 */
+                _a = feature.attributes["_mapshup"]["download"];
+                if(_a) {
+                    actions.push({
+                        id:msp.Util.getId(),
+                        icon:"download.png",
+                        title:"Download feature",
+                        sla:function(a,f) {
+                            if (f && f["attributes"]) {
+                                a.attr("target", "_blank").attr("href", _a);
+                            }
+                        },
+                        callback:function(a,f) {
+                            return true;
+                        }
+                    });
+                }
+                _a = feature.attributes["_mapshup"]["add"];
+                
+                /*
+                 * Add layer action
+                 */
+                if (_a) {
+                    actions.push({
+                        id:msp.Util.getId(),
+                        icon:"add.png",
+                        title:_a["title"],
+                        callback:function(a,f) {
+                            
+                            /*
+                             * Do not zoom on layer after load
+                             */
+                            if (_a["layer"]) {
+                                _a["layer"].zoomOnAfterLoad = false;
+                            }
+
+                            /*
+                             * Add layer obj
+                             */
+                            msp.Map.addLayer(_a["layer"]);
+                            
+                            return false;
+                        }
+                    });
+                    
+                }
+
+            }
+            
             /**
              * Add item from other plugins
              */
@@ -451,28 +511,6 @@
                 }
             }
 
-            /*
-             * Download feature
-             */
-            if (feature.attributes.hasOwnProperty("_mapshup")) {
-                down = feature.attributes["_mapshup"]["download"];
-                if(down) {
-                    actions.push({
-                        id:msp.Util.getId(),
-                        icon:"download.png",
-                        title:"Download feature",
-                        sla:function(a,f) {
-                            if (f && f["attributes"]) {
-                                a.attr("target", "_blank").attr("href", down);
-                            }
-                        },
-                        callback:function(a,f) {
-                            return true;
-                        }
-                    });
-                }
-            }
-            
             /*
              * If a layerDescription.featureInfo.action, add an action button
              */
@@ -837,35 +875,10 @@
                              * _mapshup defines specific actions and should contains optional properties
                              *      - download : to add a download action
                              *      - add : to add a layer
+                             * These actions are displayed within the actions list - see this.setActions(feature) function
                              *
                              */
                             if (k === "_mapshup") {
-                                
-                                /*
-                                 * Add a layer action
-                                 */
-                                if (v["add"]) {
-                                    id = msp.Util.getId();
-                                    $thumb.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._(v["add"]["title"])+'</a>');
-                                    (function(id,obj){
-                                        $('#'+id).click(function(){
-
-                                            /*
-                                             * Do not zoom on layer after load
-                                             */
-                                            if (obj) {
-                                                obj.zoomOnAfterLoad = false;
-                                            }
-
-                                            /*
-                                             * Add layer obj
-                                             */
-                                            msp.Map.addLayer(obj);
-                                            return false;
-                                        });
-                                    })(id,v["add"]["layer"]);
-                                }
-                                
                                 continue;
                             }
 
