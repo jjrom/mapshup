@@ -470,16 +470,16 @@
                         callback:function(a,f) {
                             
                             /*
-                             * Do not zoom on layer after load
-                             */
-                            if (_a["layer"]) {
-                                _a["layer"].zoomOnAfterLoad = false;
-                            }
-
-                            /*
                              * Add layer obj
                              */
-                            msp.Map.addLayer(_a["layer"]);
+                            var l = msp.Map.addLayer(_a["layer"]);
+                            
+                            /*
+                             * Force zoom on added layer
+                             */
+                            if (l) {
+                                msp.Map.zoomTo(l.getDataExtent() || l["_msp"].bounds);
+                            }
                             
                             return false;
                         }
