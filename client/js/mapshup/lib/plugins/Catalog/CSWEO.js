@@ -103,7 +103,8 @@
          * Add an additional action on featureInfo window
          */
         this.action = {
-            title:"Download Metadata file",
+            tt:"Download Metadata file",
+            title:"Metadata",
             icon:"download.png",
             sla:function(a, feature) {
                 if (feature && feature["attributes"]) {
