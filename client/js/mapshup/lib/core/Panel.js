@@ -123,7 +123,7 @@
         this.init = function() {
             
             var self = this,
-            uid = '_o'+self.position+'p';
+            uid = '_o' + (self.position !== 'f' ? self.position : msp.Util.sequence++) + 'p';
             
             /*
              * Get Panel characteristics from configuration
@@ -137,6 +137,11 @@
                     self.w = msp.Util.getPropertyValue(msp.Config.panel[self.position], "width", self.w);
                 }
             }
+            
+            /*
+             * Superseeded "over" configuration
+             */
+            self.over = msp.Util.getPropertyValue(options, "over", self.over);
             
             /*
              * mapshup can have one and only one panel
