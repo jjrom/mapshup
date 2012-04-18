@@ -267,7 +267,7 @@ input:focus, textarea:focus {
 */
 #fmenu {
     display:none;
-    width:270px;
+    width:320px;
     height:auto;
     z-index:10000;
 }
@@ -278,13 +278,15 @@ input:focus, textarea:focus {
     text-align: center;
     height:30px;
     line-height:30px;
+    white-space: nowrap;
+}
+#fmenu .actions a {
+    color:#fff;
 }
 #fmenu .item {
     cursor:pointer;
-    height:20px;
-    width:auto;
-    padding:5px;
-    margin:0px 5px;
+    padding:3px;
+    margin:0px 3px;
 }
 #fmenu .item img {
     height:16px;
@@ -680,7 +682,7 @@ span.osclear input {
     background-clip: padding-box;
     border: 1px solid #eee;
     padding: 10px;
-    width:100%;
+    width:auto;
     height:100%;
     position: relative;
 }
