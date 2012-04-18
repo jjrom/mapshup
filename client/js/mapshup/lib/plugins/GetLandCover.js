@@ -47,7 +47,8 @@ msp.plugins["GetLandCover"] = {
         return {
             id:"getLandCover",
             icon:msp.Util.getImgUrl("landcover.png"),
-            title:"Get Land Cover",
+            title:"Land Cover",
+            tt:"Get Land Cover",
             javascript:function() {
                 msp.menu.hide();
                 msp.plugins["GetLandCover"].getLandCover();

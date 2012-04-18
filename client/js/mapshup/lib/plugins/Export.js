@@ -98,7 +98,8 @@
                 return {
                     id:msp.Util.getId(),
                     icon:"export.png",
-                    title:"Export layer",
+                    title:"Export",
+                    tt:"Export layer",
                     callback:function() {
                         msp.Util.askFor(msp.Util._("Export")+ ' : '+layer.name, msp.Util._("Choose export format"), "list", [
                         {

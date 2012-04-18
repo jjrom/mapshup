@@ -166,6 +166,7 @@
                     id:msp.Util.getId(),
                     icon:"search.png",
                     title:"Search",
+                    tt:"Search",
                     callback:function() {
                         layer["_msp"].searchContext.search();
                     }

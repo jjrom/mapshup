@@ -308,6 +308,7 @@
                 id:msp.Util.getId(),
                 icon:"streetview.png",
                 title:"Streetview",
+                tt:"Streetview",
                 callback:function() {
                     scope.show(scope, msp.Map.Util.p2d(msp.Map.featureInfo._ll.clone()));
                 }

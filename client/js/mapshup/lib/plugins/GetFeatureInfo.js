@@ -51,7 +51,8 @@ msp.plugins["GetFeatureInfo"] = {
         return {
             id:"getFeatureInfo",
             icon:msp.Util.getImgUrl("info.png"),
-            title:"Get feature info",
+            title:"Info",
+            tt:"Get feature info",
             javascript:function() {
                 msp.menu.hide();
                 msp.plugins["GetFeatureInfo"].getFeatureInfo(msp.menu.lonLat);
