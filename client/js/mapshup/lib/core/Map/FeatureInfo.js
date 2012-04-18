@@ -56,9 +56,12 @@
         this.selected = null;
         
         /**
-         * Default metadata panel is a free panel
+         * Default metadata panel position
          */
-        this.position = "f";
+        this.position = {
+            top:50,
+            right:50
+        };
         
         /**
          * Initialization
@@ -72,33 +75,29 @@
              * Init options
              */
             options = options || {};
-
-            self.position = msp.Util.getPropertyValue(options, "position", self.position);
             
             /*
-             * Feature Information is displayed within a "Free" panel container or a "West" panel container
+             * Feature Information is displayed within a "Free" panel container
              */
-            self.ctn = (new msp.Panel(self.position)).add('<div class="header"><div class="title"></div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
+            self.ctn = (new msp.Panel("f", {over:false})).add('<div class="header"><div class="title"></div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
             
             /*
              * Add a close panel button
              */
-            self.ctn.$d.append('<div id="'+id+'" class="close"></div>');
+            self.ctn.$d.append('<div id="'+id+'" class="close"></div>').addClass("shadow");
             $('#'+id).click(function() {
-                
-                /*
-                 * Two cases - 'Free' panel and others
-                 */
-                if (self.position === "f") {
-                    self.clear();
-                }
-                else {
-                    self.ctn.pn.hide(self.ctn);
-                }
-                
+                self.clear();
             }).css({
-                'top':'-8px',
+                'top':'0px',
                 'right':'-8px'
+            });
+            
+            /*
+             * Set 'Free' panel position and height
+             */
+            self.ctn.pn.$d.css({
+                'top':self.position.top,
+                'right':self.position.right
             });
             
             /*
@@ -112,7 +111,7 @@
             /*
              * Create feature menu div over the map container div
              */
-            self.$m = msp.Util.$$("#fmenu", msp.$mcontainer).addClass("shadow");
+            self.$m = msp.Util.$$("#fmenu", msp.$mcontainer).addClass("apo shadow");
             
             /*
              * Update menu position on map move
@@ -144,7 +143,7 @@
              * Register resizeend after panel resizeend
              */
             msp.Map.events.register("resizeend", self, function() {
-                if (self.position === 'f' && self.ctn.pn.isVisible) {
+                if (self.ctn.pn.isVisible) {
                     self.show();
                 }
             });
@@ -397,6 +396,21 @@
             self.$m.empty();
             
             /*
+             * Display feature information action
+             */
+            /*
+            actions.push({
+                id:msp.Util.getId(),
+                icon:"info.png",
+                title:"Feature information",
+                callback:function(a, f) {
+                    self.ctn.pn.isVisible ? self.ctn.pn.hide(self.ctn) : self.show();
+                    return false;
+                }
+            });
+            */
+            
+            /*
              * Add "Center on feature" action
              */
             actions.push({
@@ -408,26 +422,6 @@
                     return false;
                 }
             });
-            
-            /*
-             * Display feature information action
-             */
-            if (self.position !== "f") {
-                actions.push({
-                    id:msp.Util.getId(),
-                    icon:"info.png",
-                    title:"Feature information",
-                    callback:function(a, f) {
-
-                        /*
-                         * ShowHide feature information
-                         */
-                        self.ctn.pn.isVisible ? self.ctn.pn.hide(self.ctn) : self.show();
-
-                        return false;
-                    }
-                });
-            }
             
             /*
              * _mapshup defines specific actions and should contains optional properties
@@ -715,14 +709,12 @@
             /*
              * Set header
              */
-            if (self.position !== "f") {
-                title = msp.Util.stripTags(self.getTitle(feature));
-                $('.title', self.$h).attr('title', feature.layer.name + ' | ' + title)
-                .html(msp.Util.shorten(title, 25))
-                .click(function(){
-                    self.zoomOn(feature);
-                });      
-            }
+            title = msp.Util.stripTags(self.getTitle(feature));
+            $('.title', self.$h).attr('title', feature.layer.name + ' | ' + title)
+            .html(msp.Util.shorten(title, 25))
+            .click(function(){
+                self.zoomOn(feature);
+            });      
                 
             /*
              * Clean body
@@ -999,15 +991,13 @@
              * Be sure that free panel height is recomputed
              * after an image is loaded
              */
-            if (self.position === 'f') {
-                $('img', self.$b).each(function(idx){
-                    $(this).load(function(){
-                        if (self.ctn.pn.isVisible){
-                            self.show();
-                        }
-                    });
+            $('img', self.$b).each(function(idx){
+                $(this).load(function(){
+                    if (self.ctn.pn.isVisible){
+                        self.show();
+                    }
                 });
-            }
+            });
             
         };
 
@@ -1059,8 +1049,9 @@
                     msp.Map.map.zoomToExtent(bounds);
                     
                     /*
-                     * Hide metadata panel
+                     * Hide menu and metadata panel
                      */
+                    self.$m.hide();
                     self.ctn.pn.hide(self.ctn);
                     
                     return false;
@@ -1217,17 +1208,10 @@
                 self.setActions(feature);
                 
                 /*
-                 * Show metadata panel
+                 * Show feature information
                  */
-                if (self.position === "f") {
-                    
-                    /*
-                     * Show panel
-                     */
-                    self.show();
-                    
-                }
-                
+                self.show();
+
                 /*
                  * Update menu position
                  */
@@ -1243,21 +1227,6 @@
         this.show = function() {
             
             var self = this;
-            
-            if (self.position === "f") {
-                
-                /*
-                 * Hide metadata panel
-                 */
-                self.ctn.pn.hide(self.ctn);
-                
-                /*
-                 * Set 'Free' panel position and height
-                 */
-                self.ctn.pn.$d.css({
-                    'max-height': Math.round(msp.$map.height() * 0.9)
-                });
-            }
             
             /*
              * Show metadata panel
@@ -1322,39 +1291,52 @@
          */
         this.updatePosition = function() {
             
-            var xy,top,delta,
+            var xy,
             self = this;
             
             if (self.selected && self.selected.geometry) {
-                if (msp.Map.layerTypes[self.selected.layer["_msp"].layerDescription["type"]].resolvedUrlAttributeName){
-                    return;
-                }
-                self.$m.show();
-                xy = msp.Map.map.getPixelFromLonLat(self._ll);
-                self.$m.css({
-                    'left': xy.x - self.$m.width() / 2,
-                    'top': xy.y - 90
-                });
                 
                 /*
-                 * Update 'Free' panel position
+                 * Clustering nightmare.
+                 * A feature is selected - User zoom out and the corresponding
+                 * feature is cluserized. Thus, selected.layer does not exist.
+                 * To avoid this, hide the feature info panel if selected.layer is null 
                  */
-                if (self.position === 'f') {
+                if (!self.selected.layer) {
                     
-                    top = self.$m.position().top - 50;
-                    delta = msp.$map.height() - top - self.ctn.pn.$d.height();
+                    // Hide menu
+                    self.$m.hide();
+                    
+                    // Hide panel
+                    self.ctn.pn.hide(self.ctn);
+                    
+                    return false;
+                }
+            
+                
+                if (!msp.Map.layerTypes[self.selected.layer["_msp"].layerDescription["type"]].resolvedUrlAttributeName){
+                    
+                    xy = msp.Map.map.getPixelFromLonLat(self._ll);
                     
                     /*
-                     * Set 'Free' panel position and height
+                     * Set action info menu position
+                     */
+                    self.$m.show().css({
+                        'left': xy.x - 31,
+                        'top': xy.y - self.$m.outerHeight() - 12
+                    });
+
+                    /*
+                     * Compute info panel max height
                      */
                     self.ctn.pn.$d.css({
-                        'left': self.$m.position().left + self.$m.outerWidth(),
-                        'top': delta < 0 ? top + Math.max(delta,-100) : top
+                        'max-height': Math.round(msp.$map.height() * 0.9) - self.ctn.pn.$d.offset().top
                     });
                     
                 }
-                
             }
+            
+            return true;
             
         };
         
