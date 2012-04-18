@@ -396,27 +396,13 @@
             self.$m.empty();
             
             /*
-             * Display feature information action
-             */
-            /*
-            actions.push({
-                id:msp.Util.getId(),
-                icon:"info.png",
-                title:"Feature information",
-                callback:function(a, f) {
-                    self.ctn.pn.isVisible ? self.ctn.pn.hide(self.ctn) : self.show();
-                    return false;
-                }
-            });
-            */
-            
-            /*
              * Add "Center on feature" action
              */
             actions.push({
                 id:msp.Util.getId(),
                 icon:"center.png",
-                title:"Zoom on feature",
+                title:"Zoom",
+                tt:"Zoom on feature",
                 callback:function(a, f) {
                     self.zoomOn();
                     return false;
@@ -440,7 +426,8 @@
                     actions.push({
                         id:msp.Util.getId(),
                         icon:"download.png",
-                        title:"Download feature",
+                        title:"Download",
+                        tt:"Download feature",
                         sla:function(a,f) {
                             if (f && f["attributes"]) {
                                 a.attr("target", "_blank").attr("href", _a);
@@ -460,7 +447,8 @@
                     actions.push({
                         id:msp.Util.getId(),
                         icon:"add.png",
-                        title:_a["title"],
+                        tt:_a["title"],
+                        title:"Add",
                         callback:function(a,f) {
                             
                             /*
@@ -522,6 +510,7 @@
                         id:msp.Util.getId(),
                         icon:fi.action["icon"],
                         title:fi.action["title"],
+                        tt:fi.action["tt"],
                         callback:function(a, f) {
                             fi.action.callback(a, f);
                             return false;
@@ -548,6 +537,7 @@
                         id:msp.Util.getId(),
                         icon:connector.action["icon"],
                         title:connector.action["title"],
+                        tt:connector.action["tt"],
                         sla:$.isFunction(connector.action.sla) ? connector.action.sla : null,
                         callback:function(a, f) {
                             
@@ -579,7 +569,7 @@
              */
             for (i = 0, l = actions.length;i < l; i++) {
                 a = actions[i];
-                $('.actions', self.$m).append('<a class="item image" jtitle="'+msp.Util._(a.title)+'" id="'+a.id+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/></a>');
+                $('.actions', self.$m).append('<a class="item image" jtitle="'+msp.Util._(a.tt || a.title)+'" id="'+a.id+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/>&nbsp;'+msp.Util._(a.title)+'</a>');
                 d = $('#'+a.id);
                 
                 /* Add tooltip */
