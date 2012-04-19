@@ -817,7 +817,7 @@
                 /*
                  * Set variable and references
                  */
-                var d,v,t,i,l,k,kk,kkk;
+                var d,v,t,i,l,k,kk,kkk,ts;
 
                 /*
                  * Roll over attributes  
@@ -951,19 +951,22 @@
                                     }
                                     else {
                                         for (kkk in v[kk]) {
-                                            d.append('<tr><td>' + self.translate(kkk, feature) + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
+                                            ts = self.translate(kkk, feature);
+                                            d.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
                                         }
                                     }
 
                                 }
                                 else {
-                                    $info.append('<tr><td>' + self.translate(k, feature) + ' &rarr; ' + self.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
+                                    ts = self.translate(k, feature);
+                                    $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + ' &rarr; ' + self.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
                                 }
                             }
 
                         }
                         else {
-                            $info.append('<tr><td>' + self.translate(k, feature) + '</td><td>&nbsp;</td><td>' + self.getValue(feature,k,v) + '</td></tr>');
+                            ts = self.translate(k, feature);
+                            $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + '</td><td>&nbsp;</td><td>' + self.getValue(feature,k,v) + '</td></tr>');
                         }
                     }
                 }
