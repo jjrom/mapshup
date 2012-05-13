@@ -90,9 +90,9 @@ Go back to the start view
 Google libraries not loaded. Streetview is disabled
 Hi
 Hide
+Hide this layer
 Initializing 3D mode
 Item
-Keywords or coordinates
 Layer
 Layer added
 Layer detection in progress...
@@ -149,7 +149,6 @@ Saving layer
 Search
 Search Area
 Search for media
-Search for one or more comma-delimited <b>keywords</b> (e.g. Toulouse,France) or enter <b>coordinates</b> in decimal degrees (e.g. 44.1 -128.8)
 Search for related data
 Search for related images
 Search in

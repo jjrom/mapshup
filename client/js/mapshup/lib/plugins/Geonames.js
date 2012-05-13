@@ -97,8 +97,9 @@
              *      </div>
              * </div>
              */
-            this.$d = msp.Util.$$('#gnm', msp.$map)
-            .html('<div class="content"><div class="header"></div></div>')
+            /*this.$d = msp.Util.$$('#gnm', msp.$map).html('<div class="content"><div class="header"></div></div>').addClass("apo shadow");
+            */
+            this.$d = msp.Util.$$('#gnm', msp.$map).html('<div class="content"><div class="header"></div></div>')
             .css({
                 'background-image': 'url("'+msp.Util.getImgUrl("whereami_arrowdown.png")+'")',
                 'background-position':'37px 100%'
@@ -295,7 +296,7 @@
                 type:"Generic",
                 title:"__WHEREAMI__",
                 unremovable:true,
-                initialLayer:true,
+                mspLayer:true,
                 layer:this.layer
             });
 

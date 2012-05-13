@@ -155,7 +155,7 @@ msp.plugins["GetLandCover"] = {
             dataType:"json",
             type:"POST",
             data:{
-                json:msp.serialize(json)
+                json:JSON.stringify(json)
             },
             success: function(data) {
                 alert(data.url);

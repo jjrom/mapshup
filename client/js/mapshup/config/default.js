@@ -84,12 +84,7 @@
     c["general"].displayCoordinates = true;
 
     /**
-     * True to display overview map
-     */
-    c["general"].displayOverviewMap = true;
-
-    /**
-     * True to display overview map
+     * True to display scale
      */
     c["general"].displayScale = true;
 
@@ -99,14 +94,9 @@
      */
     c["general"].featureHilite = true;
     
-    /*
-     * Feature Info metadata position - default is 'f'
-     */
-    c["general"].featureInfoPosition = "f";
-
     /**
      * Set the initial location for the map
-     * This can be overriden by url paramters
+     * This can be overriden by url parameters
      * Possible properties are :
      *  {
      *      lon: // center map longitude
@@ -115,16 +105,20 @@
      *      bg: // mspID of the default background layer (optional)
      *  }
      */
-    c["general"].initialLocation = {
+    c["general"].location = {
         lon:0,
         lat:40,
         zoom:2
     };
 
     /**
-     * Mapserver url. Used by the reprojection service
+     * Overview map configuration.
+     * The overview
+     *   - "none" : no overview map
+     *   - "opened": overview map is opened at startup
+     *   - "closed": overview map is closed at startup
      */
-    c["general"].mapserverUrl = "http://localhost/cgi-bin/mapserv?";
+    c["general"].overviewMap = "closed";
 
     /**
      * Proxy url. Must be terminated by "?" or "&"
@@ -143,19 +137,13 @@
     c["general"].refreshInterval = 1000;
 
     /**
-     * Remove black border service url.
-     */
-    //c["general"].removeBlackBorderServiceUrl = "/utilities/removeBorder.php?imageurl=";
-
-    /**
      * Reprojection service url. Must be terminated by "?" or "&"
      * This service is used for WMS layers reprojection
      */
     c["general"].reprojectionServiceUrl = "/mapserver/getReprojectedWMS.php?";
 
     /**
-     * Reprojection service url. Must be terminated by "?" or "&"
-     * This service is used for WMS layers reprojection
+     * RSS to GeoRSS service url
      */
     c["general"].rssToGeoRSSServiceUrl = "/utilities/rss2georss.php?url=";
 
@@ -194,7 +182,7 @@
      * Available languages. A language file must be called "lang".js and located
      * under the i18n directory (e.g. the "fr" lang corresponds to the "fr.js" file)
      */
-    c["i18n"].availableLangs = ["en", "fr", "ar", "de", "es", "he", "it", "ja", "ru", "zh", "pt"];
+    c["i18n"].langs = ["en", "fr", "ar", "de", "es", "he", "it", "ja", "ru", "zh", "pt"];
 
     /**
      * Application default lang (one from availableLangs).
@@ -212,28 +200,9 @@
      * Panel configuration
      */
     c["panel"] = {
-        /* North */
-        n:{
-            over:false // North panel push the map
-        },
-        /* South */
         s:{
-            over:false // South panel push the map
-        },
-        /* East */
-        e:{
-            over:true, // East panel is displayed over the map
-            top:20
-        },
-        /* West */
-        w:{
-            over:true, // West panel is displayed over the map
-            top:100,
-            bottom:60
-        },
-        /* Free */
-        f:{
-            over:true
+            over:false, // Push the map
+            h:300
         }
     };
     
@@ -253,7 +222,7 @@
     c["upload"].allowedExtensions = ["gml","gpx","kml","xml","rss","jpeg","jpg","gif","png","shp","shx","dbf","json"];
 
     /** Default layers */
-    c.add("layers", {
+   c.add("layers", {
         type:"Google",
         title:"Streets",
         numZoomLevels:22,
@@ -281,7 +250,10 @@
         title:"OpenStreetMap",
         url:["http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
         "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
-        "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"]
+        "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"],
+        ol:{
+            attribution:'Tiles from <a href="http://www.openstreetmap.org" target="_blank">OpenStreetMap</a>'
+        }
     });
     
     c.add("layers", {
@@ -296,6 +268,7 @@
         }
     });
     /*
+    
     c.add("layers", {
         type:"XYZ",
         title:"MapQuest Aerial",
@@ -307,6 +280,7 @@
             attribution:'<p>Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png"></p>'
         }
     });
+     
     */
     /**
      * Plugins description
@@ -354,14 +328,6 @@
     {
         name:"UserManagement"
     });
-   
-    /**
-     *  This plugin requires UserManagement plugin
-     *  Options :
-     *      (The Following should not be overrided)
-     *      historyUrl: "/plugins/usermanagement/navigationHistory.php";
-     *      statsWMSUrl: "http://localhost/cgi-bin/mapserv?map=/Users/jrom/Documents/Devel/j_/src/server/plugins/logger/logger.map&LAYERS=countries&";
-     */
     
     /*
      * Export plugin
@@ -382,8 +348,8 @@
      *      zoomout: // True to add "Zoom out" action - default true
      *      history: // True to add Navigation history - default false
      *      limit: // Number of stored extents for navigation history - default 10
-     *      position: // Toolbar position (nw, ne, sw, se) - default nw
-     *      orientation: // Toolbar orientation (h, v) - default h
+     *      position: // Toolbar position (nw, ne, sw, se) - default ne
+     *      orientation: // Toolbar orientation (h, v) - default v
      *
      */
     c.add("plugins",
@@ -398,8 +364,8 @@
      * Google Earth plugin
      *
      * options :
-     *      navigation : true to display navigation control // default false
-     *      atmosphere : true to display atmosphere // default false
+     *      navigation : true to display navigation control // default true
+     *      atmosphere : true to display atmosphere // default true
      *      borders : true to display borders layer // default false
      *      terrain : true to display terrain layer // default true;
      *      roads : true to display roads layer // default false
@@ -408,8 +374,8 @@
      *      teleport : true to go instantaneously to location, else fly to location // default false
      *      synchronize : true to synchronize layer between 2D and 3D // default true
      *      synchronizeWMS : true to synchronize WMS layers between 2D and 3D - EXPERIMENTAL // default false
-     *      position: // position of the toolbar button - default nw
-     *      orientation // orientation of the toolbar button - default h
+     *      position: // position of the toolbar button - default ne
+     *      orientation // orientation of the toolbar button - default v
      *      embeded: // Boolean - if true, Google Earth is displayed within a South panel
      *                  and can be displayed at the same time of the 3D map
      *                  Otherwise it is displayed above the 2D map
@@ -429,19 +395,22 @@
      *      orientation: // Toolbar orientation (h, v) - default v
      *
      */
-    /*
     c.add("plugins",
     {
         name:"BackgroundsManager"
     });
-    */
+    
     /**
      *  Options :
      *     
-     *     active: // True to have the LayersManager panel open on startup (default false)
-     *     opacitySteps: 5 // for raster layers, number of opacity steps (from transparent to opaque)
-     *     position: // Toolbar position (nw, ne, sw, se) - default ne
-     *     orientation: // Toolbar orientation (h, v) - default v
+     *     position: // LayersManager position, one of :
+     *                      - 'n' for North (default)
+     *                      - 's' for South
+     *     excluded: // layer types are not managed by LayersManager plugin
+     *                  default ["Image","MBT","SHP","TMS","WMS","XYZ"]
+     *     
+     *     onTheFly: // If true, featureInfo panel is displayed on the
+     *                  fly. Only work for non-touch device (default true)
      */
     c.add("plugins",
     {
@@ -463,8 +432,6 @@
      * 
      *      allowedLayerTypes: // mandatory - see below
      *      magicServiceUrl: // url to magic service - default "/utilities/magic.php?"
-     *      invisible: // if true only drag&drop is activated (no addlayer panel)
-     *                    Default is false
      */
     c.add("plugins",
     {
@@ -472,226 +439,49 @@
         options:{
             allowedLayerTypes:[
             {
-                name:"Catalog",
-                predefined:[
-                {
-                    type:"Catalog",
-                    title:"Inspire Catalog",
-                    url:"http://inspire-geoportal.eu/discovery/csw?",
-                    connectorName:"CSWISO",
-                    groupName:"Catalogs",
-                    extras:{
-                        order:"lonlat"
-                    }
-                },
-                {
-                    type:"Catalog",
-                    title:"CEOS WGISS Integrated Catalog",
-                    url:"http://cwic.csiss.gmu.edu/cwicv1/discovery?",
-                    connectorName:"CSWISO",
-                    groupName:"Catalogs",
-                    extras:{
-                        order:"latlon",
-                        headers:false
-                    },
-                    filters:[
-                    {
-                        id:"collection",
-                        title:"Collection",
-                        type:"enumeration",
-                        unique:true,
-                        son:[
-                        {
-                            id:'MODIS1',
-                            title:'MODIS/Aqua 8-Day Clear Sky Radiance Bias Daily',
-                            value:'NASA:MODIS/Aqua 8-Day Clear Sky Radiance Bias Daily L3 Global 1Deg Zonal Bands V005'
-                        },
-                        {
-                            id:'NOAA:GVAR_SND',
-                            title:'NOAA - GVAR_SND',
-                            value:'NOAA:GVAR_SND'
-                        },
-                        {
-                            id:'NASA:ASTER_L1B',
-                            title:'NASA - ASTER L1B',
-                            value:'NASA:ASTER L1B Registered Radiance at the Sensor V003'
-                        }
-                        ]
-                    }
-                    ]
-                },
-                {
-                    type:"Catalog",
-                    title:'ERDAS Catalog',
-                    groupName:"Catalogs",
-                    url:'http://projects-eu.erdas.com/erdas-georeg/wrs/WRS?',
-                    connectorName:'CSWEO'
-                },
-                {
-                    type:"Catalog",
-                    title:'Spot DALI catalog',
-                    groupName:"Catalogs",
-                    connectorName:'SPOTRest'
-                }
-                ]
+                name:"Catalog"
+            },  
+            {
+                name:"Atom"
             },
             {
-                name:"Atom",
-                predefined:[]
+                name:"GeoJSON"
             },
             {
-                name:"GeoJSON",
-                predefined:[]
+                name:"GeoRSS"
             },
             {
-                name:"GeoRSS",
-                predefined:[
-                {
-                    type:"GeoRSS",
-                    title:"International Disaster Charter - Latest activations",
-                    url:"http://www.disasterscharter.org/DisasterCharter/RssFeed?articleType=activation&locale=en_US&companyId=1&communityId=10729"
-                },
-                {
-                    type:"GeoRSS",
-                    title:"Lib&eacute;ration - Monde",
-                    url:"http://rss.feedsportal.com/c/32268/f/438244/index.rss"
-                }
-                ]
+                name:"KML"
             },
             {
-                name:"KML",
-                predefined:[]
+                name:"Pleiades"
             },
             {
-                name:"Pleiades",
-                predefined:[]
+                name:"WFS"
             },
             {
-                name:"WFS",
-                predefined:[
-                {
-                   type:"WFS",
-                   title:"Dummy Satellite #1",
-                   url:"/plugins/tracking/dummywfs.php?orbit=orbit1.txt&max=540&",
-                   typeName:"DummySatellite",
-                   icon:"./img/satellite.png",
-                   refreshable:true,
-                   featureNS:"http://www.superbidon.com/superbidon",
-                   version:"1.0.0",
-                   filterOn:""
-                },
-                {
-                    type:"WFS",
-                    title:"Latest earthquakes",
-                    url:"http://www.pdc.org/wfs/wfs/PDC_Active_Hazards_WFS?",
-                    typeName:"Recent_Earthquakes-earthquake",
-                    color:"#FF0000",
-                    filterOn:"d2p2.d2p2_eq_48hr_sdeview.magnitude",
-                    featureNS:"http://www.esri.com/esri",
-                    version:"1.0.0",
-                    featureInfo:{
-                        title:"Magnitude {d2p2.d2p2_eq_48hr_sdeview.magnitude} - {d2p2.d2p2_eq_48hr_sdeview.date_time}",
-                        keys:{
-                            "d2p2.d2p2_eq_48hr_sdeview.date_time":{
-                                v:"Date"
-                            },
-                            "d2p2.d2p2_eq_48hr_sdeview.latitude":{
-                                v:"Latitude"
-                            },
-                            "d2p2.d2p2_eq_48hr_sdeview.longitude":{
-                                v:"Longitude"
-                            },
-                            "d2p2.d2p2_eq_48hr_sdeview.magnitude":{
-                                v:"Magnitude"
-                            },
-                            "d2p2.d2p2_eq_48hr_sdeview.depth":{
-                                v:"Depth"
-                            },
-                            "d2p2.d2p2_eq_48hr_sdeview.region":{
-                                v:"Region"
-                            },
-                            "d2p2.d2p2_eq_48hr_sdeview.incident_id":{
-                                v:"Incident"
-                            },
-                            "d2p2.d2p2_eq_48hr_sdeview.objectid":{
-                                v:"Object ID"
-                            },
-                            "d2p2.d2p2_eq_48hr_sdeview.link":{
-                                v:"Link"
-                            }
-                        }
-                    }
-                },
-                {
-                    type:"WFS",
-                    title:"PDC server",
-                    url:"http://www.pdc.org/wfs/wfs/PDC_Active_Hazards_WFS?"
-                }
-                ]
-            },
-            {
-                name:"WMS",
-                predefined:[
-                {
-                    type:"WMS",
-                    title:"VMAP0 [Metacarta]",
-                    url:"http://vmap0.tiles.osgeo.org/wms/vmap0?",
-                    layers:"Vmap0",
-                    srs:"EPSG:4326"
-                },
-                {
-                    type:"WMS",
-                    title:"Disasters Charter server",
-                    url:"http://www.disasterschartercatalog.org/ogc/cecec4wms?"
-                },
-                {
-                    type:"WMS",
-                    title:"Cubewerx WMS server",
-                    url:"http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi?"
-                },
-                {
-                    type:"WMS",
-                    title:"World summits",
-                    url:"http://www.camptocamp.org/cgi-bin/c2corg_wms?",
-                    layers:"summits",
-                    srs:"EPSG:4326"/*,
-                    ol:{
-                        singleTile:true
-                    }*/
-                },
-                {
-                    type:"WMS",
-                    title:"Global 30 Second Elevations",
-                    url:"http://demo.cubewerx.com/demo/cubeserv/cubeserv.cgi?",
-                    layers:"Foundation.GTOPO30",
-                    version:"1.1.0",
-                    srs:"EPSG:3857",
-                    queryable:true
-                },
-                {
-                    type:"WMS",
-                    title:"Nexrad server (US)",
-                    url:"http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi?"
-                }
-                ]
+                name:"WMS"
             }
             ]
         }
     });
 
     /**
-     * OpenSearch2 plugin
+     * Search plugin
      *
      * options:
      * 
-     *      description:// Set the tooltip text displayed on mouse over the input search text box
-     *      inHeader: // if true OpenSearch input text is embeded within the map header
-     *                   (default is true)
-     *
+     *      services: // array of OpenSearch services description
+     *                   {
+     *                      url: // url to the OpenSearch XML description - MANDATORY
+     *                      stype: // Layer type - OPTIONAL
+     *                      shortcut: // One character shortcut for direct search on the ressource
+     *                   }
+     *                   
      */
     c.add("plugins",
     {
-        name:"OpenSearch2",
+        name:"Search",
         options:{
 
             /**
@@ -701,18 +491,22 @@
             {
                 url:"/plugins/flickr/opensearch.xml",
                 /* Sub type Flickr */
-                stype:"Flickr"
+                stype:"Flickr",
+                shortcut:'p'
             },
             {
                 url:"/plugins/youtube/opensearch.xml",
                 /* Sub type Youtube */
-                stype:"Youtube"
+                stype:"Youtube",
+                shortcut:'v'
             },
             {
-                url:"/plugins/geonames/opensearch.xml"
+                url:"/plugins/geonames/opensearch.xml",
+                shortcut:'t'
             },
             {
-                url:"/plugins/wikipedia/opensearch.xml"
+                url:"/plugins/wikipedia/opensearch.xml",
+                shortcut:'w'
             }
             ]
         }
@@ -888,15 +682,6 @@
         }
     });
 
-    /*
-     * LocateMe plugin
-     */
-    /*
-    c.add("plugins",
-    {
-        name:"LocateMe"
-    });
-    */
     /**
      * WorldGrid plugin
      * 
@@ -915,19 +700,17 @@
     });
     
     /**
-     * Map context management
+     * Context sharing
      * options:
      *      saveContextServiceUrl : // Url to the save context service. Default /plugins/logger/saveContext.php?
      *      getContextsServiceUrl : // Url to the save context service. Default /plugins/logger/getContexts.php?
      *      shareEmbed : // True to add a "embed code in your website" textarea (default false)
      *      geocode: // True to save context with a geocoded name instead of lat/lon - default true
-     *      position: // Toolbar position (nw, ne, sw, se) - default nw
-     *      orientation: // Toolbar orientation (h, v) - default h
      *      
      */
     c.add("plugins",
     {
-        name:"Context"
+        name:"Share"
     });
     
     /**
@@ -938,5 +721,13 @@
     {
         name:"CountryPicker"
     });
-       
+    
+    /**
+     * Display Help
+     */
+    c.add("plugins",
+    {
+        name:"Help"
+    });
+    
 })(window.msp.Config);

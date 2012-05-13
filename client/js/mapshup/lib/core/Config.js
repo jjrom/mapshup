@@ -63,7 +63,13 @@
          * General Configuration
          * Empty : see Config/default.js
          */
-        general:{},
+        general:{
+            location:{
+                lon:0,
+                lat:0,
+                zoom:0
+            }
+        },
 
         /**
          * List of predefined groups
@@ -194,6 +200,113 @@
                     }
                 }
             }
+        },
+        
+        /**
+         * 
+         * Update Config object layers with input layer description list
+         * 
+         * @input lds : layer description
+         */
+        update: function(lds) {
+            
+            var i, l, j, k, b,
+            self = this;
+            
+            /*
+             * If the Map is not initialized, do nothing
+             */
+            if (!msp.Map) {
+                return false;
+            }
+            
+            /*
+             * Paranoid mode
+             */
+            lds = lds || [];
+            
+            /*
+             * Update Config layers with context layers
+             */
+            for (i = 0; i < self.layers.length; i++) {
+
+                /*
+                 * By default, remove the layer
+                 */
+                b = true;
+
+                /*
+                 * Roll over input layer descriptions
+                 */
+                for (j = 0, k = lds.length; j < k; j++) {
+
+                    /*
+                     * The layer is present in the context layer list. No need to remove it
+                     */
+                    if ((new msp.Map.LayerDescription(self.layers[i], msp.Map)).getMspID() === (new msp.Map.LayerDescription(lds[j], msp.Map)).getMspID()) {
+                        b = false;
+                        break;
+                    }
+
+                }
+
+                /*
+                 * Remove the layer
+                 * 
+                 * !! Since we use splice we need to recompute j index with the new
+                 * array size !!
+                 */
+                if (b) {
+                    self.layers.splice(i,1);
+                    i--;
+                }
+
+            }
+
+            /*
+             * Add or update layers
+             */
+            for (i = 0, l = lds.length; i < l; i++) {
+
+                /*
+                 * By default, add the layer
+                 */
+                b = true;
+
+                /*
+                 * Roll over existing layers
+                 */
+                for (j = 0, k = self.layers.length; j < k; j++) {
+
+                    /*
+                     * The layer already exist - update it
+                     */
+                    if ((new msp.Map.LayerDescription(lds[i], msp.Map)).getMspID() === (new msp.Map.LayerDescription(self.layers[j], msp.Map)).getMspID()) {
+                        b = false;
+                        break;
+                    }
+
+                }
+
+                /*
+                 * Add layer
+                 */
+                if (b) {
+                    self.layers.push(lds[i]);
+                }
+                /*
+                 * Update existing layer properties :
+                 *  - hidden (all layers)
+                 *  - search (for catalogs)
+                 */
+                else {
+                    self.layers[j].hidden = lds[i].hidden;
+                }
+            }
+            
+            return true;
+
         }
+        
     }
 })(window.msp);

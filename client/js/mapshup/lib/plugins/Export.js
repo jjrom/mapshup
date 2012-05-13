@@ -71,30 +71,16 @@
         };
         
         /**
-         * This method is called by FeatureInfo
-         */
-        this.getFeatureActions = function(feature) {
-            return this.getActions(feature ? feature.layer : null);
-        };
-        
-        /**
          * This method is called by LayersManager plugin
          */
-        this.getLmngActions = function(layer) {
-            return this.getActions(layer);
-        };
-        
-        /**
-         * Generic action menu
-         */
-        this.getActions = function(layer) {
+        this.getLayerActions = function(layer) {
             
             var scope = this;
         
             /*
              * Only vector layers with features can be exported
              */
-            if (layer && layer.features && layer.features.length > 0) {
+            if (layer && layer.features) {
                 return {
                     id:msp.Util.getId(),
                     icon:"export.png",
@@ -168,7 +154,7 @@
                     userid:userid,
                     format:format,
                     name:name,
-                    json:msp.Util.serialize({
+                    json:JSON.stringify({
                         items:a
                     })
                 },

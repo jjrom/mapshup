@@ -88,7 +88,7 @@
             self.layer = msp.Map.addLayer({
                 type:"Wikipedia",
                 title:"Wikipedia",
-                initialLayer:true,
+                mspLayer:true,
                 hidden:self.options.hidden
             });
 
@@ -207,7 +207,9 @@
                             }
                             var innerHTML = "";
                             if (obj.geonames[i]['summary'] !== undefined) {
-                                innerHTML = '<p>'+decodeURIComponent(obj.geonames[i]['summary'])+'</p><br/>';
+                                innerHTML = '<p>'+obj.geonames[i]['summary']+'</p><br/>';
+                                //innerHTML = '<p>'+decodeURIComponent(obj.geonames[i]['summary'])+'</p><br/>';
+                            
                             }
                             if (obj.geonames[i]['thumbnailImg']) {
                                 var thumbnailURL = obj.geonames[i]['thumbnailImg'];

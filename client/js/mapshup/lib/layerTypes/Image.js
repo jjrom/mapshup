@@ -137,9 +137,9 @@
             $.extend(options,
             {
                 isBaseLayer:false,
-                maxResolution:Map.map.layers[0].resolutions[0],
+                maxResolution:Map.map.baseLayer.resolutions[0],
                 numZoomLevels:18,
-                resolutions:Map.map.layers[0].resolutions,
+                resolutions:Map.map.baseLayer.resolutions,
                 transparent:true
             }
             );
@@ -150,6 +150,7 @@
             options["_msp"].selectable = false;
             options["_msp"].allowChangeOpacity = true;
             options["_msp"].bounds = bounds;
+            options["_msp"].icon = layerDescription.url;
 
             /**
              * Layer creation

@@ -68,9 +68,9 @@
         this.init = function(options) {
 
             var id = msp.Util.getId(),
-                rid = msp.Util.getId(),
-                sid = msp.Util.getId(),
-                self = this;
+            rid = msp.Util.getId(),
+            sid = msp.Util.getId(),
+            self = this;
             
             /**
              * Best practice : init options
@@ -158,23 +158,35 @@
              */
             self.signIn(msp.Util.Cookie.get("username"),msp.Util.Cookie.get("password"),true);
 
+            /*
+             * Store context when user close mapshup
+             */
+            window.onbeforeunload = self.storeContext;
+            
             return this;
         };
 
+        /*
+         * Store context within cookie
+         */
+        this.storeContext = function() {
+            var userid = msp.Util.Cookie.get("userid");
+            if (userid && userid !== -1) {
+                msp.Util.Cookie.set("context", JSON.stringify(msp.Map.getContext()), 365);
+            }
+        };
+        
         /**
          * Disconnect user
          */
         this.disconnect = function() {
             
-            var userid = msp.Util.Cookie.get("userid"),
-                self = this;
+            var self = this;
             
             /*
-             * Save context
+             * Store context within cookie
              */
-            if (userid && userid !== -1) {
-                msp.Util.Cookie.set("context", msp.Map.getContext(), 365);
-            }
+            self.storeContext();
             
             /*
              * Remove connection cookies
@@ -186,10 +198,10 @@
             /*
              * Tell user that he is disconnected
              */
-             $('.ht', msp.$header).html(self.t["notlogged"]);
-             $('.hb', msp.$header).html(self.t["signin"]);
+            $('.ht', msp.$header).html(self.t["notlogged"]);
+            $('.hb', msp.$header).html(self.t["signin"]);
              
-             self.isConnected = false;
+            self.isConnected = false;
                         
         };
 
@@ -243,11 +255,11 @@
 
             var self = this,
             
-                /*
-                 * If checkCookie is true, the password is already
-                 * encrypted
-                 */
-                encrypted = checkCookie ? "&encrypted=true" : "";
+            /*
+             * If checkCookie is true, the password is already
+             * encrypted
+             */
+            encrypted = checkCookie ? "&encrypted=true" : "";
 
             /*
              * Send an ajax login request
@@ -307,7 +319,7 @@
                             }
                             ], function(v){
                                 if (v === "y") {
-                                    msp.Map.loadContext(msp.Util.extractKVP(msp.Util.Cookie.get("context")));
+                                    msp.Map.loadContext(JSON.parse(msp.Util.Cookie.get("context")));
                                 }
                             });
                         }
@@ -341,11 +353,11 @@
          */
         this.openLoginWindow = function(openid) {
             
-            /*
+        /*
              * Use google by default
              */
-            //openid = openid || "https://www.google.com/accounts/o8/id";
-            //var w = window.open('http://localhost/mspsrv/login.php?action=verify&openid_identity='+encodeURIComponent(openid), 'openid_popup', 'width=450,height=500,location=1,status=1,resizable=yes');
+        //openid = openid || "https://www.google.com/accounts/o8/id";
+        //var w = window.open('http://localhost/mspsrv/login.php?action=verify&openid_identity='+encodeURIComponent(openid), 'openid_popup', 'width=450,height=500,location=1,status=1,resizable=yes');
             
         };
         

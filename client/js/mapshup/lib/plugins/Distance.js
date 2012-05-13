@@ -74,22 +74,27 @@
          */
         this.init = function(options) {
 
-            var self = this;
+            var mc, self = this;
             
             /**
              * Init options
              */
-            this.options = options || {};
-
+            self.options = options || {};
+            
+            /*
+             * Generate a unique id for elevation panel
+             */
+            self.uid = msp.Util.getId();
+            
             /**
              * Default options values
              */
-            this.options.samples = this.options.samples || 30;
+            self.options.samples = self.options.samples || 30;
             
             /*
              * Measure distance control
              */
-            var measureControl = new OpenLayers.Control.Measure(
+            mc = new OpenLayers.Control.Measure(
                 OpenLayers.Handler.Path, {
                     id:"__CONTROL_MEASURE__",
                     persist: true,
@@ -149,7 +154,7 @@
                     }
                 });
 
-            this.layer = new OpenLayers.Layer.Vector("__LAYER_DISTANCE__",{
+            self.layer = new OpenLayers.Layer.Vector("__LAYER_DISTANCE__",{
                 projection:msp.Map.epsg4326,
                 displayInLayerSwitcher:false,
                 styleMap:new OpenLayers.StyleMap({
@@ -182,16 +187,16 @@
              */
             msp.Map.addLayer({
                 type:"Generic",
-                title:this.layer.name,
+                title:self.layer.name,
                 unremovable:true,
-                initialLayer:true,
-                layer:this.layer
+                mspLayer:true,
+                layer:self.layer
             });
 
             /*
              * Add control to map
              */
-            msp.Map.map.addControl(measureControl);
+            msp.Map.map.addControl(mc);
 
             /*
              * Add "Measure" item in menu
@@ -212,14 +217,14 @@
             /*
              * Distance layer is always on top of other layers
              */
-            msp.Map.events.register("layersend", this, function(action,layer,scope){
+            msp.Map.events.register("layersend", self, function(action,layer,scope){
                 msp.Map.Util.setLayerOnTop(scope.layer);
             });
             
             /*
              * Elevation plot should be redrawn on map size change
              */
-            msp.Map.events.register("resizeend", this, function(scope){
+            msp.Map.events.register("resizeend", self, function(scope){
                 scope.refreshElevation();
             });
             
@@ -235,12 +240,12 @@
          */
         this.display = function(vertices) {
 
-            /**
+            /*
              * Elevation is computed
              */
             if (this.options.elevationServiceUrl) {
 
-                /**
+                /*
                  * First transform array of vertices into a google elevation path
                  */
                 var i,
@@ -343,46 +348,40 @@
                             }
                             
                             /*
-                             * if elevation container ($d) is not set
-                             * create it within a south panel
+                             * Set container item within SouthPanel
                              */
-                            if (!self.btn) {
-
-                                var pn = new msp.Panel('s',{
-                                    tb:new msp.Toolbar('ss', 'h')
-                                    }), // Create new South panel
-                                ctn = pn.add(); // Add container within panel
-                                
-                                /*
-                                 * Set container content
-                                 */
-                                self.$e = ctn.$d.children().first();
+                            if (!self.panelItem) {
 
                                 /*
-                                 * Register open elevation action within Toolbar South south toolbar
+                                 * Add Streetview to South Panel
                                  */
-                                self.btn = new msp.Button({
-                                    tt:"Show/Hide Distance",
-                                    tb:pn.tb,
+                                self.panelItem = msp.sp.add({
+                                    id:self.uid,
                                     title:"Elevation",
-                                    container:ctn,
-                                    close:true,
-                                    onclose:self.onClose,
-                                    callback:self.showElevation,
-                                    activable:true,
-                                    scope:self,
-                                    e:{
-                                        layer:self.layer
+                                    onclose:function() {
+                                        
+                                        /*
+                                         * Clear result
+                                         */
+                                        self.result.plots = [];
+
+                                        /*
+                                         * Hide layer
+                                         */
+                                        msp.Map.Util.setVisibility(self.layer, false);
+
+                                        /*
+                                         * Nullify panelItem
+                                         */
+                                        self.panelItem = null;
+                                        
                                     },
-                                    actions:[
-                                    {
-                                        cssClass:"actnnw icnzoom",
-                                        callback:function(btn) {
-                                            msp.Map.zoomTo(btn.layer.getDataExtent());
-                                        }
+                                    onshow:function() {
+                                        msp.Map.Util.setVisibility(self.layer, true);
                                     }
-                                    ]
                                 });
+
+                                self.$e = self.panelItem.$content
                                 
                             }
                             
@@ -396,7 +395,7 @@
                             /*
                              * Display result
                              */
-                            self.showElevation(self, self.btn);
+                            self.showElevation();
                             
                         }
                         /**
@@ -426,65 +425,32 @@
                 msp.Util.message(self.result.title);
             }
         };
-        
-        /*
-         * Function called to properly close the elevation panel
-         */
-        this.onClose = function(btn) {
-            
-            /*
-             * Clear result
-             */
-            btn.scope.result.plots = [];
-            
-            /*
-             * Hide layer
-             */
-            msp.Map.Util.setVisibility(btn.scope.layer, false);
-            
-            /*
-             * Nullify plugin btn
-             */
-            btn.scope.btn = null;
-        };
 
         /**
          * Show elevation
          */
-        this.showElevation = function(scope, btn) {
+        this.showElevation = function() {
            
-            if (scope.fresh) {
+            var self = this;
+            
+            if (self.fresh) {
                 
                 /*
-                 * Activate distance button
+                 * Activate panel item
                  */
-                btn.activate(true);
+                msp.sp.show(self.panelItem);
                 
-                /*
-                 * Show container
-                 */
-                btn.container.pn.show(btn.container);
             }
             
             /*
              * This is no more a new plot
              */
-            scope.fresh = false;
+            self.fresh = false;
             
             /*
              * Refresh plot
              */
-            scope.refreshElevation();
-            
-        /*
-             * Add dowload elevation capability
-             */
-        /* TODO
-            if (msp.plugins["Download"]) {
-                $('a.jActionButton', self.$d).click(function(){
-                    msp.plugins["Download"].download(elevations, msp.Util._('Elevation'), "csv");
-                });
-            }*/
+            self.refreshElevation();
             
         };
         
@@ -501,11 +467,6 @@
              * Empty elevation div
              */
             this.$e.empty();
-            
-            /*
-             * Set this.$e width
-             */
-            this.$e.width(this.btn.container.$d.width());
             
             /*
              * Display elevation through jqplot

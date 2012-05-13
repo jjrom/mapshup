@@ -179,26 +179,36 @@
                     }
                     
                     /*
-                     * Update layer activity indicator
+                     * Set mapshup load status
                      */
-                    var layer,
-                    show = false,
-                    $d = msp.Util.$$('#layerai', msp.$mcontainer);
+                    if (!msp.isLoaded) {
+                        
+                        var layer, loading = false;
+                        
+                        for (i = 0, l = self.map.map.layers.length; i < l; i++) {
 
-                    for (i = 0, l = self.map.map.layers.length; i < l; i++) {
-                        layer = self.map.map.layers[i];
-
-                        /* If the layer is due to be destroyed */
-                        if (layer._tobedestroyed) {
-                            continue;
+                            layer = self.map.map.layers[i];
+                            
+                            /* Don't care of mapshup layers */
+                            if (!layer.hasOwnProperty('_msp') || layer["_msp"].mspLayer) {
+                                continue;
+                            }
+                            
+                            /* If the layer is due to be destroyed */
+                            if (layer._tobedestroyed) {
+                                continue;
+                            }
+                            
+                            if (!layer._msp.isLoaded) {
+                                loading = true;
+                                break;
+                            }
                         }
-                        else if (layer.hasOwnProperty('_msp') && !layer._msp.isLoaded) {
-                            show = true;
-                            break;
+                        if (!loading) {
+                            msp.isLoaded = true;
+                            msp.Map.map.restrictedExtent ? msp.Map.map.zoomToExtent(msp.Map.map.restrictedExtent) : msp.Map.setCenter(msp.Map.Util.d2p(new OpenLayers.LonLat(msp.Map.initialLocation.lon,msp.Map.initialLocation.lat)), msp.Map.initialLocation.zoom, true);
                         }
                     }
-                    show ? $d.show() : $d.hide();
-                    
                 }
             }
             else if (eventname === 'loadstart') {

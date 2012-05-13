@@ -1,20 +1,15 @@
-plugins/Catalog.css
-plugins/Geonames.css
-plugins/LayersManager.css
-plugins/AddLayer.css
-plugins/UserManagement.css
-  
 lib/core/mapshup.js
 lib/core/Config.js
 lib/core/Util.js
 lib/core/Events.js
 lib/core/Activity.js
 lib/core/Toolbar.js
-lib/core/Button.js
+lib/core/ToolbarItem.js
 lib/core/Mask.js
 lib/core/Tooltip.js
 lib/core/Menu.js
 lib/core/Panel.js
+lib/core/SouthPanel.js
 lib/core/Popup.js
 lib/core/Map.js
 lib/core/Map/Util.js
@@ -48,7 +43,8 @@ lib/layerTypes/Wikipedia.js
 lib/layerTypes/XYZ.js
 lib/layerTypes/Youtube.js
 
-#lib/plugins/BackgroundsManager.js
+lib/plugins/AddLayer.js
+lib/plugins/BackgroundsManager.js
 lib/plugins/Catalog.js
 lib/plugins/Catalog/CSWEOCharter.js
 lib/plugins/Catalog/CSWISO.js
@@ -57,6 +53,7 @@ lib/plugins/Catalog/CSWEOr5.js
 lib/plugins/Catalog/CSWEOr5ebRR.js
 lib/plugins/Catalog/SPOTRest.js
 lib/plugins/Catalog/OpenSearch.js
+#lib/plugins/CountryPicker.js
 lib/plugins/Distance.js
 lib/plugins/Drawing.js
 lib/plugins/Export.js // NOTOUCH
@@ -64,19 +61,18 @@ lib/plugins/Flickr.js
 lib/plugins/Geonames.js
 #lib/plugins/GetFeatureInfo.js
 #lib/plugins/GetLandCover.js
-lib/plugins/LayerInfo.js
+lib/plugins/GoogleEarth.js // NOTOUCH
+lib/plugins/Help.js
+#lib/plugins/LayerInfo.js
 lib/plugins/LayersManager.js
-lib/plugins/AddLayer.js
 #lib/plugins/LocateMe
 #lib/plugins/Logger.js
-lib/plugins/OpenSearch2.js
+lib/plugins/Navigation.js
 #lib/plugins/Print
 lib/plugins/Routing.js
+lib/plugins/Search.js
+lib/plugins/Share.js
 lib/plugins/Streetview.js // NOTOUCH 
-lib/plugins/CountryPicker.js
-lib/plugins/Context.js
-lib/plugins/GoogleEarth.js // NOTOUCH
-lib/plugins/Navigation.js
 lib/plugins/UserManagement.js
 #lib/plugins/Welcome.js
 lib/plugins/Wikipedia.js

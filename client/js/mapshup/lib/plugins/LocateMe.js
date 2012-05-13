@@ -90,7 +90,7 @@ msp.plugins["LocateMe"] = {
                 type:"Generic",
                 title:title,
                 unremovable:true,
-                initialLayer:true,
+                mspLayer:true,
                 layer:this.layer
             });
             

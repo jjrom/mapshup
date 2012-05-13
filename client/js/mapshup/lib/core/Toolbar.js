@@ -39,53 +39,56 @@
  * Toolbar
  *
  * Add a toolbar to the map
- * Toolbar is populated by other plugins
+ * Toolbar is populated by items
  *
  */
 (function(msp) {
     
-    msp.Toolbar = function(position, orientation, parent) {
+    msp.Toolbar = function(options) {
         
         /*
-         * List of toolbar msp.Button
+         * List of toolbar items
          */
         this.items = [];
          
+        /*
+         * CSS classes name to add to the created toolbar
+         */
+        this.classes = options.classes;
+            
         /*
          * Toolbar orientation can be
          *  - h (horizontal)
          *  - v (vertical)
          *  
-         *  (Default h)
+         *  Default is no orientation
          */
-        this.orientation = orientation || 'h';
+        this.orientation = msp.Util.getPropertyValue(options, "orientation", null);
         
         /*
          * Toolbar div is created within its parent in the DOM
          */
-        this.parent = parent || msp.$map.parent();
+        this.parent = msp.Util.getPropertyValue(options, "parent", msp.$map.parent());
         
         /*
-         * Toolbar position can be
+         * Toolbar pre-defined position can be
+         * 
          *  - ne (north east)
          *  - nw (north west)
-         *  - nn (north north)
          *  - se (south east)
          *  - sw (south west)
-         *  - ss (south south)
-         *  - fr (free)
          *  
-         *  (Default nw)
+         *  (Default is no position)
          */
-        this.position = position || 'nw';
+        this.position = msp.Util.getPropertyValue(options, "position", null);
         
         /**
          * Initialize toolbar
          */
         this.init = function() {
 
-            var self = this,
-                uid = '_o'+self.position+'tb';
+            var classes = 'tb', self = this,
+            uid = '_o'+(this.position ? self.position : msp.Util.getId())+'tb';
             
             /*
              * mapshup can have one and only one toolbar
@@ -113,14 +116,7 @@
             }
             
             /*
-             * South south and North north toolbars cannot be vertical
-             */
-            if (self.position === "ss" || self.position === "nn") {
-                self.orientation = 'h';
-            }
-            
-            /*
-             * If position is not "free" then create a toolbar div within #mapcontainer i.e. msp.$map.parent()
+             * If position is set then create a toolbar div within #mapcontainer i.e. msp.$map.parent()
              * Otherwise, just create the div without position constraint
              * 
              * Toolbar is a div container of <div class="item"> divs
@@ -136,9 +132,9 @@
             self.$d = msp.Util.$$('#'+msp.Util.getId(), self.parent);
             
             /*
-             * "Non-free" toolbar are absolutely positionned
+             * Pre-defined toolbar are absolutely positionned
              */
-            if (self.position !== 'fr') {
+            if (self.position) {
                 self.$d.css({
                     'position':'absolute',
                     'z-index':'20250'
@@ -148,146 +144,84 @@
             /*
              * Add classes
              */
-            self.$d.addClass('tb tb'+self.position+self.orientation+' tb'+self.orientation);
-            
-            /*
-             * The North north toolbar should always centered on
-             * the top of the map
-             */
-            if (self.position === 'nn') {
-               msp.Map.events.register("resizeend", self, self.resize);
+            if (self.orientation) {
+                classes += ' tb' + self.orientation;
+            }
+            if (self.position) {
+                classes += ' tb' + self.position + (self.orientation ? self.orientation : 'h');
             }
             
+            self.$d.addClass(classes + (self.classes ? ' ' + self.classes : ''));
             
             return self;
         };
 
         /**
-         * Add a button to the toobar
+         * Add an item to the toolbar
          * (i.e. a <div class="item"> in this.$d
          *
-         * @input {Object} obj : input msp.Button
-         * Note: if both btn.icon && btn;title are givens, title is displayed and not icon
+         * @input {Object} obj : item
+         * 
+         *  {
+         *      activable: // boolean - if true, click on button set or unset 'activate' class
+         *                        (default true)
+         *      callback: // function to call on click
+         *      e: // Extras properties - Properties under this property can be anything
+         *      first:// boolean - if true item is added as the first element of the toolbar
+         *                       - if false item is added at the end of the toolbar
+         *                       (default false)
+         *      html: // html code to display within the button instead of title - If both html and title
+         *               are specified, html has preseance (i.e. title is discarded)
+         *      icon: // Url to the icon image (if no text)
+         *      id: // Unique identifier for the <li> element. Automatically created if not given
+         *      nohover: // if true, item is not sensitive to onmouseover event
+         *      switchable: // boolean - if true, click on item alternate activate/deactivate
+         *                             - if false, click on item always activate it
+         *                             (default true)
+         *      title: // Text displayed within the item display (if no icon specifified)
+         *      tt: // Text displayed on mouse over
+         *      scope: // reference to the calling plugin
+         * }
          */
-        this.add = function(btn) {
+        this.add = function(item) {
 
-            /*
-             * Set content to item.text if defined or item.url in other case
-             */
-            var c,action,i,id,l,$d,content,
-                self = this;
+            var tbItem, self = this;
             
             /*
-             * Set content. Preseance for html, then title, then icon
+             * Create a ToolbarItem
              */
-            if (btn.html) {
-                content = btn.html;
-            }
-            else {
-                content = btn.title ? msp.Util.shorten(btn.title,10,true) : '<img class="middle" alt="" src="'+msp.Util.getImgUrl(btn.icon || "empty.png")+'"/>';
-            }
-                
-            /*
-             * Add a <li> element to toolbar
-             * If button 'first' property is set to true,
-             * the button is added at the beginning of the toolbar
-             * otherwise it is added at the end of the toolbar
-             */
-            c = '<div class="'+(btn.nohover ? "" : "hover ")+'item" jtitle="'+(msp.Util._(btn.tt) || "")+'" id="'+btn.id+'">'+content+'</div>';
-            btn.first ? self.$d.prepend(c) : self.$d.append(c);
-            
-            /*
-             * Get newly created div reference
-             */
-            $d = $('#'+btn.id);
-            
-            /*
-             * Add a WEST/EAST/NORTH/SOUTH tooltip depending on orientation
-             * Note : if btn.tt is not set, then no tooltip is added
-             */
-            if (btn.tt) {
-                if (self.position !== 'fr') {
-                    msp.tooltip.add($d, self.orientation === 'h'? self.position.substr(0,1) : self.position.substr(1,2));
-                }
-                else {
-                    msp.tooltip.add($d, self.orientation === 'h'? 'n' : 'e');
-                }
-            }
-            
-            /*
-             * Add a close action to button
-             */
-            if (btn.close) {
-                id = msp.Util.getId();
-                $d.append('<div id="'+id+'" class="act actnne icnclose"></div>');
-                $('#'+id).click(function() {
-                    
-                    msp.Util.askFor(msp.Util._("Delete tab"), msp.Util._("Do you really want to remove this tab ?"), "list", [{
-                        title:msp.Util._("Yes"), 
-                        value:"y"
-                    },
-                    {
-                        title:msp.Util._("No"), 
-                        value:"n"
-                    }
-                    ], function(v){
-                        if (v === "y") {
-                            
-                            /*
-                             * Callback function onclose
-                             */
-                            if ($.isFunction(btn.onclose)) {
-                                btn.onclose(btn);
-                            }
-
-                            btn.remove();
-                            
-                        }
-                    });
-                    
-                    return false;
-                });
-            }
-            
-            /*
-             * Add additional actions
-             */
-            for (i = 0, l = btn.actions.length; i < l; i++) {
-                action = btn.actions[i];
-                id = msp.Util.getId();
-                $d.append('<div id="'+id+'" class="act '+action["cssClass"]+'"></div>');
-                (function($id, action){
-                    $id.click(function() {
-                        /*
-                         * Callback function 
-                         */
-                        if ($.isFunction(action.callback)) {
-                            action.callback(btn);
-                        }
-                        return false;
-                    });
-                })($('#'+id), action);   
-            }
+            tbItem = new msp.ToolbarItem(self, item);
             
             /*
              * Add a new item
              */
-            self.items.push(btn);
-            
-            /*
-             * Resize toolbar
-             */
-            self.resize(self);
+            self.items.push(tbItem);
             
             /*
              * Return the newly created action div
              */
-            return $d;
+            return tbItem;
 
         };
 
         /*
-         * Return msp.Button identified by id
+         * Activate ToolbarItem identified by id
+         * 
+         * @input id : item to activate/deactivate
+         * @input activate: true to activate, false to deactivate
+         */
+        this.activate = function(id, activate) {
+            
+            var self = this, tbItem = self.get(id);
+            
+            if (tbItem){
+                tbItem.activate(activate);
+            }
+            
+        };
+        
+        /*
+         * Return ToolbarItem identified by id
          */
         this.get = function(id) {
             for (var i = 0, l = this.items.length ; i < l; i++) {
@@ -299,34 +233,20 @@
         };
         
         /*
-         * Remove button
+         * Remove ToolbarItem
          */
-        this.remove = function(btn) {
+        this.remove = function(id) {
             
-            /*
-             * Deactivate button
-             */
-            btn.activate(false);
+            var i,l,self = this;
             
-            
-            for (var i = 0, l = this.items.length ; i < l; i++) {
-                if (this.items[i].id === btn.id) {
-                    this.items.splice(i,1);
-                    btn = null;
+            for (i = 0, l = self.items.length ; i < l; i++) {
+                if (self.items[i].id === id) {
+                    self.items.splice(i,1);
+                    self.items[i].$d.remove();
                     break;
                 }
             }
-        };
-        
-        /*
-         * Resize toolbar (should only be called for nnh toolbar
-         */
-        this.resize = function(scope) {
-            if (scope.position === 'nn') {
-                scope.$d.css({
-                    'left':(scope.parent.width() - scope.$d.width()) / 2
-                });
-            }
+           
         };
         
         /*

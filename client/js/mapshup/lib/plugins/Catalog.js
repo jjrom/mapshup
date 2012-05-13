@@ -77,11 +77,6 @@
             self._menuId = msp.Util.getId();
             
             /*
-             * Set the south panel
-             */
-            self.pn = new msp.Panel('s',{tb:new msp.Toolbar('ss', 'h')});
-            
-            /*
              * Add a "Search" action to the geonames menu
              * This action launch a search on all registered catalogs
              * on a 1x1 square degrees box around the toponym
@@ -137,7 +132,7 @@
             }
         };
 
-        /*
+        /**
          * Called when a layer is remove
          */
         this.onLayersEnd = function(action, layer, scope) {
@@ -155,12 +150,12 @@
          * This method is called by LayersManager plugin
          * Add a "Search" action to the LayersManager menu item
          */
-        this.getLmngActions = function(layer) {
+        this.getLayerActions = function(layer) {
 
             /**
              * layers of type catalogs get a "Search" action
              */
-            if (layer && layer["_msp"].searchContext) {
+            if (layer && layer["_msp"].layerDescription.type === "Catalog") {
                 return [
                 {
                     id:msp.Util.getId(),
@@ -178,7 +173,7 @@
             }
         };
 
-        /*
+        /**
          * Add a catalog
          *
          * @input layer (type:"Catalog")
@@ -187,7 +182,7 @@
          *
          */
         this.add = function(layer) {
-
+            
             /*
              * Layer is null => return false
              */
@@ -271,7 +266,7 @@
                 return false;
             }
 
-            var btn,i,j,l,m,add,_msp,filters,cFilters,
+            var s,i,j,l,m,add,_msp,filters,cFilters,
             layer = connector.catalog;
 
             /*
@@ -348,12 +343,12 @@
                     /*
                      * Get the "South" panel reference
                      */
+                    /* TODO REMOVE
                     btn = new msp.Button({
                         tb:scope.pn.tb,
                         tt:msp.Util._("Catalog") + " : " + layer.name,
                         title:layer.name,
                         container:scope.pn.add('<div class="west"><div style="width:99%;height:99%;overflow:auto;"></div></div><div class="east"><div style="height:99%;overflow:auto;"></div></div>', 'bg'),
-                        /* Add a search action */
                         actions:[
                         {   
                             cssClass:"actnnw icnsearch",
@@ -364,28 +359,21 @@
                         ],
                         activable:true,
                         scope:scope,
-                        /* Important : on button click,
-                         * call the onResizeEnd function to ensure
-                         * that results table size is well computed
-                         */
                         callback:scope.onResizeEnd,
                         e:{
                             layer:layer // Important : add the layer reference to the button
                         }
                     }); 
 
-                    /*
-                     * Add $w and $e reference to btn
-                     */
                     btn.$w = $('.west', btn.container.$d).children().first();
                     btn.$e = $('.east', btn.container.$d).children().first();
-                
+                    */
                 }
                 
                 /*
                  * Set new SearchContext
                  */ 
-                _msp.searchContext = new msp.Map.SearchContext(layer, connector, btn, {
+                _msp.searchContext = new msp.Map.SearchContext(layer, connector, {
                     autoSearch:msp.Util.getPropertyValue(_msp.layerDescription, "autoSearch", false),
                     nextRecord:_msp.layerDescription.nextRecord || scope.options.nextRecord,
                     nextRecordAlias:connector.nextRecordAlias,
@@ -395,6 +383,11 @@
                     scope:scope
                 });
 
+                /*
+                 * Set BBOX to current map view
+                 */
+                _msp.searchContext.setBBOX(msp.Map.map.getExtent());
+                
                 /*
                  * Clean layerDescription.nextRecord and layerDescription.numRecordsPerPage to avoid confusion
                  */
@@ -445,6 +438,29 @@
              */
             scope.searchPanel.displayFilters(scope, layer);
             
+            
+            /*
+             * If layer got a searchContext within layerDescription,
+             * then launch search
+             */
+            s = layer["_msp"].layerDescription.search;
+            
+            if (s) {
+
+                //
+                // Update the search items
+                //
+                layer["_msp"].searchContext.items = s.items;
+
+                //
+                // Launch unitary search -
+                // Note that zoomOnAfterLoad is set to false to avoid
+                // a zoom on catalog result after a successfull search
+                //
+                layer["_msp"].zoomOnAfterLoad = false;
+                layer["_msp"].searchContext.search(s.nextRecord);
+
+            }
             return true;
         };
 
@@ -523,9 +539,16 @@
              */
             show: function(scope, layer) {
                 
-                var btn = layer["_msp"].searchContext.btn,
+                var lm = msp.Plugins.LayersManager, btn = layer["_msp"].searchContext.btn,
                 self = scope.searchPanel;
                 
+                /*
+                 * Link with LayersManager -> show result after a search
+                 */
+                if (lm && lm._o) {
+                    lm._o.show(lm._o.get(layer["_msp"].mspID));
+                }
+            
                 /*
                  * No button specified - do nothing
                  */
@@ -563,7 +586,7 @@
                 return true;
             },
             
-            /*
+            /**
              * Show search filters in panel west side
              * Structure of the West panel
              *      <div class="west">
@@ -679,7 +702,7 @@
 
             },
             
-            /*
+            /**
              * Show search results in panel east side
              * 
              * East side panel is swith in two horizontal parts :
@@ -1101,7 +1124,7 @@
          * @input <boolean> initialize: if true set nextRecord to 1 for each catalog (optional)
          */
         this.searchAll = function (bounds,initialize) {
-
+            
             var j,l,sc;
             
             /**

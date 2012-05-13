@@ -59,7 +59,7 @@
          * Default metadata panel position
          */
         this.position = {
-            top:50,
+            top:20,
             right:50
         };
         
@@ -68,8 +68,7 @@
          */
         this.init = function(options) {
 
-            var self = this,
-            id = msp.Util.getId();
+            var $content,self = this;
             
             /*
              * Init options
@@ -77,25 +76,26 @@
             options = options || {};
             
             /*
-             * Feature Information is displayed within a "Free" panel container
+             * Feature Information is displayed within a dedicated panel
              */
-            self.ctn = (new msp.Panel("f", {over:false})).add('<div class="header"><div class="title"></div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
+            self.pn = new msp.Panel();
             
             /*
-             * Add a close panel button
+             * Add content
              */
-            self.ctn.$d.append('<div id="'+id+'" class="close"></div>').addClass("shadow");
-            $('#'+id).click(function() {
+            $content = self.pn.add('<div class="header"><div class="title"></div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi').addClass('shadow');
+            
+            /*
+             * Add close button to feature info panel
+             */
+            msp.Util.addClose($content,function(e) {
                 self.clear();
-            }).css({
-                'top':'0px',
-                'right':'-8px'
             });
             
             /*
-             * Set 'Free' panel position and height
+             * Set panel position and height
              */
-            self.ctn.pn.$d.css({
+            self.pn.$d.css({
                 'top':self.position.top,
                 'right':self.position.right
             });
@@ -103,10 +103,10 @@
             /*
              * Set div references
              */
-            self.$t = $('.tabs', self.ctn.$d); // Tabs
-            self.$b = $('.body', self.ctn.$d); // Body
-            self.$h = $('.header', self.ctn.$d); // Header
-            self.$d = $('.pfi', self.ctn.$d); // Parent div
+            self.$t = $('.tabs', $content); // Tabs
+            self.$b = $('.body', $content); // Body
+            self.$h = $('.header', $content); // Header
+            self.$d = $('.pfi', $content); // Parent div
             
             /*
              * Create feature menu div over the map container div
@@ -140,11 +140,31 @@
             });
             
             /*
-             * Register resizeend after panel resizeend
+             * Event on a change in layer visibility
              */
-            msp.Map.events.register("resizeend", self, function() {
-                if (self.ctn.pn.isVisible) {
-                    self.show();
+            msp.Map.events.register("visibilitychanged", self, function (layer, scope) {
+                
+                /*
+                 * Show/Hide featureinfo menu depending on layer visibility
+                 */
+                if (self.selected && self.selected.layer === layer) {
+                    
+                    if (layer.getVisibility()) {
+                        
+                        /*
+                         * Show fmenu and panel content
+                         */
+                        self.$m.show();
+                        self.pn.show();
+                        
+                    }
+                    else {
+                        /*
+                         * Hide fmenu and panel content
+                         */
+                        self.$m.hide();
+                        self.pn.hide();
+                    }
                 }
             });
             
@@ -178,6 +198,66 @@
             this.unselect(null);
             
         };
+        
+        /**
+         *
+         * Return feature icon url
+         * 
+         * Icon is assumed to be a square image of 75x75 px displayed within NorthPanel
+         *
+         * @input {OpenLayers.Feature} feature : input feature
+         *
+         */
+        this.getIcon = function(feature) {
+            
+            var style,defaultStyle,icon;
+            
+            /*
+             * Paranoid mode
+             */
+            if (!feature) {
+                return icon;
+            }
+            
+            /*
+             * Guess icon with the following preference order :
+             * 
+             *    - attributes icon
+             *    - attributes thumbnail
+             *    - feature style externalGraphic
+             *    - generic image 
+             * 
+             */
+            if (feature.attributes.icon) {
+                return feature.attributes.icon;
+            }
+            if (feature.attributes.thumbnail) {
+                return feature.attributes.thumbnail;
+            }
+             
+            /*
+              * This is quite experimental :)
+              */
+            if (feature.layer) {
+                 
+                /*
+                 * Get the default style object from styleMap
+                 */
+                style = feature.layer.styleMap.styles["default"];
+
+                /*
+                 * The defaultStyle descriptor should be defined directly
+                 * under feature.style property. If not, there is always
+                 * a valid defaultStyle descriptor under feature.layer.styleMap.styles["default"]
+                 */
+                defaultStyle = feature.style || style.defaultStyle;
+                if (defaultStyle.externalGraphic) {
+                    return msp.Map.Util.KML.resolveStyleAttribute(feature, style, defaultStyle.externalGraphic);
+                }
+            }
+            
+            return icon;
+        }
 
         /**
          * Return feature title if it's defined within layerDescription.featureInfo.title property
@@ -206,7 +286,7 @@
             /*
              * User can define is own title with layerDescription.featureInfo.title property
              */
-            if (feature.layer["_msp"].layerDescription.featureInfo && feature.layer["_msp"].layerDescription.featureInfo.title) {
+            if (feature.layer && feature.layer["_msp"].layerDescription.featureInfo && feature.layer["_msp"].layerDescription.featureInfo.title) {
                 
                 /*
                  * The tricky part :
@@ -268,7 +348,7 @@
             /*
              * Check if keys array is defined
              */
-            if (feature.layer["_msp"].layerDescription.hasOwnProperty("featureInfo")) {
+            if (feature.layer && feature.layer["_msp"].layerDescription.hasOwnProperty("featureInfo")) {
                 
                 keys = feature.layer["_msp"].layerDescription.featureInfo.keys || [];
 
@@ -394,6 +474,13 @@
              * Clear feature menu
              */
             self.$m.empty();
+            
+            /*
+             * Add a close button to feature action menu
+             */
+            msp.Util.addClose(self.$m, function(e){
+                self.clear();
+            });
             
             /*
              * Add "Center on feature" action
@@ -562,21 +649,23 @@
             /*
              * Set title
              */
-            self.$m.append('<div>'+self.getTitle(feature)+'</div><div class="actions"></div>');
+            self.$m.append('<div class="actions"></div><div class="title">'+self.getTitle(feature)+'</div>');
             
             /*
              * Set actions
              */
             for (i = 0, l = actions.length;i < l; i++) {
                 a = actions[i];
-                $('.actions', self.$m).append('<a class="item image" jtitle="'+msp.Util._(a.tt || a.title)+'" id="'+a.id+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/>&nbsp;'+msp.Util._(a.title)+'</a>');
+                $('.actions', self.$m).append('<a class="item image" jtitle="'+msp.Util._(a.tt || a.title)+'" id="'+a.id+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/></a>');
                 d = $('#'+a.id);
                 
                 /* Add tooltip */
-                msp.tooltip.add(d, 'n');
+                msp.tooltip.add(d, 's');
                 
                 (function(d,a,f){
-                    d.click(function() {
+                    d.click(function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
                         return a.callback(a,f);
                     })
                 })(d,a,feature);
@@ -687,8 +776,19 @@
         
         /**
          * Set info popup html content
+         * 
+         * @input feature : the feature to display
+         * @input target : target object containing divs to display feature info
+         *                 This object should contain at least the following properties
+         *                 {
+         *                      $h: // header reference
+         *                      $t: // tab reference
+         *                      $b: // body reference
+         *                 }
+         *                 If target is not specified, it is assumed that
+         *                 the target is "this"
          */
-        this.setInfo = function(feature) {
+        this.setInfo = function(feature, target) {
             
             var id,title,content,$info,$thumb,layerType,
             self = this,
@@ -697,11 +797,16 @@
             thumb = feature.attributes['thumbnail'] || feature.attributes['quicklook'] || null;
 
             /*
+             * Target
+             */
+            target = target || self;
+            
+            /*
              * Set header
              */
             title = msp.Util.stripTags(self.getTitle(feature));
-            $('.title', self.$h).attr('title', feature.layer.name + ' | ' + title)
-            .html(msp.Util.shorten(title, 25))
+            $('.title', target.$h).attr('title', feature.layer.name + ' | ' + title)
+            .html(title)
             .click(function(){
                 self.zoomOn(feature);
             });      
@@ -709,12 +814,12 @@
             /*
              * Clean body
              */
-            self.$b.empty();
+            target.$b.empty();
             
             /*
              * Clean tab
              */
-            self.$t.empty();
+            target.$t.empty();
             
             /*
              * Roll over layer types to detect layer features that should be
@@ -722,7 +827,7 @@
              */
             if ((layerType = msp.Map.layerTypes[feature.layer["_msp"].layerDescription["type"]])) {
                 if ($.isFunction(layerType.setFeatureInfoBody)) {
-                    layerType.setFeatureInfoBody(feature, self.$b);
+                    layerType.setFeatureInfoBody(feature, target.$b);
                     typeIsUnknown = false;
                 }
             }
@@ -752,9 +857,9 @@
                  *      <div class="info"></div>
                  *  </div>
                  */
-                self.$b.html('<div id="pfitm"><div class="thumb"></div><div class="info"><table></table></div></div>');
-                $info = $('.info table', self.$b);
-                $thumb = $('.thumb', self.$b);
+                target.$b.html('<div id="pfitm"><div class="thumb"></div><div class="info"><table></table></div></div>');
+                $info = $('.info table', target.$b);
+                $thumb = $('.thumb', target.$b);
                 
                 /*
                  * Display thumbnail
@@ -802,8 +907,7 @@
                             msp.Map.addLayer({
                                 type:"Image",
                                 title:feature.attributes['identifier'],
-                                /* If removeBorderServiceUrl is defined => use it :) */
-                                url:msp.Config["general"].removeBlackBorderServiceUrl != null ? msp.Config["general"].removeBlackBorderServiceUrl + encodeURIComponent(feature.attributes['quicklook']) + msp.Util.abc : feature.attributes['quicklook'],
+                                url:feature.attributes['quicklook'],
                                 bbox:feature.geometry.getBounds().toBBOX(),
                                 /* By default, quicklooks are added to the "Quicklooks" group */
                                 groupName:"Quicklooks"
@@ -900,8 +1004,8 @@
                                     /*
                                      * Initialize tab
                                      */
-                                    if (self.$t.is(':empty')) {
-                                        self.$t.html('<div id="pfit"><ul><li><a href="#pfitm" class="selected">'+msp.Util._("Description")+'</a></li></ul></div>');
+                                    if (target.$t.is(':empty')) {
+                                        target.$t.html('<div id="pfit"><ul><li><a href="#pfitm" class="selected">'+msp.Util._("Description")+'</a></li></ul></div>');
                                     }
                                     
                                     /*
@@ -915,8 +1019,8 @@
                                      * If kk object is a non empty array, add a new tab
                                      */
                                     id = msp.Util.getId() ;
-                                    $('ul', self.$t).append('<li><a href="#' + id + '">' + msp.Util._(kk) + '</a></li>');
-                                    self.$b.append('<div id="'+id+'" class="noflw"><table></table></div>');
+                                    $('ul', target.$t).append('<li><a href="#' + id + '">' + msp.Util._(kk) + '</a></li>');
+                                    target.$b.append('<div id="'+id+'" class="noflw"><table></table></div>');
 
                                     /*
                                      * Table reference
@@ -984,10 +1088,10 @@
              * Be sure that free panel height is recomputed
              * after an image is loaded
              */
-            $('img', self.$b).each(function(idx){
+            $('img', target.$b).each(function(idx){
                 $(this).load(function(){
-                    if (self.ctn.pn.isVisible){
-                        self.show();
+                    if (target.pn.isVisible){
+                        target.pn.show();
                     }
                 });
             });
@@ -1045,7 +1149,7 @@
                      * Hide menu and metadata panel
                      */
                     self.$m.hide();
-                    self.ctn.pn.hide(self.ctn);
+                    self.pn.hide();
                     
                     return false;
                     
@@ -1131,37 +1235,28 @@
             ran = msp.Map.layerTypes[feature.layer["_msp"].layerDescription["type"]].resolvedUrlAttributeName;
             if (ran) {
                 
-                var btn,
-                pn = new msp.Panel('s',{
-                    tb:new msp.Toolbar('ss', 'h')
-                }), // Create new South panel
-                ctn = pn.add('<iframe class="frame" src="'+feature.attributes[ran]+'" width="100%" height="100%"></iframe>'),
-                extent = feature.geometry.getBounds().clone(); // Add container within panel
-
+                //extent = feature.geometry.getBounds().clone(); // Add container within panel
+                
                 /*
-                 * Set container content
+                 * Add a new item to South Panel
+                 * 
+                 * Note : unique id is based on the feature layer type
+                 * and feature layer name. Ensure that two identical
+                 * feature leads to only one panel item 
                  */
-                msp.activity.show();
-                $('.frame', ctn.$d).load(function() {
-                    msp.activity.hide();
-                });
-
-                /*
-                 * Register action within Toolbar South south toolbar
-                 */
-                btn = new msp.Button({
-                    tt:self.getTitle(feature),
-                    tb:pn.tb,
-                    title:self.getTitle(feature),
-                    container:ctn,
-                    close:true,
-                    onclose:function(btn) {
+                var t = self.getTitle(feature), panelItem = msp.sp.add({
+                    id:msp.Util.crc32(t + feature.layer["_msp"].layerDescription["type"]),
+                    tt:t,
+                    title:t,
+                    unremovable:false,
+                    html:'<iframe class="frame" src="'+feature.attributes[ran]+'" width="100%" height="100%"></iframe>',
+                    onclose:function() {
                         
                         /*
                          * Unselect feature
                          */
-                        if (btn.feature && btn.feature.layer) {
-                            msp.Map.Util.getControlById("__CONTROL_SELECT__").unselect(btn.feature);
+                        if (feature && feature.layer) {
+                            msp.Map.Util.getControlById("__CONTROL_SELECT__").unselect(feature);
                         }
                         
                         /*
@@ -1169,24 +1264,17 @@
                          */
                         msp.activity.hide();
                         
-                    },
-                    activable:true,
-                    scope:self,
-                    actions:[
-                    {
-                        cssClass:"actnnw icnzoom",
-                        callback:function(btn) {
-                            msp.Map.zoomTo(extent);
-                        }
-                    }
-                    ],
-                    e:{
-                        feature:feature
+
                     }
                 });
                 
-                btn.trigger();
+                msp.sp.show(panelItem);
                 
+                msp.activity.show();
+                $('.frame', panelItem.$d).load(function() {
+                    msp.activity.hide();
+                });
+              
             }
             else {
                
@@ -1217,19 +1305,19 @@
         /**
          * Show feature info panel
          */
-        this.show = function() {
+        this.show = function(target) {
             
-            var self = this;
+            target = target || this;
             
             /*
              * Show metadata panel
              */
-            self.ctn.pn.show(self.ctn);
+            target.pn.show();
             
             /*
              * Hide tabs if empty
              */
-            self.$t.is(':empty') ? self.$t.hide() : self.$t.show();
+            target.$t.is(':empty') ? target.$t.hide() : target.$t.show();
             
         };
 
@@ -1271,7 +1359,7 @@
                     /*
                      * Hide panel content
                      */
-                    self.ctn.pn.hide(self.ctn);
+                    self.pn.hide();
                     
                 }
                 
@@ -1301,7 +1389,7 @@
                     self.$m.hide();
                     
                     // Hide panel
-                    self.ctn.pn.hide(self.ctn);
+                    self.pn.hide();
                     
                     return false;
                 }
@@ -1315,15 +1403,16 @@
                      * Set action info menu position
                      */
                     self.$m.show().css({
-                        'left': xy.x - 31,
-                        'top': xy.y - self.$m.outerHeight() - 12
+                        'left': xy.x - self.$m.outerWidth() + 31,
+                        'top': xy.y + 12
+                        //'top': xy.y - self.$m.outerHeight() - 12
                     });
 
                     /*
                      * Compute info panel max height
                      */
-                    self.ctn.pn.$d.css({
-                        'max-height': Math.round(msp.$map.height() * 0.9) - self.ctn.pn.$d.offset().top
+                    self.pn.$d.css({
+                        'max-height': Math.round(msp.$map.height() * 0.9) - self.pn.$d.offset().top
                     });
                     
                 }

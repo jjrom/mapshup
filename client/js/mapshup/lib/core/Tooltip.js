@@ -136,7 +136,7 @@
                     switch (direction) {
                         case 'n':
                             self.$t.css({
-                                top: pos.top + pos.height + 10,
+                                top: pos.top + pos.height + 5,
                                 left: pos.left + pos.width / 2 - actualWidth / 2
                             });
                             break;

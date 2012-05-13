@@ -41,37 +41,44 @@
 */
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outline:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
-/**
+/*********************************************
  * Beginning of mapshup css definition
  *
  *  blue  : #375863 57,88,99
  *  gris : 999  153, 153,153
- *  orange foncé : (f3961c) #c76400
+ *  orange clair : #f3961c 243,150,28
+ *  orange foncé : #c76400 199,100,0
+ *  Sulphur sulphur yellow   [255,200,50]   #ffc832
+ *  Green RGB: 183, 213, 81 b7d551
+ *  facebook navy blue #3B5998
  *
+ ***********************************************/
+
+/***********************************************
  *
-*/
+ * CSS pre-defined properties
+ *
+ ***********************************************/
 html,body {
     height:100%;
 }
 body {
     font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
     font-size:12px;
-    color:#000;
     background-color:transparent;
     /* Everything is on one page */
     overflow:hidden;
 }
-.wrapper {
-    min-height:100%;
-    height: auto !important;
-    height: 100%;
-    margin:0px 0px -100px;
-}
 
 a {
-    color:#c76400;
+    color:#3b5998;
     text-decoration:none;
     padding:5px;
+    outline:none;
+}
+
+a:hover {
+    outline:none;
 }
 
 img {
@@ -109,7 +116,7 @@ input[type="password"],input[type="text"] {
     margin: 0;
     padding: 0 8px;
 }
-input[type="password"]:hover,input[type="text"]:hover {
+input:focus,input[type="password"]:hover,input[type="text"]:hover {
     -moz-border-bottom-colors: none;
     -moz-border-image: none;
     -moz-border-left-colors: none;
@@ -121,57 +128,91 @@ input[type="password"]:hover,input[type="text"]:hover {
     border-width: 1px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
 }
-input:focus, textarea:focus {
-    border: 1px solid #c76400;
+input:placeholder {
+    color:#666;
 }
 
-/*
- * mapshup logo
-*/
-#msplogo {
-    position:absolute;
-    text-shadow: black 1px 1px 1px;
-    top:0px;
-    left:0px;
-    z-index:10000;
+/***********************************
+ *
+ * Common shared properties
+ *
+ ***********************************/
+
+/* Darker color - BLACK */
+body, .pfi, .pfi .header, .pn .header, .po .body, .active, .selected
+{
+    color:#000;
 }
-#msplogo a {
+/* Lighter color - WHITE */
+#coords,
+#theBar,
+#tooltip .inner,
+#theBar .logo a,
+#menu .item:hover,
+#fmenu .actions a,
+a.tab,
+.button,
+.button a,
+.mask .content,
+.mask .loading a,
+.help span.close,
+.help h1,
+.help span.hilite,
+.tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
+.pn,
+.apo,
+.hover:hover,
+.featureHilite,
+.olControlAttribution,
+.lm,
+.lm .thumbs .mask,
+.lm .thumbs ul li a
+{
     color:#fff;
 }
 
-/*
- * Layer activity indicator
-*/
-#layerai {
-    position:absolute;
-    top:35px;
-    left:0px;
-    width:16px;
-    height:16px;
-    background-image: url('img/loading.gif');
+/* Main colored background-color - ORANGE CLAIR */
+#theBar,
+.tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
+.apo,
+.featureHilite,
+a.tab.active,
+a.tab:hover,
+.tab .tools
+{
+    background-color:#f3961c;
 }
 
-/*
- * Main wrapper header
- */
-#wheader {
-    width:100%;
-    height:0px;
-    padding:0;
-    margin:0; 
+/* Box shadow */
+#theBar,
+a.tab,
+.shadow,
+.tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
+.tab .tools,
+.lm .thumbs
+{
+    box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
+    -o-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 1px 1px 5px 0 gba(0, 0, 0, 0.5);
 }
- 
-/*
- * Map container
-*/
-.map {
-    position:absolute;
-    top:0px; /* Fullscreen map */
-    left:0px;
-    right:0px;
-    bottom:0px;
-    overflow:hidden;
+
+/***********************************
+ *
+ * mapshup general structure 
+ *
+ ***********************************/
+
+/* mapshup container */
+.wrapper {
+    min-height:100%;
+    height: auto !important;
+    height: 100%;
+    margin:0px 0px -100px;
 }
+
+
+/* map container */
 #mapcontainer {
     position:absolute;
     width:100%;
@@ -186,15 +227,18 @@ input:focus, textarea:focus {
     margin:0;
     overflow:hidden;
 }
-
-/*
- * Map header
- *
-*/
-#mheader {
+.map {
     position:absolute;
-    background-color:rgba(0,0,0,0.7);
-    color:#999;
+    top:35px; /* Fullscreen map */
+    left:0px;
+    right:0px;
+    bottom:0px;
+    overflow:hidden;
+}
+
+/* header bar */
+#theBar {
+    position:absolute;
     top:0px;
     left:0px;
     height:35px;
@@ -203,9 +247,40 @@ input:focus, textarea:focus {
     overflow:hidden;
     z-index:34500;
 }
+#theBar .container {
+    position:absolute;
+    top:0px;
+    left:35px;
+    right:35px;
+    height:100%;
+}
+#theBar .logo {
+    position:absolute;
+    left:0px;
+}
+#theBar .logo a {
+    font-family:tahoma,verdana,arial,sans-serif;
+    font-size:20px;
+    line-height:35px;
+}
+
+#theBar .searchBar {
+    position:absolute;
+    left:120px;
+}
+#theBar .searchBar input[type="text"] {
+    background: url(img/ossearch.png) no-repeat 10px 6px #fff;
+    font-size: 12px;
+    width: 350px;
+    padding-left:35px;
+}
+
+#theBar .leftBar {
+    position:absolute;
+}
 
 /* Login class */
-#mheader .login {
+#theBar .login {
     position:absolute;
     right:0px;
     top:0px;
@@ -213,7 +288,7 @@ input:focus, textarea:focus {
     width:auto;
     text-align:right;
 }
-#mheader h1 {
+#theBar h1 {
     text-align:right;
     padding-right:5px;
     font-weight:lighter;
@@ -222,9 +297,7 @@ input:focus, textarea:focus {
     letter-spacing: 0.2em;
 }
 
-/**
- * menu
-*/
+/* contextual menu displayed after long click on the map */
 #menu {
     position:absolute;
     cursor:pointer;
@@ -258,50 +331,54 @@ input:focus, textarea:focus {
 
 #menu .item:hover {
     background-color:#666;
-    color:#fff;
     text-shadow: black 1px 1px 3px;
 }
 
-/*
- * Feature menu
-*/
+/* Feature action menu - displayed after clicking on a feature */
 #fmenu {
     display:none;
-    width:320px;
+    width:auto;
+    max-width:250px;
+    text-overflow:ellipsis;
     height:auto;
     z-index:10000;
 }
-#fmenu .close {
-    color:#eee;
-}
 #fmenu .actions {
-    text-align: center;
     height:30px;
-    line-height:30px;
     white-space: nowrap;
-}
-#fmenu .actions a {
-    color:#fff;
+    text-align:center;
 }
 #fmenu .item {
     cursor:pointer;
     padding:3px;
-    margin:0px 3px;
+    margin:0px 5px;
 }
 #fmenu .item img {
     height:16px;
     width:auto;
 }
+#fmenu .title {
+    text-align:center;    
+}
 
-/**
- * Loading mask
-*/
+/* Coordinates following the mouse */
+#coords {
+    position:absolute;
+    background-color:transparent;
+    text-align:left;
+    text-shadow: #000 1px 1px 1px;
+    font-size:0.8em;
+    width:200px;
+    overflow:hidden;
+    z-index:10000;
+}
+
+/* Semi-transparent mask - displayed when an ajax call is performed for example */
 .mask {
     background-color:rgba(0,0,0,0.5);
 }
 .mask .content {
     position:relative;
-    color:#fff;
     text-transform:uppercase;
     margin:auto;
     top:50%;
@@ -314,16 +391,42 @@ input:focus, textarea:focus {
 }
 .mask .loading a {
     background-color:#666;
-    color:#fff;
     box-shadow: 1px 1px 5px 0 rgba(128,128,128,0.5);
     text-shadow: black 1px 1px 3px;
 }
 
 /**
- * Tooltip
+ * Help
 */
+.help {
+    background-color:rgba(243,150,28,0.7);
+}
+.help span.close {
+    font-size:5em;
+    top:10px;
+    right:10px;
+    width:auto;
+    height:auto;
+}
+.help .item {
+    position:absolute; /* top/left must be set for each help blocks */
+    text-align:justify;
+    height:auto;
+    padding:20px;
+    font-size:1.1em;
+    line-height:16px;
+}
+.help h1 {
+    font-size:1.2em;
+    text-transform: uppercase;
+}
+.help p {
+    padding-top:10px;
+}
+
+/* Tooltip */
 #tooltip { position:absolute; display:none; padding: 5px; background-repeat: no-repeat; z-index:36000; }
-#tooltip .inner { padding: 5px 8px 4px 8px; background-color: #000; color: #FFF; max-width: 200px; text-align: left; }
+#tooltip .inner { padding: 5px 8px 4px 8px; background-color: #000; max-width: 200px; text-align: left; }
 
 /**
  * Toolbars
@@ -342,9 +445,6 @@ input:focus, textarea:focus {
  *      .tbseh : South East Horizontal
  *      .tbsev : South East Vertical
  *
- *      .tbnnh : North North Horizontal
- *      .tbssh : South South Horizontal
- *
 */
 .tb .item {
     position:relative;
@@ -353,8 +453,12 @@ input:focus, textarea:focus {
 }
 
 /* Position for North toobar */
-.tbneh, .tbnev, .tbnwh, .tbnwv {
-    top:55px;
+.tbneh, .tbnev, .tbnwh {
+    top:130px;
+}
+
+.tbnwv {
+    top:150px;
 }
 
 /* Position for South toolbar */
@@ -382,17 +486,6 @@ input:focus, textarea:focus {
     left:0px;
 }
 
-/* Position for North North toolbar */
-.tbnnh {
-    top:-3px;
-}
-
-/* Position for South South toolbar */
-.tbssh {
-    bottom:0px;
-    left:20px;
-}
-
 /* Horizontal toolbar */
 .tbh {
     width:auto;
@@ -417,85 +510,32 @@ input:focus, textarea:focus {
     height:40px;
 }
 
-/* Background color, font and size color for general toolbar */
+/* Common definition for predefined toolbars */
 .tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev {
-    background-color:#000;
-    font-size:2em;
-    line-height:37px;
-    color:#fff;
-}
-
-.tbfrh {
     font-size:2em;
     line-height:37px;
 }
 
-/* Shadow for all toolbars except for 'fr', 'ss', 'nn' and 'v' toolbars */
-.tbnwh, .tbneh, .tbswh, .tbseh {
-    box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
-    -o-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
-    -webkit-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
-    -moz-box-shadow: 1px 1px 5px 0 gba(0, 0, 0, 0.5);
-}
-
-/* South south toolbar */
-.tbssh .item {
-    background-color:#000;
-    width:100px;
-    height:100%;
-    margin-right:10px;
-    font-size:1em;
-    line-height:37px;
-    color:#fff;
-}
-
-/* North North toolbar */
-.tbnnh {
-    background-color:transparent;
-    height:40px;
-}
-.tbnnh .item {
-    font-size:1em;
-    line-height:37px;
-    min-width:40px;
-}
-
-/* Toolbar active class */
-.tbnev .active, .tbssh .active {
-    background:#c76400;
-}
-.tbfrh .active, .tbnnh .active {
-    background:transparent;
-    border-bottom:3px solid #c76400;
-}
-
-/*
- * Panel
-*/
+/* Generic panel */
 .pn {
     position:absolute;
+    background-color:#eee;
     z-index:20000;
 }
-
-/*
- * Panel normal (i.e. "over" attribute false)
-*/
-.pnnorm {
-    background-color:#000;
+.pn a {
+    padding:0px;
+    background-color:transparent;
 }
-/*
- * Panel over (i.e. "over" attribute true)
-*/
-.pnover {
-    background-color:rgba(0,0,0,0.7);
+.pn a:hover{
+    background-color:transparent;
+    box-shadow: 0px 0px 0px 0 transparent;
+    border-bottom:1px solid #c76400;
 }
-
 .pn .header {
     text-transform:uppercase;
     font-size:1.3em;
     text-align: center;
     padding:5px 0px;
-    color:#fff;
 }
 .pn .expdbl {
     overflow:auto;
@@ -517,197 +557,17 @@ input:focus, textarea:focus {
     padding:5px;
     margin-bottom:5px;
 } 
-/*
- * East, Free and West panel
-*/
-.pne, .pnw, .pnf {
-    color:#fff;
-}
-.pne input {
-    width:240px;
-}
-.pne a, .pnw a, .pnf a {
-    padding:0px;
-    background-color:transparent;
-}
-.pne a:hover, .pnw a:hover, .pnf a:hover{
-    background-color:transparent;
-    box-shadow: 0px 0px 0px 0 transparent;
-    border-bottom:1px solid #c76400;
-}
 
-/*
- * Free panel
- */
- .pnf {
-    min-height: 200px; 
- }
- 
-/*
- * South panel
-*/
+/* South panel */
 .pns {
+    position:absolute;
+    left:0px;
     width:100%;
+    background-color:#000;
+    z-index:20000;
 }
 
-.pn .close {
-    color:#eee;
-}
-
-.pn .bg {
-    background-color:#fff;
-}
-
-/*
- * Actions
- *
- *  actnw       actne
- *    +-----------+
- *    |           |
- *    |           |
- *    +-----------+
- *  actsw        actse
- *
- * Inner button are suffixed by i :
- * (i.e. actnwi actnei actswi actsei)
-*/
-.act {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    z-index: 15003;
-    display: block;
-}
-.actnw {
-    top: -15px;
-    left: -15px;
-}
-.actnnw {
-    top: -15px;
-    left: -7px;
-}
-.actne {
-    top: -15px;
-    right: -15px;
-}
-.actnei {
-    top: 0px;
-    right: 0px;
-}
-.actnne {
-    top: -15px;
-    right: -7px;
-}
-.actnnm {
-    top: -15px;
-    left:75px;
-}
-.actsw {
-    bottom: -15px;
-    left: -15px;    
-}
-.actse {
-    bottom: -15px;
-    right: -15px; 
-}
-.icncheck {
-    background-image: url('img/jcheck.png');
-}
-.icnclose {
-    background-image: url('img/jclose.png');
-}
-.icndownload {
-    background-image: url('img/jdownload.png');
-}
-.icnsearch {
-    background-image: url('img/jsearch.png');
-}
-.icnzoom {
-    background-image: url('img/jzoom.png');
-}
-
-/* END : Actions */
-
-/*
- * OpenSearch input text box
-*/
-.ossearch input[type="text"] {
-    background: url(img/ossearch.png) no-repeat 10px 6px #000;
-    border: 0 none;
-    font:12px Arial,Helvetica,Sans-serif;
-    color: #999;
-    width:250px;
-    height:auto;
-    padding: 6px 15px 6px 35px;
-    -webkit-border-radius: 20px;
-    -moz-border-radius: 20px;
-    border-radius: 20px;
-    text-shadow: 0 2px 2px rgba(0, 0, 0, 0.3); 
-    -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2) inset;
-    -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2) inset;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.2) inset;
-    -webkit-transition: all 0.7s ease 0s;
-    -moz-transition: all 0.7s ease 0s;
-    -o-transition: all 0.7s ease 0s;
-    transition: all 0.7s ease 0s;
-}
-/*
- * Input text box clear button
-*/
-span.osclear {
-    position: relative;
-}
-span.osclear span {
-    position: absolute;
-    display: block;
-    top: 3px;
-    right: 3px;
-    width: 16px;
-    height: 16px;
-    background: url('img/osclear.png') no-repeat;
-    cursor: pointer;
-}
-span.osclear input {
-    padding-right: 16px;
-}
-
-/*
- * Start "arrow popup" definition
- * (used by FeatureInfo fmenu)
- */
-.apo {
-    color:#fff;
-    background: #000;
-    background-clip: padding-box;
-    border: 1px solid #eee;
-    padding: 10px;
-    width:auto;
-    height:100%;
-    position: relative;
-}
-.apo:before{
-    content: ' ';
-    border-color: #eee transparent transparent;
-    border-style: solid;
-    border-width: 11px;
-    position: absolute;
-    bottom: -22px;
-    left: 18px;
-}
-.apo:after{
-    content:' ';
-    border-color: #000 transparent transparent;
-    border-style: solid;
-    border-width: 9px;
-    position: absolute;
-    bottom: -18px;
-    left: 20px;
-}
-
-/*
- * Start "popup" definition
-*/
+/* Popup window */
 .po {
     position:absolute;
     display:none;
@@ -721,7 +581,7 @@ span.osclear input {
 
 /* Popup fixed size */
 .pona {
-    top:150px;
+    top:50px;
     width:500px;
     height:auto;
 }
@@ -750,7 +610,6 @@ span.osclear input {
 
 .po .body {
     background-color:#fff;
-    color:#000;
     padding:10px;
     overflow:auto;
 }
@@ -765,12 +624,11 @@ span.osclear input {
     width:100%;
 }
 
-/* End : "popup" definition */
-
 /* For share popup */
 .po .share {
     text-align:center;
     margin:10px 0px;
+    font-size:2em;
 }
 .po .share .embed {
     margin-top:25px;
@@ -784,11 +642,7 @@ span.osclear input {
     margin-right:10px;
 }
 
-/* End share popup */
-
-/*
- * For popup images
-*/
+/* For popup images */
 .imageContent {
     background-color:#fff;
     z-index:38001;
@@ -797,12 +651,186 @@ span.osclear input {
     text-align:center;
     overflow:hidden;
 }
-/* End : for popup image */
 
+/* Popup with arrow (used by FeatureInfo fmenu) */
+.apo {
+    background-clip: padding-box;
+    border: 1px solid #eee;
+    padding: 10px;
+    width:auto;
+    height:100%;
+    position: relative;
+}
+.apo:before{
+    content: ' ';
+    border-color: transparent transparent #eee;
+    border-style: solid;
+    border-width: 11px;
+    position: absolute;
+    top: -22px;
+    right: 18px;
+}
+.apo:after{
+    content:' ';
+    border-color: transparent transparent #f3961c;
+    border-style: solid;
+    border-width: 9px;
+    position: absolute;
+    top: -18px;
+    right: 20px;
+}
 
+/* Hilite class for feature information */
+.featureHilite {
+    position:absolute;
+    max-width:250px;
+    padding:10px;
+    overflow:hidden;
+    z-index:10000;
+}
+
+/* FeatureInfo panel */
+.pfi .header {
+    padding:20px 0px 5px 0px;
+    font-size:1em;
+    font-weight: bold;
+    text-align:left;
+}
+.pfi .title {
+    overflow:hidden;
+    cursor:pointer;
+    text-overflow:ellipsis;
+}
+.pfi .info {
+    padding:5px;
+    margin-bottom:5px;
+}
+.pfi .info table {
+    width:100%;
+}
+.pfi .thumb {
+    text-align: center;
+    padding:5px;
+    margin-bottom:5px;
+}
+.pfi .thumb img {
+    max-height:200px;
+}
+.pfi .sheader {
+    height:30px;
+    line-height:30px;
+    text-transform:uppercase;
+    background-color:#fff;
+}
+.pfi .sheader ul {
+    height:30px;
+    width:auto;
+}
+.pfi .sheader li {
+    list-style:none;
+    float:left;
+}
+.pfi td {
+    padding:5px 0px;
+}
+
+.pfi tr:nth-child(even) {
+    background:#ccc;
+}
+
+#pfit {
+    padding-bottom:10px;
+}
+#pfit li {
+    padding-left:5px;
+    display:inline;
+}
+
+/* message */
+.message {
+    position:absolute;
+    height:auto;
+    max-width:80%;
+    background-color:transparent;
+    display:none;
+    z-index:38000;
+}
+.message .content {
+    height:auto;
+    width:auto;
+    text-align:center;
+    background-color:#fff;
+    padding:20px;
+    z-index:38001;
+}
+.message span.close {
+    font-size:1.5em;
+    color:#666;
+}
+
+/* Tab definition */
+a.tab {
+    position:absolute;
+    background-color:rgba(0,0,0,0.5);
+    font-size:10px;
+    padding:0px 36px 0px 36px;
+    line-height:24px;
+    height:24px;
+    text-transform:uppercase;
+    cursor:pointer;
+}
+a.rastertab {
+    right:50px;
+    display:none;
+}
+a.tab img {
+    vertical-align:middle;
+    height:16px;
+}
+
+.tab span.loading {
+    background:transparent url(img/loading.gif) no-repeat center center;
+    position:absolute;
+    right:10px;
+    top:0px;
+    width:16px;
+    height:24px;
+}
 /*
- * CSS definition for subscript text
- */
+ * Pure CSS close button
+*/
+.tab span.close {
+    top:0px;
+    left:5px;
+    width:15px;
+    height:15px;
+    font-size:1.5em;
+    color:#eee;
+}
+.tab .tools {
+    position:absolute;
+    cursor:pointer;
+    top:24px;
+    right:0px;
+    display:none;
+}
+.tab .tools .item {
+    text-align:center;
+    white-space:nowrap;
+    line-height:24px;
+    padding:6px 7px 5px 7px;
+    height:24px;
+}
+.tab .tools .item:hover {
+    background-color:#c76400;
+}
+/************************************
+ *
+ * Generic classes
+ *
+ ************************************/
+
+/* CSS definition for subscript text */
 .subscript {
     font-size:xx-small;
     vertical-align:bottom;
@@ -821,14 +849,10 @@ span.osclear input {
     cursor:pointer;
 }
 .hover:hover {
-    background-color:#666;
-    text-shadow: black 1px 1px 3px;
-    color:#fff;
+    background-color:rgba(199,100,0,0.3);
 }
 .active, .selected {
-    background-color:#c76400;
-    text-shadow: black 1px 1px 3px;
-    color:#fff;
+    background-color:#eee;
 }
 .inactive {
     -moz-opacity:.50; filter:alpha(opacity=50); opacity:.50;
@@ -837,14 +861,11 @@ span.osclear input {
     font-weight:bold;
 }
 
-/**
- * Button
-*/
+/* Button */
 .button {
     background: #5C6166;
     border-radius: 2px 2px 2px 2px;
     font-family:Arial, sans-serif;
-    color: #FFFFFF;
     display: block;
     padding: 6px;
     position: relative;
@@ -867,22 +888,19 @@ span.osclear input {
 
 .button.facebook {
     background:#3B5998;
-    color:#FFF;
 }
 .button.twitter {
     background:#4099FF;
-    color:#FFF;
 }
 .button.email {
     background:#939CA3;
-    color:#FFF;
 }
 
-/*
- * Pure CSS close button
-*/
+/* Pure CSS close button */
 .close {
     position:absolute;
+    top:0px;
+    right:-8px;
     cursor:pointer;
     width:30px;
     height:30px;
@@ -943,129 +961,13 @@ span.osclear input {
     -moz-opacity:.20; filter:alpha(opacity=20); opacity:.20;
 }
 
-.shadow {
-    box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
-    -o-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
-    -webkit-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
-    -moz-box-shadow: 1px 1px 5px 0 gba(0, 0, 0, 0.5);
-}
 
-/**
- * Display mouse coordinates
-*/
-#coords {
-    color:#fff;
-    position:absolute;
-    background-color:transparent;
-    text-align:left;
-    text-shadow: #000 1px 1px 1px;
-    font-size:0.8em;
-    width:200px;
-    overflow:hidden;
-    z-index:10000;
-}
+/************************************
+ *
+ * OpenLayers classes redefinition
+ *
+ ************************************/
 
-/**
- * Hilite class for feature information
-*/
-.featureHilite {
-    position:absolute;
-    color:#fff;
-    border: 1px solid #eee;
-    background-color:#000;
-    max-width:250px;
-    padding:10px;
-    overflow:hidden;
-    z-index:10000;
-}
-
-/**
- * FeatureInfo panel
-*/
-.pfi .header {
-    padding:20px 0px 5px 0px;
-    font-size:1em;
-    font-weight: bold;
-    text-align:left;
-    color:#fff;
-}
-.pfi .title {
-    cursor:pointer;
-}
-.pfi .info {
-    padding:5px;
-    margin-bottom:5px;
-}
-.pfi .info table {
-    width:100%;
-}
-.pfi .thumb {
-    text-align: center;
-    padding:5px;
-    margin-bottom:5px;
-}
-.pfi .thumb img {
-    max-height:200px;
-}
-.pfi .sheader {
-    height:30px;
-    line-height:30px;
-    text-transform:uppercase;
-    background-color:#fff;
-}
-.pfi .sheader ul {
-    height:30px;
-    width:auto;
-}
-.pfi .sheader li {
-    list-style:none;
-    float:left;
-}
-.pfi td {
-    padding:5px 0px;
-}
-
-.pfi tr:nth-child(even) {
-    background:#666;
-}
-
-#pfit {
-    padding-bottom:10px;
-}
-#pfit li {
-    padding-left:5px;
-    display:inline;
-}
-
-/**
- * jMessage
-*/
-#message {
-    position:absolute;
-    top:40px;
-    height:auto;
-    max-width:80%;
-    background-color:transparent;
-    display:none;
-    z-index:38000;
-}
-#message .message {
-    height:auto;
-    width:auto;
-    text-align:center;
-    background-color:#fff;
-    margin-bottom:5px;
-    padding:15px;
-    z-index:38001;
-}
-
-/** ------------------
- *    OPENLAYERS
- *  ------------------*/
-
-/**
- * OpenLayers css #c76400efinition
-*/
 div.olControlMousePosition {
     font:normal 12px Arial,Tahoma,Sans-serif;
     position: absolute;
@@ -1094,7 +996,7 @@ div.olControlMousePosition {
 
 .olControlOverviewMapElement {
     padding: 1px 0px 1px 1px;
-    background-color: #000;
+    background-color:#000;
     -moz-border-radius: 0 0 0 0;
     -webkit-border-radius: 0 0 0 0;
     border-radius: 0 0 0 0;
@@ -1126,16 +1028,17 @@ div.olControlMousePosition {
     background-position: center;
 }
 .olControlAttribution {
-    left:5px;
-    bottom:50px;
-    color:#fff;
+    right:260px;
+    bottom:0px;
+    height:18px;
+    width:auto;
     max-width:400px;
     text-align:left;
-    text-shadow: black 1px 1px 1px;
 }
 .olControlAttribution img{
     vertical-align:middle;
 }
+
 /* Avoid pink tiles*/
 .olImageLoadError {
     background-color: transparent;
@@ -1145,9 +1048,292 @@ div.olControlMousePosition {
 
 /* ScaleLine position */
 .olControlScaleLine {
-    top:100px;
+    top:30px;
     left:20px;
     height:20px;
 }
 
-#__CONTROL_ATTRIBUTION__ {font-size:0.6em;}
+#__CONTROL_ATTRIBUTION__ {
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #000000;
+    font-size: 0.9em;
+}
+
+/****************************
+ *
+ * Plugins specific
+ *
+ ****************************/
+
+/* LayersManager.js */
+.lm {
+    position:absolute;
+    left:0px;
+    width:100%;
+    height:115px;
+    z-index:19900;
+}
+
+/* North and South positionning differs */
+.lmn {
+    top:-116px;
+}
+.lmn .thumbs {
+    top:0px;
+}
+.lmn a.tab{
+    bottom:-24px;
+}
+
+.lms {
+    bottom:-116px;
+}
+.lms .thumbs {
+    bottom:0px;
+}
+.lms a.tab, .pns a.tab{
+    top:-24px;
+}
+
+.lm .thumbs{
+    position:absolute;
+    left:0px;
+    width:100%;
+    height:115px;
+    background-color:rgba(0,0,0,0.5);
+    text-transform:uppercase;
+}
+.lm .thumbs .info{
+    height:20px;
+    overflow:hidden;
+    position:absolute;
+    top:95px;
+    width:100%;
+}
+.lm .thumbs .navigation {
+    position:absolute;
+    top:95px;
+    right:20px;
+    margin:0px;
+    z-index:10;
+}
+.lm .thumbs span.close {
+    top:0px;
+    left:5px;
+    width:25px;
+    height:25px;
+    font-size:2em;
+    color:#eee;
+}
+.lm .thumbs .navigation a {
+    color:#f3961c;
+}
+.lm .thumbs .thumbsWrapper{
+    height:95px;
+    left:0px;
+    right:0px;
+    overflow:hidden;
+    position:absolute;
+    top:0;
+}
+.lm .thumbs .mask{
+    position:absolute;
+    cursor:pointer;
+    width:100%;
+    height:100%;
+    text-align:center;
+    background-color:rgba(0,0,0,0.5);
+    display:none;
+    text-transform: uppercase;
+    z-index:20100;
+}
+.lm .thumbs h2 {
+    padding-top:20px;
+}
+.lm .thumbs ul{
+    list-style:none;
+    margin:0px;
+    padding:0px;
+    height:90px;
+    overflow:hidden;
+    position:absolute;
+    left:0px;
+    top:0px;
+}
+.lm .thumbs ul li a{
+    position:relative;
+    float:left;
+    margin:0px 2px 0px 2px;
+    text-shadow:1px 1px 1px #000;
+    text-decoration:none;
+    height:81px;
+    width:81px;
+}
+.lm .thumbs ul li a:hover{
+    background-color:#fff;
+}
+
+.lm .images ul li a img{
+    width:75px;
+    height:75px;
+    background-color:#000;
+    border:3px solid #f9f9f9;
+    -moz-box-shadow:1px 1px 3px #000;
+    -webkit-box-shadow:1px 1px 3px #000;
+    box-shadow:1px 1px 3px #000;
+}
+
+.lm .thumbs a span.title {
+    position:absolute;
+    top:3px;
+    bottom:3px;
+    left:3px;
+    right:3px;
+    background-color:#333;
+    font-size:9px;
+    padding:2px 2px;
+    border-top:1px solid #111;
+    display:none;
+    text-align:center;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-height:81px;
+    opacity:0.8;
+    filter:progid:DXImageTransform.Microsoft.Alpha(opacity=80);
+}
+
+.lm .thumbs a:hover span.title{
+    display:block;
+}
+
+.lm .rtools {
+    position:absolute;
+    cursor:pointer;
+    bottom:5px;
+    right:5px;
+    z-index:100;
+}
+.lm .rtools img {
+    height:24px !important;
+    width:24px !important;
+}
+.lm .rtools .item {
+    text-align:center;
+    white-space:nowrap;
+    line-height:24px;
+    padding:6px 7px 5px 7px;
+    height:24px;
+}
+
+/* BackgroundsManager.js and Context.js */
+.bgm, .shr {
+    display:inline;
+    width:auto;
+    height:35px;
+}
+.bgm .item, .shr .item {
+    width:25px;
+    height:100%;
+    display:inline-block;
+}
+
+/* Share.js */
+.shr {
+    margin-left:20px;
+}
+
+/* AddLayer.js */
+#ddzone {
+    position:absolute;
+    top:0px;
+    left:0px;
+    font-size:10em;
+    width:100%;
+    height:100%;
+    margin:auto;
+    display:none;
+    background-color:rgba(0,0,0,0.3);
+    color:#fff;
+    z-index:34000;
+}
+#ddzone .content {
+    position:relative;
+    margin:auto;
+    top:0px;
+    width:100%;
+    height:100%;
+    text-align:center;
+}
+
+/* Catalog.js */
+.father {
+    padding:0px 5px 0px 15px;
+}
+.catalog img {
+    height:32px;
+    width:32px;
+    vertical-align: middle;
+}
+.catalog th {
+    text-align:left;
+    padding:5px;
+}
+.catalog td {
+    padding:5px;
+    font-size:0.8em;
+    border-top:1px solid #ccc;
+}
+
+/* Geonames.js */
+#gnm {
+    position:absolute;
+    width:auto;
+    min-width:200px;
+    height:71px;
+    display:none;
+    background-repeat:no-repeat;
+    z-index:10100;
+}
+#gnm .content {
+    color:#000;
+    background-color:#f3961c;
+    height:50px;
+    width:100%;
+}
+#gnm .header{
+    float:none;
+    padding:5px 5px 5px 5px;
+    text-align:left;
+    vertical-align:middle;
+}
+#gnm .title {
+    font-weight: bold;
+}
+#gnm img {
+    max-height:16px;
+    max-width:16px;
+}
+
+#gnm .item {
+    font-size:1.5em;
+    padding-right:10px;
+}
+
+/* UserManagement.js */
+ .loginPanel {
+     margin:30px;
+ }
+ .loginPanel input {
+     margin:10px 0px;
+ }
+ .loginPanel .signin {
+     margin:20px 0px;
+ }
+ .loginPanel .register {
+     margin:20px 0px;
+     color:#999;
+ }
+ #rememberMe {
+     margin-left:20px;
+ }
+ 

@@ -48,11 +48,6 @@
  *      of the license.
  *
  *********************************************/
-/*
- *
- * Google Streetview plugin
- * 
- */
 (function(msp) {
     
     msp.Plugins.GoogleEarth = function() {
@@ -137,12 +132,12 @@
                 /*
                  * Show navigation control
                  */
-                navigationControl:msp.Util.getPropertyValue(self.options, "navigationControl", false),
+                navigationControl:msp.Util.getPropertyValue(self.options, "navigationControl", true),
 
                 /*
                  * Show atmosphere
                  */
-                atmosphere:msp.Util.getPropertyValue(self.options, "atmosphere", false),
+                atmosphere:msp.Util.getPropertyValue(self.options, "atmosphere", true),
 
                 /*
                  * Teleportation
@@ -187,12 +182,12 @@
                 /*
                  * Toolbar container position
                  */
-                position:msp.Util.getPropertyValue(self.options, "position", 'nw'),
+                position:msp.Util.getPropertyValue(self.options, "position", 'ne'),
                 
                 /*
                  * Toolbar container orientation
                  */
-                orientation:msp.Util.getPropertyValue(self.options, "orientation", 'h'),
+                orientation:msp.Util.getPropertyValue(self.options, "orientation", 'v'),
                 
                 /*
                  * Boolean - if true, Google Earth is displayed within a South panel
@@ -208,32 +203,12 @@
              */
             if (self.options.embeded) {
                 
-                var pn = new msp.Panel('s',{tb:new msp.Toolbar('ss', 'h')}), // Create new South panel
-                    ctn = pn.add(); // Add container within panel
-                
                 /*
-                 * 3D map is created in a dedicated panel container
-                 * 
-                 * ! Important ! Add a "nodisplaynone" class to avoid the use of "display:none" when
-                 * panel item is switch on/off. See msp.Panel.setActive(item) for explanation
+                 * Add GoogleEarth to South Panel
                  */
-                ctn.$d.addClass("nodisplaynone");
-
-                /*
-                 * Set container content
-                 */
-                self.$d = ctn.$d.children().first();
-                
-                /*
-                 * Register GoogleEarth within a South panel
-                 */
-                self.btn = new msp.Button({
-                    tt:"Show/Hide GoogleEarth",
-                    tb:pn.tb,
+                self.panelItem = msp.sp.add({
+                    id:msp.Util.getId(),
                     title:"3D view",
-                    container:ctn,
-                    close:false,
-                    activable:true,
                     onshow:function() {
                         
                         /*
@@ -247,9 +222,18 @@
                          * Fade in Google Earth view
                          */
                         self.$d.css('visibility','visible');
-
                     }
                 });
+            
+                /*
+                 * Store container jquery reference
+                 * 
+                 * !! Add a "nodisplaynone" class to avoid the use of
+                 * "display:none" when panel item is switch on/off.
+                 * See msp.sp.setActive(item) for explanation
+                 */
+                self.panelItem.$d.addClass("nodisplaynone")
+                self.$d = self.panelItem.$content;
                 
             }
             
@@ -264,14 +248,16 @@
                  */
                 self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$mcontainer);
                 
-                self.btn = new msp.Button({
-                    tb:new msp.Toolbar(self.options.position, self.options.orientation),
+                (new msp.Toolbar({
+                    position:self.options.position, 
+                    orientation:self.options.orientation
+                    })).add({
                     icon:"earth.png",
                     tt:"Toggle 2D/3D",
                     activable:true,
                     callback:function() {
                         self.showHide();
-                    }
+                    }  
                 });
             }
             
@@ -288,7 +274,7 @@
                 'visibility':'hidden',
                 /* 3D map position is exactly like map position */
                 'width':'100%',
-                'height':'95%',
+                'height':self.options.embeded ? '95%' : '100%',
                 'padding':'0',
                 'margin':'0'
             });
@@ -611,7 +597,7 @@
                      */
                     if (!kmlObject) {
                         setTimeout(function() {
-                          alert('Bad or null KML');
+                            alert('Bad or null KML');
                         }, 0);
                         return false;
                     }
@@ -764,7 +750,7 @@
         this.setGELookAt = function () {
 
             var geLookAt,
-                self = this;
+            self = this;
             
             /*
              * Paranoid mode
@@ -797,12 +783,12 @@
                 try {
                     geLookAt = self.ge.createLookAt('');
                     geLookAt.set(self.lookAt.lat,
-                    self.lookAt.lon,
-                    self.altitude,
-                    self.altitudeMode,
-                    self.heading,
-                    self.tilt,
-                    self.range);
+                        self.lookAt.lon,
+                        self.altitude,
+                        self.altitudeMode,
+                        self.heading,
+                        self.tilt,
+                        self.range);
                     self.ge.getView().setAbstractView(geLookAt);
                 }
                 catch (e) {}
@@ -860,19 +846,19 @@
              * Set Map position
              */
             var center = msp.Map.Util.d2p(self.lookAt.clone()),
-                scale = self.range * self.getScaleFactor(),
-                res = OpenLayers.Util.getResolutionFromScale(scale, msp.Map.map.baseLayer.units),
-                size = msp.Map.map.getSize(),
-                w_deg = size.w * res,
-                h_deg = size.h * res,
+            scale = self.range * self.getScaleFactor(),
+            res = OpenLayers.Util.getResolutionFromScale(scale, msp.Map.map.baseLayer.units),
+            size = msp.Map.map.getSize(),
+            w_deg = size.w * res,
+            h_deg = size.h * res,
 
-                /*
+            /*
                  * Compute new Extent from scale and Map size
                  */
-                extent = new OpenLayers.Bounds(center.lon - w_deg / 2,
-                    center.lat - h_deg / 2,
-                    center.lon + w_deg / 2,
-                    center.lat + h_deg / 2);
+            extent = new OpenLayers.Bounds(center.lon - w_deg / 2,
+                center.lat - h_deg / 2,
+                center.lon + w_deg / 2,
+                center.lat + h_deg / 2);
 
             /*
              * Center Map to the Google Earth extent
@@ -880,8 +866,8 @@
             if (limit) {
 
                 var centerPixel = msp.Map.map.getPixelFromLonLat(msp.Map.map.getCenter()),
-                    newCenterPixel = msp.Map.map.getPixelFromLonLat(center),
-                    newZoom = msp.Map.map.getZoomForExtent(extent, true);
+                newCenterPixel = msp.Map.map.getPixelFromLonLat(center),
+                newZoom = msp.Map.map.getZoomForExtent(extent, true);
 
                 /*
                  * new map extent differs from the current bounds by at least the quarter

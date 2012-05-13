@@ -17,22 +17,13 @@
         <link rel="shortcut icon" href="./favicon.ico" />
         <link rel="stylesheet" type="text/css" href="js/mol/theme/default/style.tidy.css" />
         <link rel="stylesheet" type="text/css" href="js/mol/theme/default/google.tidy.css" />
-        
         <link rel="stylesheet" type="text/css" href="js/mapshup/theme/default/mapshup.css" />
-        <link rel="stylesheet" type="text/css" href="js/mapshup/theme/default/plugins/Catalog.css" />
-        <link rel="stylesheet" type="text/css" href="js/mapshup/theme/default/plugins/Geonames.css" />
-        <link rel="stylesheet" type="text/css" href="js/mapshup/theme/default/plugins/LayersManager.css" />
-        <link rel="stylesheet" type="text/css" href="js/mapshup/theme/default/plugins/AddLayer.css" />
-        <link rel="stylesheet" type="text/css" href="js/mapshup/theme/default/plugins/UserManagement.css" />
-        
         <link rel="stylesheet" type="text/css" href="js/mjquery/mjquery.css" />
     </head>
     <body>
-        <div class="wrapper">
-            <div id="wheader"></div>
+        <div id="mwrapper" class="wrapper">
             <div id="wcontainer" class="map">
                 <div id="mapcontainer">
-                    <div id="mheader"></div>
                     <div id="map"></div>
                 </div>
             </div>
@@ -53,11 +44,13 @@
         <script type="text/javascript" src="js/mapshup/lib/core/Events.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/core/Activity.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/core/Toolbar.js"></script>
-        <script type="text/javascript" src="js/mapshup/lib/core/Button.js"></script>
+        <script type="text/javascript" src="js/mapshup/lib/core/ToolbarItem.js"></script>
+        <!--<script type="text/javascript" src="js/mapshup/lib/core/Button.js"></script>-->
         <script type="text/javascript" src="js/mapshup/lib/core/Mask.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/core/Tooltip.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/core/Menu.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/core/Panel.js"></script>
+        <script type="text/javascript" src="js/mapshup/lib/core/SouthPanel.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/core/Popup.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/core/Map.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/core/Map/Util.js"></script>
@@ -102,7 +95,7 @@
         <script type="text/javascript" src="js/mapshup/lib/plugins/Distance.js"></script>       
         <script type="text/javascript" src="js/mapshup/lib/plugins/Geonames.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/plugins/Navigation.js"></script>
-        <script type="text/javascript" src="js/mapshup/lib/plugins/Context.js"></script>
+        <script type="text/javascript" src="js/mapshup/lib/plugins/Share.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/plugins/LayersManager.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/plugins/AddLayer.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/plugins/LayerInfo.js"></script>
@@ -114,15 +107,17 @@
         <script type="text/javascript" src="js/mapshup/lib/plugins/Streetview.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/plugins/CountryPicker.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/plugins/GoogleEarth.js"></script>
-        <script type="text/javascript" src="js/mapshup/lib/plugins/OpenSearch2.js"></script>
+        <script type="text/javascript" src="js/mapshup/lib/plugins/Search.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/plugins/Wikipedia.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/plugins/WorldGrid.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/plugins/Welcome.js"></script>
         <script type="text/javascript" src="js/mapshup/lib/plugins/UserManagement.js"></script>
+        <script type="text/javascript" src="js/mapshup/lib/plugins/Help.js"></script>
         <!--<script type="text/javascript" src="js/mapshup/lib/plugins/OpenWebGlobe.js"></script>-->
         
         <script type="text/javascript" src="js/mapshup/config/default.js"></script>
         <script type="text/javascript" src="js/mapshup/config/__DEVEL__.js"></script>
+        <script type="text/javascript" src="js/mapshup/config/help_en.js"></script>
         <script type="text/javascript">
             $(document).ready(function () {
                 msp.load();

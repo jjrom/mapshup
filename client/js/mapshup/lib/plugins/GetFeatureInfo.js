@@ -101,7 +101,7 @@ msp.plugins["GetFeatureInfo"] = {
             title:getFeatureInfoLayer.name,
             layer:getFeatureInfoLayer,
             unremovable:true,
-            initialLayer:true,
+            mspLayer:true,
             selectable:true,
             /** By default, getFeatureInfoLayer is hidden */
             hidden:true

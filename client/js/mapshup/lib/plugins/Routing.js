@@ -89,7 +89,7 @@
                 type:"Generic",
                 title:this.resultLayer.name,
                 unremovable:true,
-                initialLayer:true,
+                mspLayer:true,
                 layer:this.resultLayer
             });
 
@@ -123,7 +123,7 @@
                 type:"Generic",
                 title:this.endsLayer.name,
                 unremovable:true,
-                initialLayer:true,
+                mspLayer:true,
                 layer:this.endsLayer
             });
             

@@ -94,14 +94,6 @@
         this.resize = msp.Util.getPropertyValue(options, "resize", true);
         
         /*
-         * Close button css modifier
-         */
-        this.cssClose = options.cssClose || {
-            'top':'0px',
-            'right':'0px'
-        };
-        
-        /*
          * Parent scope for callback
          */
         this.scope = options.scope || this;
@@ -111,9 +103,7 @@
          */
         this.init = function() {
             
-            var h,
-                id = msp.Util.getId(),
-                self = this;
+            var self = this;
             
             /*
              * Set an empty modal mask
@@ -147,11 +137,9 @@
              *          <div class="header"> // optional
              *          <div class="body">
              *      </div>
-             *      <div class="close"></div>
              *  </div>
              */
-            h = self.noHeader ? ''  : '<div class="header"></div>';
-            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$mcontainer).addClass('po').html('<div class="whole">'+h+'<div class="body"></div></div>');
+            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$mcontainer).addClass('po').html('<div class="whole">'+(self.noHeader ? ''  : '<div class="header"></div>')+'<div class="body"></div></div>');
 
             /*
              * Set automatic popup size or not ?
@@ -181,14 +169,9 @@
             /*
              * Add a close button
              */
-            self.$d.append('<div id="'+id+'" class="close"></div>');
-            
-            /*
-             * Close window
-             */
-            $('#'+id).click(function() {
+            msp.Util.addClose(self.$d, function(e){
                 self.hideOnClose ? self.hide() : self.remove();
-            }).css(self.cssClose);
+            });
             
             /*
              * Compute popup position on window resize

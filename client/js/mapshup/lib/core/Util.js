@@ -48,6 +48,11 @@
     msp.Util = {
         
         /**
+         * Associative array of message
+         */
+        messages:[],
+        
+        /**
          * abc is added to proxyURL KVP (see scripts/proxy.php)
          */
         abc: (function() {
@@ -224,44 +229,20 @@
         },
         
         /**
-         * Add a close button to the input div
-         * A close button just hide the input div when it is clicked
-         * If specified, it triggers action before hiding the div
-         *
-         * @input {jQuery div Object} : input div
-         * @input {function} : action // optional
+         * Append a close button to input div
+         * 
+         * @input $d : jquery object reference
+         * @input callback : callback function to call on click on close
          */
-        addCloseButton: function(div, action) {
+        addClose: function($d, callback) {
             
-            if (div) {
-                
-                var $id,
-                id = msp.Util.getId();
-                div.append('<div id="'+id+'" class="act actne icnclose" jtitle="'+this._("Close")+'"></div>');
-                
-                $id = $('#'+id);
-                
-                /*
-                 * Add tooltip
-                 */
-                msp.tooltip.add($id, 'w');
-
-                /*
-                 * Close window
-                 */
-                $id.click(function() {
-                    
-                    /*
-                     * Hide tooltip
-                     */
-                    msp.tooltip.remove();
-                    
-                    if ($.isFunction(action)) {
-                        action();
-                    }
-                    div.hide();
-                });
-            }
+            var id = msp.Util.getId();
+            
+            $d.append('<span id="'+id+'" class="close" title="'+msp.Util._('close')+'"></span>');
+            
+            $('#'+id).click(function(e){
+                $.isFunction(callback) ? callback(e) : $d.hide();
+            });
         },
         
         /**
@@ -279,6 +260,19 @@
                 newInstance[i] = this.clone(srcInstance[i]);
             }
             return newInstance;
+        },
+        
+        /**
+         * Return the length of an associative array
+         * 
+         * @input h : associative array
+         */
+        getHashSize: function (h) {
+            var v,r = 0;
+            for (v in h) {
+                r++;
+            }
+            return r;
         },
         
         /**
@@ -304,11 +298,7 @@
                 modal:true,
                 resize:false,
                 autoSize:true,
-                noHeader:true,
-                cssClose:{
-                    'top':'0px',
-                    'right':'-8px'
-                }
+                noHeader:true
             }),
             image = new Image();
 
@@ -420,11 +410,7 @@
                 modal:true,
                 resize:false,
                 autoSize:true,
-                noHeader:true,
-                cssClose:{
-                    'top':'-8px',
-                    'right':'-8px'
-                }
+                noHeader:true
             });
 
             /*
@@ -731,34 +717,62 @@
          */
         message: function(content, duration) {
             
-            var $d,
-            id = this.getId(),
-            parent = this.$$('#message', msp.$container).show(),
-            m = "&nbsp;"+decodeURIComponent(content)+"&nbsp;";
-
+            var $d,$content,fct,
+            self = this,
+            id = self.getId();
+            
             /*
-             * Add a new message
+             * Create a message container and associate it
+             * to a new entry within the messages array
              */
-            parent.append('<div id="' + id + '" class="message shadow"></div>');
+            msp.$container.append('<div id="' + id + '" class="message shadow"><div class="content"></div></div>');
             $d = $('#' + id);
+            self.messages[id] = $d;
+            
+            /*
+             * Set update position function
+             */
+            fct = function() {
+                
+                var $message, message, top = 30;
+                
+                for (message in self.messages) {
+                    $message = self.messages[message];
+                    $message.css({
+                        'top':top
+                    });
+                    top = $message.offset().top + $message.height() - 25;
+                }
+                
+            };
+            
+            /*
+             * Set content
+             */
+            $content = $('.content',$d).html(decodeURIComponent(content));
+            self.addClose($content,function(e){
+                delete self.messages[$d.attr('id')];
+                $d.remove();
+                fct();
+            });
                 
             /*
              * duration is set to -1
-             * In this case, jMessage is not automatically closed
-             * and a close button is added to manually close it
+             * In this case, message is not automatically closed
              */
             if (duration && duration === -1) {
-                $d.html(m).fadeIn('slow');
-                this.addCloseButton($d, function(){
-                    $d.remove();
-                });
+                $d.show();
+                fct();
             }
             else {
-                $d.html(m).fadeIn('slow').delay(duration || 2000).fadeOut('slow', function(){
-                    $(this).remove();
+                $d.fadeIn('slow').delay(duration || 2000).fadeOut('slow', function(){
+                    delete self.messages[$d.attr('id')];
+                    $d.remove();
+                    fct();
                 });
             }
-            parent.css({
+            
+            $d.css({
                 'left': (msp.$container.width() - $d.width()) / 2
             });
 
@@ -769,6 +783,9 @@
          * Replace all ',",. and # characters from "str" by "_"
          */
         encode: function(str) {
+            if (!str) {
+                return str;
+            }
             return str.replace(/[',", ,\.,#]/g,"_");
         },
         
@@ -1237,50 +1254,6 @@
         },
 
         /**
-         * Return a string*ified* version of
-         * a jSON object
-         */
-        serialize: function(obj) {
-
-            var t = typeof (obj);
-            if (t !== "object" || obj === undefined) {
-                if (t === "string") obj = '"'+obj+'"';
-                return String(obj);
-            }
-            else {
-                var n, v, json = [], arr = (obj && obj.constructor === Array);
-                for (n in obj) {
-                    v = obj[n];
-                    t = typeof(v);
-                    if (t === "string") {
-
-                        /*
-                         * "If the string contains no control characters, no quote characters, and no
-                         * backslash characters, then we can safely slap some quotes around it.
-                         * Otherwise we must also replace the offending characters with safe escape
-                         * sequences."
-                         *
-                         * JSON.js - Douglas Crockford : https://github.com/douglascrockford/JSON-js/blob/master/json2.js
-                         * 
-                         */
-                        v = '"'+v.replace(this.escapable, function (a) {
-                            var c = msp.Util.meta[a];
-                            return typeof c === 'string' ? c : '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-                        }) +'"';
-
-                    }
-                    else if (t === "object" && v !== undefined) {
-                        v = msp.Util.serialize(v);
-                    }
-                    if (t !== "function") {
-                        json.push((arr ? "" : '"' + n + '":') + String(v));
-                    }
-                }
-                return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
-            }
-        },
-
-        /**
          * Reduce the length of a string "str" to "sizemax"
          *
          * @input {String} str : String to reduce
@@ -1337,16 +1310,8 @@
                     return 0
                 });
             }   
-        },
-
-        /**
-         * Eval a stringified jSON string
-         * (see serialize)
-         */
-        unserialize: function(str) {
-            //return new Function("return " + str === "" ? '""' : str)();
-            return eval("(" + (str === "" ? '""' : str) + ")");
         }
+        
     };
 
 })(window, window.msp, window.document);

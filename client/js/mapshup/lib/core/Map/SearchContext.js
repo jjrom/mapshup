@@ -40,11 +40,10 @@
  * Search context function
  * One searchContext should be initialized for each catalog layer within the
  * _msp.searchContext property
- * (i.e. layer["_msp"].searchContext = new msp.plugins["Catalog"].SearchContext(layer,connector,btn,options);)
+ * (i.e. layer["_msp"].searchContext = new msp.plugins["Catalog"].SearchContext(layer,connector,options);)
  *
  * @input layer : catalog layer
  * @input connector : catalog connector
- * @input btn: reference to button
  * @input options : possible options are
  * {
  *      autosearch : true to set an auto search mode
@@ -59,7 +58,7 @@
  */
 (function(msp) {
     
-    msp.Map.SearchContext = function(layer, connector, btn, options) {
+    msp.Map.SearchContext = function(layer, connector, options) {
 
         /*
          * Paranoid mode
@@ -72,11 +71,6 @@
          */
         this.autoSearch = msp.Util.getPropertyValue(options, "autoSearch", false);
 
-        /**
-         * msp.Button attached to the search results
-         */
-        this.btn = btn;
-        
         /**
          * Connector reference
          */
@@ -549,7 +543,7 @@
                      * Otherwise, display results
                      */
                     if (!data) {
-                        msp.Util.message(layer.name + " : empty resut", -1);
+                        msp.Util.message(layer.name + " : empty resut");
                     }
                     else if (data.error) {
                         msp.Util.message(layer.name + " : " + data.error["message"], -1);

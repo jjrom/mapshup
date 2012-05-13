@@ -92,10 +92,7 @@
                 allowedMaxNumber:1,
                 allowedMaxSize:msp.Config["upload"].allowedMaxSize || 1000000,
                 magicServiceUrl:self.options.magicServiceUrl || "/utilities/magic.php?",
-                uploadServiceUrl:msp.Config["upload"].serviceUrl || "/utilities/upload.php?",
-                position:self.options.position || 'ne',
-                orientation:self.options.orientation || 'v',
-                invisible:msp.Util.getPropertyValue(self.options, "invisible", false)
+                uploadServiceUrl:msp.Config["upload"].serviceUrl || "/utilities/upload.php?"
             });
 
             /*
@@ -180,13 +177,6 @@
                     });
 
             }
-            /*
-             * If drag&drop is disable and invisible is set to true...then addLayer
-             * will not work at all. So remove it
-             */
-            else if (self.options.invisible) {
-                return null;
-            }
             
             /**
              * Update layerTypes with the list of available layers
@@ -211,148 +201,8 @@
                 }
             }
 
-            /*
-             * Register AddLayer action within NorthEast Toolbar triggering East panel 
-             */
-            if (!self.options.invisible) {
-                
-            
-                tb = new msp.Toolbar(self.options.position, self.options.orientation);
-                self.pn = new msp.Panel('e',{tb:tb});
-
-                self.btn = new msp.Button({
-                    tb:tb,
-                    icon:"add.png",
-                    tt:"Add layer",
-                    /*
-                     * Set the panel container content with the following html structure
-                     * 
-                     * <div id="..." class="pgal">
-                     *      <div class="header"></div>
-                     *      <div class="body expdbl">
-                     *          <div class="list"></div>
-                     *      </div>
-                     * </div>
-                     */
-                    container:self.pn.add('<div class="header">'+msp.Util._("Add layer")+'</div><h1 class="block"><a href="#" class="hover" id="'+id+'">'+msp.Util._("Enter an url")+'</a></h1><div class="body block expdbl"><div class="list"></div></div>', 'pgal'), //  AddLayer plugin is displayed within an East msp.Panel
-                    activable:true,
-                    scope:self
-                });
-
-                /*
-                 * When user enter an url, mapshup try to
-                 * determine magically what kind of url it is...
-                 */
-                $('#'+id).click(function(e) {
-                    msp.Util.askFor(msp.Util._("Add layer"), msp.Util._("Enter an url"), "text", null, function(url){
-                        self.guess(url);
-                    });
-                    return false;
-                });
-
-                /*
-                 * Set the list reference
-                 */
-                self.btn.$list = $('.list', self.btn.container.$d);
-
-                /*
-                 * Update list content
-                 */
-                self.update(self, self.btn, null);
-            }
-            
             return self;            
             
-        };
-        
-        
-        /*
-         * Update panel content
-         * 
-         * @input scope: reference to this plugin
-         * @input btn: reference to the action btn
-         */
-        this.update = function(scope, btn, mspID) {
-           
-            var i,key,list,p,l,img,id;
-
-            /*
-             * Empty list
-             */
-            btn.$list.empty();
-            
-            /*
-             * Populate div with predefined layers list if any
-             * The list is generated from predefined layers from each layerTypes
-             */
-            for (key in msp.Map.predefined.items) {
-
-                /*
-                 * Get the predefined layerDescription for this type
-                 */
-                list = msp.Map.predefined.items[key];
-
-                /*
-                 * If list is not empty, display the type as the
-                 * list title
-                 */
-                l = list.length;
-                if (l > 0) {
-                    btn.$list.append('<div class="big">'+key+'</div>');
-                }
-
-                /*
-                 * Roll over layerDescriptions
-                 */
-                for (i = 0; i < l; i++) {
-
-                    /*
-                     * Get predefined layer description reference
-                     */ 
-                    p = list[i];
-
-                    /*
-                     * Get unique id for <a> click
-                     * The unique id is based on the mspID
-                     */
-                    id = 'al' + (new msp.Map.LayerDescription(p, msp.Map)).getMspID();
-
-                    if (i > 0) {
-                        btn.$list.append("</br>");
-                    }
-
-                    /*
-                     * Special case for WMS (WFS)
-                     * If one of "layers" ("typeName") property is specified,
-                     * the WMS (WFS) is directly added to the map.
-                     * Else, the list of "layers" ("typeName") is displayed
-                     */
-                    img = (p.type === "WMS" && !p.layers) || (p.type == "WFS" && !p.typeName) ? '&nbsp;<img class="middle" src="'+msp.Util.getImgUrl("layersg.png")+'"/>' : '';
-                    btn.$list.append('<a href="#" class="hover" id="'+id+'">&nbsp;'+msp.Util._(p.title)+img+'</a> ');
-
-                    /*
-                     * Attach one click event to each link.
-                     * The clicked link is switched to 'active' class
-                     */
-                    (function(p, div, scope) {
-                        div.click(function() {
-                            $('a', div.parent()).removeClass('active');
-                            div.addClass('active');
-                            scope.getInfo(p);
-                            return false;
-                        });
-                    })(p,$('#'+id),scope);
-                }
-            }
-
-            /*
-             * mspID is defined ? activate it
-             */
-            if (mspID) {
-                $('#al'+mspID).trigger('click');
-            }
-
-            return true;
         };
         
         /*
@@ -540,7 +390,7 @@
 
                         msp.mask.hide();
 
-                        result = msp.Util.unserialize(http.responseText);
+                        result = JSON.parse(http.responseText);
 
                         /*
                          * In case of success, roll over processed items
@@ -616,10 +466,10 @@
             }
             
             /*
-             * Special case for OpenSearch service
+             * Special case for Search service
              */
-            if (p.type === "OpenSearch" && msp.Plugins.OpenSearch2._o) {
-                msp.Plugins.OpenSearch2._o.add(p.url);
+            if (p.type === "OpenSearch" && (msp.Plugins.Search && msp.Plugins.Search._o)) {
+                msp.Plugins.Search._o.add(p.url);
             }
             
             /*
@@ -628,22 +478,16 @@
             msp.Map.predefined.add(p);
             
             /*
-             * Update layers list and trigger getInfo
-             * for this result
+             * Update layers list and trigger getInfo for this result
              */
-            if (scope.options.invisible) {
-                scope.getInfo(p);
-            }
-            else {
-                scope.update(scope, scope.btn, (new msp.Map.LayerDescription(p, msp.Map)).getMspID());
-            }
+            scope.getInfo(p);
             
             return true;
 
         };
         
         /*
-         * Display layer(s) description on the east column
+         * Display layer(s) description within popup
          * 
          * @input a : layer description (can be an array or an individual)
          * 
@@ -684,40 +528,20 @@
             }
             
             /*
-             * If a is not an array move it to array
+             * If a is not an array, automatically
+             * add layer. Else, ask user
              */
             if (!a.length) {
                 a = [a];
-            }
-            
-            /*
-             * Get info popup
-             */
-            if (!self.popup) {
-                
-                /*
-                 * Create info popup.
-                 * popup reference is removed on popup close
-                 */
-                self.popup = new msp.Popup({
-                    modal:true,
-                    onClose:function(scope){
-                        if (scope.btn) {
-                            $('.list a', scope.btn.container.$d).removeClass('active');
-                        }
-                        scope.popup = null;
-                    },
-                    header:'<p>'+msp.Util._("Add layer")+'</p>',
-                    scope:self
-                });
-                
             }
                 
             /*
              * Clear popup body content
              */
-            self.popup.$b.empty();
-                
+            if (self.popup) {
+                self.popup.$b.empty();
+            }
+            
             /*
              * Roll over input array. Should be an array of layerDescription objects
              */
@@ -764,11 +588,40 @@
                 }
                 
                 /*
+                 * If there is only one input layerDescription,
+                 * then automatically add it to the map
+                 */
+                if (l === 1) {
+                    msp.Map.addLayer(p);
+                    return true;
+                }
+                
+                /*
                  * Layer Description
                  */
                 info = ld.getInfo();
                 id = msp.Util.getId();
                 
+                /*
+                 * Get info popup
+                 */
+                if (!self.popup) {
+
+                    /*
+                     * Create info popup.
+                     * popup reference is removed on popup close
+                     */
+                    self.popup = new msp.Popup({
+                        modal:true,
+                        onClose:function(scope){
+                            scope.popup = null;
+                        },
+                        header:'<p>'+msp.Util._("Add layer")+'</p>',
+                        scope:self
+                    });
+
+                }
+            
                 /*
                  * Set title and description
                  */
@@ -811,9 +664,6 @@
             
             return true;
         };
-        
-        
-        
         
         /*
          * Set unique instance

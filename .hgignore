@@ -5,3 +5,6 @@
 ^client/phr\.html$
 ^client/js/mapshup/config/engine\.mapshup\.info\.js$
 ^client/js/moldev$
+^client/js/mapshup/config/disasterschartercatalog\.org\.js\.js$
+^client/js/mapshup/config/disasterschartercatalog\.org\.js$
+^client/js/mapshup/config/engine2\.mapshup\.info\.js$

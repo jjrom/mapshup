@@ -58,13 +58,13 @@
         this.init = function(options) {
 
             var pb,nb,tb,
-                self = this;
+            self = this;
             
             self.options = options || {};
 
             /*
              * Set options
-             * Default toolbar is North West Horizontal
+             * Default toolbar is North East Vertical
              */
             $.extend(self.options, {
                 home:msp.Util.getPropertyValue(self.options, "home", false),
@@ -72,21 +72,23 @@
                 zoomout:msp.Util.getPropertyValue(self.options, "zoomout", true),
                 history:msp.Util.getPropertyValue(self.options, "history", true),
                 limit:msp.Util.getPropertyValue(self.options, "limit", 10),
-                position:msp.Util.getPropertyValue(self.options, "position", 'nw'),
-                orientation:msp.Util.getPropertyValue(self.options, "orientation", 'h')
+                position:msp.Util.getPropertyValue(self.options, "position", 'ne'),
+                orientation:msp.Util.getPropertyValue(self.options, "orientation", 'v')
             });
 
             /*
              * Set the toolbar container
              */
-            tb = new msp.Toolbar(self.options.position, self.options.orientation);
+            tb = new msp.Toolbar({
+                position:self.options.position, 
+                orientation:self.options.orientation
+            });
             
             /*
              * Zoom in button
              */
             if (self.options.zoomin) {
-                new msp.Button({
-                    tb:tb,
+                tb.add({
                     title:"+",
                     tt:"Zoom",
                     activable:false,
@@ -100,8 +102,7 @@
              * Zoom out button
              */
             if (self.options.zoomout) {
-                new msp.Button({
-                    tb:tb,
+                tb.add({
                     title:"-",
                     tt:"Zoom out",
                     activable:false,
@@ -118,10 +119,9 @@
             if (self.options.history) {
                 
                 /*
-                 * Add previous button
+                 * Add previous item
                  */
-                pb = new msp.Button({
-                    tb:tb,
+                pb = tb.add({
                     title:"&laquo;",
                     tt:"Previous view",
                     activable:false,
@@ -131,15 +131,14 @@
                 });
                 
                 /*
-                 * "Pseudo" hide previous button
+                 * "Pseudo" hide previous item
                  */
                 pb.$d.addClass("inactive");
                 
                 /*
-                 * Add next button
+                 * Add next item
                  */
-                nb = new msp.Button({
-                    tb:tb,
+                nb = tb.add({
                     title:"&raquo;",
                     tt:"Next view",
                     activable:false,
@@ -149,14 +148,14 @@
                 });
                 
                 /*
-                 * "Pseudo" hide next button
+                 * "Pseudo" hide next item
                  */
                 nb.$d.addClass("inactive");
                 
                 /*
                  * Create an history object
                  */
-                this.nh = (function(limit, pb, nb) {
+                self.nh = (function(limit, pb, nb) {
 
                     /**
                      * Store navigation states for history
@@ -197,12 +196,12 @@
                     this.limit = Math.max(limit, 2);
                     
                     /**
-                     * Previous button reference
+                     * Previous item reference
                      */
                     this.pb = pb;
                     
                     /**
-                     * Next button reference
+                     * Next item reference
                      */
                     this.nb = nb;
                     
@@ -232,9 +231,9 @@
                     this.add = function(state) {
                         
                         var i,
-                            self = this,
-                            l = self.states.length,
-                            k = self.tmp.length;
+                        self = this,
+                        l = self.states.length,
+                        k = self.tmp.length;
                         
                         /*
                          * Nothing is stored until mapshup is loaded
@@ -306,7 +305,7 @@
                         self.idx = self.states.length - 1;
                         
                         /*
-                         * Hide the next button and show the previous one
+                         * Hide the next item and show the previous one
                          */
                         self.showHide();
                         
@@ -338,7 +337,7 @@
                         }
                         
                         /*
-                         * Show/Hide next button
+                         * Show/Hide next item
                          */
                         self.showHide();
                         
@@ -380,7 +379,7 @@
                     this.center = function(idx) {
                         
                         var self = this,
-                            s = self.states[idx];
+                        s = self.states[idx];
                         
                         /*  
                          * Zoom to extent
@@ -403,14 +402,14 @@
                     };
                     
                     /**
-                     * Show/Hide next and previous button
+                     * Show/Hide next and previous item
                      */
                     this.showHide = function() {
                         
                         var self = this;
                         
                         /*
-                         * Show/hide previous button
+                         * Show/hide previous item
                          */
                         if (self.idx < 1) {
                             self.pb.$d.addClass('inactive');
@@ -420,10 +419,10 @@
                         }
                         
                         /*
-                         * Show/hide next button
+                         * Show/hide next item
                          */
                         if (self.idx >= self.states.length - 1) {
-                             self.nb.$d.addClass('inactive');
+                            self.nb.$d.addClass('inactive');
                         }
                         else {
                             self.nb.$d.removeClass('inactive')
@@ -447,13 +446,12 @@
              * Home button
              */
             if (self.options.home) {
-                new msp.Button({
-                    tb:tb,
+                tb.add({
                     icon:"center.png",
                     tt:"Go back to the start view",
                     activable:false,
                     callback:function() {
-                        var l = msp.Config["general"].initialLocation;
+                        var l = msp.Config["general"].location;
                         msp.Map.map.restrictedExtent ? msp.Map.map.zoomToExtent(msp.Map.map.restrictedExtent) : msp.Map.setCenter(msp.Map.Util.d2p(new OpenLayers.LonLat(l.lon,l.lat)), l.zoom, true);
                     }
                 });

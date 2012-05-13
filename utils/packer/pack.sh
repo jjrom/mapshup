@@ -92,7 +92,8 @@ then
 	/bin/cp -Rf $EXPORTDIR/js/mapshup/theme $TARGET/js/mapshup
 	/bin/cp $EXPORTDIR/js/mapshup/config/default.js $TARGET/js/mapshup/config
 	/bin/cp $EXPORTDIR/js/mapshup/config/touch.js $TARGET/js/mapshup/config
-
+        /bin/cp $EXPORTDIR/js/mapshup/config/help_*.js $TARGET/js/mapshup/config
+	
         # Copy external javascript libraries
 	/bin/cp -Rf $EXPORTDIR/js/mjquery $TARGET/js
 	/bin/cp -Rf $EXPORTDIR/js/mol $TARGET/js
@@ -195,29 +196,13 @@ java -jar $COMPRESSOR $TARGET/js/mapshup/config/touch.js > $TARGET/js/mapshup/co
 cat $LICENSE $TARGET/js/mapshup/config/touch.js.tmp > $TARGET/js/mapshup/config/touch.js
 
 echo ""
-echo "Concatenate css files"
-CSSFILES=`grep "\.css" $BUILDFILE | grep -v "#" | awk '{print $1}'`
-for css in $CSSFILES
-do
-        cat $TARGET/js/mapshup/theme/$THEME/$css >> $TARGET/js/mapshup/theme/$THEME/mapshup.css
-done
-
-echo ""
 echo "Compress css files..."
 java -jar $COMPRESSOR $TARGET/js/mapshup/theme/$THEME/mapshup.css > $TARGET/js/mapshup/theme/$THEME/mapshup.css.tmp
 cat $LICENSE $TARGET/js/mapshup/theme/$THEME/mapshup.css.tmp > $TARGET/js/mapshup/theme/$THEME/mapshup.css
 
 echo ""
-echo "Concatenate css files for touch devices"
-CSSFILES=`grep "\.css" $BUILDFILE | grep -v "#" |  grep -v "NOTOUCH" | awk '{print $1}'`
-for css in $CSSFILES
-do
-        cat $TARGET/js/mapshup/theme/$THEME/$css >> $TARGET/js/mapshup/theme/$THEME/mapshupt.css
-done
-
-echo ""
-echo "Compress css files..."
-java -jar $COMPRESSOR $TARGET/js/mapshup/theme/$THEME/mapshupt.css > $TARGET/js/mapshup/theme/$THEME/mapshupt.css.tmp
+echo "Compress css files for mobile..."
+java -jar $COMPRESSOR $TARGET/js/mapshup/theme/$THEME/mapshup.css > $TARGET/js/mapshup/theme/$THEME/mapshupt.css.tmp
 cat $LICENSE $TARGET/js/mapshup/theme/$THEME/mapshupt.css.tmp > $TARGET/js/mapshup/theme/$THEME/mapshupt.css
 
 echo ""
@@ -230,7 +215,6 @@ echo "Clean..."
 /bin/rm -Rf $TARGET/js/mapshup/theme/$THEME/mapshup.css.tmp
 /bin/rm -Rf $TARGET/js/mapshup/theme/$THEME/mapshupt.css.tmp
 /bin/rm -Rf $TARGET/js/mapshup/lib
-/bin/rm -Rf $TARGET/js/mapshup/theme/$THEME/plugins
 /bin/rm -Rf $TARGET/tmp_index.html
 /bin/rm -Rf $TARGET/tmp_indext.html
 /bin/rm -Rf /tmp/_mspexport

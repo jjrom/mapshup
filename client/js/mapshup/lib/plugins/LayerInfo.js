@@ -62,7 +62,7 @@
         /**
          * This method is called by LayersManager plugin
          */
-        this.getLmngActions = function(layer) {
+        this.getLayerActions = function(layer) {
 
             var scope = this;
 

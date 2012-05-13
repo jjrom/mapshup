@@ -39,7 +39,7 @@
  * PLUGIN: BackgroundsManager
  *
  * Define a "Background layer" switcher
- * Located at the top-right of the map
+ * located in the mapshup header
  *********************************************/
 (function(msp) {
     
@@ -60,105 +60,81 @@
             /*
              * Reference to this plugin
              */
-            var scope = this;
+            var self = this;
             
-            /*
-             * Be sure to only initialize
-             */
-            if (this.isLoaded) {
-                return scope;
-            }
-
             /**
              * Init options
              */
-            this.options = options || {};
-
-            /*
-             * Set options
-             * Default toolbar is South East vertical Toolbar
-             */
-            $.extend(this.options, {
-                position:this.options.position || 'se',
-                orientation:this.options.orientation || 'v'
-            });
+            self.options = options || {};
             
-            this.tb = new msp.Toolbar(this.options.position, this.options.orientation);
+            /*
+             * Create Toolbar
+             */
+            self.tb = new msp.Toolbar({
+                parent:$('.leftBar', msp.$header), 
+                classes:'bgm'
+            });
             
             /**
              * Register changebaselayer
              */
             msp.Map.map.events.register('changebaselayer', msp.Map.map, function(e){
-                var btn = scope.tb.get(msp.Util.encode(e.layer.id));
-                if (btn) {
-                    btn.activate(true);
-                }
+                self.tb.activate(msp.Util.encode(e.layer.id), true);
             });
 
             /*
-             * Register events
+             * Register layersend event
              */
-            msp.Map.events.register("layersend", scope, scope.onLayersEnd);
+            msp.Map.events.register("layersend", self, function(action, layer, scope) {
 
-            this.isLoaded = true;
-
-            return scope;
-        };
-
-        /**
-         * This function is called after msp.jMap.map.layers changed
-         * (i.e. successfull addLayer or removeLayer)
-         */
-        this.onLayersEnd = function(action, layer, scope) {
-
-            if (!layer) {
-                return false;
-                
-            }
+                /*
+                 * Paranoid mode
+                 */
+                if (!layer) {
+                    return false;
+                }
             
-            var id = msp.Util.encode(layer.id),
-                btn;
+                var id = msp.Util.encode(layer.id);
                 
-            /**
-             * Case 1 : layers list changed because a layer was added
-             */
-            if (action === "add") {
-                if (layer.isBaseLayer && layer.displayInLayerSwitcher) {
-                    new msp.Button({
-                        id:id,
-                        tb:scope.tb,
-                        title:msp.Util._(layer.name).substring(0,1),
-                        tt:layer.name,
-                        activable:true,
-                        switchable:false,
-                        callback:function() {
-                            msp.Map.map.setBaseLayer(layer);
-                        }
-                    });
+                /**
+                 * Case 1 : layers list changed because a layer was added
+                 */
+                if (action === "add") {
+                    if (layer.isBaseLayer && layer.displayInLayerSwitcher) {
+                        scope.tb.add({
+                            id:id,
+                            title:msp.Util._(layer.name).substring(0,1),
+                            tt:layer.name,
+                            activable:true,
+                            switchable:false,
+                            callback:function() {
+                                msp.Map.map.setBaseLayer(layer);
+                            }
+                        });
                     
-                    /*
-                     * If layer is the new base layer, trigger the toolbar
-                     * to activate the right layer
-                     */
-                    if (layer.getVisibility()) {
-                        scope.tb.get(id).activate(true);
+                        /*
+                         * If layer is the new base layer, trigger the toolbar
+                         * to activate the right layer
+                         */
+                        if (layer.getVisibility()) {
+                            self.tb.activate(id,true);
+                        }
                     }
                 }
-            }
 
-            /**
-             * Case 2 : layers list changed because a layer was removed
-             */
-            else if (action === "remove") {
-                btn = scope.tb.get(id);
-                if (btn) {
-                    btn.remove();
+                /**
+                 * Case 2 : layers list changed because a layer was removed
+                 */
+                else if (action === "remove") {
+                    scope.tb.remove(id);
                 }
-            }
             
-            return true;
+                return true;
+            });
+
+            return self;
         };
-        
+
         /*
          * Set unique instance
          */

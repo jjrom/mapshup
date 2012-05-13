@@ -105,7 +105,7 @@
          * Compute an unique mspID based on layerDescription
          */
         getMspID:function(layerDescription) {
-            return msp.Util.crc32(layerDescription.type + (layerDescription.googleType || ""));
+            return msp.Util.crc32(layerDescription.type + (layerDescription.googleType || "roadmap"));
         }
     }
     

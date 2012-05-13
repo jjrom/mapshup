@@ -161,18 +161,6 @@
         refreshCycle:0,
 
         /**
-         * This array is used to store initialLayers that have been removed
-         * See context management
-         *
-         * Structure :
-         * {
-         *      mspID:
-         *      layerDescription:
-         * }
-         */
-        removedLayers: [],
-
-        /**
          * selectableLayers object contains all the layers that can be selected with
          * the "__CONTROL_SELECT__" control tool
          */
@@ -351,9 +339,9 @@
                 /** Icon */
                 icon:msp.Util.getPropertyValue(layerDescription, "icon", msp.Util.getImgUrl(msp.Util.getPropertyValue(layerType, "icon", null))),
 
-                /** True : the layer is part of the Config.layers list (i.e. load during startup) */
+                /** True : the layer is load during startup */
                 initialLayer:msp.Util.getPropertyValue(layerDescription, "initialLayer", false),
-
+                
                 /** True : the layer content is initialized */
                 initialized:msp.Util.getPropertyValue(_options, "forceInitialized", false),
 
@@ -365,6 +353,9 @@
 
                 /** LayerDescription for this layer : use for context saving */
                 layerDescription:layerDescription,
+                
+                /** True : the layer is a mapshup layer - mapshup layers are not part of a saved context */
+                mspLayer:msp.Util.getPropertyValue(layerDescription, "mspLayer", false),
 
                 /** True : avoid zoomon on layer name click in LayersManager panel */
                 noZoomOn:msp.Util.getPropertyValue(layerDescription, "noZoomOn", false),
@@ -434,9 +425,9 @@
             if (newLayer) {
 
                 /*
-                 * Tell user a non-initial layer has been added (only if it has been loaded)
+                 * Tell user a non mapshup layer has been added (only if it has been loaded)
                  */
-                if (!newLayer["_msp"].initialLayer && newLayer["_msp"].isLoaded) {
+                if (!newLayer["_msp"].mspLayer && newLayer["_msp"].isLoaded) {
                     msp.Util.message(msp.Util._("Added")+ " : " + msp.Util._(newLayer.name));
                 }
 
@@ -490,7 +481,7 @@
                          * is set to true and the map is not centered any more on this layer even if
                          * its content changes
                          */
-                        if (!this["_msp"].initialLayer) {
+                        if (!this["_msp"].mspLayer && !this["_msp"].initialLayer) {
                             msp.Map.Util.zoomOnAfterLoad(this);
                         }
 
@@ -531,6 +522,7 @@
                  */
                 if (newLayer.isBaseLayer && !this.hasNonEmptyBaseLayer) {
                     this.map.setBaseLayer(newLayer);
+                    this.removeLayer(this.Util.getLayerByMspID("EmptyBaseLayer"), false);
                     this.hasNonEmptyBaseLayer = true
                 }
 
@@ -645,194 +637,209 @@
          * 
          * Context structure :
          * {
-         *      id: // Unique context identifier
-         *      bg: // Active background layer identifier
-         *      lat: // Latitude of map center
-         *      lon: // Longitude of map center
-         *      zoom: // zoom level of map
-         *      layers: // List of layerDescription to add
-         *      remove: // List of layers to remove (array of identifiers)
-         *      hiddens: // List of hidden layers (array of identifiers)
-         *      searchs: // Search contexts
+         *      location:{
+         *          bg:// Active background layer identifier
+         *          lon:// Longitude of map center
+         *          lat:// Latitude of map center
+         *          zoom:// zoom level of map
+         *      },
+         *      layers:[
+         *          // Layerdescription
+         *      ]
          * }
          */
         loadContext: function(context) {
 
-            var layer,
-            add,
-            i,
-            j,
-            l,
-            m;
+            var id,b,layer,i,j,k,l,s,
+            self = this;
 
             /*
-             * Center map on lon/lat with given zoom
+             * Paranoid mode
              */
-            if (context.hasOwnProperty('lon') && context.hasOwnProperty('lat')) {
-                if (context.hasOwnProperty('zoom')) {
-                    this.map.setCenter(this.Util.d2p(new OpenLayers.LonLat(context.lon,context.lat)), Math.max(context.zoom, this.lowestZoomLevel));
-                }
-                else {
-                    this.map.setCenter(this.Util.d2p(new OpenLayers.LonLat(context.lon,context.lat)));
-                }
+            context = context || {};
+            
+            /*
+             * Set location
+             */
+            if (context.location) {
+                self.map.setCenter(self.Util.d2p(new OpenLayers.LonLat(context.location.lon,context.location.lat)), Math.max(context.location.zoom, self.lowestZoomLevel));
             }
+            
             /*
-             * No input lon/lat but zoom is specified
+             * Set layers
              */
-            else if (context.hasOwnProperty('zoom')) {
-                this.map.setCenter(this.map.getExtent().getCenterLonLat(), Math.max(context.zoom, this.lowestZoomLevel));
-            }
-
+            context.layers = context.layers || [];
+            
             /*
-             * First clean the layer list i.e. remove every layer that are not
-             * initial layers
+             * Parse context layer descriptions and compare
+             * it with existing layers.
+             * 
+             * Three case are possibles :
+             * 
+             *   - context layers that are not in the map are added
+             *   - map layers that are not in the context are removed
+             *   - context layers that are already in the map are updated
              */
-
-            /*
-             * Temporary array to store layers to be removed
-             */
-            var tmpRemovedLayers = [];
-            for (i = 0, l = this.map.layers.length;i < l; i++) {
-                if (this.map.layers[i]["_msp"] && !this.map.layers[i]["_msp"].initialLayer) {
-                    /*
-                     * This layer should be removed
-                     */
-                    tmpRemovedLayers.push(this.map.layers[i]);
-                }
-            }
-
+            
             /*
              * Remove layers
              */
-            for (i = 0, l = tmpRemovedLayers.length; i < l; i++) {
-                this.removeLayer(tmpRemovedLayers[i], false);
-            }
-
-            /*
-             * Add additional layers
-             * Flags noDeletionCheck and forceInitialized are set to true
-             */
-            if (context.hasOwnProperty('add')) {
-                var layers = msp.Util.unserialize(decodeURIComponent(context.add));
-                for (i = 0, l = layers.length; i < l; i++) {
-                    layer = this.addLayer(layers[i], {
-                        noDeletionCheck:true,
-                        forceInitialized:true
-                    });
-                }
-            }
-
-            /*
-             * Remove layers
-             */
-            if (context.hasOwnProperty('remove')) {
-                var mspIDs = msp.Util.unserialize(decodeURIComponent(context.remove));
-                for (i = 0, l = mspIDs.length; i < l; i++) {
-                    layer = this.Util.getLayerByMspID(mspIDs[i]);
-                    if (layer) {
-                        this.removeLayer(layer, false);
-                        if (layer["_msp"].initialLayer) {
-                            tmpRemovedLayers.push({
-                                mspID:mspIDs[i],
-                                layerDescription:layer["_msp"].layerDescription
-                            });
-                        }
-                    }
-                }
-            }
-
-            /*
-             * Finally, add all initial layers that should not be removed within this context
-             */
-            for (i = 0, l = this.removedLayers.length;i < l; i++) {
-
-                add = true;
-
+            for (i = 0, l = self.map.layers.length; i < l; i++) {
+                
                 /*
-                 * Roll over initial layers that should ne be added because
-                 * they are removed within this context
+                 * By default, remove the layer
                  */
-                for (j = 0, m = tmpRemovedLayers.length; j < m; j++) {
-                    if (tmpRemovedLayers[j].mspID === this.removedLayers[i].mspID) {
-                        add = false;
-                        break;
-                    }
-                }
+                b = true;
+                
+                layer = self.map.layers[i];
+                
+                /*
+                 * mapshup layers are excluded from the processing
+                 */
+                if (layer && layer["_msp"] && !layer["_msp"].mspLayer) {
+                    
+                    id = layer["_msp"].mspID;
+                    
+                    /*
+                     * Roll over context layers
+                     */
+                    for (j = 0, k = context.layers.length; j < k; j++) {
+                        
+                        /*
+                         * The layer is present in the context layer list. No need to remove it
+                         */
+                        if (id === (new self.LayerDescription(context.layers[j], self)).getMspID()) {
+                            b = false;
+                            break;
+                            
+                        }
 
-                if (add) {
-                    this.addLayer(this.removedLayers[i].layerDescription, {
+                    }
+                    
+                    /*
+                     * Remove the layer
+                     */
+                    if (b) {
+                        self.removeLayer(self.Util.getLayerByMspID(id), false);
+                    }
+                    
+                }
+                
+                
+            }
+            
+            /*
+             * Add or update layers
+             */
+            for (i = 0, l = context.layers.length; i < l; i++) {
+                
+                id = (new self.LayerDescription(context.layers[i], self)).getMspID();
+                
+                /*
+                 * By default, add the layer
+                 */
+                b = true;
+                
+                /*
+                 * Roll over existing layers
+                 */
+                for (j = 0, k = self.map.layers.length; j < k; j++) {
+                    
+                    layer = self.map.layers[j];
+                    
+                    /*
+                     * mapshup layers are excluded from the processing
+                     */
+                    if (layer["_msp"] && !layer["_msp"].mspLayer) {
+                        
+                        /*
+                         * The layer already exist - update it
+                         */
+                        if (id === layer["_msp"].mspID) {
+                            b = false;
+                            break;
+                        }
+                        
+                    }
+                    
+                }
+                
+                /*
+                 * Add layer
+                 */
+                if (b) {
+                    self.addLayer(context.layers[i],{
                         noDeletionCheck:true,
                         forceInitialized:true
                     });
                 }
-            }
+                /*
+                 * Update layer
+                 */
+                else {
+                    
+                    /*
+                     * Set visibility
+                     */
+                    if (!layer.isBaseLayer) {
+                        msp.Map.Util.setVisibility(layer, !context.layers[i].hidden);
+                    }
+                    
+                    /*
+                     * Launch search on catalogs
+                     */
+                    s = context.layers[i].search;
+            
+                    if (s) {
 
-            /*
-             * Clean removedLayers list
-             */
-            this.removedLayers = [];
-            for (i = 0, l = tmpRemovedLayers.length; i < l; i++) {
-                this.removedLayers.push(tmpRemovedLayers[i]);
-            }
+                        //
+                        // Update the search items
+                        //
+                        layer["_msp"].searchContext.items = s.items;
 
+                        //
+                        // Launch unitary search -
+                        // Note that zoomOnAfterLoad is set to false to avoid
+                        // a zoom on catalog result after a successfull search
+                        //
+                        layer["_msp"].zoomOnAfterLoad = false;
+                        layer["_msp"].searchContext.search(s.nextRecord);
+
+                    }
+                    
+                }
+            }
+            
             /*
              * Set default background
              */
-            if (context.hasOwnProperty('bg')) {
-                layer = this.Util.getLayerByMspID(context.bg);
+            if (context.location.bg) {
+                layer = self.Util.getLayerByMspID(context.location.bg);
                 if (layer && layer.isBaseLayer) {
-                    this.map.setBaseLayer(layer);
+                    self.map.setBaseLayer(layer);
                 }
             }
+            
 
-            /*
-             * Hide layers
-             */
-            if (context.hasOwnProperty('hiddens')) {
-                var hiddens = msp.Util.unserialize(decodeURIComponent(context.hiddens));
-                for (i = 0, l = hiddens.length; i < l; i++) {
-                    layer = this.Util.getLayerByMspID(hiddens[i]);
-                    if (layer) {
-                        this.Util.setVisibility(layer, false);
-                    }
-                }
-            }
-
-            /*
+        /*
              * Searchs
              */
+        /*
             if (context.hasOwnProperty('searchs')) {
 
                 var searchs = msp.Util.unserialize(decodeURIComponent(context.searchs));
 
-                /*
-                 * Roll over searchs
-                 */
                 for (i = 0, l = searchs.length; i < l; i++) {
 
                     layer = this.Util.getLayerByMspID(searchs[i].mspID);
 
-                    /*
-                     * layer exists...
-                     */
                     if (layer) {
 
-                        /*
-                         * ...and has a valid searchContext
-                         */
                         var searchContext = layer["_msp"].searchContext;
                         if (searchContext) {
 
-                            /*
-                             * Update the search items
-                             */
                             searchContext.items = searchs[i].items;
 
-                            /*
-                             * Launch unitary search -
-                             * Note that zoomOnAfterLoad is set to false to avoid
-                             * a zoom on catalog result after a successfull search
-                             */
                             layer["_msp"].zoomOnAfterLoad = false;
                             searchContext.search(searchs[i].nextRecord);
 
@@ -841,6 +848,7 @@
                 }
 
             }
+            */
 
         },
         
@@ -867,130 +875,94 @@
         },
 
         /*
-         * Return map context in URL form
-         * Map context is :
+         * Get current map context represented by
+         * 
          *  - map extent
-         *  - map layers (including catalogs)
+         *  - layers list
+         *  - MMI status (TODO)
+         *  
          */
         getContext: function() {
 
+            var i,l,layer,c,key,center,ld, self = this;
+            
             /*
              * Get map center in Lat/Lon (epsg:4326)
              */
-            var center = this.Util.p2d(this.map.getCenter());
+            center = self.Util.p2d(self.map.getCenter()); 
 
             /*
-             * Initialize serialized add string
+             * Initialize context
              */
-            var add = "[",
-            isFirst = true,
-            isFirstHidden = true,
-            searchs = [],
-            hiddens = "[",
-            remove = "[",
-            mspID,
-            i,
-            layer,
-            l;
-
+            c = {
+                location:{
+                    bg:self.map.baseLayer["_msp"].mspID,
+                    lat:center.lat,
+                    lon:center.lon,
+                    zoom:self.map.getZoom()
+                },
+                layers:[]
+            };
+            
             /*
-             * Roll over each layer that is not a Config.layers layer
-             * (i.e. do not use layer added during application startup)
+             * Roll over each layer
              */
-            for(i = 0, l = this.map.layers.length; i < l; i++) {
+            for (i = 0, l = self.map.layers.length; i < l; i++) {
 
                 /*
                  * Retrieve current layer
                  */
-                layer = this.map.layers[i];
+                layer = self.map.layers[i];
 
                 /*
-                 * Paranoid mode...
+                 * mapshup layers (i.e. mspLayer) are not stored in the context
                  */
-                if (layer["_msp"]) {
+                if (layer["_msp"] && layer["_msp"].layerDescription && !layer["_msp"].mspLayer) {
 
+                    /*
+                     * Initialize object
+                     */
+                    ld = {};
+                    
+                    /*
+                     * Clone layerDescription omitting layer and ol properties
+                     * to avoid serialization cycling during JSON.stringify processing
+                     */
+                    for (key in layer["_msp"].layerDescription) {
+                        if (key !== "layer" && key !== "ol") {
+                           ld[key] = layer["_msp"].layerDescription[key];
+                        }
+                    }
+                    
                     /*
                      * Layer is hidden
                      */
-                    if (!layer.getVisibility() && !layer.isBaseLayer) {
-                        if(!isFirstHidden) {
-                            hiddens += ",";
-                        }
-                        hiddens += layer["_msp"].mspID;
-                        isFirstHidden = false;
-                    }
-
+                    ld.hidden = !layer.getVisibility() && !layer.isBaseLayer ? true : false;
+                    
                     /*
-                     * Only add layers that are not initialLayers
-                     */
-                    if (!layer["_msp"].initialLayer) {
-
-                        if (!isFirst) {
-                            add += ",";
-                        }
-
-                        /*
-                         * Add layerDescription to the add serialized string
-                         * Avoid the infinite loop problem by checking the non-existence
-                         * of a reference to the layer object
-                         */
-                        if (layer["_msp"].layerDescription && !layer["_msp"].layerDescription.layer) {
-                            add += msp.Util.serialize(layer["_msp"].layerDescription);
-                            isFirst = false;
-                        }
-                    }
-
-                    /*
-                     * Serialize search context
+                     * Layer got a non empty searchContext
                      */
                     if (layer["_msp"].searchContext && layer["_msp"].searchContext.items.length > 0) {
-                        searchs.push({
+                        ld.search = {
                             mspID:layer["_msp"].mspID,
                             items:layer["_msp"].searchContext.items,
                             nextRecord:layer["_msp"].searchContext.nextRecord
-                        });
+                        }
                     }
+                    
+                    /*
+                     * Add a layer description
+                     */
+                    c.layers.push(ld);
+                    
                 }
-            }
-
-
-            /*
-             * Initialize serialized remove string
-             */
-            isFirst = true;
-
-            /*
-             * Roll over each initial layers that have been removed
-             */
-            for (i = 0, l = this.removedLayers.length; i < l; i++) {
-
-                if (!isFirst) {
-                    remove += ",";
-                }
-
-                /*
-                 * Add mspID to the remove serialized string
-                 */
-                mspID = this.removedLayers[i].mspID;
-                if (mspID) {
-                    remove += msp.Util.serialize(mspID);
-                    isFirst = false;
-                }
-
+                
             }
 
             /*
-             * Initialize serialized context string
+             * Return context
              */
-            return "&lon=" + center.lon
-            +"&lat=" + center.lat
-            +"&zoom=" + this.map.getZoom()
-            +"&add=" + encodeURIComponent(add+"]")
-            +"&remove=" + encodeURIComponent(remove+"]")
-            +"&searchs=" + encodeURIComponent(msp.Util.serialize(searchs))
-            +"&bg=" + this.map.baseLayer["_msp"].mspID
-            +"&hiddens=" + encodeURIComponent(hiddens+"]");
-
+            return c;
         },
         
         /**
@@ -1044,7 +1016,7 @@
             /*
              * Set initialLocation
              */
-            self.initialLocation = _config["general"].initialLocation;
+            self.initialLocation = _config["general"].location;
 
             /*
              * Hack : if Map height is set to auto, it is assumed that the Map div
@@ -1142,9 +1114,7 @@
             /*
              * Initialize featureInfo
              */
-            self.featureInfo = new self.FeatureInfo({
-                position:_config["general"].featureInfoPosition
-            });
+            self.featureInfo = new self.FeatureInfo();
             
             /*
              * Update menu position on map move
@@ -1256,7 +1226,7 @@
 
             /*******************************************
              *
-             * Layers
+             * Groups
              *
              *******************************************/
 
@@ -1367,7 +1337,7 @@
             /*
              * Overview map control
              */
-            if (_config.general.displayOverviewMap) {
+            if (_config.general.overviewMap !== "none") {
                 var overviewMapExtent = new OpenLayers.Bounds(-180,-90,180,90);
                 var overviewMapControl = new OpenLayers.Control.OverviewMap({
                     mapOptions: {
@@ -1378,8 +1348,8 @@
                         autoPan:false,
                         restrictedExtent:overviewMapExtent
                     },
-                    /* By default, overviewmap is visible */
-                    maximized:true,
+                    /* Overviewmap is visibility */
+                    maximized:_config.general.overviewMap === "opened" ? true : false,
                     size:new OpenLayers.Size('250','125'),
                     layers:[new OpenLayers.Layer.Image('ImageLayer', msp.Util.getImgUrl('overviewmap.png'),
                         overviewMapExtent,
@@ -1395,12 +1365,13 @@
              * is defined. In this case, the map is centered to this restrictedExtent
              */
             self.map.restrictedExtent ? self.map.zoomToExtent(self.map.restrictedExtent) : self.setCenter(self.Util.d2p(new OpenLayers.LonLat(self.initialLocation.lon,self.initialLocation.lat)), self.initialLocation.zoom, true);
-
+            
             /**
              * Set lowest zoom level
              * The map cannot be zoomout to a lower value than lowestZoomLevel
              */
-            self.lowestZoomLevel = self.map.getZoom();
+            //self.lowestZoomLevel = self.map.getZoom();
+            self.lowestZoomLevel = 0;
 
             /**
              * Set timer for layers with automatic refresh
@@ -1460,12 +1431,7 @@
                 self.events.trigger("resizeend");
                 
             });
-            
-            /*
-             * Add mapshup logo on the map header
-             */
-            msp.Util.$$('#msplogo', msp.$header.height() > 0 ? msp.$header : msp.$map).append('<a href="http://www.mapshup.info" target="_blank"><img src="img/mapshuplogo.png" class="middle" title="Powered by mapshup"/></a>');
-
+        
         },
 
         /**
@@ -1545,7 +1511,7 @@
              * to be sure that it will be indicated as removed in the
              * getContext method
              */
-            if (layer["_msp"] && layer["_msp"].initialLayer) {
+            if (layer["_msp"] && layer["_msp"].mspLayer) {
                 this.removedLayers.push({
                     mspID:layer["_msp"].mspID,
                     layerDescription:layer["_msp"].layerDescription
@@ -1624,7 +1590,7 @@
              */
             this.doNotLog = doNotLog || false;
             
-            if (zoom) {
+            if (zoom !== null) {
                 this.map.setCenter(lonlat,zoom);
             }
             else {
@@ -1667,7 +1633,7 @@
                     msp.Util.message(e);
                 }
                 else {
-                    msp.Map.map.setCenter(c, 16);
+                    msp.Map.map.setCenter(c, 12);
                 }
             }
             /**
@@ -1684,7 +1650,6 @@
             }       
 
         }
-        
         
         
     }

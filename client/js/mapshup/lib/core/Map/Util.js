@@ -105,25 +105,31 @@
     
     
     /**
-     * Return a hash table of unclusterized features.
-     * The hash entry is the feature id attribute
+     * Return an array of unclusterized features
      * 
      * @input layer : layer containing clusterizes or unclusterized features
+     * @input options: options for sorting 
+     *                 {
+     *                      attribute: // name of the attribute to sort
+     *                      order: // order of sorting - 'a' (default) for ascending and 'd' for descending
+     *                      type: // attribute type - 'd' for date, 'n' for number, 't' for text (default)
+     *                 }
      * 
      */
-    Map.Util.getFeatures = function(layer) {
+    Map.Util.getFeatures = function(layer, options) {
 
-        var feature,
-        i,
-        j,
-        l,
-        m,
-        features = [];
+        var feature,i,j,l,m,features = [];
+        
+        /*
+         * Paranoid mode
+         */
+        options = options || {};
         
         /*
          * Roll over layer features
          */
         if (layer && layer.features) {
+            
             for (i = 0, l = layer.features.length; i < l; i++) {
 
                 /*
@@ -143,18 +149,79 @@
                     for (j = 0, m = feature.cluster.length; j < m; j++) {
 
                         /*
+                         * Set layer to feature
+                         */
+                        feature.cluster[j].layer = feature.cluster[j].layer || layer;
+
+                        /*
                          * Add a new entry to features array
                          */
-                        features[feature.cluster[j].id] = feature.cluster[j];
-
+                        features.push(feature.cluster[j]);
+                       
                     }
                 }
                 else {
-                    features[feature.id] = feature;
+                    features.push(feature);
                 }
             }
         }
-
+        
+        /*
+         * Sorting ?
+         */
+        if (options.attribute) {
+            
+            features.sort(function(a,b){
+                
+                var one, two;
+                
+                /*
+                 * Paranoid mode
+                 */
+                if (!a.hasOwnProperty("attributes") || !b.hasOwnProperty("attributes")) {
+                    return 0;
+                }
+                
+                /*
+                 * Ascending or descending
+                 */
+                if (options.order === 'd') {
+                    one = b.attributes[options.attribute];
+                    two = a.attributes[options.attribute];
+                }
+                else {
+                    one = a.attributes[options.attribute];
+                    two = b.attributes[options.attribute];
+                }
+                
+                /*
+                 * Number case
+                 */
+                if (options.type === 'n') {
+                    one = parseFloat(one);
+                    two = parseFloat(two);
+                }
+                /*
+                 * Text case
+                 */
+                else if (options.type === 't') {
+                    one = one.toLowerCase();
+                    two = two.toLowerCase();
+                }
+                
+                /*
+                 * Order
+                 */
+                if (one < two) {
+                    return -1
+                }
+                if (one > two) {
+                    return 1
+                }
+                return 0
+            });
+        }
+        
         return features;
 
     };
@@ -187,7 +254,7 @@
          * Classical 'dms' first display Latitude then Longitude
          */
         else {
-           return Map.Util.getFormattedCoordinate(lonlat.lat,"lat",format)+"&nbsp;::&nbsp;"+Map.Util.getFormattedCoordinate(lonlat.lon,"lon",format);
+            return Map.Util.getFormattedCoordinate(lonlat.lat,"lat",format)+"&nbsp;::&nbsp;"+Map.Util.getFormattedCoordinate(lonlat.lon,"lon",format);
         }
         
     };
@@ -213,8 +280,8 @@
     Map.Util.getFormattedCoordinate = function(coordinate, axis, format) {
         
         var result,degreesOrHours,minutes,seconds,tmp,nsew,
-            sign = "",
-            degreesOrHoursUnit = "\u00B0";
+        sign = "",
+        degreesOrHoursUnit = "\u00B0";
         
         /*
          * Check format - By default returns degree, minutes, seconds
@@ -318,6 +385,41 @@
         }
         return null;
     };
+    
+    
+    /**
+     * Return true if the layer is a raster layer
+     * A raster layer is one of the following :
+     *     - Image
+     *     - MBT
+     *     - SHP
+     *     - TMS
+     *     - WMS
+     *     - XYZ
+     */
+    Map.Util.isRaster = function(layer) {
+        
+        var i,l,b = false, rasters = ["Image","MBT","SHP","TMS","WMS","XYZ"];
+      
+        if (!layer || !layer['_msp']) {
+            return b;
+        }
+        
+        /* 
+         * Rasters layers are processed differently from vector layers.
+         * A vector layer got its own individual tab.
+         * All raster layers are displayed within a single "rasters" tab 
+         */
+        for (i = 0, l = rasters.length; i < l; i++){
+            if (rasters[i] === layer['_msp']['layerDescription'].type) {
+                b = true;
+                break;
+            }
+        }
+        
+        return b;
+    };
+    
     
     /**
      * Return true if the layer is empty

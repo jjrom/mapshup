@@ -132,7 +132,7 @@
                 title:self.layer.name,
                 layer:self.layer,
                 unremovable:true,
-                initialLayer:true,
+                mspLayer:true,
                 hidden:self.options.hidden
             });
 

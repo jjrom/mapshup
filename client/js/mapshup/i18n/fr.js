@@ -92,9 +92,9 @@
     i["Google libraries not loaded. Streetview is disabled"]="La bibliothèque Google n&#39;est pas chargée. Streetview est désactivé";
     i["Hi"]="Salut";
     i["Hide"]="Masquer";
+    i["Hide this layer"]="Masquer cette couche";
     i["Initializing 3D mode"]="Initialisation du mode 3D";
     i["Item"]="Element";
-    i["Keywords or coordinates"]="Mots clés ou coordonnées";
     i["Layer"]="Couche";
     i["Layer added"]="Couche ajoutée";
     i["Layer detection in progress..."]="Détection de la couche en cours...";
@@ -149,10 +149,10 @@
     i["Satellite"]="Satellite";
     i["Save"]="Sauvegarder";
     i["Saving layer"]="Enregistrement de la couche";
+    i["Search..."]="Recherche...";
     i["Search"]="Rechercher";
     i["Search Area"]="Zone de recherche";
     i["Search for media"]="Recherche de media";
-    i["Search for one or more comma-delimited <b>keywords</b> (e.g. Toulouse,France) or enter <b>coordinates</b> in decimal degrees (e.g. 44.1 -128.8)"]="Rechercher un ou plusieurs <b>mots clés</b> séparés par une virgule (ex. Paris,France) ou entrer un couple de <b>coordonnées</b> en degrés décimaux (ex. 44.1 -128.8)";
     i["Search for related data"]="Rechercher des données liées";
     i["Search for related images"]="Rechercher d&#39;images liées";
     i["Search in"]="Rechercher dans";

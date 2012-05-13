@@ -128,14 +128,14 @@
                 OpenLayers.Request.GET({
                     url:msp.Util.getAbsoluteUrl(msp.Config["general"].reprojectionServiceUrl)+msp.Util.abc+"&url="+encodeURIComponent(layerDescription.url)+"&layers="+encodeURIComponent(layerDescription.layers)+"&srs="+layerDescription.srs,
                     callback: function(request) {
-                        var JSONReader = new OpenLayers.Format.JSON(),
-                            JSON = JSONReader.read(request.responseText);
+                        var json = (new OpenLayers.Format.JSON()).read(request.responseText);
+                        
                         /**
                          * Add a new property "projectedUrl" that should be used
                          * in place of original url
                          */
-                        if (JSON.success) {
-                            layerDescription.projectedUrl = JSON.url;
+                        if (json.success) {
+                            layerDescription.projectedUrl = json.url;
                             layerDescription.srs = Map.map.projection.projCode;
                             Map.addLayer(layerDescription);
                         }
@@ -166,7 +166,8 @@
                 bounds:Map.Util.d2p(new OpenLayers.Bounds(parseFloat(BBOX[0]) + avoidBoundError, parseFloat(BBOX[1])  + avoidBoundError, parseFloat(BBOX[2])  - avoidBoundError, parseFloat(BBOX[3]) - avoidBoundError)),
                 allowChangeOpacity:true,
                 /* A WMS should have a GetLegendGraphic function to retrieve a Legend */
-                legend:layerDescription.url + "service=WMS&&version="+version+"&format=image/png&request=GetLegendGraphic&layer="+layerDescription.layers
+                legend:layerDescription.url + "service=WMS&version="+version+"&format=image/png&request=GetLegendGraphic&layer="+layerDescription.layers,
+                icon:this.getPreview(layerDescription)
             });
             
             /*
@@ -349,7 +350,7 @@
 
             return true;
         },
-
+        
         /**
          * Return an array of layerDescription derived from capabilities information
          */
@@ -389,17 +390,10 @@
 
                 /*
                  * Get the getmap url
-                 * EPSG:4326
-                 * WIDTH:100
-                 * HEIGHT:50
                  */
-                var width = 100,
-                    height = 50,
-                    url = msp.Util.repareUrl(layerDescription.url),
-                    preview = url+"WIDTH="+width+"&HEIGHT="+height+"&STYLES=&FORMAT=image/png&TRANSPARENT=false&SERVICE=WMS&REQUEST=GetMap&VERSION="+capabilities.version,
+                var url = msp.Util.repareUrl(layerDescription.url),
                     d,
                     layer,
-                    projinfo,
                     ptitle = (capabilities.capability.nestedLayers && capabilities.capability.nestedLayers[0]) ? capabilities.capability.nestedLayers[0]["title"] : null;
 
                 /*
@@ -410,28 +404,6 @@
                     layer = capabilities.capability.layers[i];
 
                     /*
-                     * WMS 1.3.0 => srs is now crs and axis order is switched for
-                     * EPSG:4326
-                     *
-                     */
-                    if (capabilities.version === "1.3.0") {
-                        if (layer.llbbox && layer.llbbox.length === 4) {
-                            projinfo = "&CRS=EPSG:4326&BBOX="+layer.llbbox[1]+','+layer.llbbox[0]+','+layer.llbbox[3]+','+layer.llbbox[2];
-                        }
-                        else {
-                            projinfo = "&CRS=EPSG:4326&BBOX=-90,-180,90,180";
-                        }
-                    }
-                    else {
-                        if (layer.llbbox && layer.llbbox.length === 4) {
-                            projinfo = "&SRS=EPSG:4326&BBOX="+layer.llbbox[0]+','+layer.llbbox[1]+','+layer.llbbox[2]+','+layer.llbbox[3];
-                        }
-                        else {
-                            projinfo = "&SRS=EPSG:4326&BBOX=-180,-90,180,90";
-                        }
-                    }
-
-                    /*
                      * Initialize new object
                      */
                     d = {
@@ -440,7 +412,12 @@
                         ptitle:ptitle,
                         url:url,
                         layers:layer["name"],
-                        preview:preview+projinfo+'&LAYERS='+layer["name"],
+                        preview:this.getPreview({
+                            url:url,
+                            version:capabilities.version,
+                            bbox:layer.llbbox,
+                            layers:layer["name"]
+                        }),
                         version:capabilities.version
                     };
 
@@ -494,6 +471,50 @@
             }
 
             return a;
+        },
+        
+        /**
+         * Return a wms preview from layer
+         */
+        getPreview: function(layerDescription) {
+            
+            var url, version, bbox;
+            
+            layerDescription = layerDescription || {};
+            
+            /*
+             * Default version is 1.1.0
+             */
+            version = layerDescription.version || "1.1.0";
+            
+            /*
+             * Set default BBOX to the whole world
+             */
+            if (layerDescription.hasOwnProperty("bbox")) {
+                bbox = $.isArray(layerDescription.bbox) && layerDescription.bbox.length === 4 ? layerDescription.bbox : layerDescription.bbox.split(",");
+            }
+            else {
+                bbox = ["-180","-90","180","90"];
+            }
+            
+            /*
+             * Set default url to a 150x75 pixels thumbnail
+             */
+            url = msp.Util.repareUrl(layerDescription.url)+"WIDTH=150&HEIGHT=75&STYLES=&FORMAT=image/png&TRANSPARENT=false&SERVICE=WMS&REQUEST=GetMap&VERSION="+version;
+            
+            /*
+             * WMS 1.3.0 => srs is now crs and axis order is switched for
+             * EPSG:4326
+             *
+             */
+            if (version === "1.3.0") {
+                url += "&CRS=EPSG:4326&BBOX="+bbox[1]+','+bbox[0]+','+bbox[3]+','+bbox[2];
+            }
+            else {
+                url += "&SRS=EPSG:4326&BBOX="+bbox[0]+','+bbox[1]+','+bbox[2]+','+bbox[3];
+            }
+            
+            return url+'&LAYERS='+layerDescription.layers;
         },
 
         /**

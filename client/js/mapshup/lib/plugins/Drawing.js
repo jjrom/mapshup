@@ -106,7 +106,7 @@
                 type:"Generic",
                 title:self.layer.name,
                 unremovable:true,
-                initialLayer:true,
+                mspLayer:true,
                 layer:self.layer
             });
 
@@ -137,10 +137,6 @@
                         autoSize:true,
                         onClose:function() {
                             msp.mask.hide();
-                        },
-                        cssClose:{
-                            'top':'-8px',
-                            'right':'-8px'
                         },
                         body:'<form class="marged"><label>'+msp.Util._("Feature title")+'<br/><input id="featureTitle" type="text"/></label><br/><label>'+msp.Util._("Feature description")+'<br/><textarea id="featureDesc"/></label><div style="margin:10px 0px;"><a href="#" class="button inline colored" id="featureDescV">'+msp.Util._("Validate")+'</a></div></form>'
                     });
@@ -237,10 +233,6 @@
                     noHeader:true,
                     hideOnClose:true,
                     autoSize:true,
-                    cssClose:{
-                        'top':'-8px',
-                        'right':'-8px'
-                    },
                     body:'<div class="marged"><a href="#" id="'+idPoint+'">'+msp.Util._("Point")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_point.png")+'"/>&nbsp;<a href="#" id="'+idLine+'">'+msp.Util._("Line")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_line.png")+'"/><a href="#" id="'+idPolygon+'">'+msp.Util._("Polygon")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_polygon.png")+'"/></div>'
                 });
                 /*
@@ -303,10 +295,6 @@
                          */
                         self.saveLayer();
 
-                    },
-                    cssClose:{
-                        'top':'-8px',
-                        'right':'-8px'
                     }
                 });
             }
@@ -320,7 +308,7 @@
              * Display popup
              */
             self.infoPopup.show();
-            self.infoPopup.moveTo({x:msp.$map.width() / 2,y:100});
+            self.infoPopup.moveTo({x:msp.$map.width() - self.infoPopup.$d.width() / 2 - 100,y:40});
             
             /*
              * Set popup action

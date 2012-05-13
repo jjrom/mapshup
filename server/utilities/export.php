@@ -81,15 +81,30 @@ function JSONToCSVFile($json, $fileName) {
         $line = "";
         $header = "";
         foreach ($item as $k => $v) {
+            
             if ($line != "") {
                 $line .= ";";
                 $header .= ";";
             }
+            
             /*
-             * Avoid ";" within values
+             * Process first and second level if any
              */
-            $line .= str_replace(";", ",", $v);
-            $header .= $k;
+            if (!is_string($v)) {
+                foreach ($v as $k2 => $v2) {
+                    if(is_string($v2)) {
+                        $line .= str_replace(";", ",", $v2) . ";";
+                        $header .= $k . "/" . $k2 . ";";
+                    }
+                }
+            }
+            else {
+                /*
+                 * Avoid ";" within values
+                 */
+                $line .= str_replace(";", ",", $v);
+                $header .= $k;
+            }
         }
         if ($isFirst) {
             fwrite($handle, $header . PHP_EOL);
@@ -191,6 +206,13 @@ function JSONToKMLFile($json, $fileName, $name) {
         $geometry = "";
         foreach ($item as $k => $v) {
 
+            /*
+             * Process only first level
+             */
+            if (!is_string($v)) {
+                continue;
+            }
+            
             /*
              * Search for a good name...
              * "name", "title", "identifier" or "id" are good candidates !

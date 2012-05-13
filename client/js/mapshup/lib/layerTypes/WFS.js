@@ -139,7 +139,7 @@
             }
 
             /*
-             * Extend options object with Flickr specific properties
+             * Extend options object with specific properties
              */
             $.extend(options,
             {

@@ -69,10 +69,10 @@
             
             var self = this;
             
-            /**
+            /*
              * Init options
              */
-            this.options = options || {};
+            self.options = options || {};
             
             /*
              * Check if google.maps library is loaded
@@ -93,11 +93,17 @@
                     ic:"streetview.png",
                     ti:"Streetview",
                     cb:function() {
-                            
+                        
                         /*
-                         * Show layer
+                         * Set lonlat to new position
                          */
-                        self.show(self, msp.Map.Util.p2d(msp.menu.lonLat.clone()));
+                        self.lonlat = msp.Map.Util.p2d(msp.menu.lonLat.clone());
+                        
+                        /*
+                         * Activate panel item
+                         */
+                        msp.sp.show(self.panelItem);
+                        
                     }
                 }
                 ]);
@@ -112,7 +118,7 @@
             /*
              * Register events
              */
-            msp.Map.events.register("layersend", this, function(action, layer, scope) {
+            msp.Map.events.register("layersend", self, function(action, layer, scope) {
 
                 /*
                  * Each time a layer is added make sure streetview layer is on top
@@ -120,9 +126,38 @@
                 if (action === "add" && scope.svw) {
                     msp.Map.Util.setLayerOnTop(scope.svw.msp.layer);
                 }
+                
             });
-
-            return this;
+            
+            /*
+             * Add Streetview to South Panel
+             */
+            self.panelItem = msp.sp.add({
+                id:msp.Util.getId(),
+                icon:msp.Util.getImgUrl('streetview.png'),
+                title:"Streetview",
+                onclose:function() {
+                    self.lonlat = null;
+                    if (self.svw) {
+                        self.svw.setVisible(false);
+                    }
+                },
+                onshow:function() {
+                    self.show(self, self.lonlat || msp.Map.Util.p2d(msp.Map.map.getCenter()));
+                }
+            });
+            
+            /*
+             * Store container jquery reference
+             */
+            self.$d = self.panelItem.$content;
+            
+            /*
+             * Store container height
+             */
+            self.h = self.$d.height();
+            
+            return self;
 
         };
         
@@ -131,22 +166,16 @@
          */
         this.initSvw = function() {
             
-            if (this.svw) {
+            var self = this,
+                lonlat = msp.Map.map.getCenter();
+            
+            /*
+             * Streetview is already initialized
+             */
+            if (self.svw) {
                 return self.svw;
             }
             
-            var self = this,
-            pn = new msp.Panel('s',{
-                tb:new msp.Toolbar('ss', 'h')
-                }), // Create new South panel
-            ctn = pn.add(), // Add container within panel
-            lonlat = msp.Map.map.getCenter();
-            
-            /*
-             * Set container content
-             */
-            self.$d = ctn.$d.children().first();
-
             /*
              * Initialise Streetview object
              */
@@ -219,7 +248,7 @@
                 title:self.svw.msp.layer.name,
                 layer:self.svw.msp.layer,
                 unremovable:true,
-                initialLayer:true,
+                mspLayer:true,
                 hidden:true
             });
 
@@ -253,7 +282,27 @@
                     return;
                 }
                 if (this.errorCode === 600) {
-                    self.remove();
+                    
+                    var i,l,event,obj = self.svw.msp;
+
+                    /*
+                     * Remove the google streetview events
+                     */
+                    for (i = 0, l = obj.events.length; i < l; i++) {
+                        event = obj.events[i];
+                        google.maps.event.removeListener(event);
+                    }
+
+                    /*
+                     * Next remove streetview layer
+                     */
+                    msp.Map.removeLayer(obj.layer, false);
+
+                    /*
+                     * Nullify streetview object
+                     */
+                    delete self.svw;
+                    
                     return;
                 }
             }));
@@ -261,39 +310,7 @@
             /*
              * Set streetview initial position
              */
-            this.svw.setPosition(new google.maps.LatLng(lonlat.lat,lonlat.lon));
-            
-            /*
-             * Register Streetview button within South south toolbar
-             */
-            self.btn = new msp.Button({
-                tt:"Show/Hide Streetview",
-                tb:pn.tb,
-                title:"Streetview",
-                container:ctn,
-                close:true,
-                onclose:self.remove,
-                onshow:function(scope, btn){
-                    scope.show(scope, msp.Map.Util.p2d(btn.svw.msp.layer.getDataExtent().getCenterLonLat().clone()));
-                },
-                onhide:function(scope, btn) {
-                    btn.activate(false);
-                    btn.svw.setVisible(false);
-                },
-                activable:true,
-                scope:self,
-                e:{
-                    svw:self.svw
-                },
-                actions:[
-                {
-                    cssClass:"actnnw icnzoom",
-                    callback:function(btn) {
-                        msp.Map.zoomTo(btn.svw.msp.layer.getDataExtent());
-                    }
-                }
-                ]
-            });
+            self.svw.setPosition(new google.maps.LatLng(lonlat.lat,lonlat.lon));
             
         };
         
@@ -302,7 +319,7 @@
          */
         this.getFeatureActions = function(feature) {
 
-            var scope = this;
+            var self = this;
 
             return {
                 id:msp.Util.getId(),
@@ -310,40 +327,19 @@
                 title:"Streetview",
                 tt:"Streetview",
                 callback:function() {
-                    scope.show(scope, msp.Map.Util.p2d(msp.Map.featureInfo._ll.clone()));
+                    
+                    /*
+                     * Set lonlat to new position
+                     */
+                    self.lonlat = msp.Map.Util.p2d(msp.Map.featureInfo._ll.clone());
+                        
+                    /*
+                     * Activate panel item
+                     */
+                    msp.sp.show(self.panelItem);
+                    
                 }
             }
-        };
-        
-        /**
-         * Remove the streetview object
-         */
-        this.remove = function(btn) {
-            
-            var i,
-            l,
-            event,
-            scope = btn.scope,
-            obj = scope.svw.msp;
-               
-            /*
-             * Remove the google streetview events
-             */
-            for (i = 0, l = obj.events.length; i < l; i++) {
-                event = obj.events[i];
-                google.maps.event.removeListener(event);
-            }
-            
-            /*
-             * Next remove streetview layer
-             */
-            msp.Map.removeLayer(obj.layer, false);
-            
-            /*
-             * Nullify streetview object
-             */
-            delete scope.svw;
-            
         };
         
         /**
@@ -369,16 +365,6 @@
                     }
                     
                     /*
-                     * Activate Button
-                     */
-                    scope.btn.activate(true);
-
-                    /*
-                     * Show container
-                     */
-                    scope.btn.container.pn.show(scope.btn.container);
-                    
-                    /*
                      * Set streetview object to lonLat position
                      */
                     scope.svw.setVisible(true);
@@ -397,36 +383,38 @@
         
         /*
          * Toogle fullscreen/normal mode
+         * TODO
          */
         this.toggleFullscreen = function() {
 
+            var self = this,
+                position = self.svw.getPosition();
+                
             /*
              * Force reload of streetview by switching visibility on/off
              */
-            var position = this.streetview.getPosition();
-            this.streetview.setVisible(false);
+            self.svw.setVisible(false);
 
             /*
              * Fullscreen mode
              */
-            if (this.div.height() === this.options.height) {
-                var jmap = $('#Map');
-                this.div.css('height', jmap.height());
-                this.div.children().first().css('height', jmap.height());
+            if (self.$d.height() === self.h) {
+                msp.sp.$d.css('height', msp.$map.height());
+                self.$d.css('height', msp.$map.height());
             }
             /*
              * Normal mode
              */
             else {
-                this.div.children().first().css('height', this.options.height);
-                this.div.css('height', this.options.height);
+                msp.sp.$d.css('height', self.$d.h);
+                self.$d.css('height', self.$d.h);
             }
 
             /*
              * Force reload of streetview by switching visibility on/off
              */
-            this.streetview.setVisible(true);
-            this.streetview.setPosition(position);
+            self.svw.setVisible(true);
+            self.svw.setPosition(position);
 
         };
 

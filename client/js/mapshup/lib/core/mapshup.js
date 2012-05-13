@@ -101,10 +101,7 @@
  *
  *
  * Tips and tricks :
- *
- *  - $('.hideOnTopSlide').hide()
- *      => to hide all divs that should be hidden when a top div slides
- *
+ * 
  *  - z-indexes :
  *      map                         :   1 (or something like that :)
  *      OpenLayers objects          :   2 to something << 10000
@@ -124,7 +121,7 @@
  *      welcome                     :   12000   (plugins/Welcome.js)
  *      .pn                         :   20000   (core/Panel.js)
  *      ddzone                      :   34000   (plugins/AddLayer.js)
- *      mheader                     :   34500
+ *      wheader                     :   34500
  *      mask                        :   35000
  *      tooltip                     :   36000
  *      popup                       :   38000 
@@ -145,7 +142,7 @@
      */
     window.msp = {
         
-        VERSION_NUMBER:'mapshup 1.1',
+        VERSION_NUMBER:'mapshup 1.5',
         
         /**
          * Plugin objects are defined within msp.Plugins
@@ -163,126 +160,41 @@
          * 
          */
         load:function() {
-
+            
+            var ctx = null,
+            self = this,
+            kvp = (function () {
+                return self.Util.extractKVP(window.location.href);
+            })();
+                
+            
             /**
-             * if msp.Config is not defined => Error
+             * If msp.Config is not defined, everything stops !
              */
-            if (this.Config === undefined) {
+            if (self.Config === undefined) {
                 alert("GRAVE : no configuration file defined. Load aborted");
                 exit();
             }
 
-            /*
-             * Read KVP from URL if any
-             */
-            var self = this,
-            urlParameters = (function () {
-                return self.Util.extractKVP(window.location.href);
-            })(),
-            lang = urlParameters.lang ? urlParameters.lang : self.Config.i18n.lang;
-
-            /*
-             * Internationalisation (i18n)
-             * lang is defined as follow :
-             *  - msp.defaultLang
-             *  - superseed by msp.Config.lang (if defined)
-             *  - superseed by urlParameters.lang (if defined)
-             */
-            self.Config.i18n.availableLangs = self.Config.i18n.availableLangs || ['en', 'fr'];
             
-            /*
-             * Set the i18n array
-             */
-            self.i18n = [];
-            
-            if (!lang || lang === 'auto') {
-                try{
-                    lang = navigator.language;
-                }catch(e){
-                    lang = navigator.browserLanguage; //IE
-                }
-            }
-
-            /**
-             * Determine browser language.
-             * Since indexOf method on Arrays is not supported by
-             * all browsers (e.g. Internet Explorer) this is a bit
-             * tricky
-             */
-            var i,
-            check = -1,
-            check2 = -1,
-            langs = self.Config.i18n.availableLangs,
-            length = langs.length;
-                
-            for (i = length;i--;) {
-                if (langs[i] === lang) {
-                    check = 0;
-                    break;
-                }
-            }
-            if (check === -1){
-                check2 = -1;
-                // Avoid country indicator
-                if (lang !== undefined) {
-                    lang = lang.substring(0,2);
-                }
-                for (i = length;i--;) {
-                    if (langs[i] === lang) {
-                        check2 = 0;
-                        break;
-                    }
-                }
-                if (check2 === -1){
-                    lang = langs[0];
-                }
-            }
-
-            /**
-             * Asynchronous call : load the lang file
-             */
-            $.ajax({
-                url:self.Config["general"].rootUrl + self.Config["i18n"].path+"/"+lang+".js",
-                async:true,
-                dataType:"script",
-                success:function() {
-                    self.Config["i18n"].lang = lang;
-                    self.init(urlParameters);
-                },
-                /* Lang does not exist - load english */
-                error:function() {
-                    $.ajax({
-                        url:self.Config["general"].rootUrl + self.Config["i18n"].path+"/en.js",
-                        async:true,
-                        dataType:"script",
-                        success:function() {
-                            self.Config["i18n"].lang = "en";
-                            self.init(urlParameters);
-                        }
-                    });
-                }
-            });
-        },
-        
-        /*
-         * mapshup initialisation
-         * 
-         * @input urlParameters : urlParameters object
-         */
-        init:function(urlParameters) {
-            
-            var fn,doNotAdd,i,j,mspID,mspIDs,key,l,name,options,plugin,
-            self = this;
-  
             /**
              * Initialize #map reference
              */
             self.$map = $('#map');
             
             /**
-             * Initialize #mheader reference
+             * Create header structure
+             * 
+             * <div id="theBar">
+             *      <div class="container">
+             *          <div class="logo hover"></div>
+             *          <div class="searchBar"></div>
+             *          <div class="leftBar"></div>
+             *          <div class="rightBar"></div>
+             *      </div>
+             * </div>
              */
-            self.$header = $('#mheader');
+            self.$header = self.Util.$$('#theBar', $('#mwrapper')).html('<div class="container"><div class="logo hover"><a href="http://www.mapshup.info" target="_blank">mapshup</a></div><div class="searchBar"></div><div class="leftBar"></div><div class="rightBar"></div></div>');
             
             /**
              * Initialize map container reference
@@ -305,11 +217,6 @@
             self.tooltip = new self.Tooltip();
 
             /**
-             * Initialize menu
-             */
-            self.menu = new self.Menu();
-    
-            /**
              * Initialize activity
              */
             self.activity = new self.Activity();
@@ -318,22 +225,242 @@
              * Initialize mask
              */
             self.mask = new self.Mask();
+            
+            /*
+             * If kvp got a "uid" key, then the corresponding context
+             * is retrieved from the server
+             */
+            if (kvp["uid"]) {
+                
+                self.Util.ajax({
+                    url:self.Util.proxify(self.Util.getAbsoluteUrl(self.Config["general"].getContextServiceUrl)+kvp["uid"]),
+                    async:true,
+                    dataType:"json",
+                    success: function(data) {
 
+                        /*
+                         * Parse result
+                         */
+                        if (data && data.contexts) {
+
+                            /*
+                             * Retrieve the first context
+                             * contexts[
+                             *      {
+                             *          context:
+                             *          location:
+                             *          utc:
+                             *      },
+                             *      ...
+                             * ]
+                             */
+                            if (data.contexts[0]) {
+                                ctx = JSON.parse(data.contexts[0].context);
+                            }
+                        }
+                        
+                        /*
+                         * Continue initialization - set lang
+                         */
+                        self.setLang(kvp, ctx);
+                        
+                    },
+                    error: function(data) {
+                        self.Util.message("Error : context is not loaded");
+                        
+                        /*
+                         * Continue initialization - set lang
+                         */
+                        self.setLang(kvp);
+                        
+                    }
+                }, {
+                    title:self.Util._("Load context"),
+                    cancel:true
+                });
+                
+            }
+            /*
+             * If there is no kvp["uid"] defined, then go the next initialization step,
+             * i.e. set mapshup lang
+             */
+            else {
+                self.setLang(kvp);
+            }
+            
+        },
+        
+        /**
+         * Retrieve mapshup default lang file
+         * 
+         * @input kvp: Key value pair object.
+         *             If kvp["lang"] is defined, it superseed the default lang configuration
+         * 
+         * @input ctx: Context
+         */
+        setLang:function(kvp, ctx) {
+            
+            /*
+             * Read KVP from URL if any
+             */
+            var i,
+            check = -1,
+            check2 = -1,
+            self = this,
+            c = self.Config["i18n"];
+
+            /*
+             * Set lang from kvp
+             */
+            if (kvp.lang) {
+                c.lang = kvp.lang;
+            }
+            
+            /*
+             * Internationalisation (i18n)
+             * lang is defined as follow :
+             *  - msp.defaultLang
+             *  - superseed by msp.Config.lang (if defined)
+             *  - superseed by kvp.lang (if defined)
+             */
+            c.langs = c.langs || ['en', 'fr'];
+            
+            /*
+             * Set the i18n array
+             */
+            self.i18n = [];
+            
+            if (!c.lang || c.lang === 'auto') {
+                try{
+                    c.lang = navigator.language;
+                }catch(e){
+                    c.lang = navigator.browserLanguage; //IE
+                }
+            }
+
+            /**
+             * Determine browser language.
+             * Since indexOf method on Arrays is not supported by
+             * all browsers (e.g. Internet Explorer) this is a bit
+             * tricky
+             */
+            for (i = c.langs.length;i--;) {
+                if (c.langs[i] === c.lang) {
+                    check = 0;
+                    break;
+                }
+            }
+            if (check === -1){
+                check2 = -1;
+                // Avoid country indicator
+                if (c.lang !== undefined) {
+                    c.lang = c.lang.substring(0,2);
+                }
+                for (i = c.langs.length;i--;) {
+                    if (c.langs[i] === c.lang) {
+                        check2 = 0;
+                        break;
+                    }
+                }
+                if (check2 === -1){
+                    c.lang = c.langs[0];
+                }
+            }
+
+            /**
+             * Asynchronous call : load the lang file
+             */
+            $.ajax({
+                url:self.Config["general"].rootUrl + c.path+"/"+c.lang+".js",
+                async:true,
+                dataType:"script",
+                success:function() {
+                    self.init(kvp, ctx);
+                },
+                /* Lang does not exist - load english */
+                error:function() {
+                    $.ajax({
+                        url:c["general"].rootUrl + c["i18n"].path+"/en.js",
+                        async:true,
+                        dataType:"script",
+                        success:function() {
+                            c.lang = "en";
+                            self.init(kvp, ctx);
+                        }
+                    });
+                }
+            });
+            
+        },
+        
+        /*
+         * mapshup initialisation
+         * 
+         * @input kvp : Key Value pair object
+         *              If kvp["lat"] && kvp["lon"] is defined, it superseed the default location configuration
+         * 
+         * @input ctx: Context
+         */
+        init:function(kvp, ctx) {
+            
+            var bg,fn,i,l,name,options,plugin,
+            self = this,
+            c = self.Config;
+            
+            /*
+             * Update location from context
+             */
+            if (ctx && ctx.location) {
+                c["general"].location = ctx.location;
+            }
+            
+            /*
+             * Superseed location from input kvp
+             */
+            if (kvp) {
+                c["general"].location = {
+                    bg:self.Util.getPropertyValue(kvp, "bg", c["general"].location.bg),
+                    lon:self.Util.getPropertyValue(kvp, "lon", c["general"].location.lon),
+                    lat:self.Util.getPropertyValue(kvp, "lat", c["general"].location.lat),
+                    zoom:self.Util.getPropertyValue(kvp, "zoom", c["general"].location.zoom)
+                };
+            }
+            
+            /**
+             * Initialize menu
+             */
+            self.menu = new self.Menu();
+            
             /**
              * Map initialization
              */
-            self.Map.init(self.Config);
-
+            self.Map.init(c);
+            
             /**
+             * Update configuration
+             */
+            if (ctx && ctx.layers) {
+                c.update(ctx.layers);
+            }
+            
+            /*
+             * Initialize South panel
+             */
+            self.sp = (new self.SouthPanel({
+                over:c.panel.s.over,
+                h:c.panel.s.h
+            }));
+            
+            /*
              * Plugins initialization
              * Roll over msp.plugins hash table
              * and remove all entries that are not defined
              * within the msp.Config.plugins object
              */
             self.plugins = [];
-            for (i = 0, l = self.Config.plugins.length; i < l; i++) {
-                name = self.Config.plugins[i].name;
-                options = self.Config.plugins[i].options || {};
+            for (i = 0, l = c.plugins.length; i < l; i++) {
+                name = c.plugins[i].name;
+                options = c.plugins[i].options || {};
                 plugin = (new Function('return msp.Plugins.'+name+' ? new msp.Plugins.'+name+'() : null;'))();
                 
                 /*
@@ -347,135 +474,36 @@
             
             /*
              *
-             * Instantiate default layers read from config
+             * Add layers read from config
              *
              * The code evaluate the OpenLayers class name and the corresponding options both defined
              * within the "layers" array in the configuration file.
-             *
-             * Layers from context.remove are discarded (i.e. not added to the map)
-             *
-             *
              */
-            mspIDs = urlParameters && urlParameters.remove ? self.unserialize(decodeURIComponent(urlParameters.remove)) : [];
-
-            /*
-             * Roll over config layers
-             */
-            for (i = 0, l = self.Config.layers.length; i < l; i++) {    
-                if (self.Config.layers[i].type && self.Map.layerTypes[self.Config.layers[i].type]) {
-
+            for (i = 0, l = c.layers.length; i < l; i++) {
+                
+                if (c.layers[i].type && self.Map.layerTypes[c.layers[i].type]) {
+                
                     /*
-                     * Only layers that are not defined in urlParameters.removeLayers
-                     * are added to the map
+                     * Add layer to the map
                      */
-                    var ld = new self.Map.LayerDescription(self.Config.layers[i], self.Map);
-                    mspID = ld.getMspID();
-                    doNotAdd = false;
-                    for (j=mspIDs.length;j--;) {
-                        if (mspIDs[j] === mspID) {
-                            doNotAdd = true;
-                            break;
-                        }
-                    }
-                    if (!doNotAdd) {
-
-                        /*
-                         * Set layerDescription. to true
-                         * This indicates that this layer was loaded during
-                         * map initialization. This layer will not be saved
-                         * during msp.Map.getContext operation
-                         */
-                        self.Config.layers[i].initialLayer = true;
-                        self.Map.addLayer(self.Config.layers[i], {
-                            noDeletionCheck:true
-                        });
-                    }
+                    self.Map.addLayer(c.layers[i], {
+                        noDeletionCheck:true,
+                        initialLayer:true
+                    });
+                   
                 }
             }
 
             /*
-             * Load context from url and/or config file
-             *
-             * The default context is defined by the optional Config.general.initialLocation property
-             * It is superseeded by urlParameters context
-             *
-             * If urlParameters contains a "contextid" key, the context is retrieved from the server
-             * through the Config.general.getContextServiceUrl service
-             * In this case, all other parameters are ignored
-             * 
+             * Set background
              */
-
-            /*
-             * "uid" is defined within the url parameters key/value pair
-             * It has preseance on every other parameter
-             */
-            if (urlParameters && urlParameters["uid"]) {
-
-                self.Util.ajax({
-                    url:self.Util.proxify(self.Util.getAbsoluteUrl(self.Config["general"].getContextServiceUrl)+urlParameters["uid"]),
-                    async:true,
-                    dataType:"json",
-                    success: function(data) {
-
-                        /*
-                         * Parse result
-                         */
-                        if (data && data.contexts) {
-
-                            /*
-                             * Retriev the first context
-                             * contexts[
-                             *      {
-                             *          context:
-                             *          location:
-                             *          utc:
-                             *      },
-                             *      ...
-                             * ]
-                             */
-                            if (data.contexts[0]) {
-                                self.Map.loadContext(self.Util.extractKVP(data.contexts[0].context));
-                            }
-                        }
-
-                    }
-                }, {
-                    title:self.Util._("Load context"),
-                    cancel:true
-                });
-
-            }
-            /*
-             * Load context from this.Config["general"].initialLocation and urlParameters
-             */
-            else {
-
-                /*
-                 * Initialize a context
-                 */
-                var context = {};
-
-                /*
-                 * First initialize context with loadInitialLocation
-                 */
-                if (self.Config["general"].initialLocation) {
-                    for (key in self.Config["general"].initialLocation) {
-                        context[key] = self.Config.general.initialLocation[key];
-                    }
+            if (c["general"].location.bg) {
+                bg = self.Map.Util.getLayerByMspID(c["general"].location.bg);
+                if (bg && bg.isBaseLayer) {
+                    self.Map.map.setBaseLayer(bg);
                 }
-
-                /*
-                 * Superseed with urlParameters
-                 */
-                if (urlParameters) {
-                    for (key in urlParameters) {
-                        context[key] = urlParameters[key];
-                    }
-                }
-
-                self.Map.loadContext(context);
             }
-
+            
             /*
              * Detect window resize
              *   On window resizing, div position and dimension
@@ -534,11 +562,6 @@
              */
             self.events.trigger('resizeend');
             
-            /**
-             * Mapshup is loaded
-             */
-            self.isLoaded = true;
-         
         },
         
         /**
