@@ -779,6 +779,10 @@ a.tab {
     text-transform:uppercase;
     cursor:pointer;
 }
+a.ptab {
+    padding:0px 5px 0px 5px !important;
+    background-color:#000;
+}
 a.rastertab {
     right:50px;
     display:none;

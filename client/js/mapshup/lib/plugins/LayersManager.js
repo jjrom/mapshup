@@ -49,7 +49,7 @@
 
     msp.Plugins.LayersManager = function() {
         
-        /*
+        /**
          * Only one Context object instance is created
          */
         if (msp.Plugins.LayersManager._o) {
@@ -61,7 +61,7 @@
          */
         this.active = null;
         
-        /*
+        /**
          * List of panel items
          * Structure 
          * {
@@ -77,12 +77,20 @@
          */
         this.items = [];
         
-        /*
+        /**
+         * Current tabs page number
+         * Pages go from 0 to Math.ceil((items.length - 1) / perPage)
+         * 
+         * (Note : perPage value is computed from the map container width)
+         */
+        this.page = 0;
+        
+        /**
          * Panel initialisation
          */
         this.init = function(options) {
             
-            var self = this;
+            var idp = msp.Util.getId(),idn = msp.Util.getId(),self = this;
             
             /*
              * Init options
@@ -117,6 +125,26 @@
             self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('lm lm'+self.options.position);
             
             /*
+             * Add tab paginator
+             */
+            self.$d.append('<a id="'+idp+'" class="tab ptab">&laquo;</a>');
+            self.$d.append('<a id="'+idn+'" class="tab ptab">&raquo;</a>');
+            self.$prev = $('#'+idp).click(function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                self.goTo(self.page - 1);
+            }).css({
+                left:20+'px'
+            });
+            self.$next = $('#'+idn).click(function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                self.goTo(self.page + 1);
+            }).css({
+                left:self.$prev.offset().left + self.$prev.outerWidth()
+            });
+                
+            /*
              * Add an hidden raster item within the panel
              */
             self.rasterItem = new function(lm) {
@@ -143,6 +171,7 @@
                  */
                 self.item.$tab.click(function(e){
                     e.preventDefault();
+                    e.stopPropagation();
                     (!lm.active || lm.active.id !== self.item.id) ? lm.show(self.item) : lm.hide(self.item);
                 });
                 
@@ -463,6 +492,13 @@
                 scope.updateVisibility(layer);
             });
             
+            /*
+             * Recompute tab position on window resize
+             */
+            msp.Map.events.register("resizeend", self, function(scope) {
+                scope.updateTabs(scope);
+            });
+            
             return self;
             
         };
@@ -474,31 +510,69 @@
          */
         this.updateTabs = function(scope) {
             
-            var i,l,$t;
+            var first,last,perPage,nbPage,i,$t;
             
             /*
-             * The last element should be the rasterItem which
-             * is never processed
+             * Hide all tabs except rastertab
              */
-            l = scope.items.length - 1;
+            $('.vtab', scope.$d).hide();
             
             /*
-             * Set first item position
+             * Maximum number of tabs per page
              */
-            if (scope.items[0] && scope.items[0].id !== scope.rasterItem.item.id) {
-                scope.items[0].$tab.css({
-                    left:20
-                });
+            perPage = Math.round((2 * msp.$container.width() / 3) / 200);
+            
+            /*
+             * Check that page is not greater that number of page
+             * (cf. needed if resizing window when not on page 0)
+             */
+            nbPage = Math.ceil((scope.items.length - 1) / perPage) - 1;
+            if (scope.page > nbPage) {
+                scope.page = nbPage;
+            }
+            /*
+             * hide paginator if not needed
+             */
+            if (nbPage === 0) {
+                $('.ptab', scope.$d).hide();
+            }
+            else {
+                $('.ptab', scope.$d).show();
             }
             
             /*
-             * Compute items position from the first item position
+             * Get the first tab in the current page
              */
-            for (i = 1; i < l; i++) {
+            first = perPage * scope.page;
+            
+            /*
+             * Get the last tab in the current page
+             * 
+             * Note: the last elements is the rasterItem tab which is not part of the
+             * processed tabs - that's why we remove 1 from the tabs list length
+             */
+            last = Math.min(first + perPage - 1, scope.items.length - 1);
+            
+            /*
+             * Set first item position right to the paginator
+             */
+            if (scope.items[first] && scope.items[first].id !== scope.rasterItem.item.id) {
+                scope.items[first].$tab.css({
+                    left:scope.$next.is(':visible') ? scope.$next.position().left + scope.$next.outerWidth() : 20
+                }).show();
+            }
+            
+            /*
+             * Tab position is computed from the first to the last index in the page
+             */
+            for (i = first + 1; i <= last; i++) {
                 $t = scope.items[i-1].$tab;
+                if (scope.items[i].id === scope.rasterItem.item.id) {
+                    continue;
+                }
                 scope.items[i].$tab.css({
                     left:$t.position().left + $t.outerWidth() + 10
-                });
+                }).show();
             }
             
         };
@@ -567,7 +641,7 @@
                 /*
                  * Append tab to panel
                  */
-                self.$d.append('<a id="'+tid+'" class="tab">'+(content.icon ? '<img src="'+content.icon+'">&nbsp;' : '')+msp.Util._(content.title)+'<span class="tools"></span><span class="loading"></span></a>');
+                self.$d.append('<a id="'+tid+'" class="vtab tab">'+(content.icon ? '<img src="'+content.icon+'">&nbsp;' : '')+msp.Util._(content.title)+'<span class="tools"></span><span class="loading"></span></a>');
                 
                 /*
                  * Set item
@@ -790,6 +864,33 @@
             }
             
             return item
+        };
+        
+        /**
+         * Display the tabs page with a cycling strategy
+         * 
+         * If page is greater than the maximum of page, then the first page is displayed
+         * If page is lower than 0, then the last page is displayed
+         */
+        this.goTo = function(page) {
+          
+            var perPage,nbPage,self = this;
+            
+            perPage = Math.round((2 * msp.$container.width() / 3) / 200);
+            nbPage = Math.ceil((self.items.length - 1) / perPage) - 1;
+            
+            if (page < 0) {
+                self.page = nbPage;
+            }
+            else if (page > nbPage) {
+                self.page = 0;
+            }
+            else {
+                self.page = page;
+            }
+            
+            self.updateTabs(self);
+          
         };
         
         /**
