@@ -530,6 +530,16 @@
             if (scope.page > nbPage) {
                 scope.page = nbPage;
             }
+            
+            /*
+             * A negative page means no more items
+             */
+            if (scope.page < 0) {
+                scope.page = 0;
+                $('.ptab', scope.$d).hide();
+                return;
+            }
+            
             /*
              * hide paginator if not needed
              */
@@ -575,6 +585,7 @@
                 }).show();
             }
             
+            return;
         };
         
         /**
