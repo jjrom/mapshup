@@ -189,7 +189,7 @@
                      * Set new width
                      */
                     $ul.css({
-                        'width': ($('li', $ul).length * 95) + 'px' // Size of each thumb is 85px + 10px for the margin
+                        'width': (($('li', $ul).length * 95) + 95) + 'px' // Size of each thumb is 85px + 10px for the margin
                     });
                     
                     $id = $('#'+id);
@@ -304,7 +304,7 @@
                      */
                     l = $('li', $ul).length;
                     $ul.css({
-                        'width': (l * 95) + 'px' // Size of each thumb is 85px + 10px for the margin
+                        'width': ((l * 95) + 95) + 'px' // Size of each thumb is 85px + 10px for the margin
                     });
                     
                     /*
@@ -897,7 +897,7 @@
              */
             $ul = $('ul', item.$d).empty().css({
                 'left':'0px',
-                'width': (size * 95) + 'px' // Size of each thumb is 85px + 10px for the margin
+                'width': ((size * 95) + 95) + 'px' // Size of each thumb is 85px + 10px for the margin
             });
             
             /*
