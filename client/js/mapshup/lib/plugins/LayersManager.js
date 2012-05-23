@@ -721,6 +721,32 @@
                         }
                     }
                 }
+                
+                /*
+                 * Track layer
+                 */
+                if (content.layer["_msp"].refreshable) {
+                    tools.push({
+                        id:uid+"rf",
+                        icon:content.layer["_msp"].refresh ? "spinoff.png" : "spin.png",
+                        title:content.layer["_msp"].refresh ? "Stop tracking" : "Start tracking",
+                        callback:function() {
+                            
+                            var $d = $('#'+uid+'rf');
+                            
+                            /*
+                             * Update refresh status
+                             */
+                            content.layer["_msp"].refresh = !content.layer["_msp"].refresh;
+                            
+                            /*
+                             * Update action
+                             */
+                            $d.attr('jtitle', content.layer["_msp"].refresh ? "Stop tracking" : "Start tracking");
+                            $('img', $d).attr('src',msp.Util.getImgUrl(content.layer["_msp"].refresh ? "spinoff.png" : "spin.png"));
+                        }
+                   });
+                }
                
                 /*
                  * Switch visibility
