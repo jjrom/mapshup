@@ -128,6 +128,13 @@
             });
             
             /*
+             * Recompute tab position on window resize
+             */
+            msp.Map.events.register("resizeend", self, function(scope) {
+                scope.updateTabs(scope);
+            });
+            
+            /*
              * Set a SouthPanel reference
              */
             msp.SouthPanel._o = self;
