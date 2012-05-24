@@ -652,7 +652,7 @@
                  *      </div>
                  *  </div>
                  */
-                $d = msp.Util.$$('#'+id, self.$d).addClass("thumbs images").html('<div class="thumbsWrapper"><ul></ul></div><div class="text"><div class="navigation"><div class="fi"></div><div class="fp"><a href="#" id="'+uid+'p" title="'+msp.Util._("Previous page")+'">&laquo;</a>&nbsp;<a href="#" id="'+uid+'n" title="'+msp.Util._("Next page")+'">&raquo;</a></div></div></div><div id="'+uid+'m2" class="mask"><h2>'+msp.Util._("This layer is empty")+'</h2></div><div id="'+uid+'m" class="mask"><h2>'+msp.Util._("This layer is hidden")+'</h2>(Click to show it)</div>');
+                $d = msp.Util.$$('#'+id, self.$d).addClass("thumbs images").html('<div class="thumbsWrapper"><ul></ul></div><div class="text"><div class="navigation"><div class="fi"></div><div class="fp"><a href="#" id="'+uid+'p" title="'+msp.Util._("Previous page")+'">&laquo;</a>&nbsp;<a href="#" id="'+uid+'n" title="'+msp.Util._("Next page")+'">&raquo;</a></div></div></div><div id="'+uid+'m2" class="mask"><h2>'+msp.Util._("This layer is empty")+'</h2></div><div id="'+uid+'m" class="mask maskh"><h2>'+msp.Util._("This layer is hidden")+'</h2>(Click to show it)</div>');
                 
                 /*
                  * Append tab to panel
