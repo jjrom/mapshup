@@ -162,7 +162,7 @@
                     id:id,
                     type:'r',
                     features:[],
-                    $d:msp.Util.$$('#'+id, lm.$d).addClass("thumbs images").html('<div class="thumbsWrapper"><ul></ul></div><div class="text"><div class="navigation"><a href="#" id="'+id+'p" title="'+msp.Util._("Previous page")+'">Previous</a>|<a href="#" id="'+id+'n" title="'+msp.Util._("Next page")+'">Next</a></div></div>'),
+                    $d:msp.Util.$$('#'+id, lm.$d).addClass("thumbs images").html('<div class="thumbsWrapper"><ul></ul></div><div class="text"><div class="navigation"><a href="#" id="'+id+'p" title="'+msp.Util._("Previous page")+'">&laquo;</a>&nbsp;<a href="#" id="'+id+'n" title="'+msp.Util._("Next page")+'">&raquo;</a></div></div>'),
                     $tab:$('#'+tid)
                 };
 
@@ -647,7 +647,7 @@
                  *      </div>
                  *  </div>
                  */
-                $d = msp.Util.$$('#'+id, self.$d).addClass("thumbs images").html('<div class="thumbsWrapper"><ul></ul></div><div class="text"><div class="navigation"><a href="#" id="'+uid+'p" title="'+msp.Util._("Previous page")+'">Previous</a>|<a href="#" id="'+uid+'n" title="'+msp.Util._("Next page")+'">Next</a></div></div><div id="'+uid+'m2" class="mask"><h2>'+msp.Util._("This layer is empty")+'</h2></div><div id="'+uid+'m" class="mask"><h2>'+msp.Util._("This layer is hidden")+'</h2>(Click to show it)</div>');
+                $d = msp.Util.$$('#'+id, self.$d).addClass("thumbs images").html('<div class="thumbsWrapper"><ul></ul></div><div class="text"><div class="navigation"><a href="#" id="'+uid+'p" title="'+msp.Util._("Previous page")+'">&laquo;</a>&nbsp;<a href="#" id="'+uid+'n" title="'+msp.Util._("Next page")+'">&raquo;</a></div></div><div id="'+uid+'m2" class="mask"><h2>'+msp.Util._("This layer is empty")+'</h2></div><div id="'+uid+'m" class="mask"><h2>'+msp.Util._("This layer is hidden")+'</h2>(Click to show it)</div>');
                 
                 /*
                  * Append tab to panel
@@ -1229,9 +1229,9 @@
              * Hide panel
              */
             self.$d.stop().animate(self.options.position === 'n' ? {
-                'top':'-116px'
+                'top':'-96px'
             } : {
-                'bottom':'-116px'
+                'bottom':'-96px'
             },200);
             
             /*

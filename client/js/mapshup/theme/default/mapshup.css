@@ -188,8 +188,8 @@ a.tab:hover,
 a.tab,
 .shadow,
 .tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
-.tab .tools,
-.lm .thumbs
+.tab .tools/*,
+.lm .thumbs*/
 {
     box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
     -o-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
@@ -785,7 +785,7 @@ a.ptab {
     background-color:#000;
 }
 a.rastertab {
-    right:50px;
+    left:80%;
     display:none;
 }
 a.tab img {
@@ -1080,7 +1080,7 @@ div.olControlMousePosition {
     position:absolute;
     left:0px;
     width:100%;
-    height:115px;
+    height:95px;
     z-index:19900;
 }
 
@@ -1109,7 +1109,7 @@ div.olControlMousePosition {
     position:absolute;
     left:0px;
     width:100%;
-    height:115px;
+    height:95px;
     background-color:rgba(0,0,0,0.5);
     text-transform:uppercase;
 }
@@ -1122,10 +1122,19 @@ div.olControlMousePosition {
 }
 .lm .thumbs .navigation {
     position:absolute;
-    top:95px;
-    right:20px;
+    top:0px;
+    right:0px;
     margin:0px;
+    width:100px;
+    line-height:95px;
+    text-align:center;
+    font-size:3em;
+    border-left:3px solid #f9f9f9;
+    background-color:rgba(199,100,0,0.3);
     z-index:10;
+}
+.lm .thumbs .navigation a {
+    color:#fff;
 }
 .lm .thumbs span.close {
     top:0px;
@@ -1135,13 +1144,10 @@ div.olControlMousePosition {
     font-size:2em;
     color:#eee;
 }
-.lm .thumbs .navigation a {
-    color:#f3961c;
-}
 .lm .thumbs .thumbsWrapper{
     height:95px;
     left:0px;
-    right:0px;
+    right:100px;
     overflow:hidden;
     position:absolute;
     top:0;
