@@ -163,7 +163,7 @@
             }
             
             if (options["_msp"].clusterized && options.strategies.length == 1) {
-                options.strategies = [new OpenLayers.Strategy.Cluster(new OpenLayers.Strategy.Cluster(Map.clusterOpts))];
+                options.strategies.push(new OpenLayers.Strategy.Cluster(new OpenLayers.Strategy.Cluster(Map.clusterOpts)));
             }
             
             /*
