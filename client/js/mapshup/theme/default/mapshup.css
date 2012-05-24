@@ -1126,12 +1126,18 @@ div.olControlMousePosition {
     right:0px;
     margin:0px;
     width:100px;
-    line-height:95px;
+    height:95px;
     text-align:center;
-    font-size:3em;
     border-left:3px solid #f9f9f9;
     background-color:rgba(199,100,0,0.3);
     z-index:10;
+}
+.lm .thumbs .navigation .fi {
+    padding:10px 0 10px 0px;
+    text-transform:none;
+}
+.lm .thumbs .navigation .fp {
+    font-size:3em;
 }
 .lm .thumbs .navigation a {
     color:#fff;

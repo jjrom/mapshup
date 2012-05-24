@@ -84,6 +84,7 @@
     i["Export layer in CSV format"]="Exporter la couche au format CSV";
     i["Export layer in KML format"]="Exporter la couche au format KML";
     i["Feature information"]="Information sur l'objet";
+    i["features"]="objets";
     i["Flickr"]="Flickr";
     i["Get capabilities"]="Récupération du fichier Capabilities";
     i["Get elevation profile"]="Obtenez le profil d&#39;élévation";
@@ -93,6 +94,7 @@
     i["Hi"]="Salut";
     i["Hide"]="Masquer";
     i["Hide this layer"]="Masquer cette couche";
+    i["Images"]="Images";
     i["Initializing 3D mode"]="Initialisation du mode 3D";
     i["Item"]="Element";
     i["Layer"]="Couche";

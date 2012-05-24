@@ -82,6 +82,7 @@ Export in progress
 Export layer in CSV format
 Export layer in KML format
 Feature information
+features
 Flickr
 Get capabilities
 Get elevation profile
@@ -91,6 +92,7 @@ Google libraries not loaded. Streetview is disabled
 Hi
 Hide
 Hide this layer
+Images
 Initializing 3D mode
 Item
 Layer
