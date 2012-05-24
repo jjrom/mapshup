@@ -608,8 +608,26 @@
      */
     Map.Util.zoomOnAfterLoad = function(layer) {
         
-        var extent = layer.getDataExtent() || layer["_msp"].bounds;
-            
+        var extent;
+        
+        /*
+         * Paranoid mode
+         */
+        if (!layer || !layer["_msp"]) {
+            return false;
+        }
+        
+        /*
+         * mapshup special layers (i.e. mspLayer = true) and
+         * initial layers are not processed
+         */
+        if (!this["_msp"].mspLayer && !this["_msp"].initialLayer) {
+            return false;
+        }
+        
+        /*
+         * Only zoom on layer that are initialized and that specify it 
+         */
         if (layer["_msp"].zoomOnAfterLoad && !layer["_msp"].initialized) {
 
             /*
@@ -617,6 +635,7 @@
              * Raster layer such as WMS or Image should have a ["_msp"].bounds property
              * set during initialization
              */
+            extent = layer.getDataExtent() || layer["_msp"].bounds;
             if (extent) {
 
                 /*
@@ -625,10 +644,14 @@
                  */
                 if (!msp.Map.map.getExtent().intersectsBounds(extent, true)) {
                     msp.Map.zoomTo(extent);
+                    return true;
                 }
 
             }
         }
+        
+        return false;
+        
     };
 
     

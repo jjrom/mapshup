@@ -481,10 +481,8 @@
                          * is set to true and the map is not centered any more on this layer even if
                          * its content changes
                          */
-                        if (!this["_msp"].mspLayer && !this["_msp"].initialLayer) {
-                            msp.Map.Util.zoomOnAfterLoad(this);
-                        }
-
+                        msp.Map.Util.zoomOnAfterLoad(this);
+                        
                         /*
                          * Check the geometry type of layer
                          * Point and Line geometries should be moved
@@ -920,9 +918,13 @@
                 if (layer["_msp"] && layer["_msp"].layerDescription && !layer["_msp"].mspLayer) {
 
                     /*
-                     * Initialize object
+                     * Initialize object with an initialLayer property set to true
+                     * to avoid zoomOnAfterLoad process after reading a context
+                     * (see msp.Map.Util.zoomOnAfterLoad(layer) function for more explanation)
                      */
-                    ld = {};
+                    ld = {
+                        initialLayer:true
+                    };
                     
                     /*
                      * Clone layerDescription omitting layer and ol properties
