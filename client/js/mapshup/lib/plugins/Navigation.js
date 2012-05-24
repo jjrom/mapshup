@@ -67,7 +67,11 @@
              * Default toolbar is North East Vertical
              */
             $.extend(self.options, {
-                home:msp.Util.getPropertyValue(self.options, "home", false),
+                home:msp.Util.getPropertyValue(self.options, "home", {
+                    lon:0,
+                    lat:40,
+                    zoom:2
+                }),
                 zoomin:msp.Util.getPropertyValue(self.options, "zoomin", true),
                 zoomout:msp.Util.getPropertyValue(self.options, "zoomout", true),
                 history:msp.Util.getPropertyValue(self.options, "history", true),
@@ -448,11 +452,10 @@
             if (self.options.home) {
                 tb.add({
                     icon:"center.png",
-                    tt:"Go back to the start view",
+                    tt:"Global view",
                     activable:false,
                     callback:function() {
-                        var l = msp.Config["general"].location;
-                        msp.Map.map.restrictedExtent ? msp.Map.map.zoomToExtent(msp.Map.map.restrictedExtent) : msp.Map.setCenter(msp.Map.Util.d2p(new OpenLayers.LonLat(l.lon,l.lat)), l.zoom, true);
+                        msp.Map.map.restrictedExtent ? msp.Map.map.zoomToExtent(msp.Map.map.restrictedExtent) : msp.Map.setCenter(msp.Map.Util.d2p(new OpenLayers.LonLat(self.options.home.lon, self.options.home.lat)), self.options.home.zoom, true);
                     }
                 });
             }

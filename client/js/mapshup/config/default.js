@@ -343,7 +343,12 @@
     /**
      * Navigation actions
      * options:
-     *      home: // True to add a "Home" action - default false
+     *      home: // If defined, add a "Home" action that center view to lon, lat and zoom
+     *               Default : {
+     *                            lon:0,
+     *                            lat:40,
+     *                            zoom:2
+     *                         }
      *      zoomin: // True to add "Zoom" action - default true
      *      zoomout: // True to add "Zoom out" action - default true
      *      history: // True to add Navigation history - default false
@@ -354,10 +359,7 @@
      */
     c.add("plugins",
     {
-        name:"Navigation",
-        options:{
-            home:true
-        }
+        name:"Navigation"
     });
 
     /**
