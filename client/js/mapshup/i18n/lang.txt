@@ -177,6 +177,7 @@ Switch to drawing mode
 Switch to modification mode
 Tags
 The layer cannot be saved
+The layer is empty and cannot be exported
 this layer already exists. Do you want to replace it ?
 Time
 Title

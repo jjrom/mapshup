@@ -181,6 +181,7 @@
     i["Switch to modification mode"]="Passer en mode modification";
     i["Tags"]="Tags";
     i["The layer cannot be saved"]="La couche ne peut pas être sauvegardée";
+    i["The layer is empty and cannot be exported"]="La couche est vide et ne peut pas être exportée";
     i["this layer already exists. Do you want to replace it ?"]="cette couche existe déjà. Voulez-vous la remplacer?";
     i["Time"]="Temps";
     i["Title"]="Titre";

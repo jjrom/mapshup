@@ -87,17 +87,26 @@
                     title:"Export",
                     tt:"Export layer",
                     callback:function() {
-                        msp.Util.askFor(msp.Util._("Export")+ ' : '+layer.name, msp.Util._("Choose export format"), "list", [
-                        {
-                            title:"CSV", 
-                            value:"csv"
-                        },
-                        {
-                            title:"KML", 
-                            value:"kml"
-                        }], function(v){
-                            scope.download(scope.getFeatures(layer), layer.name, v);
-                        });
+                        
+                        /*
+                         * Do not export empty layers...
+                         */
+                        if (layer.features.length === 0) {
+                            msp.Util.message("The layer is empty and cannot be exported");
+                        }
+                        else {
+                            msp.Util.askFor(msp.Util._("Export")+ ' : '+layer.name, msp.Util._("Choose export format"), "list", [
+                            {
+                                title:"CSV", 
+                                value:"csv"
+                            },
+                            {
+                                title:"KML", 
+                                value:"kml"
+                            }], function(v){
+                                scope.download(scope.getFeatures(layer), layer.name, v);
+                            });
+                        }
                         return false;
                     }
                 }
