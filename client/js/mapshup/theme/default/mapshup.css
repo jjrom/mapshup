@@ -1054,7 +1054,8 @@ div.olControlMousePosition {
 /* ScaleLine position */
 .olControlScaleLine {
     top:30px;
-    left:20px;
+    left:auto;
+    right:20px;
     height:20px;
 }
 
@@ -1123,12 +1124,12 @@ div.olControlMousePosition {
 .lm .thumbs .navigation {
     position:absolute;
     top:0px;
-    right:0px;
+    left:0px;
     margin:0px;
     width:100px;
     height:95px;
     text-align:center;
-    border-left:3px solid #f9f9f9;
+    border-right:3px solid #f9f9f9;
     background-color:rgba(199,100,0,0.3);
     z-index:10;
 }
@@ -1152,8 +1153,8 @@ div.olControlMousePosition {
 }
 .lm .thumbs .thumbsWrapper{
     height:95px;
-    left:0px;
-    right:100px;
+    left:100px;
+    right:0px;
     overflow:hidden;
     position:absolute;
     top:0;
