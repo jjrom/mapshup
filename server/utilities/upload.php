@@ -213,14 +213,14 @@ if (abcCheck($_REQUEST)) {
                                     $type = "Photography";
 
                                     /*
-                                     * Generate a 50x50 pixels icon from image and set
+                                     * Generate a 75x75 pixels icon from image and set
                                      * it's url within the 'icon' property
                                      */
                                     $iconName = str_replace('.' . $extension, '_t.' . $extension, $fileName);
-                                    exec(MSP_GDAL_TRANSLATE_PATH . ' -of JPEG -outsize 50 50 ' . MSP_UPLOAD_DIR . $fileName . ' ' . MSP_UPLOAD_DIR . $iconName);
+                                    exec(MSP_GDAL_TRANSLATE_PATH . ' -of JPEG -outsize 75 75 ' . MSP_UPLOAD_DIR . $fileName . ' ' . MSP_UPLOAD_DIR . $iconName);
                                     
                                     $feature['properties']['title'] = $fileNameOri;
-                                    $feature['properties']['thumbnail'] = MSP_GETFILE_URL . $fileName . $stream;
+                                    $feature['properties']['quicklook'] = MSP_GETFILE_URL . $fileName . $stream;
                                     $feature['properties']['icon'] = MSP_GETFILE_URL . $iconName . $stream;
                                     $feature['properties']['_mapshup'] = array(
                                         'download' => MSP_GETFILE_URL . $fileName . $stream
