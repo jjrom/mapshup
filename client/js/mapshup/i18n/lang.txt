@@ -81,8 +81,9 @@ Export layer
 Export in progress
 Export layer in CSV format
 Export layer in KML format
-Feature information
+feature
 features
+Feature information
 Flickr
 Get capabilities
 Get elevation profile

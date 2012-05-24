@@ -83,8 +83,9 @@
     i["Export in progress"]="Export en cours";
     i["Export layer in CSV format"]="Exporter la couche au format CSV";
     i["Export layer in KML format"]="Exporter la couche au format KML";
-    i["Feature information"]="Information sur l'objet";
+    i["feature"]="objet";
     i["features"]="objets";
+    i["Feature information"]="Information sur l'objet";
     i["Flickr"]="Flickr";
     i["Get capabilities"]="Récupération du fichier Capabilities";
     i["Get elevation profile"]="Obtenez le profil d&#39;élévation";
