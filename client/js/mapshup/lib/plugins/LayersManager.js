@@ -857,7 +857,7 @@
                     }
                     $ul.animate({
                         'left':moveleft+'px'
-                    },1000,function(){
+                    },200,function(){
                         scrollAllow = true;
                     });
                     e.preventDefault();
@@ -878,7 +878,7 @@
                     }
                     $ul.animate({
                         'left':moveleft+'px'
-                    },1000,function(){
+                    },200,function(){
                         scrollAllow = true;
                     });
                     e.preventDefault();
