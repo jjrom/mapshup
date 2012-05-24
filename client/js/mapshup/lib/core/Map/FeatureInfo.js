@@ -516,7 +516,22 @@
                         tt:"Download feature",
                         sla:function(a,f) {
                             if (f && f["attributes"]) {
-                                a.attr("target", "_blank").attr("href", f.attributes["_mapshup"]["download"]);
+                                
+                                var d = f.attributes["_mapshup"]["download"];
+                                
+                                /*
+                                 * Structure of d is :
+                                 * {
+                                 *      url: // url to download
+                                 *      isFile: // boolean - if true url is a file. Otherwise it's a service
+                                 * }
+                                 */
+                                a.attr("href", d.url);
+                                
+                                if (!d.isFile) {
+                                    a.attr("target", "_blank");
+                                }
+                                
                             }
                         },
                         callback:function(a,f) {
