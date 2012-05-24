@@ -90,7 +90,7 @@
             /*
              * Photography layer are unclusterized
              */
-            layerDescription.clusterized = false;
+            options["_msp"].clusterized = false;
 
             return geojson.add(layerDescription, options);
 

@@ -90,6 +90,13 @@
             layerDescription.title = msp.Util.getTitle(layerDescription);
             
             /*
+             * Cluster strategy
+             */
+            if (options["_msp"].clusterized && !options.hasOwnProperty("strategies")) {
+                options.strategies = [new OpenLayers.Strategy.Cluster(new OpenLayers.Strategy.Cluster(Map.clusterOpts))];
+            }
+
+            /*
              * Layer creation
              */
             newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);

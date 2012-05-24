@@ -86,7 +86,7 @@
             layerDescription.title = msp.Util.getTitle(layerDescription);
             
             /*
-             * Extend options object with Flickr specific properties
+             * Extend options object with KML specific properties
              */
             $.extend(options,
             {
@@ -98,15 +98,10 @@
                         maxDepth: 2
                     })
                 }),
-                strategies:options.strategies || []
+                strategies:options.strategies || [new OpenLayers.Strategy.Fixed()] // Default strategy is Fixed
             }
             );
 
-            /*
-             * Set a fixed strategy to load KML
-             */
-            options.strategies.push(new OpenLayers.Strategy.Fixed());
-            
             newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);
 
             /**

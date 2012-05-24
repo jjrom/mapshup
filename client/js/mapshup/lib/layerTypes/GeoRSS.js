@@ -113,7 +113,7 @@
             );
 
             /*
-             * Set a fixed strategy to load KML
+             * Set a fixed strategy to load GeoRSS
              */
             options.strategies.push(new OpenLayers.Strategy.Fixed());
 

@@ -66,6 +66,14 @@
          */
         currentState:null,
         
+        /*
+         * Predefined cluster strategy options
+         */
+        clusterOpts:{
+            distance: 30,
+            threshold: 3
+        },
+        
         /**
          * WGS84 projection object
          */
@@ -398,18 +406,6 @@
              */
             if (layerType.hasStyleMap && !options.hasOwnProperty("styleMap")) {
                 options.styleMap = ldo.getStyleMap();
-            }
-
-            /*
-             * Add a cluster strategy unless a strategy is already defined
-             */
-            if (options["_msp"].clusterized && !options.hasOwnProperty("strategies")) {
-                options.strategies = [
-                new OpenLayers.Strategy.Cluster({
-                    distance: 30,
-                    threshold: 3
-                })
-                ];
             }
 
             /*

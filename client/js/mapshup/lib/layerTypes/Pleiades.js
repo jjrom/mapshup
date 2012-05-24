@@ -86,7 +86,7 @@
             /*
              * Pleiades layer are unclusterized
              */
-            layerDescription.clusterized = false;
+            options["_msp"].clusterized = false;
 
             return geojson.add(layerDescription, options, "/plugins/cnes/phr2json.php?url=");
 

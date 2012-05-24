@@ -151,16 +151,21 @@
                     geometryName:layerDescription.geometryName || "the_geom",
                     srsName:Map.epsg4326.projCode,
                     version:layerDescription.version
-                }),
-                strategies:options.strategies || []
+                })
             }
             );
 
             /*
-             * WFS default strategy is BBOX
+             * Default strategy
              */
-            options.strategies.push(new OpenLayers.Strategy.BBOX());
-
+            if (!options.hasOwnProperty("strategies")) {
+                options.strategies = [new OpenLayers.Strategy.BBOX()];
+            }
+            
+            if (options["_msp"].clusterized && options.strategies.length == 1) {
+                options.strategies = [new OpenLayers.Strategy.Cluster(new OpenLayers.Strategy.Cluster(Map.clusterOpts))];
+            }
+            
             /*
              * WFS Time - set filter
              * 
