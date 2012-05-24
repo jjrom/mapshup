@@ -45,7 +45,7 @@
         items:[
         // Map
         {
-            html:'<h1>Map</h1><p>Use the mouse wheel to zoom in or zoom out within the map. To zoom on a specific area, you can define a box with SHIFT+click.</p><p>If you press the mouse left button for more than 200ms, a <span class="hilite">contextual menu</span> will open on release. This menu gives you access to actions like distance measurement, layer drawing, etc.</p><p>You can <span class="hilite">drag&amp;drop</span> a file or a url directly on the map. If you do so, mapshup will analyse the dropped object and try to add it as a new layer (if it makes sense :). Supported format are WMS, WFS, CSW, GeoJSON, GPS file (.gpx), GeoRSS, Atom feed, KML and image file (GPS positionning information are read from jpeg file).</p>',
+            html:'<h1>Map</h1><p>Use the <span class="hilite">mouse wheel</span> to zoom in or zoom out within the map. To zoom on a specific area, you can <span class="hilite">define a box with SHIFT+click</span>.</p><p>If you press the mouse left button for more than 200ms, a <span class="hilite">contextual menu</span> will open on release. This menu gives you access to actions like distance measurement, layer drawing, etc.</p><p>You can <span class="hilite">drag&amp;drop</span> a file or a url directly on the map. If you do so, mapshup will analyse the dropped object and try to add it as a new layer (if it makes sense :). Supported format are WMS, WFS, CSW, GeoJSON, GPS file (.gpx), GeoRSS, Atom feed, KML and image file (GPS positionning information are read from jpeg file).</p>',
             position:{
                 top:'50%',
                 left:'450px'
