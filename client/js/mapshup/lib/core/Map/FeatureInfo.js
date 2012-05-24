@@ -508,8 +508,7 @@
                 /*
                  * Download feature
                  */
-                _a = feature.attributes["_mapshup"]["download"];
-                if(_a) {
+                if(feature.attributes["_mapshup"]["download"]) {
                     actions.push({
                         id:msp.Util.getId(),
                         icon:"download.png",
@@ -517,7 +516,7 @@
                         tt:"Download feature",
                         sla:function(a,f) {
                             if (f && f["attributes"]) {
-                                a.attr("target", "_blank").attr("href", _a);
+                                a.attr("target", "_blank").attr("href", f.attributes["_mapshup"]["download"]);
                             }
                         },
                         callback:function(a,f) {
@@ -541,7 +540,7 @@
                             /*
                              * Add layer obj
                              */
-                            var l = msp.Map.addLayer(_a["layer"]);
+                            var l = msp.Map.addLayer(f.attributes["_mapshup"]["add"]["layer"]);
                             
                             /*
                              * Force zoom on added layer
@@ -664,8 +663,6 @@
                 
                 (function(d,a,f){
                     d.click(function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
                         return a.callback(a,f);
                     })
                 })(d,a,feature);
