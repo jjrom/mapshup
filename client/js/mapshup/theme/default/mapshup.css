@@ -715,6 +715,7 @@ a.tab,
 }
 .pfi .thumb img {
     max-height:200px;
+    max-width:270px;
 }
 .pfi .sheader {
     height:30px;
