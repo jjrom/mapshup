@@ -59,7 +59,7 @@
          * Default metadata panel position
          */
         this.position = {
-            top:20,
+            top:100,
             right:50
         };
         
