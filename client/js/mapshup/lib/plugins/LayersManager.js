@@ -134,7 +134,7 @@
                 e.stopPropagation();
                 self.goTo(self.page - 1);
             }).css({
-                left:20+'px'
+                left:103+'px'
             });
             self.$next = $('#'+idn).click(function(e){
                 e.preventDefault();
@@ -568,7 +568,7 @@
              */
             if (scope.items[first] && scope.items[first].id !== scope.rasterItem.item.id) {
                 scope.items[first].$tab.css({
-                    left:scope.$next.is(':visible') ? scope.$next.position().left + scope.$next.outerWidth() : 20
+                    left:scope.$next.is(':visible') ? scope.$next.position().left + scope.$next.outerWidth() : 103
                 }).show();
             }
             
