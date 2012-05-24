@@ -223,7 +223,7 @@ if (abcCheck($_REQUEST)) {
                                     $feature['properties']['quicklook'] = MSP_GETFILE_URL . $fileName . $stream;
                                     $feature['properties']['icon'] = MSP_GETFILE_URL . $iconName . $stream;
                                     $feature['properties']['_mapshup'] = array(
-                                        'download' => MSP_GETFILE_URL . $fileName . $stream
+                                        'download' => MSP_GETFILE_URL . $fileName
                                     );
                                     array_push($localizedItems, $feature);
                                 }
