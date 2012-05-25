@@ -223,9 +223,12 @@
          * Hide popup
          */
         this.hide = function() {
+            
             var self = this;
+            
             self.$d.hide();
             self.$m.hide();
+            
             if ($.isFunction(self.onClose)) {
                 self.onClose(self.scope);
             }
@@ -242,9 +245,9 @@
         this.moveTo = function(MapPixel) {
 
             var x,y,pixel,
-                $d = this.$d,
-                parent = msp.$map,
-                offset = parent.offset();
+            $d = this.$d,
+            parent = msp.$map,
+            offset = parent.offset();
 
             /*
              * If popup is not resizable it cannot be moved
