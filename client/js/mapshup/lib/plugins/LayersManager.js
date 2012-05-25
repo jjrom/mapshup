@@ -218,7 +218,7 @@
                      * Set new width
                      */
                     $ul.css({
-                        'width': (($('li', $ul).length * 95) + 95) + 'px' // Size of each thumb is 85px + 10px for the margin
+                        'width': (($('li', $ul).length * 85) + 85) + 'px' // Size of each thumb is 81px + 4px for the margin
                     });
                     
                     $id = $('#'+id);
@@ -333,7 +333,7 @@
                      */
                     l = $('li', $ul).length;
                     $ul.css({
-                        'width': ((l * 95) + 95) + 'px' // Size of each thumb is 85px + 10px for the margin
+                        'width': ((l * 85) + 85) + 'px' // Size of each thumb is 81px + 4px for the margin
                     });
                     
                     /*
@@ -843,10 +843,10 @@
                 if(scrollAllow){
                     scrollAllow = false;
                     var spacefit = $(window).width() - 44,
-                    fit = Math.floor(spacefit / 95),
+                    fit = Math.floor(spacefit / 85),
                     left = parseFloat($ul.css('left'),10),
-                    moveleft = left - (fit*95),
-                    ulWidth = msp.Util.getHashSize(item.features) * 95 + 95;
+                    moveleft = left - (fit*85),
+                    ulWidth = msp.Util.getHashSize(item.features) * 85 + 85;
 
                     /*
                      * We reach the last page. If click on next, 
@@ -867,9 +867,9 @@
                 if(scrollAllow){
                     scrollAllow = false;
                     var spacefit = $(window).width() - 44,
-                    fit = Math.floor(spacefit / 95),
+                    fit = Math.floor(spacefit / 85),
                     left = parseFloat($ul.css('left'),10),
-                    moveleft = left + (fit*95);
+                    moveleft = left + (fit*85);
 
                     if(left >= 0){ 
                         scrollAllow = true;
@@ -1040,7 +1040,7 @@
              */
             $ul = $('ul', item.$d).empty().css({
                 'left':'0px',
-                'width': ((size * 95) + 95) + 'px' // Size of each thumb is 85px + 10px for the margin
+                'width': ((size * 85) + 85) + 'px' // Size of each thumb is 81px + 4px for the margin
             });
             
             /*
@@ -1239,9 +1239,9 @@
              * Hide panel
              */
             self.$d.stop().animate(self.options.position === 'n' ? {
-                'top':'-96px'
+                'top':'-90px'
             } : {
-                'bottom':'-96px'
+                'bottom':'-90px'
             },200);
             
             /*
