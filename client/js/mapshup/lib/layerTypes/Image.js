@@ -109,7 +109,7 @@
             /*
              * If srs is set to EPSG:4326 then reproject
              */
-            if (layerDescription.srs && layerDescription.srs === Map.epsg4326.projCode) {
+            if (layerDescription.srs && layerDescription.srs === Map.pc.projCode) {
 
                 /*
                  * This is awfull...

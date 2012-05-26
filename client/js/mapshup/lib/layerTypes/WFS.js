@@ -65,7 +65,7 @@
         /*
          * WFS returns EPSG:4326 data
          */
-        projection: Map.epsg4326,
+        projection: Map.pc,
 
         /**
          * MANDATORY
@@ -149,7 +149,7 @@
                     featureType:layerDescription.typeName,
                     featureNS:layerDescription.featureNS,
                     geometryName:layerDescription.geometryName || "the_geom",
-                    srsName:Map.epsg4326.projCode,
+                    srsName:Map.pc.projCode,
                     version:layerDescription.version
                 })
             }

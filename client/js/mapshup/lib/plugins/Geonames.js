@@ -269,7 +269,7 @@
             }
 
             this.layer = new OpenLayers.Layer.Vector("__WHEREAMI__",{
-                projection:msp.Map.epsg4326,
+                projection:msp.Map.pc,
                 displayInLayerSwitcher:false,
                 popup:popup,
                 styleMap: new OpenLayers.StyleMap({

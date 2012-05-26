@@ -155,7 +155,7 @@
                 });
 
             self.layer = new OpenLayers.Layer.Vector("__LAYER_DISTANCE__",{
-                projection:msp.Map.epsg4326,
+                projection:msp.Map.pc,
                 displayInLayerSwitcher:false,
                 styleMap:new OpenLayers.StyleMap({
                     "default": new OpenLayers.Style("default",{

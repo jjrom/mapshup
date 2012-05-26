@@ -75,14 +75,14 @@
         },
         
         /**
-         * WGS84 projection object
+         * Plate Carrée projection object
          */
-        epsg4326: new OpenLayers.Projection("EPSG:4326"),
+        pc: new OpenLayers.Projection("EPSG:4326"),
 
         /**
-         * Google projection object
+         * Spherical Mercator projection object
          */
-        epsg3857: new OpenLayers.Projection("EPSG:3857"),
+        sm: new OpenLayers.Projection("EPSG:900913"),
 
         /**
          * An array of LayersGroup
@@ -994,17 +994,9 @@
             });
 
             /*
-             * Set projection alias between old EPSG:900913 and correct EPSG:3857
-             * for SphericalMercator projection
+             * OpenLayers 2.12 support SVG2 by default
              */
-            OpenLayers.Projection.addTransform("EPSG:4326", "EPSG:3857", OpenLayers.Layer.SphericalMercator.projectForward);
-            OpenLayers.Projection.addTransform("EPSG:3857", "EPSG:4326", OpenLayers.Layer.SphericalMercator.projectInverse);
-
-            /*
-             * OpenLayers 2.11 and >
-             * Add support for SVG2 by default
-             */
-            OpenLayers.Layer.Vector.prototype.renderers = ["SVG2", "VML", "Canvas"];
+            OpenLayers.Layer.Vector.prototype.renderers = ["SVG", "VML", "Canvas"];
 
             /**
              * Force msp CSS to overide default OpenLayers CSS

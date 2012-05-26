@@ -196,7 +196,7 @@
                     else {
                         layer.addFeatures(new OpenLayers.Format.GeoJSON({
                             internalProjection:Map.map.projection,
-                            externalProjection:Map.epsg4326
+                            externalProjection:Map.pc
                         }).read(data));
                     }
 

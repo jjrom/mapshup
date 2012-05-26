@@ -96,7 +96,7 @@
             /**
              * Set layerDescription.srs if not set
              */
-            layerDescription.srs = msp.Util.getPropertyValue(layerDescription, "srs", Map.epsg4326.projCode);
+            layerDescription.srs = msp.Util.getPropertyValue(layerDescription, "srs", Map.pc.projCode);
 
             /*
              * Set version default to 1.1.1 if not specified
@@ -122,7 +122,7 @@
              * If the srs is different from get map srs, msp creates
              * a mapfile on server side to allow on the fly reprojection of the WMS tiles
              */
-            projection = msp.Util.getPropertyValue(Map.map, "projection", Map.epsg4326);
+            projection = msp.Util.getPropertyValue(Map.map, "projection", Map.pc);
 
             if (layerDescription.srs !== projection.projCode) {
                 OpenLayers.Request.GET({
@@ -458,7 +458,7 @@
                         }
                     }
                     if (srs !== Map.map.projection.projCode) {
-                        srs = Map.epsg4326;
+                        srs = Map.pc;
                     }
                     d.srs = srs;
 
@@ -590,7 +590,7 @@
                         if (layerDescription.projectedUrl) {
                             var extent = map.p22(map.getExtent().clone());
                             url += "&BBOX="+extent.toBBOX();
-                            url += "&SRS="+Map.epsg4326.projCode;
+                            url += "&SRS="+Map.pc.projCode;
                         }
                         else {
                             url += "&BBOX="+map.getExtent().toBBOX();

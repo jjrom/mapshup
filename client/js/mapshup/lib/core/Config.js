@@ -45,11 +45,6 @@
 (function(msp) {
     
     /*
-     * Map resolution for zoom level 19
-     */
-    var resolution = 156543.03390625;
-    
-    /*
      * Initialize msp
      */
     msp = msp || {};
@@ -96,15 +91,7 @@
         mapOptions: {
             projection:new OpenLayers.Projection("EPSG:3857"),
             displayProjection:new OpenLayers.Projection("EPSG:4326"),
-            units:"m",
-            numZoomLevels:22,
-            maxResolution:resolution / 8.0, // 19567.8792375
-            maxExtent:new OpenLayers.Bounds(
-                -128 * resolution,
-                -128 * resolution,
-                128 * resolution,
-                128 * resolution
-            )
+            numZoomLevels:22
         },
 
         /**

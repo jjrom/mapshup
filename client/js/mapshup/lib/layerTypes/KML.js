@@ -55,7 +55,7 @@
         /**
          * KML are EPSG:4326 data
          */
-        projection:Map.epsg4326,
+        projection:Map.pc,
 
         /**
          * Automatically remove layer if empty

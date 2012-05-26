@@ -57,7 +57,7 @@
         /**
          * Catalogs return EPSG:4326 data by default
          */
-        projection:Map.epsg4326,
+        projection:Map.pc,
 
         /**
          * Mandatory properties for

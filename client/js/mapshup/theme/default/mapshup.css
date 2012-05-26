@@ -1066,11 +1066,6 @@ div.olControlMousePosition {
     font-size: 0.9em;
 }
 
-/* Waiting for OpenLayers correction */
-.olLayerGooglePoweredBy.olLayerGoogleV3.gmnoprint {
-    visibility:hidden;
-}
-
 /****************************
  *
  * Plugins specific

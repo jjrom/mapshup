@@ -97,7 +97,7 @@
              * Set WorldGrid layer
              */
             self.layer = new OpenLayers.Layer.Vector(msp.Util._(self.options.title),{
-                projection:msp.Map.epsg4326,
+                projection:msp.Map.pc,
                 displayInLayerSwitcher:true,
                 styleMap:new OpenLayers.StyleMap({
                     'default' :  new OpenLayers.Style({},{
@@ -194,7 +194,7 @@
             /*
              * Get the projection objects required
              */
-            var llProj = msp.Map.epsg4326,
+            var llProj = msp.Map.pc,
                 mapProj = map.getProjectionObject(),
                 mapRes = map.getResolution();
 

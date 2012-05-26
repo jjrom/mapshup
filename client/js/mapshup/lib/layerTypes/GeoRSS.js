@@ -91,7 +91,7 @@
              */
             $.extend(options,
             {
-                projection:Map.epsg4326,
+                projection:Map.pc,
                 styleMap:new OpenLayers.StyleMap({
                     'default' :  new OpenLayers.Style({
                         externalGraphic : options["_msp"].icon,

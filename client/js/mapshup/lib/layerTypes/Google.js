@@ -90,14 +90,7 @@
                 type:layerDescription.googleType
             });
 
-            var newLayer = new OpenLayers.Layer.Google(layerDescription.title,options);
-
-            /*
-             * Set alias projection code for Google layer to be EPSG:3857
-             */
-            newLayer.projection = Map.epsg3857;
-
-            return newLayer;
+            return new OpenLayers.Layer.Google(layerDescription.title,options);
         },
 
         /**

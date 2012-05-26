@@ -71,14 +71,7 @@
             }
             );
 
-            var newLayer = new OpenLayers.Layer.Bing(options);
-
-            /*
-             * Set alias projection code for layer to be EPSG:3857
-             */
-            newLayer.projection = Map.epsg3857;
-
-            return newLayer;
+            return new OpenLayers.Layer.Bing(options);
 
         },
 

@@ -79,7 +79,7 @@
              * the LayersManager zoomOn capability is not set for this layer
              */
             options["_msp"].noZoomOn = true;
-            options.projection = Map.epsg4326;
+            options.projection = Map.pc;
             options.styleMap = new OpenLayers.StyleMap({
                 'default':new OpenLayers.Style({
                     externalGraphic:msp.Util.getImgUrl('wikipedia.png'),

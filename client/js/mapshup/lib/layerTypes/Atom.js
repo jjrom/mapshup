@@ -166,7 +166,7 @@
                 else {
                     features = new OpenLayers.Format.Atom({
                         internalProjection:Map.map.projection,
-                        externalProjection:Map.epsg4326
+                        externalProjection:Map.pc
                     }).read(data);
                 }
                 

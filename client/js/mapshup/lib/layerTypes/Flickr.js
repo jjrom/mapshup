@@ -56,7 +56,7 @@
         /**
          * Flickr return EPSG:4326 data
          */
-        projection:Map.epsg4326,
+        projection:Map.pc,
 
         /**
          * MANDATORY

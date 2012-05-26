@@ -79,7 +79,7 @@ msp.plugins["LocateMe"] = {
              */
             var title = "__LAYER_LOCATEME__";
             this.layer = new OpenLayers.Layer.Vector(title, {
-                projection:msp.Map.epsg4326,
+                projection:msp.Map.pc,
                 displayInLayerSwitcher:false
             });
 

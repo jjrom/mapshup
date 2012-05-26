@@ -203,7 +203,7 @@
                  * Create streetview layer
                  */
                 layer:new OpenLayers.Layer.Vector("__LAYER_STREETVIEW__",{
-                    projection:msp.Map.epsg4326,
+                    projection:msp.Map.pc,
                     displayInLayerSwitcher:false,
                     styleMap:new OpenLayers.StyleMap({
                         'default' :  new OpenLayers.Style({

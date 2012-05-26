@@ -86,7 +86,7 @@
             }
            
             self.layer = new OpenLayers.Layer.Vector("__LAYER_DRAWING__", {
-                projection:msp.Map.epsg4326,
+                projection:msp.Map.pc,
                 displayInLayerSwitcher:false,
                 styleMap:new OpenLayers.StyleMap({
                     'default':{
