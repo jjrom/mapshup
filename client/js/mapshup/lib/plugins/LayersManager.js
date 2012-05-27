@@ -792,7 +792,7 @@
                     a = tools[j];
                     $('.tools',item.$tab).append('<span id="'+a.id+'" class="item" jtitle="'+msp.Util._(a.title)+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/></span>');
                     d = $('#'+a.id);
-                    msp.tooltip.add(d, 'n');
+                    msp.tooltip.add(d, 'n', 10);
                     (function(d,a){
                         d.click(function(e) {
                             e.preventDefault();
