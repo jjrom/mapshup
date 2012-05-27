@@ -86,6 +86,11 @@
         this.page = 0;
         
         /**
+         * Thumb width is square thumb width (50px) + padding (4px)
+         */
+        this.tw = 54;
+        
+        /**
          * Panel initialisation
          */
         this.init = function(options) {
@@ -218,7 +223,7 @@
                      * Set new width
                      */
                     $ul.css({
-                        'width': (($('li', $ul).length * 85) + 85) + 'px' // Size of each thumb is 81px + 4px for the margin
+                        'width': (($('li', $ul).length * self.tw) + self.tw) + 'px'
                     });
                     
                     $id = $('#'+id);
@@ -333,7 +338,7 @@
                      */
                     l = $('li', $ul).length;
                     $ul.css({
-                        'width': ((l * 85) + 85) + 'px' // Size of each thumb is 81px + 4px for the margin
+                        'width': ((l * self.tw) + self.tw) + 'px'
                     });
                     
                     /*
@@ -827,7 +832,7 @@
          */
         this.addPagination = function(item) {
             
-            var $ul, scrollAllow = true;
+            var $ul, scrollAllow = true, self = this;
             
             if (!item) {
                 return false;
@@ -843,10 +848,10 @@
                 if(scrollAllow){
                     scrollAllow = false;
                     var spacefit = $(window).width() - 44,
-                    fit = Math.floor(spacefit / 85),
+                    fit = Math.floor(spacefit / self.tw),
                     left = parseFloat($ul.css('left'),10),
-                    moveleft = left - (fit*85),
-                    ulWidth = msp.Util.getHashSize(item.features) * 85 + 85;
+                    moveleft = left - (fit*self.tw),
+                    ulWidth = msp.Util.getHashSize(item.features) * self.tw + self.tw;
 
                     /*
                      * We reach the last page. If click on next, 
@@ -867,9 +872,9 @@
                 if(scrollAllow){
                     scrollAllow = false;
                     var spacefit = $(window).width() - 44,
-                    fit = Math.floor(spacefit / 85),
+                    fit = Math.floor(spacefit / self.tw),
                     left = parseFloat($ul.css('left'),10),
-                    moveleft = left + (fit*85);
+                    moveleft = left + (fit*self.tw);
 
                     if(left >= 0){ 
                         scrollAllow = true;
@@ -1040,7 +1045,7 @@
              */
             $ul = $('ul', item.$d).empty().css({
                 'left':'0px',
-                'width': ((size * 85) + 85) + 'px' // Size of each thumb is 81px + 4px for the margin
+                'width': ((size * self.tw) + self.tw) + 'px'
             });
             
             /*

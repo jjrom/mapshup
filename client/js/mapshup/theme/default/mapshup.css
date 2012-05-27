@@ -1077,13 +1077,13 @@ div.olControlMousePosition {
     position:absolute;
     left:0px;
     width:100%;
-    height:89px;
+    height:58px;
     z-index:19900;
 }
 
 /* North and South positionning differs */
 .lmn {
-    top:-90px;
+    top:-59px;
 }
 .lmn .thumbs {
     top:0px;
@@ -1093,7 +1093,7 @@ div.olControlMousePosition {
 }
 
 .lms {
-    bottom:-90px;
+    bottom:-59px;
 }
 .lms .thumbs {
     bottom:0px;
@@ -1106,7 +1106,7 @@ div.olControlMousePosition {
     position:absolute;
     left:0px;
     width:100%;
-    height:89px;
+    height:58px;
     background-color:rgba(0,0,0,0.5);
     text-transform:uppercase;
 }
@@ -1114,7 +1114,7 @@ div.olControlMousePosition {
     height:20px;
     overflow:hidden;
     position:absolute;
-    top:89px;
+    top:58px;
     width:100%;
 }
 .lm .thumbs .navigation {
@@ -1130,7 +1130,7 @@ div.olControlMousePosition {
     z-index:10;
 }
 .lm .thumbs .navigation .fi {
-    padding:10px 0 10px 0px;
+    padding:5px 0 5px 0px;
     text-transform:none;
 }
 .lm .thumbs .navigation .fp {
@@ -1187,16 +1187,16 @@ div.olControlMousePosition {
     padding:2px;
     text-shadow:1px 1px 1px #000;
     text-decoration:none;
-    height:81px;
-    width:81px;
+    height:50px;
+    width:50px;
 }
 .lm .thumbs ul li a:hover{
     background-color:#fff;
 }
 
 .lm .images ul li a img{
-    width:75px;
-    height:75px;
+    width:44px;
+    height:44px;
     background-color:#000;
     border:3px solid #f9f9f9;
     -moz-box-shadow:1px 1px 3px #000;
@@ -1218,7 +1218,7 @@ div.olControlMousePosition {
     text-align:center;
     overflow:hidden;
     text-overflow:ellipsis;
-    max-height:81px;
+    max-height:50px;
     opacity:0.8;
     filter:progid:DXImageTransform.Microsoft.Alpha(opacity=80);
 }
