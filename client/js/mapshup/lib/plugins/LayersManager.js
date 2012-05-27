@@ -1244,9 +1244,9 @@
              * Hide panel
              */
             self.$d.stop().animate(self.options.position === 'n' ? {
-                'top':'-90px'
+                'top':'-59px'
             } : {
-                'bottom':'-90px'
+                'bottom':'-59px'
             },200);
             
             /*

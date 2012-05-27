@@ -177,8 +177,7 @@ a.tab,
 .apo,
 .featureHilite,
 a.tab.active,
-a.tab:hover,
-.tab .tools
+a.tab:hover
 {
     background-color:#f3961c;
 }
@@ -188,7 +187,6 @@ a.tab:hover,
 a.tab,
 .shadow,
 .tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
-.tab .tools,
 .lm .thumbs
 {
     box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
@@ -819,6 +817,7 @@ a.tab img {
     top:24px;
     right:0px;
     display:none;
+    background-color:rgba(243,150,28,0.5);
 }
 .tab .tools .item {
     text-align:center;
