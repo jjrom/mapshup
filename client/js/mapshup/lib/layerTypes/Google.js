@@ -69,6 +69,16 @@
             }
 
             /**
+             * TODO : Why ????
+             * 
+             * Apparently there is a bug with Safari and Google maps
+             * Google layer are not added in this case
+             */
+            if (/Safari/.test(navigator.userAgent)) {
+                return null;
+            }
+            
+            /**
              * Set layerDescription googleType to ROADMAP if not
              * already set
              */

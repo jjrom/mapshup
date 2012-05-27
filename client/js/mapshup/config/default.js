@@ -222,13 +222,13 @@
     c["upload"].allowedExtensions = ["gml","gpx","kml","xml","rss","jpeg","jpg","gif","png","shp","shx","dbf","json"];
 
     /** Default layers */
-   c.add("layers", {
+    c.add("layers", {
         type:"Google",
         title:"Streets",
         numZoomLevels:22,
         unremovable:true
     });
-
+    
     c.add("layers", {
         type:"Google",
         title:"Satellite",
@@ -236,24 +236,13 @@
         numZoomLevels:22,
         unremovable:true
     });
-
+    
     c.add("layers", {
         type:"Google",
         title:"Relief",
         googleType:"terrain",
         numZoomLevels:22,
         unremovable:true
-    });
-    
-    c.add("layers", {
-        type:"XYZ",
-        title:"OpenStreetMap",
-        url:["http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-        "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
-        "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"],
-        ol:{
-            attribution:'Tiles from <a href="http://www.openstreetmap.org" target="_blank">OpenStreetMap</a>'
-        }
     });
     
     c.add("layers", {
@@ -267,8 +256,17 @@
             attribution:'<p>Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png"></p>'
         }
     });
+    c.add("layers", {
+        type:"XYZ",
+        title:"OpenStreetMap",
+        url:["http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+        "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+        "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"],
+        ol:{
+            attribution:'Tiles from <a href="http://www.openstreetmap.org" target="_blank">OpenStreetMap</a>'
+        }
+    });
     /*
-    
     c.add("layers", {
         type:"XYZ",
         title:"MapQuest Aerial",
@@ -713,15 +711,6 @@
     c.add("plugins",
     {
         name:"Share"
-    });
-    
-    /**
-     * Display the list of world country
-     * This plugin requires the Toolbar plugin
-     */
-    c.add("plugins",
-    {
-        name:"CountryPicker"
     });
     
     /**
