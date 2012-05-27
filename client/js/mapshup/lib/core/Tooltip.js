@@ -78,10 +78,13 @@
          * 
          * @input {jquery DOM Element} domelement : jquery DOM Element containing a jtitle attribute
          * @input {String} direction : direction of tooltip ('n','s','e','w')
+         * @input {integer} offset : offset in pixel to add
          */
-        this.add = function(domelement, direction) {
+        this.add = function(domelement, direction, offset) {
         
             var self = this;
+            
+            offset = offset || 0;
             
             /*
              * Add events on domelement for non touch device
@@ -136,26 +139,26 @@
                     switch (direction) {
                         case 'n':
                             self.$t.css({
-                                top: pos.top + pos.height + 5,
+                                top: pos.top + pos.height + 5 + offset,
                                 left: pos.left + pos.width / 2 - actualWidth / 2
                             });
                             break;
                         case 's':
                             self.$t.css({
-                                top: pos.top - actualHeight - 20,
+                                top: pos.top - actualHeight - 20 - offset,
                                 left: pos.left + pos.width / 2 - actualWidth / 2
                             });
                             break;
                         case 'e':
                             self.$t.css({
                                 top: pos.top + pos.height / 2 - actualHeight / 2,
-                                left: pos.left - actualWidth - 10
+                                left: pos.left - actualWidth - 10 - offset
                             });
                             break;
                         case 'w':
                             self.$t.css({
                                 top: pos.top + pos.height / 2 - actualHeight / 2,
-                                left: pos.left + pos.width + 10
+                                left: pos.left + pos.width + 10 + offset
                             });
                             break;
                     }
