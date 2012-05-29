@@ -562,7 +562,7 @@
                          */
                         var features = new OpenLayers.Format.GeoJSON({
                             internalProjection:msp.Map.map.projection,
-                            externalProjection:msp.Map.epsg4326
+                            externalProjection:msp.Map.pc
                         }).read(data);
 
                         /*
