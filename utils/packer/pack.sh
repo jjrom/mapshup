@@ -75,7 +75,7 @@ then
 	echo "Clone mercurial repository $1"
 
         # Export mercurial last repository
-        hg clone $REPO /tmp/_mspexport
+        hg clone $REPO -r mapshup2 /tmp/_mspexport
         EXPORTDIR=`echo /tmp/_mspexport/client/`
         SERVERDIR=`echo /tmp/_mspexport/server/`
 	
