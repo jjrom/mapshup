@@ -62,7 +62,7 @@
                 sphericalMercator: true,
                 wrapDateLine:true,
                 transitionEffect:'resize',
-                buffer:2,
+                buffer:0,
                 /* XYZ can be set as background (isBaseLayer:true) or as overlay */
                 isBaseLayer:msp.Util.getPropertyValue(layerDescription, "isBaseLayer", true)
             }
