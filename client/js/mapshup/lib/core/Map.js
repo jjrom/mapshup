@@ -1534,7 +1534,7 @@
              */
             var sfControl = this.Util.getControlById("__CONTROL_SELECT__"),
             hfControl = this.Util.getControlById("__CONTROL_HIGHLITE__");
-
+            
             if (sfControl) {
 
                 /*
@@ -1561,7 +1561,7 @@
                     if (hfControl) {
                         hfControl.activate();
                     }
-
+                    
                     /*
                      * ...and AFTER select
                      */

@@ -46,55 +46,163 @@ include_once '../config.php';
 include_once '../functions/general.php';
 
 /*
- * This script returns png
- */
-header("Content-Type: image/png");
-
-/*
  * Mandatory parameters
  */
 $zxy = isset($_REQUEST["zxy"]) ? $_REQUEST["zxy"] : null;
 
 /*
- * mbtiles file is supposed to be suffixed by ".mbtiles"
+ * callback function - use for json tiles and metadata info
  */
-$tile = isset($_REQUEST["t"]) ? MSP_MBTILES_DIR . $_REQUEST["t"] . ".mbtiles" : null;
+$callback = isset($_REQUEST["callback"]) ? $_REQUEST["callback"] : null;
 
 /*
- * Process only valid requests
+ * mbtiles file is supposed to be suffixed by ".mbtiles"
  */
-if ($zxy && $tile) {
-    
-    /*
-     * Get xyz triplet to get the right tiles
-     */
-    $zxy = explode("/", $zxy); 
-    $z = $zxy[0]; 
-    $x = $zxy[1]; 
-    $y = $zxy[2];
-    $y = pow(2, $z) - $y - 1;
-    
-    /*
-     * Connect to mbtiles through PDO sqlite
-     */
-    $db = new PDO('sqlite:'.$tile) or die(); 
+$t = isset($_REQUEST["t"]) ? $_REQUEST["t"] : null;
 
-    $pngdata = @$db->prepare('select tile_data from tiles where zoom_level = '.$z.' and tile_column = '.$x.' and tile_row = '.$y.';'); 
-    $pngdata->execute(); 
-    $pngdata = $pngdata->fetchObject();
+/*
+ * By default return tiles, i.e. png
+ */
+$format = isset($_REQUEST["format"]) ? $_REQUEST["format"] : "png";
+
+/*
+ * Only process if tile exist
+ */
+if ($t) {
+
+    $tile = MSP_MBTILES_DIR . $t . ".mbtiles";
     
-    /*
-     * If $pngdata is empty, stream a predefined tile
-     */
-    if (!isset($pngdata->tile_data)) {
-        readfile(MSP_MBTILES_DIR . 'nodata.png');
+    try {
+        
+        /*
+         * Connect to mbtiles through PDO sqlite
+         */
+        $db = new PDO('sqlite:'.$tile) or die();
+        
+        /*
+         * Process only valid requests
+         */
+        if ($zxy) {
+
+            /*
+             * Get xyz triplet to get the right tiles
+             */
+            $zxy = explode("/", $zxy); 
+            $z = $zxy[0]; 
+            $x = $zxy[1]; 
+            $y = $zxy[2];
+            $y = pow(2, $z) - $y - 1;
+
+        }
+        
+        /*
+         * Serve json
+         */
+        if ($format === "json") {
+            
+            /*
+             * Initialize empty json
+             */
+            $json = array();
+            
+            /*
+             * Metadata
+             */
+            if (!$zxy) {
+                
+                $q = $db->prepare("SELECT * FROM metadata");
+                $q->execute();
+
+                $q->bindColumn(1, $name);
+                $q->bindColumn(2, $value);
+
+                $s = $_SERVER['SERVER_NAME'];
+                $b = $_SERVER['PHP_SELF'];
+                
+                $fileName = $b[count($b) - 1]; 
+                $meta = array(
+                    'grids' => array("http://$s$b?t=$t&zxy={z}/{x}/{y}&format=json"),
+                    'tiles' => array("http://$s$b?t=$t&zxy={z}/{x}/{y}"),
+                    'scheme' => 'zxy'
+                );
+                
+                while($q->fetch()) {
+                    $meta[$name] = $value;
+                }
+
+                $json = json_encode($meta);
+               
+            }
+            /*
+             * UTFGrids
+             */
+            else {
+                $q = $db->prepare("SELECT * FROM grids WHERE zoom_level=".$z." AND tile_column =".$x." AND tile_row=".$y);
+                $q->execute();
+                
+                $q->bindColumn(4, $grid, PDO::PARAM_LOB);
+
+                while($q->fetch()) {
+                    $json = gzinflate(substr($grid, 2));
+
+                    $sql_data = "SELECT * FROM grid_data WHERE zoom_level =".$z." AND tile_column =".$x." AND tile_row =".$y;
+                    $q_data = $db->prepare($sql_data);
+                    $q_data->execute();
+                    
+                    $q_data->bindColumn(4, $id_data, PDO::PARAM_LOB);
+                    $q_data->bindColumn(5, $data, PDO::PARAM_LOB);
+                    
+                    $datas = "";
+                    while($q_data->fetch()) {
+                        $datas .= "\"$id_data\":$data,";
+                    }
+                    
+                    $json = substr($json, 0, strlen($json)-1) . ',"data":{' . $datas . '}}';
+
+                }
+               
+            }
+            
+            /*
+             * Serve json through callback if needed
+             */
+            header('Content-Type: application/json');
+            echo $callback ? $callback.'('.$json.');' : $json;
+            
+        }
+        /*
+         * Serve png tiles
+         */
+        else if ($zxy) {
+            
+            $pngdata = @$db->prepare("select tile_data from tiles where zoom_level = ".$z." and tile_column = ".$x." and tile_row = ".$y); 
+            $pngdata->execute(); 
+            $pngdata = $pngdata->fetchObject();
+
+            /*
+             * Returns png
+             */
+            header('Content-Type: image/png');
+
+            /*
+             * If $pngdata is empty, stream a predefined tile
+             */
+            if (!isset($pngdata->tile_data)) {
+                readfile(MSP_MBTILES_DIR . 'nodata.png');
+            }
+            /*
+             * Stream png result
+             */
+            else {
+                echo $pngdata->tile_data;
+            }
+    
+        }
     }
-    /*
-     * Stream png result
-     */
-    else {
-        echo $pngdata->tile_data;
+    catch(PDOException $e) {
+       echo $e->getMessage();
     }
-     
+    
 }
+
 ?>

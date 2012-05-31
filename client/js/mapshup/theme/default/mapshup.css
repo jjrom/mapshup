@@ -1357,3 +1357,13 @@ div.olControlMousePosition {
      margin-left:20px;
  }
  
+ /* UTFGrid */
+ .utfginfo {
+    position:absolute;
+    top:150px;
+    right:50px;
+    width:150px;
+    height:auto;
+    display:none;
+    z-index:30000;
+}

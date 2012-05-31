@@ -721,4 +721,12 @@
         name:"Help"
     });
     
+    /**
+     * UTFGrid plugin
+     */
+    c.add("plugins",
+    {
+        name:"UTFGrid"
+    });
+    
 })(window.msp.Config);
