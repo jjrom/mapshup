@@ -1037,10 +1037,18 @@
                     cumulative:false
                 },
                 dragPanOptions:{
+                    enableKinetic:true,
                     /*
                      * When drag starts, store the clicked point and the time of click in milliseconds
                      */
                     panMapStart:function(e){
+                        
+                        // Begin reproduce OpenLayers DragPan.js panMapStart function
+                        if(this.kinetic) {
+                            this.kinetic.begin();
+                        }
+                        // End reproduce OpenLayers DragPan.js panMapStart function
+                        
                         self._clk = {
                             x:e.x,
                             y:e.y,
