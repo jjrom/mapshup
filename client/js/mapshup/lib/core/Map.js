@@ -814,36 +814,6 @@
                 }
             }
             
-
-        /*
-             * Searchs
-             */
-        /*
-            if (context.hasOwnProperty('searchs')) {
-
-                var searchs = msp.Util.unserialize(decodeURIComponent(context.searchs));
-
-                for (i = 0, l = searchs.length; i < l; i++) {
-
-                    layer = this.Util.getLayerByMspID(searchs[i].mspID);
-
-                    if (layer) {
-
-                        var searchContext = layer["_msp"].searchContext;
-                        if (searchContext) {
-
-                            searchContext.items = searchs[i].items;
-
-                            layer["_msp"].zoomOnAfterLoad = false;
-                            searchContext.search(searchs[i].nextRecord);
-
-                        }
-                    }
-                }
-
-            }
-            */
-
         },
         
         /*

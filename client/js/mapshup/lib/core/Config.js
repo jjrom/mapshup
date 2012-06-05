@@ -282,12 +282,21 @@
                     self.layers.push(lds[i]);
                 }
                 /*
-                 * Update existing layer properties :
-                 *  - hidden (all layers)
-                 *  - search (for catalogs)
+                 * Update existing layer properties
                  */
                 else {
+                    
+                    /*
+                     * Update hidden status
+                     */
                     self.layers[j].hidden = lds[i].hidden;
+                    
+                    /*
+                     * Update search filters for catalog layers
+                     */
+                    if (lds[i].search) {
+                        self.layers[j].search = lds[i].search;
+                    }
                 }
             }
             
