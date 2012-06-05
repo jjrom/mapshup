@@ -338,38 +338,6 @@
              */
             if (!_msp.searchContext) {
                 
-                if (!_msp.layerDescription.hasOwnProperty("callback")) {
-                    
-                    /*
-                     * Get the "South" panel reference
-                     */
-                    /* TODO REMOVE
-                    btn = new msp.Button({
-                        tb:scope.pn.tb,
-                        tt:msp.Util._("Catalog") + " : " + layer.name,
-                        title:layer.name,
-                        container:scope.pn.add('<div class="west"><div style="width:99%;height:99%;overflow:auto;"></div></div><div class="east"><div style="height:99%;overflow:auto;"></div></div>', 'bg'),
-                        actions:[
-                        {   
-                            cssClass:"actnnw icnsearch",
-                            callback:function(btn){
-                                btn.layer["_msp"].searchContext.search()
-                            }
-                        }
-                        ],
-                        activable:true,
-                        scope:scope,
-                        callback:scope.onResizeEnd,
-                        e:{
-                            layer:layer // Important : add the layer reference to the button
-                        }
-                    }); 
-
-                    btn.$w = $('.west', btn.container.$d).children().first();
-                    btn.$e = $('.east', btn.container.$d).children().first();
-                    */
-                }
-                
                 /*
                  * Set new SearchContext
                  */ 
