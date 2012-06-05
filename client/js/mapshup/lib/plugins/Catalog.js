@@ -45,6 +45,13 @@
     
     msp.Plugins.Catalog = function() {
         
+        /*
+         * Only one Catalog object instance is created
+         */
+        if (msp.Plugins.Catalog._o) {
+            return msp.Plugins.Catalog._o;
+        }
+        
         /**
          * List of registered catalogs as an array of layers
          */
@@ -484,7 +491,8 @@
                 return false;
             }
             
-            var id = msp.Util.getId(),
+            var id1 = msp.Util.getId(),
+                id2 = msp.Util.getId(),
                 sc = layer["_msp"].searchContext,
                 self = this;
             
@@ -496,23 +504,39 @@
             }
             
             /*
+             * Only one search popup can be opened at a time
+             */
+            if (self.sp && $.isFunction(self.sp.remove)) {
+                self.sp.remove();
+            }
+            
+            /*
              * Set search popup
              */
             self.sp = new msp.Popup({
-                modal:true,
+                modal:false,
                 classes:"sp",
                 header:'<p>'+layer.name+'</p>',
-                body:'<div class="search"><div class="title"><p><input class="usegeo" type="checkbox" name="usegeo" '+(sc.useGeo ? "checked" : "")+'/>'+msp.Util._("Limit search to map view extent")+' | <a href="#" id="'+id+'">'+msp.Util._("Reset filters")+'</a></p></div><div class="description filters"></div><div class="launch"><a href="#" class="button facebook inline">&nbsp;&nbsp;search&nbsp;&nbsp;</a></div></div>'
+                body:'<div class="description search"><div class="father">'+msp.Util._("Limit search to map view extent")+'&nbsp;&nbsp;<input class="usegeo" type="checkbox" name="usegeo" '+(sc.useGeo ? "checked" : "")+'/></div><div class="filters"></div><div class="launch"><a href="#" class="button inline" id="'+id1+'">'+msp.Util._("Reset filters")+'</a><a href="#" class="button facebook inline" id="'+id2+'">&nbsp;&nbsp;search&nbsp;&nbsp;</a></div></div>'
             });
             
             /*
              * Clear all filters
              */
-            $('#'+id).click(function(){
+            $('#'+id1).click(function(){
                 sc.clear();
                 self.updateFilters(layer);
             });
-                        
+                    
+            /*
+             * Launch search
+             */
+            $('#'+id2).click(function() {
+                self.sp.remove();
+                layer["_msp"].searchContext.search();
+                return false;
+            });
+            
             /*
              * Change search bbox on usegeo check 
              */
@@ -525,15 +549,6 @@
                 
             });
 
-            /*
-             * Launch search
-             */
-            $('.launch', self.sp.$b).click(function() {
-                self.sp.remove();
-                layer["_msp"].searchContext.search();
-                return false;
-            });
-            
             /*
              * Show search popup
              */
@@ -922,6 +937,11 @@
 
             return true;
         };
+        
+        /*
+         * Set unique instance
+         */
+        msp.Plugins.Catalog._o = this;
         
         return this;
 

@@ -117,10 +117,30 @@
             self.$m = $();
             
             /*
+             * Popup structure
+             * 
+             * <div id="..." class="po">
+             *      <div class="whole">
+             *          <div class="header"> // optional
+             *          <div class="body">
+             *      </div>
+             *  </div>
+             */
+            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$mcontainer).addClass('po').html('<div class="whole">'+(self.noHeader ? ''  : '<div class="header"></div>')+'<div class="body"></div></div>');
+
+            /*
              * If popup is modal, set a semi transparent mask
              * under the popup
              */
             if (self.modal) {
+                
+                /*
+                 * Set popup over the mask
+                 */
+                self.$d.css({
+                    'z-index':'38000'
+                });
+                
                 self.$m = msp.Util.$$('#modmask',msp.$container)
                 .addClass("mask")
                 .css(
@@ -134,19 +154,15 @@
                     'z-index':'36000'
                 });
             }
+            else {
+                /*
+                 * Set popup under the mask
+                 */
+                self.$d.css({
+                    'z-index':'35900'
+                });
+            }
             
-            /*
-             * Popup structure
-             * 
-             * <div id="..." class="po">
-             *      <div class="whole">
-             *          <div class="header"> // optional
-             *          <div class="body">
-             *      </div>
-             *  </div>
-             */
-            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$mcontainer).addClass('po').html('<div class="whole">'+(self.noHeader ? ''  : '<div class="header"></div>')+'<div class="body"></div></div>');
-
             /*
              * Set classes or automatic popup size
              */

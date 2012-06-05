@@ -176,7 +176,7 @@ a.tab,
 .tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
 .apo,
 .featureHilite,
-.search a.active,
+.sp a.active,
 a.tab.active,
 a.tab:hover
 {
@@ -577,6 +577,9 @@ a.tab,
 .sp .content {
     padding:10px;
 }
+.sp a:hover{
+    border-bottom:1px solid #c76400;
+}
 
 /* Popup window */
 .po {
@@ -587,7 +590,6 @@ a.tab,
     -o-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     -moz-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    z-index:38000;
 }
 
 /* Popup fixed size */
@@ -661,11 +663,15 @@ a.tab,
 /* For search popup */
 .po .search {
     margin:10px 0px;
-    font-size:1.5em;
+    font-size:1.2em;
 }
 .po .search .launch {
     text-align:center;
-    padding:10px 0px;
+    font-size:1.2em;
+    padding:10px;
+}
+.po .search .launch a {
+    margin-right:10px;
 }
 
 /* For popup images */
@@ -1315,7 +1321,7 @@ div.olControlMousePosition {
 
 /* Catalog.js */
 .father {
-    padding:0px 5px 0px 15px;
+    font-weight: bold;
 }
 .catalog img {
     height:32px;
