@@ -176,6 +176,7 @@ a.tab,
 .tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
 .apo,
 .featureHilite,
+.search a.active,
 a.tab.active,
 a.tab:hover
 {
@@ -565,6 +566,18 @@ a.tab,
     z-index:20000;
 }
 
+/* Search panel */
+.sp {
+    width:80%;
+    height:auto;
+    max-height:80%;
+    top:100px;
+    line-height:30px;
+}
+.sp .content {
+    padding:10px;
+}
+
 /* Popup window */
 .po {
     position:absolute;
@@ -581,13 +594,18 @@ a.tab,
 .pona {
     top:50px;
     width:500px;
-    height:auto;
 }
 
 /* Popup auto size */
 .poa {
     width:auto;
     height:auto;
+}
+
+/* Popup search */
+.sp {
+    width:80%;
+    max-height:80%;
 }
 
 .po p {
@@ -638,6 +656,16 @@ a.tab,
 }
 .po .share a {
     margin-right:10px;
+}
+
+/* For search popup */
+.po .search {
+    margin:10px 0px;
+    font-size:1.5em;
+}
+.po .search .launch {
+    text-align:center;
+    padding:10px 0px;
 }
 
 /* For popup images */

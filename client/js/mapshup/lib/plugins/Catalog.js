@@ -106,52 +106,28 @@
             /*
              * Register events
              */
-            msp.Map.events.register("layersend", self, self.onLayersEnd);
-            msp.Map.events.register("resizeend", self, self.onResizeEnd);
+            msp.Map.events.register("layersend", self, function(action, layer, scope) {
 
+                /*
+                 * The only interesting case for this plugin is the "remove" action
+                 */
+                if (action === "remove") {
+                    scope.remove(layer);
+                }
+
+            });
+            
             return true;
         };
-
-        /**
-         * East side panel size affects the table result container size
-         */
-        this.onResizeEnd = function(scope) {
-            if ($.isFunction($().fixedHeaderTable)) {
-                $('.catalog').each(function(index) {
-                    var c = $(this);
-                    if (!c.is(':empty')) {
-                        c.fixedHeaderTable('destroy').fixedHeaderTable(
-                        {
-                            footer: true, 
-                            cloneHeadToFoot: false, 
-                            fixedColumn: false
-                        }); 
-                    }
-
-                });
-            }
-        };
-
-        /**
-         * Called when a layer is remove
-         */
-        this.onLayersEnd = function(action, layer, scope) {
-
-            /*
-             * The only interesting case for this plugin is the "remove" action
-             */
-            if (action === "remove") {
-                scope.remove(layer);
-            }
-
-        };
-
+        
         /**
          * This method is called by LayersManager plugin
          * Add a "Search" action to the LayersManager menu item
          */
         this.getLayerActions = function(layer) {
-
+            
+            var self = this;
+            
             /**
              * layers of type catalogs get a "Search" action
              */
@@ -163,7 +139,7 @@
                     title:"Search",
                     tt:"Search",
                     callback:function() {
-                        layer["_msp"].searchContext.search();
+                        self.show(layer);
                     }
                 }
                 ]
@@ -238,7 +214,7 @@
                     c = new c(layer, options, function(connector){
                         scope.register(scope, connector);
                     }, function(layer) {
-                        scope.searchPanel.displayFilters(scope,layer);
+                        scope.updateFilters(layer);
                     });
                     
                     /*
@@ -347,7 +323,7 @@
                     nextRecordAlias:connector.nextRecordAlias,
                     numRecordsPerPage:_msp.layerDescription.numRecordsPerPage || scope.options.numRecordsPerPage, 
                     numRecordsPerPageAlias:connector.numRecordsPerPageAlias,
-                    callback:_msp.layerDescription.hasOwnProperty("callback") ? _msp.layerDescription.callback : scope.searchPanel.show, 
+                    callback:_msp.layerDescription.hasOwnProperty("callback") ? _msp.layerDescription.callback : null, 
                     scope:scope
                 });
 
@@ -402,10 +378,9 @@
             }
             
             /*
-             * Process filters on panel west side
+             * Update filters
              */
-            scope.searchPanel.displayFilters(scope, layer);
-            
+            scope.updateFilters(layer);
             
             /*
              * If layer got a searchContext within layerDescription,
@@ -497,595 +472,411 @@
             return false;
         };
         
-        /**
-         * The configuration panel contains one tab per catalog
+        /*
+         * Show layer filters
          */
-        this.searchPanel = {
+        this.show = function(layer) {
+            
+            /*
+             * Paranoid mode
+             */
+            if (!layer) {
+                return false;
+            }
+            
+            var id = msp.Util.getId(),
+                sc = layer["_msp"].searchContext,
+                self = this;
+            
+            /*
+             * Paranoid mode
+             */
+            if (!sc) {
+                return false;
+            }
+            
+            /*
+             * Set search popup
+             */
+            self.sp = new msp.Popup({
+                modal:true,
+                classes:"sp",
+                header:'<p>'+layer.name+'</p>',
+                body:'<div class="search"><div class="title"><p><input class="usegeo" type="checkbox" name="usegeo" '+(sc.useGeo ? "checked" : "")+'/>'+msp.Util._("Limit search to map view extent")+' | <a href="#" id="'+id+'">'+msp.Util._("Reset filters")+'</a></p></div><div class="description filters"></div><div class="launch"><a href="#" class="button facebook inline">&nbsp;&nbsp;search&nbsp;&nbsp;</a></div></div>'
+            });
+            
+            /*
+             * Clear all filters
+             */
+            $('#'+id).click(function(){
+                sc.clear();
+                self.updateFilters(layer);
+            });
+                        
+            /*
+             * Change search bbox on usegeo check 
+             */
+            $('.usegeo', self.sp.$b).change(function() {
+
+                /*
+                 * Swap search restriction between map view extent or to full extent
+                 */
+                sc.setGeo($(this).attr("checked") === "checked" ? true : false);
+                
+            });
 
             /*
-             * Refresh and display the tab content
+             * Launch search
              */
-            show: function(scope, layer) {
-                
-                var lm = msp.Plugins.LayersManager, btn = layer["_msp"].searchContext.btn,
-                self = scope.searchPanel;
-                
-                /*
-                 * Link with LayersManager -> show result after a search
-                 */
-                if (lm && lm._o) {
-                    lm._o.show(lm._o.get(layer["_msp"].mspID));
-                }
+            $('.launch', self.sp.$b).click(function() {
+                self.sp.remove();
+                layer["_msp"].searchContext.search();
+                return false;
+            });
             
-                /*
-                 * No button specified - do nothing
-                 */
-                if (!btn) {
-                    return false;
-                }
-                
-                /*
-                 * Only display search panel is result is not empty
-                 */
-                if (layer.hasOwnProperty("features") && layer.features.length > 0) {
-                    
-                    /*
-                     * Activate layer button
-                     */
-                    btn.activate(true);
-
-                    /*
-                     * Show panel content
-                     */
-                    btn.container.pn.show(btn.container);
-                    
-                }
-                
-                /*
-                 * Process filters on panel west side
-                 */
-                self.displayFilters(scope, layer);
-                
-                /*
-                 * Process result on panel east side
-                 */
-                self.displayResults(scope, layer);
-               
-                return true;
-            },
-            
-            /**
-             * Show search filters in panel west side
-             * Structure of the West panel
-             *      <div class="west">
-             *          <div class="title">Search parameters</div>
-             *          <div class="filters description">
-             *      </div>
-             *      
+            /*
+             * Show search popup
              */
-            displayFilters:function(scope, layer) {
+            self.sp.show();
+            
+            /*
+             * Update search filters
+             */
+            self.updateFilters(layer);
+            
+            return true;
+            
+        };
+        
+        /**
+         * Update search filters
+         * Structure of panel
+         *      <div>
+         *          <div class="filters description">
+         *      </div>
+         *      
+         */
+        this.updateFilters = function(layer) {
+
+            /*
+             * Paranoid mode
+             */
+            if (!layer) {
+                return false;
+            }
+
+            var $d,
+            sc = layer["_msp"].searchContext,
+            connector = sc.connector,
+            self = this;
+
+            if (!self.sp) {
+                return false;
+            }
+            
+            /*
+             * Get the div filters reference
+             */
+            $d = $('.filters', self.sp.$b).empty();
+
+            /*
+             * No filters defined => nevermind but tells it to the user
+             */
+            if (!connector.filters || connector.filters.length === 0) {
+                $d.html(msp.Util._("No dedicated filters for this catalog"));
+            }
+
+            /*
+             * Process the catalog filters
+             */
+            else {
+
+                self.processItem(connector.filters, null, $d, layer);
 
                 /*
-                 * Paranoid mode
+                 * Make a population ratio based tag cloud
+                 * for each .tagcloud element
                  */
-                if (!layer) {
-                    return false;
-                }
-                
-                var d,
-                id = msp.Util.getId(),
-                sc = layer["_msp"].searchContext,
-                connector = sc.connector,
-                self = scope.searchPanel;
-                
-                /*
-                 * No button specified - do nothing
-                 */
-                if (!sc.btn) {
-                    return false;
-                }
-                
-                /*
-                 * Set west panel structure 
-                 */
-                sc.btn.$w.html('<div class="title"><p>'+msp.Util._("Search parameters")+'</p><p><input type="checkbox" name="usegeo" '+(sc.useGeo ? "checked" : "")+'/>'+msp.Util._("Limit search to map view extent")+' | <a href="#" id="'+id+'">'+msp.Util._("Reset filters")+'</a></p></div><div class="description filters"></div>');
-                
-                /*
-                 * Clear all filters
-                 */
-                $('#'+id).click(function(){
-                    sc.clear();
-                    self.displayFilters(scope,layer);
-                });
-                
-                /*
-                 * Change search bbox on usegeo check 
-                 */
-                $('input', sc.btn.$w).change(function() {
-                    
+                $('.tagcloud', $d).each(function(i){
+
+                    var a = $('a', $(this)),
+                    b = 0;
+
                     /*
-                     * Swap search restriction between map view extent or to full extent
+                     * Roll over <a> element and get 
+                     * the bigger (b) population value
                      */
-                    sc.setGeo($(this).attr("checked") === "checked" ? true : false);
-                });
-                
-                /*
-                 * Get the div filters reference
-                 */
-                d = $('.filters', sc.btn.$w);
-
-                /*
-                 * No filters defined => nevermind but tells it to the user
-                 */
-                if (!connector.filters || connector.filters.length === 0) {
-                    d.html(msp.Util._("No dedicated filters for this catalog"));
-                }
-
-                /*
-                 * Process the catalog filters
-                 */
-                else {
-
-                    self.processItem(connector.filters, null, d, layer);
-
-                    /*
-                     * Make a population ratio based tag cloud
-                     * for each .tagcloud element
-                     */
-                    $('.tagcloud', d).each(function(i){
-
-                        var a = $('a', $(this)),
-                        b = 0;
-
-                        /*
-                         * Roll over <a> element and get 
-                         * the bigger (b) population value
-                         */
-                        a.each(function(j) {
-                            b = Math.max($(this).attr("population"), b);
-                        });
-
-                        /*
-                         * Then set a proportionnal font-size to the
-                         * bigger element
-                         */
-                        if (b != 0) {
-                            a.each(function(j) {
-
-                                /*
-                                 * Set a proportionnal font-size
-                                 * from 0.8 to 1.8 em
-                                 */
-                                $(this).css('font-size', (function(p,b){
-                                    return (0.8 + Math.round((10 * p) / b) / 10) + 'em';
-                                })($(this).attr("population"),b));
-                            });
-                        }
-
+                    a.each(function(j) {
+                        b = Math.max($(this).attr("population"), b);
                     });
 
-                }
-                
-                return true;
-
-            },
-            
-            /**
-             * Show search results in panel east side
-             * 
-             * East side panel is swith in two horizontal parts :
-             *  - a table containing the result
-             *  - the previous/next actions in the lower part of the panel
-             *  
-             *  Both parts size are computed against the east panel size
-             *  to avoid overflows
-             *  
-             *  Structure of the East panel
-             *      <div class="east">
-             *          <div class="title">XXX results</div>
-             *          <div class="description">
-             *              <a class="previous">...</a>
-             *              <a class="next">...</a>
-             *          </div>
-             *      </div>
-             *  
-             */
-            displayResults:function(scope, layer) {
-
-                /*
-                 * Paranoid mode
-                 */
-                if (!layer) {
-                    return false;
-                }
-                
-                /*
-                 * Get the container div reference
-                 * based on the layer.id prefixed by sr
-                 */
-                var key,i,l,j,m,a,attributes,html,table,
-                nbOfFeatures = 0,
-                pid = msp.Util.getId(),
-                nid = msp.Util.getId(),
-                sc = layer["_msp"].searchContext,
-                features = msp.Map.Util.getFeatures(layer); // Important ! Get unclusterized features
-                
-                /*
-                 * No button specified - do nothing
-                 */
-                if (!sc.btn) {
-                    return false;
-                }
-                
-                /*
-                 * Create the east side panel structure:
-                 * 
-                 * <table class="catalog">
-                 *      ...Search results...
-                 * </table>
-                 */
-                sc.btn.$e.html('<table class="catalog" id="sr'+msp.Util.encode(layer.id)+'"></table>');
-
-                /*
-                 * Initialize table container
-                 */
-                if ($.isFunction(sc.connector.getBriefAttributes)) {
-                    attributes = sc.connector.getBriefAttributes();
-                    html = '<thead><tr>';
-                    for (i = 0, l = attributes.length; i < l; i++) {
-                        html += '<th>' + attributes[i].title + '</th>';
-                    }
-                    html += '</tr></thead><tbody>';
-
                     /*
-                     * Roll over features
-                     */ 
-                    for (key in features) {
-                        html += '<tr class="hover" fid="'+key+'">';
-                        for (j = 0, m = attributes.length; j < m; j++) {
-                            a = features[key].attributes[attributes[j].value];
-                            if (attributes[j].title === "Preview") {
-                                html += '<td><img src="' + (a ? a : msp.Util.getImgUrl('nodata.png')) + '"/></td>'
-                            }
-                            /*
-                             * Identifier special case, strip out urn prefix
-                             */
-                            else if (a && attributes[j].title === "Identifier") {
-                                html += '<td title="' + a + '">' + msp.Util.shorten(a.replace(/urn:ogc:def:EOP:/,""), 30) + '</td>';
-                            }
-                            else {
-                                html += '<td title="' + a + '">' + msp.Util.shorten(a, 30) + '</td>';
-                            }
-                        }
-                        html += '</tr></tbody>';
-                        
-                        /*
-                         * Count the number of features
-                         */
-                        nbOfFeatures++;
-                    }
-
-                    /*
-                     * Set the footer with next/previous action
+                     * Then set a proportionnal font-size to the
+                     * bigger element
                      */
-                    html += '<tfoot><tr><td colspan="'+l+'"><a href="#" id="'+pid+'" class="hover">&larr;&nbsp</a> ' + sc.nextRecord + " " + msp.Util._("to") + " " + (sc.nextRecord + nbOfFeatures - 1) + " " + msp.Util._("on") + " " + sc.totalResults + ' <a href="#" id="'+nid+'" class="hover">&rarr;</a></td></tr></tfoot>';
-
-                    /*
-                     * Populate the table results and make fixed headder
-                     */
-                    table = $('#sr'+msp.Util.encode(layer.id));
-                    table.html(html);
-
-                    (function(sc, div) {
-                        div.click(function(){
-                            sc.previous();
-                            return false;
-                        })
-                    })(sc, $('#'+pid));
-                    (function(sc, div) {
-                        div.click(function(){
-                            sc.next();
-                            return false;
-                        })
-                    })(sc, $('#'+nid));
-
-                    /*
-                     * Hide or display "next" action
-                     */
-                    (sc.nextRecord + sc.numRecordsPerPage < sc.totalResults) ? $('#'+nid).show() : $('#'+nid).hide();
-
-                    /*
-                     * Hide or display "previous" action
-                     */
-                    (sc.nextRecord - sc.numRecordsPerPage > 0) ? $('#'+pid).show() : $('#'+pid).hide();
-
-                    /*
-                     * Update SearchContext reference
-                     * (See Map.Util.FeatureInfo for explanation)
-                     */
-                    sc.$t = $('tbody tr', table);
-                    
-                    /*
-                     * Select feature on click
-                     */
-                    (function($d,features) {
-                        $d.click(function(){
+                    if (b != 0) {
+                        a.each(function(j) {
 
                             /*
-                             * Remove active class for every <tr>
+                             * Set a proportionnal font-size
+                             * from 0.8 to 1.8 em
                              */
-                            $('tr', table).removeClass('active');
-
-                            /*
-                             * Set this <tr> active and select the current
-                             * feature. Note that the 'force' input parameter
-                             * is set to true
-                             */
-                            var f = features[$(this).addClass('active').attr('fid')];
-
-                            /*
-                             * Zoom on feature and select it
-                             */
-                            msp.Map.zoomTo(f.geometry.getBounds());
-                            msp.Map.featureInfo.select(f, true);
-
+                            $(this).css('font-size', (function(p,b){
+                                return (0.8 + Math.round((10 * p) / b) / 10) + 'em';
+                            })($(this).attr("population"),b));
                         });
-                    })($('tbody tr', table),features);
-                    
-                    /*
-                     * Compute size
-                     */
-                    scope.onResizeEnd();
-
-                }
-
-                return true;
-            },
-
-            /**
-             * Process a filter item
-             */
-            processItem: function(item, father, div, layer, _id) {
-
-                var i,l,active,
-                id,
-                tmpItem,
-                newItem,
-                sc = layer["_msp"].searchContext;
-
-                /**
-                 * item can be an array
-                 */
-                for (i = 0, l = item.length; i < l; i++) {
-
-                    /*
-                     * Get item[i] reference
-                     */
-                    tmpItem = item[i];
-
-                    /*
-                     * item[i] has son => process the son
-                     */
-                    if (tmpItem.son) {
-                        id = msp.Util.getId();
-                        div.append('<span class="father">'+tmpItem.title+' |</span><span id="'+id+'" class="tagcloud"></span><br/>');
-                        this.processItem(tmpItem.son, tmpItem, div, layer, id);
                     }
-                    else {
 
-                        /*
-                         * Generate a unique id for class creation
-                         */
-                        id = msp.Util.getId();
+                });
 
-                        /*
-                         * enumeration
-                         *
-                         * Will create a tag-cloud with all the enumeration items
-                         */
-                        if (father && father.type === 'enumeration') {
-
-                            /*
-                             * If newItem is already defined in the
-                             * layer searchContext, add an active class
-                             * to the tag 
-                             */
-                            active = sc.isDefined({
-                                id:father.id,
-                                son:[{
-                                    id:tmpItem.id
-                                }]
-                            }) ? ' class="active"' : '';
-
-                            /*
-                             * If population is defined => make a ratio based tag-cloud
-                             */
-                            var pop = tmpItem.population !== undefined ? tmpItem.population : "";
-
-                            /*
-                             * Add tag
-                             */
-                            $('#'+_id).append('<a href="#" id="'+id+'" population="'+pop+'"'+active+'>'+tmpItem.title+'<span class="subscript">'+pop+'</span></a> ');
-
-                            /*
-                             * Click on one enumeration item :
-                             *  - if item is not already present, add it
-                             *    and add an 'active' class to the element
-                             *  - if item is already present, remove it
-                             *    and remove 'active' class from the element
-                             *  - if fater.unique is set to true then only
-                             *    one enumeration item can be selected at a time
-                             */
-                            (function(div, father, item, sc) {
-                                div.click(function(){
-
-                                    var newItem = {
-                                        id:father.id,
-                                        title:father.title,
-                                        son:[{
-                                            id:item.id,
-                                            value:item.value,
-                                            title:item.title
-                                        }]
-                                    };
-
-                                    /*
-                                     * Remove or add newItem depending
-                                     * on if it is already present or not
-                                     */
-                                    if (sc.isDefined(newItem)) {
-                                        $(this).removeClass('active');
-                                        sc.remove(item.id, father.id);
-                                    }
-                                    else {
-
-                                        /*
-                                         * Unique enumeration - one item selected
-                                         * at a time. Clear all others items
-                                         */
-                                        if (father.unique) {
-                                            $(this).parent().children().removeClass('active');
-                                            for (var i = 0, l = father.son.length; i < l; i++) {
-                                                sc.remove(father.son[i].id, father.id, true);
-                                            }
-                                        }
-
-                                        $(this).addClass('active');
-                                        sc.add(newItem);
-                                    }
-
-                                });
-                            })($('#'+id), father, tmpItem, sc);
-
-                        }
-
-                        /*
-                         * text or date
-                         *
-                         * Ask for a text or a date
-                         */
-                        else if (tmpItem.type === 'text' || tmpItem.type === 'date') {
-
-                            /*
-                             * First get the value within the searchContext...
-                             */
-                            var value = sc.getValue(tmpItem.id);
-
-                            /*
-                             * If there is no value then set the value to the
-                             * default connector value or ""
-                             */
-                            if (value === null) {
-                                value = tmpItem.value || "";
-                                
-                                /*
-                                 * if tmpItem.value is set then 
-                                 * initialize SearchContext object with this value
-                                 */
-                                if (tmpItem.value) {
-                                    sc.add({
-                                        id:tmpItem.id,
-                                        title:tmpItem.title,
-                                        value:tmpItem.value
-                                    });
-                                    tmpItem.value = "";
-                                }
-                            }
-
-                            /*
-                             * Add a keyword action
-                             */
-                            div.append('<span class="father">'+tmpItem.title+' |</span><span id="'+id+'t" class="bold">'+(value || "")+'</span>&nbsp;[<a href="#" id="'+id+'">'+(value ? msp.Util._("Change") : msp.Util._("Set"))+'</a><span id="'+id+'c"> or <a href="#">'+msp.Util._("Clear")+'</a></span>]</span><br/>');
-
-                            /*
-                             * Hide 'clear' action if value is not set
-                             */
-                            if (!value) {
-                                $('#'+id+'c').hide();
-                            }
-
-                            /*
-                             * Add a 'clear' action
-                             */
-                            (function(id, item, sc) {
-                                $('a', '#'+id+'c').click(function(e) {
-
-                                    /*
-                                     * Set item value to ""   
-                                     */    
-                                    sc.add({
-                                        id:item.id,
-                                        title:item.title,
-                                        value:""
-                                    });
-
-                                    /*
-                                     * Update link content text with
-                                     * the new set value
-                                     */
-                                    $('#'+id+'t').html("");
-
-                                    /*
-                                     * Hide the 'clear' action
-                                     */
-                                    $('#'+id+'c').hide();
-
-                                    $('#'+id).html(msp.Util._("Set"));
-
-                                    return false;
-                                });
-                            })(id, tmpItem, sc);
-
-                            /*
-                             * Ask for a free keyword on click
-                             */
-                            (function(id, item, sc, type) {
-                                $('#'+id).click(function(e) {
-                                    
-                                    msp.Util.askFor(msp.Util._(item.title), null, type, sc.getValue(item.id), function(v){
-
-                                        /*
-                                         * Value is set -> add newItem to searchContext
-                                         * Otherwise, remove it
-                                         */
-                                        if (v) {
-
-                                            /*
-                                             * Add newItem to layer searchContext
-                                             */
-                                            sc.add({
-                                                id:item.id,
-                                                title:item.title,
-                                                value:v
-                                            });
-
-                                            /*
-                                             * Update link content text with
-                                             * the new set value
-                                             */
-                                            $('#'+id+'t').html(v);
-
-                                            /*
-                                             * Show the 'Clear' action
-                                             */
-                                            $('#'+id+'c').show();
-
-                                            $('#'+id).html(msp.Util._("Change"));
-
-                                        }
-
-                                    });
-                                    return false;
-                                });
-                            })(id, tmpItem, sc, tmpItem.type);
-
-                        }
-                    }
-                }
             }
+
+            return true;
 
         };
         
+        /**
+         * Process a filter item
+         */
+        this.processItem = function(item, father, div, layer, _id) {
+
+            var i,l,active,
+            id,
+            tmpItem,
+            newItem,
+            sc = layer["_msp"].searchContext;
+
+            /**
+             * item can be an array
+             */
+            for (i = 0, l = item.length; i < l; i++) {
+
+                /*
+                 * Get item[i] reference
+                 */
+                tmpItem = item[i];
+
+                /*
+                 * item[i] has son => process the son
+                 */
+                if (tmpItem.son) {
+                    id = msp.Util.getId();
+                    div.append('<span class="father">'+tmpItem.title+' |</span><span id="'+id+'" class="tagcloud"></span><br/>');
+                    this.processItem(tmpItem.son, tmpItem, div, layer, id);
+                }
+                else {
+
+                    /*
+                     * Generate a unique id for class creation
+                     */
+                    id = msp.Util.getId();
+
+                    /*
+                     * enumeration
+                     *
+                     * Will create a tag-cloud with all the enumeration items
+                     */
+                    if (father && father.type === 'enumeration') {
+
+                        /*
+                         * If newItem is already defined in the
+                         * layer searchContext, add an active class
+                         * to the tag 
+                         */
+                        active = sc.isDefined({
+                            id:father.id,
+                            son:[{
+                                id:tmpItem.id
+                            }]
+                        }) ? ' class="active"' : '';
+
+                        /*
+                         * If population is defined => make a ratio based tag-cloud
+                         */
+                        var pop = tmpItem.population !== undefined ? tmpItem.population : "";
+
+                        /*
+                         * Add tag
+                         */
+                        $('#'+_id).append('<a href="#" id="'+id+'" population="'+pop+'"'+active+'>'+tmpItem.title+'<span class="subscript">'+pop+'</span></a> ');
+
+                        /*
+                         * Click on one enumeration item :
+                         *  - if item is not already present, add it
+                         *    and add an 'active' class to the element
+                         *  - if item is already present, remove it
+                         *    and remove 'active' class from the element
+                         *  - if fater.unique is set to true then only
+                         *    one enumeration item can be selected at a time
+                         */
+                        (function(div, father, item, sc) {
+                            div.click(function(){
+
+                                var newItem = {
+                                    id:father.id,
+                                    title:father.title,
+                                    son:[{
+                                        id:item.id,
+                                        value:item.value,
+                                        title:item.title
+                                    }]
+                                };
+
+                                /*
+                                 * Remove or add newItem depending
+                                 * on if it is already present or not
+                                 */
+                                if (sc.isDefined(newItem)) {
+                                    $(this).removeClass('active');
+                                    sc.remove(item.id, father.id);
+                                }
+                                else {
+
+                                    /*
+                                     * Unique enumeration - one item selected
+                                     * at a time. Clear all others items
+                                     */
+                                    if (father.unique) {
+                                        $(this).parent().children().removeClass('active');
+                                        for (var i = 0, l = father.son.length; i < l; i++) {
+                                            sc.remove(father.son[i].id, father.id, true);
+                                        }
+                                    }
+
+                                    $(this).addClass('active');
+                                    sc.add(newItem);
+                                }
+
+                            });
+                        })($('#'+id), father, tmpItem, sc);
+
+                    }
+
+                    /*
+                     * text or date
+                     *
+                     * Ask for a text or a date
+                     */
+                    else if (tmpItem.type === 'text' || tmpItem.type === 'date') {
+
+                        /*
+                         * First get the value within the searchContext...
+                         */
+                        var value = sc.getValue(tmpItem.id);
+
+                        /*
+                         * If there is no value then set the value to the
+                         * default connector value or ""
+                         */
+                        if (value === null) {
+                            value = tmpItem.value || "";
+
+                            /*
+                             * if tmpItem.value is set then 
+                             * initialize SearchContext object with this value
+                             */
+                            if (tmpItem.value) {
+                                sc.add({
+                                    id:tmpItem.id,
+                                    title:tmpItem.title,
+                                    value:tmpItem.value
+                                });
+                                tmpItem.value = "";
+                            }
+                        }
+
+                        /*
+                         * Add a keyword action
+                         */
+                        div.append('<span class="father">'+tmpItem.title+' |</span><span id="'+id+'t" class="bold">'+(value || "")+'</span>&nbsp;[<a href="#" id="'+id+'">'+(value ? msp.Util._("Change") : msp.Util._("Set"))+'</a><span id="'+id+'c"> or <a href="#">'+msp.Util._("Clear")+'</a></span>]</span><br/>');
+
+                        /*
+                         * Hide 'clear' action if value is not set
+                         */
+                        if (!value) {
+                            $('#'+id+'c').hide();
+                        }
+
+                        /*
+                         * Add a 'clear' action
+                         */
+                        (function(id, item, sc) {
+                            $('a', '#'+id+'c').click(function(e) {
+
+                                /*
+                                 * Set item value to ""   
+                                 */    
+                                sc.add({
+                                    id:item.id,
+                                    title:item.title,
+                                    value:""
+                                });
+
+                                /*
+                                 * Update link content text with
+                                 * the new set value
+                                 */
+                                $('#'+id+'t').html("");
+
+                                /*
+                                 * Hide the 'clear' action
+                                 */
+                                $('#'+id+'c').hide();
+
+                                $('#'+id).html(msp.Util._("Set"));
+
+                                return false;
+                            });
+                        })(id, tmpItem, sc);
+
+                        /*
+                         * Ask for a free keyword on click
+                         */
+                        (function(id, item, sc, type) {
+                            $('#'+id).click(function(e) {
+
+                                msp.Util.askFor(msp.Util._(item.title), null, type, sc.getValue(item.id), function(v){
+
+                                    /*
+                                     * Value is set -> add newItem to searchContext
+                                     * Otherwise, remove it
+                                     */
+                                    if (v) {
+
+                                        /*
+                                         * Add newItem to layer searchContext
+                                         */
+                                        sc.add({
+                                            id:item.id,
+                                            title:item.title,
+                                            value:v
+                                        });
+
+                                        /*
+                                         * Update link content text with
+                                         * the new set value
+                                         */
+                                        $('#'+id+'t').html(v);
+
+                                        /*
+                                         * Show the 'Clear' action
+                                         */
+                                        $('#'+id+'c').show();
+
+                                        $('#'+id).html(msp.Util._("Change"));
+
+                                    }
+
+                                });
+                                return false;
+                            });
+                        })(id, tmpItem, sc, tmpItem.type);
+
+                    }
+                }
+            }
+        };
+          
         /**
          * Launch a search over all catalogs
          *

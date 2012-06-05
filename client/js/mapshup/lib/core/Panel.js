@@ -107,8 +107,8 @@
              * At initialization, the width is set and the panel is hidden
              */
             self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('pn').css({
-                'width':self.w + 'px',
-                'height':self.h ? self.h + 'px' : 'auto'
+                    'width':self.w + 'px',
+                    'height':self.h ? self.h + 'px' : 'auto'
             }).hide();
             
             /*

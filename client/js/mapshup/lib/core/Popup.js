@@ -53,6 +53,12 @@
         this.autoSize = msp.Util.getPropertyValue(options, "autoSize", false);
         
         /*
+         * Class names to add to this popup
+         * !! WARNING !! Adding class names overide the "autoSize" parameter 
+         */
+        this.classes = options.classes;
+        
+        /*
          * Html content for body
          */
         this.body = options.body;
@@ -142,9 +148,14 @@
             self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$mcontainer).addClass('po').html('<div class="whole">'+(self.noHeader ? ''  : '<div class="header"></div>')+'<div class="body"></div></div>');
 
             /*
-             * Set automatic popup size or not ?
+             * Set classes or automatic popup size
              */
-            self.autoSize ? self.$d.addClass('poa') : self.$d.addClass('pona'); 
+            if (self.classes) {
+                self.$d.addClass(self.classes);
+            }
+            else {
+                self.$d.addClass(self.autoSize ? 'poa' : 'pona'); 
+            }
             
             /*
              * Set body and header reference
@@ -204,12 +215,15 @@
             }
             
             /*
-             * Popup max height is equal to 50% of its container 
+             * Popup body max height is equal to 50% of its container 
+             * // TODO : remove ?
              */
+            /*
             scope.$b.css({
                 'max-height':Math.round(($c.height() - scope.$h.height()) / 2)
             });
-            
+            */
+           
             /*
              * Center the popup over its container 
              */
