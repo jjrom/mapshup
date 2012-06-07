@@ -116,7 +116,7 @@ function outputToGeoJSON($theData) {
 
             /*
              * Bug from INSPIRE catalog ?
-             * Be sure that lowerCorner is lower right and not lower left
+             * Be sure that lowerCorner is lower left
              */
             $lonmin = min(floatval($lowerCorner[0]), floatval($upperCorner[0]));
             $lonmax = max(floatval($lowerCorner[0]), floatval($upperCorner[0]));
