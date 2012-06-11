@@ -64,10 +64,8 @@
             m,
             name,
             predefined,
-            tb,
             self = this,
-            dd = true,
-            id = msp.Util.getId(); // By default, drag&drop is enabled
+            dd = true; // By default, drag&drop is enabled
                 
             /**
              * Init options
