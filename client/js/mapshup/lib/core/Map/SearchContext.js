@@ -734,13 +734,6 @@
         };
         
         /*
-         * Change search BBOX on map move
-         */
-        msp.Map.events.register("moveend", this, function(map, scope) {
-            scope.setBBOX(scope.useGeo ? map.getExtent() : null);
-        });
-        
-        /*
          * Return this object
          */
         return this;
