@@ -532,8 +532,17 @@
              * Launch search
              */
             $('#'+id2).click(function() {
+                
                 self.sp.remove();
-                layer["_msp"].searchContext.search();
+                
+                /*
+                 * Set BBOX
+                 */
+                if (sc.useGeo) {
+                    sc.setBBOX(msp.Map.map.getExtent());
+                }
+                
+                sc.search();
                 return false;
             });
             
