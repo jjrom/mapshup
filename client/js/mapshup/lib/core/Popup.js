@@ -231,14 +231,12 @@
             }
             
             /*
-             * Popup body max height is equal to 50% of its container 
-             * // TODO : remove ?
+             * Popup body max height is equal to 75% of its container
              */
-            /*
             scope.$b.css({
-                'max-height':Math.round(($c.height() - scope.$h.height()) / 2)
+                'max-height':Math.round( (3 * ($c.height() - scope.$h.height())) / 4)
             });
-            */
+            
            
             /*
              * Center the popup over its container 
