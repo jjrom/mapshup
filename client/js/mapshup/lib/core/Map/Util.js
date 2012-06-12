@@ -621,14 +621,14 @@
          * mapshup special layers (i.e. mspLayer = true) and
          * initial layers are not processed
          */
-        if (!layer["_msp"].mspLayer && !layer["_msp"].initialLayer) {
+        if (layer["_msp"].mspLayer && layer["_msp"].initialLayer) {
             return false;
         }
         
         /*
          * Only zoom on layer that are initialized and that specify it 
          */
-        if (layer["_msp"].zoomOnAfterLoad && !layer["_msp"].initialized) {
+        if (layer["_msp"].zoomOnAfterLoad && layer["_msp"].initialized) {
 
             /*
              * Vector layers have a getDataExtent() function that returns bounds
