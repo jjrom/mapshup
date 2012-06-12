@@ -61,6 +61,7 @@ cat $jquerydir/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js >> $mjqueryd
 cat $jquerydir/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js >> $mjquerydir/mjquery.js
 cat $jquerydir/jqplot/plugins/jqplot.highlighter.min.js >> $mjquerydir/mjquery.js
 cat $jquerydir/jqplot/plugins/jqplot.cursor.min.js >> $mjquerydir/mjquery.js
+cat $jquerydir/jquery-ui-1.8.21.custom.min.js >> $mjquerydir/mjquery.js
 
 echo "Building mjquery.css"
 cat $jquerydir/fixedHeaderTable/css/defaultTheme.css > $mjquerydir/mjquery.css
