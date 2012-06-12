@@ -728,6 +728,32 @@
 
         };
         
+        /**
+         * Set time interval
+         * 
+         * @input interval : array of 2 ISO 8601 date
+         */
+        this.setTime = function(interval) {
+            
+            var s, self = this;
+            
+            s = self.connector.startDateAlias ? self.connector.startDateAlias : 'startDate';
+            
+            /**
+             * startDate is null => remove startDate item from the SearchContext
+             */
+            if (!interval) {
+                self.remove(s);
+            }
+            else {
+                this.add({
+                    id:s,
+                    title:msp.Util._("Date"),
+                    value:interval[0] + (interval[1] !== "" ? '/' + interval[1] : "")
+                });
+            }
+        };
+        
         /*
          * Return this object
          */

@@ -83,7 +83,7 @@
          * Array of available search filters
          */
         this.filters = [];
-
+        
         /**
          * Metadata translation HasMap
          * Contains key,value association with
@@ -117,15 +117,6 @@
          * Register object
          */
         this.register = function() {
-            
-            /*
-             * Filter on date
-             */
-            this.filters.push({
-                id:"startDate",
-                title:msp.Util._("Acquisition Date"),
-                type:"date"
-            });
             
             /*
              * Filter on dct:subject

@@ -106,15 +106,6 @@
         this.register = function() {
             
             /*
-             * Filter on date
-             */
-            this.filters.push({
-                id:"startDate",
-                title:msp.Util._("Acquisition Date"),
-                type:"date"
-            });
-
-            /*
              * Filter on dct:subject
              */
             this.filters.push({

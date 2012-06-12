@@ -88,7 +88,7 @@
                 self.min = ui.values.min;
                 self.max = ui.values.max;
             }).bind("valuesChanged", function(event, ui) {
-                //console.log("TODO : launch search");
+                self.setTime(self.getInterval());
             });
             
             /*
@@ -103,6 +103,26 @@
             
         };
         
+        /*
+         * Update time filter for catalog layers
+         */
+        this.setTime = function(interval) {
+        
+            var i, l, layer;
+            
+            for (i = 0, l = msp.Map.map.layers.length; i < l; i++) {
+                
+                layer = msp.Map.map.layers[i];
+                
+                /*
+                 * mapshup layers are excluded from the processing
+                 */
+                if (layer && layer["_msp"] && layer["_msp"].searchContext) {
+                    layer["_msp"].searchContext.setTime(interval);
+                }
+                
+            }
+        };
         
         /*
          * Transform a date into an ISO8601 representation

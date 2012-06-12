@@ -70,7 +70,7 @@
          * Reference to filter callback function
          */
         this.filterCallback = filterCallback;   
-            
+        
         /*
          * Initialize options
          */
@@ -120,6 +120,11 @@
             'description':'Description'
         };
 
+        /**     
+         * Name of the date field
+         */
+        this.startDateAlias = "disasterStartDate";
+        
         /*
          * Called by Catalog plugins to register
          * a CSWEOCharter catalog
@@ -137,15 +142,6 @@
             if (this.isRegistered) {
                 return false;
             }
-
-            /*
-             * Filter on disaster date
-             */
-            this.filters.push({
-                id:"disasterStartDate",
-                title:msp.Util._("Disaster Date"),
-                type:"date"
-            });
 
             /*
              * Filter on disaster CALL_ID

@@ -161,11 +161,14 @@
                                  * If value = {time:start} add a date filter 
                                  */
                                 if (kvps[key].indexOf('time:start') === 1) {
-                                    self.filters.push({
-                                        id:"startDate",
-                                        title:msp.Util._("Date"),
-                                        type:"date"
-                                    });
+                                    self.startDateAlias = key;
+                                }
+                                
+                                /*
+                                 * If value = {time:end} add a date filter 
+                                 */
+                                if (kvps[key].indexOf('time:end') === 1) {
+                                    self.endDateAlias = key;
                                 }
                                 
                                 /*
