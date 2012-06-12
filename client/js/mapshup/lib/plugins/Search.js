@@ -488,7 +488,7 @@
          */
         this.setSearchTerms = function(service) {
             
-            var e1,e2,bbox,
+            var e1,e2,bbox,interval,
             self = this;
             
             /*
@@ -530,6 +530,16 @@
                     service.searchParams["lang"] = msp.Config.i18n.lang;
                 }
                 
+                /*
+                 * Set date
+                 */
+                interval =  msp.timeLine.getInterval();
+                if (service.searchParams.hasOwnProperty("time:start")) {
+                    service.searchParams["time:start"] = interval[0];
+                }
+                if (service.searchParams.hasOwnProperty("time:end")) {
+                    service.searchParams["time:end"] = interval[1];
+                }
             }
             
         };
