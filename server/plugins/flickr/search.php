@@ -68,6 +68,8 @@ $tag_mode = isset($_REQUEST["tag_mode"]) ? $_REQUEST["tag_mode"] : "";
 $per_page = isset($_REQUEST["maxfeatures"]) ? $_REQUEST["maxfeatures"] : MSP_RESULTS_PER_PAGE;
 $bbox = isset($_REQUEST["bbox"]) ? $_REQUEST["bbox"] : "-180,-90,180,90";
 $relevance = isset($_REQUEST["relevance"]) ? $_REQUEST["relevance"] : "";
+$start = isset($_REQUEST["start"]) ? str_replace("T00:00:00", "", $_REQUEST["start"]) : "";
+$end = isset($_REQUEST["end"]) ? str_replace("T00:00:00", "", $_REQUEST["end"]) : "";
 
 /*
  * url_s is equivalent to thumbnail
@@ -79,7 +81,7 @@ $extras = "description,tags,geo,url_s,url_l,url_sq";
 /*
  * Construct url with input parameters
  */
-$url = $url . "tags=" . str_replace(" ", ",", $q) . "&machine_tags=" . $machine_tags . "&user_id=" . $user_id . "&tag_mode=" . $tag_mode . "&extras=" . $extras . "&per_page=" . $per_page . "&bbox=" . $bbox . "&relevance=" . $relevance;
+$url = $url . "tags=" . str_replace(" ", ",", $q) . "&machine_tags=" . $machine_tags . "&user_id=" . $user_id . "&tag_mode=" . $tag_mode . "&extras=" . $extras . "&per_page=" . $per_page . "&bbox=" . $bbox . "&relevance=" . $relevance. "&min_taken_date=" . $start . "&max_taken_date=" . $end;
 
 /*
  * Get flickr result in json format
