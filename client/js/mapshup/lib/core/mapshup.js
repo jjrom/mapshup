@@ -176,7 +176,6 @@
                 exit();
             }
 
-            
             /**
              * Initialize #map reference
              */
@@ -225,6 +224,11 @@
              * Initialize mask
              */
             self.mask = new self.Mask();
+            
+            /**
+             * Initialize timeLine
+             */
+            self.timeLine = new self.TimeLine();
             
             /*
              * If kvp got a "uid" key, then the corresponding context

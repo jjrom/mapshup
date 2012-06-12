@@ -1,6 +1,7 @@
 lib/core/mapshup.js
 lib/core/Config.js
 lib/core/Util.js
+lib/core/TimeLine.js
 lib/core/Events.js
 lib/core/Activity.js
 lib/core/Toolbar.js
