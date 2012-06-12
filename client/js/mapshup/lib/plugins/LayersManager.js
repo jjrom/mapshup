@@ -1124,7 +1124,7 @@
              * Set features info
              */
             $('.fi', item.$d).html(size + "&nbsp;" + msp.Util._(size < 2 ? "feature" : "features"));
-            
+     
             return true;
                         
         };
