@@ -52,22 +52,20 @@ fi
 
 echo "Building mjquery.js"
 cat $jquerydir/jquery-1.7.2.min.js > $mjquerydir/mjquery.js
-cat $jquerydir/fixedHeaderTable/jquery.fixedheadertable.min.js >> $mjquerydir/mjquery.js
+cat $jquerydir/jquery-ui-1.8.21.custom.min.js >> $mjquerydir/mjquery.js
+
 cat $jquerydir/idTabs/jquery.idTabs.min.js >> $mjquerydir/mjquery.js
-cat $jquerydir/autocomplete/jquery.autocomplete.js >> $mjquerydir/mjquery.js
 cat $jquerydir/jqplot/jquery.jqplot.min.js >> $mjquerydir/mjquery.js
 cat $jquerydir/jqplot/plugins/jqplot.canvasTextRenderer.min.js >> $mjquerydir/mjquery.js
 cat $jquerydir/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js >> $mjquerydir/mjquery.js
 cat $jquerydir/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js >> $mjquerydir/mjquery.js
 cat $jquerydir/jqplot/plugins/jqplot.highlighter.min.js >> $mjquerydir/mjquery.js
 cat $jquerydir/jqplot/plugins/jqplot.cursor.min.js >> $mjquerydir/mjquery.js
-cat $jquerydir/jquery-ui-1.8.21.custom.min.js >> $mjquerydir/mjquery.js
+cat $jquerydir/jQRangeSlider/jQRangeSlider.js >> $mjquerydir/mjquery.js
+cat $jquerydir/jQRangeSlider/jQDateRangeSlider.js >> $mjquerydir/mjquery.js
 
 echo "Building mjquery.css"
-cat $jquerydir/fixedHeaderTable/css/defaultTheme.css > $mjquerydir/mjquery.css
 cat $jquerydir/jqplot/jquery.jqplot.min.css >> $mjquerydir/mjquery.css
-cat $jquerydir/autocomplete/jquery.autocomplete.css >> $mjquerydir/mjquery.css
-cp $jquerydir/autocomplete/loader.gif $mjquerydir/
 
 echo "Done !"
 
