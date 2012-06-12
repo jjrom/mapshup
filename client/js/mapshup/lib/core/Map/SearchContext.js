@@ -673,12 +673,7 @@
                     title:msp.Util._("Search Area"),
                     son: [{
                         id:"geometry",
-                        title:msp.Map.Util.convert({
-                            input:geoBounds,
-                            format:"WKT",
-                            precision:5,
-                            limit:true
-                        }),
+                        title:"geometry",
                         value:msp.Map.Util.convert({
                             input:geoBounds,
                             format:"EXTENT",
