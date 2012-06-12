@@ -257,12 +257,12 @@ function postRemoteData($url, $request, $setHeaders) {
             // if $setHeaders is a boolean then add default HTTPHEADERS
             if (is_bool($setHeaders) === true) {
                 curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-                    'POST HTTP/1.0',
+                    'POST HTTP/1.1',
                     'Content-type: text/xml;charset="UTF-8"',
                     'Accept: text/xml',
                     'Cache-Control: no-cache',
                     'Pragma: no-cache',
-                    'Expect: '
+                    'Expect:'
                 ));
             }
             // if $setHeaders is an array then set HTTPHEADERS with $setHeaders content
