@@ -297,18 +297,6 @@ a.tab,
     letter-spacing: 0.2em;
 }
 
-/*
- * Footer
- */
- #timeLine {
-    position:absolute;
-    top:35px;
-    left:0px;
-    height:40px;
-    width:100%;
-    z-index:34500;
-}
-
 /* contextual menu displayed after long click on the map */
 #menu {
     position:absolute;
@@ -880,6 +868,21 @@ a.tab img {
 /*
  * TimeLine
  */
+ #timeLine {
+    position:absolute;
+    top:35px;
+    left:0px;
+    height:40px;
+    width:100%;
+    z-index:34500;
+}
+.timeLine {
+    position:absolute;
+    top:0px;
+    left:0px;
+    height:100%;
+    width:80%;
+}
 .ui-rangeSlider{
     font-size:1em;
     color:#fff;

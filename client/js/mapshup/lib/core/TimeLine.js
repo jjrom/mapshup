@@ -71,8 +71,16 @@
             
             /*
              * Create timeLine object
+             * 
+             * <div id="timeLine">
+             *      <div class="timeLine"></div>
+             *      <div class="tools"></div>
+             * </div>
+             * 
              */
-            self.$d = msp.Util.$$('#timeLine', $('#mwrapper')).dateRangeSlider({
+            self.$d = msp.Util.$$('#timeLine', $('#mwrapper')).html('<div class="timeLine"></div><div class="tools"></div>')
+            
+            $('.timeLine', self.$d).dateRangeSlider({
                 wheelMode:"scroll",
                 valueLabels:"change",
                 bounds:{
