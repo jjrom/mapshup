@@ -249,7 +249,15 @@
             }
             else {
                 $('.mask', self.$d).show();
+                
                 self.setTime(null);
+                
+                /*
+                 * Refresh layers
+                 */
+                if (self.autoRefresh) {
+                    self.refresh();
+                }
             }
             
         };
