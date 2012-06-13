@@ -543,7 +543,15 @@
                      * Otherwise, display results
                      */
                     if (!data) {
+                        
                         msp.Util.message(layer.name + " : empty resut");
+                        
+                        /*
+                         * Clean layer
+                         */
+                        layer.destroyFeatures();
+                        msp.Map.onFeaturesAdded(layer);
+                        
                     }
                     else if (data.error) {
                         msp.Util.message(layer.name + " : " + data.error["message"], -1);
