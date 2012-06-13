@@ -876,13 +876,43 @@ a.tab img {
     width:100%;
     z-index:34500;
 }
+
 .timeLine {
     position:absolute;
     top:0px;
     left:0px;
     height:100%;
-    width:80%;
 }
+.timeLine .mask{
+    position:absolute;
+    width:100%;
+    height:40px;
+    line-height:20px;
+    text-align:center;
+    background-color:rgba(243, 150, 28, 0.7);
+    display:none;
+    text-transform:uppercase;
+    cursor:pointer;
+    z-index:20100;
+}
+#timeLine .tools {
+    position:absolute;
+    display:inline;
+    width:auto;
+    height:40px;
+    right:30px;
+}
+#timeLine .tools .item {
+    color:#fff;
+    text-align:center;
+    white-space:nowrap;
+    line-height:40px;
+    padding-left:12px;
+    padding-right:12px;
+    height:40px;
+    display:inline-block;
+}
+
 .ui-rangeSlider{
     font-size:1em;
     color:#fff;

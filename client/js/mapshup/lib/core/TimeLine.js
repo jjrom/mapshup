@@ -42,7 +42,10 @@
 (function(msp) {
     
     
-    msp.TimeLine = function() {
+    /*
+     * @input boolean b : true to enable timeLine - false otherwise
+     */
+    msp.TimeLine = function(b) {
         
         /*
          * Only one TimeLine object instance is created
@@ -67,12 +70,37 @@
         this.isLoaded = false;
         
         /*
+         * Registered items
+         */
+        this.items = [];
+        
+        /*
+         * True to enable time slider. False otherwise
+         */
+        this.enabled = true;
+        
+        /*
+         * True to automatically refresh all registered layers
+         * when dates change
+         */
+        this.autoRefresh = false;
+        
+        /*
          * Initialize TimeLine 
          * TimeLine is located immediatly below mapshup header
+         * 
+         * @input b : boolean - true to enable timeLine - false otherwise
          */
-        this.init = function() {
+        this.init = function(b) {
             
-            var $m, self = this;
+            var id = msp.Util.getId(), self = this;
+            
+            /*
+             * No timeLine
+             */
+            if (!b) {
+                return false;
+            }
             
             /*
              * Create timeLine object
@@ -83,9 +111,61 @@
              * </div>
              * 
              */
-            self.$d = msp.Util.$$('#timeLine', $('#mwrapper')).html('<div class="timeLine"></div><div class="tools"></div>')
+            self.$d = msp.Util.$$('#timeLine', $('#mwrapper')).html('<div class="timeLine"><div class="mask"><h2>'+msp.Util._("Date filter disabled")+'</h2>('+msp.Util._("Click to enable")+')</div></div>')
             
-            $('.timeLine', self.$d).dateRangeSlider({
+            /*
+             * Create actions Toolbar
+             */
+            self.tb = new msp.Toolbar({
+                parent:$(self.$d), 
+                classes:'tools'
+            });
+            self.tb.add({
+                id:msp.Util.getId(),
+                icon:msp.Util.getImgUrl("refresh.png"),
+                tt:msp.Util._("Refresh layers"),
+                activable:false,
+                switchable:false,
+                callback:function() {
+                    self.refresh();
+                }
+            });
+            
+            self.tb.add({
+                id:msp.Util.getId(),
+                icon:msp.Util.getImgUrl("disable.png"),
+                tt:msp.Util._("Disable date filter"),
+                activable:false,
+                switchable:false,
+                callback:function() {
+                    self.enable(false);
+                }
+            });
+            
+            /*
+             * Set a trigger on visibility mask
+             */
+            $('.mask', self.$d).click(function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                self.enable(true);
+            });
+                
+            
+            /*
+             * Set timeLine reference
+             */
+            self.$timeLine = $('.timeLine', self.$d);
+            
+            /*
+             * Compute size
+             */
+            self.resize(self);
+            
+            /*
+             * Set time slider
+             */
+            self.$timeLine.dateRangeSlider({
                 wheelMode:"scroll",
                 valueLabels:"change",
                 bounds:{
@@ -114,7 +194,18 @@
                     self.isLoaded = true;
                 }
                 else {
+                    
+                    /*
+                     * Propagate date changes to layers
+                     */
                     self.setTime(self.getInterval());
+                    
+                    /*
+                     * Refresh layers
+                     */
+                    if (self.autoRefresh) {
+                        self.refresh();
+                    }
                 }
     
             });
@@ -122,12 +213,70 @@
             /*
              * Move map object
              */
-            $m = $('.map');
-            $m.css({
-                'top':$m.offset().top + self.$d.height()
+            $('.map').css({
+                'top':$('.map').offset().top + self.$d.height()
             });
         
+            /*
+             * Recompute size when window is resized
+             */
+            msp.events.register("resizeend", self, self.resize);
+            
             return true;
+            
+        };
+        
+        /*
+         * Recompute size when window is resized
+         */
+        this.resize = function(scope) {
+            scope.$timeLine.css({
+                width:(100 - (100.0 * (scope.tb.$d.outerWidth() + 30) / msp.$map.width()))+'%'
+            });
+        };
+        
+        /*
+         * Enable/disable date filters
+         */
+        this.enable = function(b) {
+            
+            var self = this;
+            
+            self.enabled = b;
+            
+            if (b) {
+                $('.mask', self.$d).hide();
+            }
+            else {
+                $('.mask', self.$d).show();
+            }
+            
+        };
+        
+        /*
+         * Refresh all timed layers
+         */
+        this.refresh = function() {
+            
+            var i, l, layer;
+            
+            for (i = 0, l = msp.Map.map.layers.length; i < l; i++) {
+                
+                layer = msp.Map.map.layers[i];
+                
+                /*
+                 * mapshup layers are excluded from the processing
+                 */
+                if (layer && layer["_msp"] && layer["_msp"].searchContext) {
+                    
+                    /*
+                     * Refresh layer
+                     */
+                    layer["_msp"].searchContext.search();
+                    
+                }
+                
+            }
             
         };
         
@@ -146,10 +295,16 @@
                  * mapshup layers are excluded from the processing
                  */
                 if (layer && layer["_msp"] && layer["_msp"].searchContext) {
+                    
+                    /*
+                     * Update searchContext date filter
+                     */
                     layer["_msp"].searchContext.setTime(interval);
+                    
                 }
                 
             }
+            
         };
         
         /*
@@ -187,7 +342,7 @@
         /* 
          * Initialize object
          */
-        this.init();
+        this.init(b);
         
         /*
          * Create unique instance

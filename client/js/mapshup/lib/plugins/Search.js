@@ -253,7 +253,7 @@
                                 /*
                                  * Automatically zoom on result extent
                                  */
-                                msp.Map.zoomTo(layer.getDataExtent());
+                                //msp.Map.zoomTo(layer.getDataExtent());
                                 
                                 /*
                                  * If only one feature is present in the result,
@@ -453,7 +453,7 @@
              */
             layerDescription = {
                 type:service.type,
-                url:msp.Util.proxify(url),
+                url:url,
                 title:self.$input.val(),
                 q:self.$input.val()
             };

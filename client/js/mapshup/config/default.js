@@ -87,6 +87,11 @@
      * True to display scale
      */
     c["general"].displayScale = true;
+    
+    /**
+     * True to enable timeLine
+     */
+    c["general"].displayTimeLine = true;
 
     /*
      * If true, feature are highlited when mouse over
@@ -613,7 +618,6 @@
         options:{
             nextRecord:1,
             numRecordsPerPage:20,
-            autoSearch:false,
             connectors:[
             /**
                  * CSW ISO Catalog connector

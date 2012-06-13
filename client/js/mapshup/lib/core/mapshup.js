@@ -228,7 +228,7 @@
             /**
              * Initialize timeLine
              */
-            self.timeLine = new self.TimeLine();
+            self.timeLine = new self.TimeLine(self.Config["general"].displayTimeLine);
             
             /*
              * If kvp got a "uid" key, then the corresponding context
