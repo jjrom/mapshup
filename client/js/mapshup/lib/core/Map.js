@@ -1601,7 +1601,7 @@
                     msp.Util.message(e);
                 }
                 else {
-                    msp.Map.map.setCenter(c, 12);
+                    msp.Map.map.setCenter(c, 9);
                 }
             }
             /**
