@@ -662,7 +662,7 @@
                 /*
                  * Append tab to panel
                  */
-                self.$d.append('<a id="'+tid+'" class="vtab tab">'+(content.icon ? '<img src="'+content.icon+'">&nbsp;' : '')+msp.Util._(content.title)+'<span class="tools"></span><span class="loading"></span></a>');
+                self.$d.append('<a id="'+tid+'" class="vtab tab">'+(content.icon ? '<img src="'+content.icon+'" width="16px">&nbsp;' : '')+msp.Util._(content.title)+'<span class="tools"></span><span class="loading"></span></a>');
                 
                 /*
                  * Set item
