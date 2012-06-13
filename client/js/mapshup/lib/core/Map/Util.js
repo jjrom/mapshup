@@ -626,6 +626,13 @@
         }
         
         /*
+         * Never zoom on a tracked layer
+         */
+        if (layer["_msp"].refresh) {
+            return false;
+        }
+        
+        /*
          * Only zoom on layer that are initialized and that specify it 
          */
         if (layer["_msp"].zoomOnAfterLoad && layer["_msp"].initialized) {
