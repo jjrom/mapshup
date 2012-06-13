@@ -418,8 +418,7 @@
          */
         this.remove = function(id, fatherId, noauto) {
             
-            var i,j,l,m,
-            self=this;
+            var i, j, l, m, self = this;
              
             /*
              * Roll over items
@@ -754,7 +753,7 @@
              * startDate is null => remove startDate item from the SearchContext
              */
             if (!interval) {
-                self.remove(s);
+                self.remove(s, null);
             }
             else {
                 this.add({

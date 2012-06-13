@@ -188,17 +188,14 @@
             }).bind("valuesChanged", function(event, ui) {
                 
                 /*
+                 * Propagate date changes to layers
+                 */
+                self.setTime(self.getInterval());
+                
+                /*
                  * The first call to valuesChanged is during initialization
                  */
-                if (!self.isLoaded) {
-                    self.isLoaded = true;
-                }
-                else {
-                    
-                    /*
-                     * Propagate date changes to layers
-                     */
-                    self.setTime(self.getInterval());
+                if (self.isLoaded) {
                     
                     /*
                      * Refresh layers
@@ -206,6 +203,10 @@
                     if (self.autoRefresh) {
                         self.refresh();
                     }
+                    
+                }
+                else {
+                    self.isLoaded = true;
                 }
     
             });
