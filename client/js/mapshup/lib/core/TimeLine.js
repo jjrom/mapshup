@@ -231,7 +231,7 @@
          */
         this.resize = function(scope) {
             scope.$timeLine.css({
-                width:(100 - (100.0 * (scope.tb.$d.outerWidth() + 30) / msp.$map.width()))+'%'
+                width:(100 - (100.0 * 130 / msp.$map.width()))+'%'
             });
         };
         
