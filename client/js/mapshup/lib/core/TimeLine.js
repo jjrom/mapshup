@@ -62,6 +62,11 @@
         this.max = new Date();
         
         /*
+         * True if initialized
+         */
+        this.isLoaded = false;
+        
+        /*
          * Initialize TimeLine 
          * TimeLine is located immediatly below mapshup header
          */
@@ -93,10 +98,25 @@
              * Register event on date changes
              */
             self.$d.bind("valuesChanging", function(event, ui) {
+                
+                /*
+                 * Continuing store date changes
+                 */
                 self.min = ui.values.min;
                 self.max = ui.values.max;
+                
             }).bind("valuesChanged", function(event, ui) {
-                self.setTime(self.getInterval());
+                
+                /*
+                 * The first call to valuesChanged is during initialization
+                 */
+                if (!self.isLoaded) {
+                    self.isLoaded = true;
+                }
+                else {
+                    self.setTime(self.getInterval());
+                }
+    
             });
             
             /*
