@@ -566,7 +566,7 @@
              */
             setTimeout(function(){
                 self.events.trigger('resizeend');
-            }, 100);
+            }, 1000);
             
             
         },
