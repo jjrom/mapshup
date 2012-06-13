@@ -295,7 +295,7 @@
 
             /*
              * If xy is not (or uncorrectly) defined,
-             * div is centered on "#Map" div
+             * div is centered on $map div
              */
             if (!pixel || !pixel.x || !pixel.y) {
                 x = offset.left + ((parent.width() - $d.width()) / 2);
