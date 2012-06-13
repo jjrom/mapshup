@@ -138,7 +138,7 @@
             /**
              * To avoid overload, getItems method
              * is called only if the new map extent differs
-             * from the current bounds by at least the quarter
+             * from the current bounds by at least the half
              * of the map size in pixel reference system
              */
             if (scope.layer && scope.layer.getVisibility()) {
@@ -150,7 +150,7 @@
                  * If the map is sufficiently zoomed, then load Wikipedia stuff...
                  */
                 if (newZoom >= scope.options.minimumZoomLevel) {
-                    if (scope.zoom != newZoom || Math.abs(centerPixel.x - newCenterPixel.x) > ($('#Map').width() / 4) || Math.abs(centerPixel.y - newCenterPixel.y) > ($('#Map').height() / 4)) {
+                    if (scope.zoom != newZoom || Math.abs(centerPixel.x - newCenterPixel.x) > (msp.$map.width() / 2) || Math.abs(centerPixel.y - newCenterPixel.y) > (msp.$map.height() / 2)) {
                         scope.getItems(msp.Map.Util.p2d(map.getExtent()));
                         scope.zoom = newZoom;
                         scope.centerLonLat = map.getCenter();
