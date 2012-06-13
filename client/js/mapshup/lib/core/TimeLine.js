@@ -93,7 +93,7 @@
          */
         this.init = function(b) {
             
-            var id = msp.Util.getId(), self = this;
+            var self = this;
             
             /*
              * No timeLine
@@ -249,6 +249,7 @@
             }
             else {
                 $('.mask', self.$d).show();
+                self.setTime(null);
             }
             
         };
@@ -336,7 +337,7 @@
          */
         this.getInterval = function() {
             var self = this;
-            return [self.toISO8601(self.min), self.toISO8601(self.max)];
+            return self.enabled ? [self.toISO8601(self.min), self.toISO8601(self.max)] : ['',''];
         };
         
         /* 
