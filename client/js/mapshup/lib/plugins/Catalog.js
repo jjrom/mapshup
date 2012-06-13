@@ -73,6 +73,7 @@
              * Default options
              */
             $.extend(self.options, {
+                autoSearch:msp.Util.getPropertyValue(self.options, "autoSearch", false),
                 nextRecord:self.options.nextRecord || 1,
                 numRecordsPerPage:self.options.numRecordsPerPage || 20,
                 connectors:self.options.connectors || []
@@ -325,7 +326,7 @@
                  * Set new SearchContext
                  */ 
                 _msp.searchContext = new msp.Map.SearchContext(layer, connector, {
-                    autoSearch:msp.Util.getPropertyValue(_msp.layerDescription, "autoSearch", false),
+                    autoSearch:scope.options.autoSearch,
                     nextRecord:_msp.layerDescription.nextRecord || scope.options.nextRecord,
                     nextRecordAlias:connector.nextRecordAlias,
                     numRecordsPerPage:_msp.layerDescription.numRecordsPerPage || scope.options.numRecordsPerPage, 

@@ -79,7 +79,6 @@
          *       nextRecord:(optional)
          *       numRecordsPerPage:(optional)
          *       collection:(optional),
-         *       autoSearch:(optional - default false)
          *       extras:[
          *          order:"latlon" (optional)
          *       ]

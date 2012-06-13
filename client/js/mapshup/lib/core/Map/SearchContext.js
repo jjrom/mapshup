@@ -642,10 +642,13 @@
          * 
          */
         this.setGeo = function(b) {
-            this.useGeo = b;
-            this.setBBOX(this.useGeo ? msp.Map.map.getExtent() : null);
-            if (this.autoSearch) {
-                this.search();
+            
+            var self = this;
+            
+            self.useGeo = b;
+            self.setBBOX(self.useGeo ? msp.Map.map.getExtent() : null);
+            if (self.autoSearch) {
+                self.search();
             }
         };
         

@@ -613,6 +613,7 @@
         options:{
             nextRecord:1,
             numRecordsPerPage:20,
+            autoSearch:false,
             connectors:[
             /**
                  * CSW ISO Catalog connector
