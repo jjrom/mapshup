@@ -564,7 +564,10 @@
             /**
              * Force mapshup resize
              */
-            self.events.trigger('resizeend');
+            setTimeout(function(){
+                self.events.trigger('resizeend');
+            }, 100);
+            
             
         },
         
