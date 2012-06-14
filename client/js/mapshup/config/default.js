@@ -617,7 +617,7 @@
         name:"Catalog",
         options:{
             nextRecord:1,
-            numRecordsPerPage:20,
+            numRecordsPerPage:50,
             connectors:[
             /**
                  * CSW ISO Catalog connector
