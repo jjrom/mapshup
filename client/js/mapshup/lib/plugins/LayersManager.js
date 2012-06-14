@@ -152,7 +152,7 @@
             /*
              * Add an hidden raster item within the panel
              */
-            self.rasterItem = new function(lm) {
+            self.rasterItem = new function(lm, tw) {
             
                 /*
                  * Add raster tab
@@ -223,7 +223,7 @@
                      * Set new width
                      */
                     $ul.css({
-                        'width': (($('li', $ul).length * self.tw) + self.tw) + 'px'
+                        'width': (($('li', $ul).length * tw) + tw) + 'px'
                     });
                     
                     $id = $('#'+id);
@@ -338,7 +338,7 @@
                      */
                     l = $('li', $ul).length;
                     $ul.css({
-                        'width': ((l * self.tw) + self.tw) + 'px'
+                        'width': ((l * tw) + tw) + 'px'
                     });
                     
                     /*
@@ -354,7 +354,7 @@
                 
                 return self;
                 
-            }(self);
+            }(self, self.tw);
             
             /*
              * Create feature info over panel
