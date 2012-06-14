@@ -83,7 +83,7 @@
          * True to automatically refresh all registered layers
          * when dates change
          */
-        this.autoRefresh = false;
+        this.autoRefresh = true;
         
         /*
          * Initialize TimeLine 
@@ -120,6 +120,7 @@
                 parent:$(self.$d), 
                 classes:'tools'
             });
+            /*
             self.tb.add({
                 id:msp.Util.getId(),
                 icon:msp.Util.getImgUrl("refresh.png"),
@@ -130,7 +131,7 @@
                     self.refresh();
                 }
             });
-            
+            */
             self.tb.add({
                 id:msp.Util.getId(),
                 icon:msp.Util.getImgUrl("disable.png"),
@@ -232,7 +233,7 @@
          */
         this.resize = function(scope) {
             scope.$timeLine.css({
-                width:(100 - (100.0 * 130 / msp.$map.width()))+'%'
+                width:(100 - (100.0 * 80 / msp.$map.width()))+'%'
             });
         };
         
