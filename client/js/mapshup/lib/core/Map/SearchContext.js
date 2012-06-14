@@ -543,7 +543,7 @@
                      */
                     if (!data) {
                         
-                        msp.Util.message(layer.name + " : empty resut");
+                        msp.Util.message(layer.name + " : " + msp.Util._("No resut"));
                         
                         /*
                          * Clean layer
