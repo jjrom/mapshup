@@ -579,6 +579,7 @@
                         
                         if (!features || l === 0) {
                             msp.Util.message(msp.Util._(layer.name) + " : " + msp.Util._("No result"));
+                            msp.Map.onFeaturesAdded(layer);
                         }
                         else {
                             
