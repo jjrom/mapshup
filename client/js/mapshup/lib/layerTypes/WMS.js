@@ -655,11 +655,14 @@
             var time = interval[0]; // + (interval[1] !== '' ? '/' + interval[1] : '');
             
             if (layer && layer.mergeNewParams) {
-                layer["_msp"].layerDescription.time = layer["_msp"].layerDescription.time || {};
-                layer["_msp"].layerDescription.time["value"] = time;
-                layer.mergeNewParams({
-                    'time':time
-                });
+                
+                if (layer["_msp"].layerDescription.time) {
+                    layer["_msp"].layerDescription.time = layer["_msp"].layerDescription.time || {};
+                    layer["_msp"].layerDescription.time["value"] = time;
+                    layer.mergeNewParams({
+                        'time':time
+                    });
+                }
             }
         },
 
