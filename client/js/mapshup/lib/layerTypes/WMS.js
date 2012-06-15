@@ -640,7 +640,20 @@
         /**
          * Update WMS Time layer according to the new time
          */
-        setTime: function(layer, time) {
+        /**
+         * Set layer time filter
+         * 
+         * @input <OpenLayers.Layer> layer : target layer
+         * @input <array> interval : interval (see TimeLine.js)
+         */
+        setTime:function(layer, interval) {
+            
+            /*
+             * Currently only the first value of the interval is 
+             * sent to the WMS server
+             */
+            var time = interval[0]; // + (interval[1] !== '' ? '/' + interval[1] : '');
+            
             if (layer && layer.mergeNewParams) {
                 layer["_msp"].layerDescription.time = layer["_msp"].layerDescription.time || {};
                 layer["_msp"].layerDescription.time["value"] = time;
