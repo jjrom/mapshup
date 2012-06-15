@@ -591,12 +591,13 @@
                             msp.Map.Util.zoomOnAfterLoad(layer);
                             
                             /*
-                             * Show layer if it is hidden
+                             * Show layer if it is hidden ?
                              */
+                            /*
                             if (!layer.visibility) {
                                 msp.Map.Util.setVisibility(layer, true);
                             }
-
+                            */
                         }
 
                         /*
