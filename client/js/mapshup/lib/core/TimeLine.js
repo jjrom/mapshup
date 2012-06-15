@@ -71,6 +71,11 @@
         
         /*
          * Registered items
+         * Structure :
+         * {
+         *      sync://boolean true if layer is synchronised 
+         *      layer: // layer reference
+         * }
          */
         this.items = [];
         
@@ -193,23 +198,6 @@
                  */
                 self.setTime(self.getInterval());
                 
-                /*
-                 * The first call to valuesChanged is during initialization
-                 */
-                if (self.isLoaded) {
-                    
-                    /*
-                     * Refresh layers
-                     */
-                    if (self.autoRefresh) {
-                        self.refresh();
-                    }
-                    
-                }
-                else {
-                    self.isLoaded = true;
-                }
-    
             });
             
             /*
@@ -238,6 +226,71 @@
         };
         
         /*
+         * Attach a layer to the timeLine
+         */
+        this.add = function(layer) {
+            
+            var i, l, t, self = this;
+            
+            if (!self.enabled) {
+                return false;
+            }
+            
+            /*
+             * Paranoid mode
+             */
+            if (!layer || !layer['_msp']) {
+                return false;
+            }
+            
+            t = msp.Map.layerTypes[layer['_msp'].layerDescription.type];
+            
+            /*
+             * If layerType support setTime function
+             * then the layer can be added to the timeLine
+             */
+            if (t && $.isFunction(t.setTime)) {
+                for (i = 0, l = self.items.length; i < l; i++) {
+                    if (self.items[i].id === layer.id) {
+                        return false;
+                    }
+                }
+                self.items.push({
+                    layer:layer,
+                    upToDate:false
+                });
+                
+                return true;
+            }
+            
+            return false;
+            
+        };
+        
+        /*
+         * Return time interval in ISO 8601
+         * 
+         * @return interval : array of 2 ISO 8601 dates
+         *                    i.e. [YYYY-MM-DDTHH:mm:ss, YYYY-MM-DDTHH:mm:ss]
+         */
+        this.getInterval = function() {
+            var self = this;
+            return self.enabled ? [self.toISO8601(self.min), self.toISO8601(self.max)] : ['',''];
+        };
+        
+        /*
+         * Unattach a layer to the timeLine
+         */
+        this.remove = function (layer) {
+            for (var i = 0, l = this.items.length; i < l; i++) {
+                if (this.items[i].layer.id === layer.id) {
+                    this.items.splice(i,1);
+                    break;
+                }
+            }
+        };
+        
+        /*
          * Enable/disable date filters
          */
         this.enable = function(b) {
@@ -254,39 +307,6 @@
                 
                 self.setTime(null);
                 
-                /*
-                 * Refresh layers
-                 */
-                if (self.autoRefresh) {
-                    self.refresh();
-                }
-            }
-            
-        };
-        
-        /*
-         * Refresh all timed layers
-         */
-        this.refresh = function() {
-            
-            var i, l, layer;
-            
-            for (i = 0, l = msp.Map.map.layers.length; i < l; i++) {
-                
-                layer = msp.Map.map.layers[i];
-                
-                /*
-                 * mapshup layers are excluded from the processing
-                 */
-                if (layer && layer["_msp"] && layer["_msp"].searchContext) {
-                    
-                    /*
-                     * Refresh layer
-                     */
-                    layer["_msp"].searchContext.search();
-                    
-                }
-                
             }
             
         };
@@ -296,22 +316,20 @@
          */
         this.setTime = function(interval) {
         
-            var i, l, layer;
+            var i, l, item;
             
-            for (i = 0, l = msp.Map.map.layers.length; i < l; i++) {
-                
-                layer = msp.Map.map.layers[i];
+            for (i = 0, l = this.items.length; i < l; i++) {
+                item = this.items[i];
                 
                 /*
-                 * mapshup layers are excluded from the processing
+                 * Hidden layer are not updated !!!
                  */
-                if (layer && layer["_msp"] && layer["_msp"].searchContext) {
-                    
-                    /*
-                     * Update searchContext date filter
-                     */
-                    layer["_msp"].searchContext.setTime(interval);
-                    
+                if (item.layer.getVisibility()) {
+                    msp.Map.layerTypes[item.layer["_msp"].layerDescription.type].setTime(item.layer, interval);
+                    item.upToDate = true;
+                }
+                else {
+                    item.upToDate = false;
                 }
                 
             }
@@ -339,16 +357,6 @@
             
         };
         
-        /*
-         * Return time interval in ISO 8601
-         * 
-         * @return interval : array of 2 ISO 8601 dates
-         *                    i.e. [YYYY-MM-DDTHH:mm:ss, YYYY-MM-DDTHH:mm:ss]
-         */
-        this.getInterval = function() {
-            var self = this;
-            return self.enabled ? [self.toISO8601(self.min), self.toISO8601(self.max)] : ['',''];
-        };
         
         /* 
          * Initialize object

@@ -207,6 +207,33 @@
          */
         getMspID:function(layerDescription) {
             return msp.Util.crc32(layerDescription.type + layerDescription.connectorName + (msp.Util.repareUrl(layerDescription.url) || ""));
+        },
+        
+        /**
+         * Set layer time filter
+         * 
+         * @input <OpenLayers.Layer> layer : target layer
+         * @input <array> interval : interval (see TimeLine.js)
+         */
+        setTime:function(layer, interval) {
+            
+            var sc;
+            
+            if (layer && layer["_msp"]) {
+                sc = layer["_msp"].searchContext;
+                if (sc) {
+                    
+                    /*
+                     * Update time interval
+                     */
+                    sc.setTime(interval);
+                    
+                    /*
+                     * Launch search
+                     */
+                    sc.search();
+                }
+            }
         }
     }
 })(window.msp, window.msp.Map);

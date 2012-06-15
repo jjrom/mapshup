@@ -509,7 +509,12 @@
                  * Add newLayer to the map
                  */
                 this.map.addLayer(newLayer);
-
+                
+                /*
+                 * Add newLayer to the TimeLine
+                 */
+                msp.timeLine.add(newLayer);
+                
                 /*
                  * First baseLayer is set as the new baseLayer
                  * (i.e. replace the EmptyBaseLayer layer)
@@ -1474,6 +1479,11 @@
                 msp.remove(layer["_msp"].SearchContext);
             }
 
+            /*
+             * Remove layer from TimeLine
+             */
+            msp.timeLine.remove(layer);
+            
             /*
              * If layer is an initial layer then its mspID is stored
              * to be sure that it will be indicated as removed in the
