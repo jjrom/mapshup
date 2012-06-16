@@ -1282,7 +1282,7 @@
                                 /*
                                  * Title is first 'name' or 'title' or 'identifier' or 'id'
                                  */
-                                self.$featureHilite.html(msp.Map.featureInfo.getTitle(e.feature)).show();
+                                self.$featureHilite.html(msp.Map.Util.Feature.getTitle(e.feature)).show();
 
                             }
 

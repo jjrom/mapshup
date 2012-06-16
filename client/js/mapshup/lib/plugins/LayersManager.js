@@ -1101,13 +1101,13 @@
                  * Some tricky part here :
                  * 
                  *   - use of jquery .text() to strip out html elements
-                 *     from the msp.Map.featureInfo.getTitle() function return
+                 *     from the msp.Map.Util.Feature.getTitle() function return
                  *     
                  *   - If icon or thumbnail is not defined in the feature attributes,
                  *     then force text span display
                  */
-                icon = msp.Map.featureInfo.getIcon(f);
-                $ul.append('<li><a href="" id="'+id+'"><span'+(icon ? '' : ' style="display:block;"')+' class="title">'+$('<div>'+msp.Map.featureInfo.getTitle(f)+'</div>').text()+'</span><img src="'+(icon ? icon : msp.Util.getImgUrl('nodata.png'))+'"></a></li>');
+                icon = msp.Map.Util.Feature.getIcon(f);
+                $ul.append('<li><a href="" id="'+id+'"><span'+(icon ? '' : ' style="display:block;"')+' class="title">'+$('<div>'+msp.Map.Util.Feature.getTitle(f)+'</div>').text()+'</span><img src="'+(icon ? icon : msp.Util.getImgUrl('nodata.png'))+'"></a></li>');
                 (function(f,$div){
                     $div.click(function(e){
                         

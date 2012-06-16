@@ -82,6 +82,28 @@
             
             /*
              * Add content
+             * 
+             * Structure of featureInfo panel
+             * 
+             *  ___________________________
+             * |  ________                 |
+             * | |        |     .tab       |
+             * | |        |     .info      |
+             * | | .thumb |                |
+             * | |        |                |
+             * | |________|                |
+             * |___________________________|
+             * |           .title          |
+             * |           .actions        |
+             * |_  ________________________|
+             *   \/
+             *   
+             *   <div>
+             *   
+             *   
+             *   </div>
+             * 
+             * 
              */
             $content = self.pn.add('<div class="header"><div class="title"></div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi').addClass('shadow');
             
@@ -197,267 +219,6 @@
             
             this.unselect(null);
             
-        };
-        
-        /**
-         *
-         * Return feature icon url
-         * 
-         * Icon is assumed to be a square image of 75x75 px displayed within NorthPanel
-         *
-         * @input {OpenLayers.Feature} feature : input feature
-         *
-         */
-        this.getIcon = function(feature) {
-            
-            var style,defaultStyle,icon;
-            
-            /*
-             * Paranoid mode
-             */
-            if (!feature) {
-                return icon;
-            }
-            
-            /*
-             * Guess icon with the following preference order :
-             * 
-             *    - attributes icon
-             *    - attributes thumbnail
-             *    - feature style externalGraphic
-             *    - generic image 
-             * 
-             */
-            if (feature.attributes.icon) {
-                return feature.attributes.icon;
-            }
-            if (feature.attributes.thumbnail) {
-                return feature.attributes.thumbnail;
-            }
-             
-            /*
-              * This is quite experimental :)
-              */
-            if (feature.layer) {
-                 
-                /*
-                 * Get the default style object from styleMap
-                 */
-                style = feature.layer.styleMap.styles["default"];
-
-                /*
-                 * The defaultStyle descriptor should be defined directly
-                 * under feature.style property. If not, there is always
-                 * a valid defaultStyle descriptor under feature.layer.styleMap.styles["default"]
-                 */
-                defaultStyle = feature.style || style.defaultStyle;
-                if (defaultStyle.externalGraphic) {
-                    return msp.Map.Util.KML.resolveStyleAttribute(feature, style, defaultStyle.externalGraphic);
-                }
-            }
-            
-            return icon;
-        }
-
-        /**
-         * Return feature title if it's defined within layerDescription.featureInfo.title property
-         *
-         * @input {OpenLayers.Feature} feature : input feature
-         */
-        this.getTitle = function(feature) {
-
-            var k,
-            self = this;
-            
-            /*
-             * Paranoid mode
-             */
-            if (!feature) {
-                return null;
-            }
-
-            /*
-             * First check if feature is a cluster
-             */
-            if (feature.cluster && feature.cluster.length > 0) {
-                return msp.Util._(feature.layer.name) + ": " + feature.cluster.length + " " + msp.Util._("entities");
-            }
-
-            /*
-             * User can define is own title with layerDescription.featureInfo.title property
-             */
-            if (feature.layer && feature.layer["_msp"].layerDescription.featureInfo && feature.layer["_msp"].layerDescription.featureInfo.title) {
-                
-                /*
-                 * The tricky part :
-                 * 
-                 * Parse title and replace keys between brackets {} with the corresponding value
-                 * eventually transformed with the getValue() function
-                 *
-                 * Example :
-                 *      title = "Hello my name is {name} {surname}"
-                 *      feature.attributes = {name:"Jerome", surname:"Gasperi"}
-                 *
-                 *      will return "Hello my name is Jerome Gasperi"
-                 * 
-                 */
-                return feature.layer["_msp"].layerDescription.featureInfo.title.replace(/{+([^}])+}/g, function(m,key,value) {
-                    var k = m.replace(/[{}]/g, '');
-                    return self.getValue(feature, k, feature.attributes[k]);
-                });
-                
-            }
-
-            /*
-             * Otherwise returns name or title or identifier or id
-             */
-            for (k in {
-                name:1, 
-                title:1, 
-                identifier:1
-            }) {
-                if (feature.attributes[k]) {
-                    return self.getValue(feature, k, feature.attributes[k]);
-                }
-            }
-            return feature.id || "";
-
-        };
-        
-        /*
-         * Get feature attribute value
-         * 
-         * If layerDescription.featureInfo.keys array is set and if a value attribute is set for "key"
-         * then input value is transformed according to the "value" definition
-         *
-         * @input {OpenLayers.Feature} feature : feature reference
-         * @input {String} key : key attribute name
-         * @input {String} value : value of the attribute
-         */
-        this.getValue = function(feature, key, value) {
-
-            var k, keys;
-            
-            /*
-             * Paranoid mode
-             */
-            if (!feature || !key) {
-                return value;
-            }
-
-            /*
-             * Check if keys array is defined
-             */
-            if (feature.layer && feature.layer["_msp"].layerDescription.hasOwnProperty("featureInfo")) {
-                
-                keys = feature.layer["_msp"].layerDescription.featureInfo.keys || [];
-
-                /*
-                 * Roll over the featureInfo.keys associative array.
-                 * Associative array entry is the attribute name (i.e. key)
-                 * 
-                 * This array contains a list of objects
-                 * {
-                 *      v: // Value to display instead of key
-                 *      transform: // function to apply to value before instead of directly displayed it
-                 *            this function should returns a string
-                 * }
-                 */
-                for (k in keys) {
-
-                    /*
-                     * If key is found in array, get the corresponding value and exist the loop
-                     */
-                    if (key === k) {
-                        
-                        /*
-                         * Transform value if specified
-                         */
-                        if ($.isFunction(keys[k].transform)) {
-                            return keys[k].transform(value);
-                        }
-                        break;
-                    }
-                }
-               
-            }
-            
-            /*
-             * In any case returns input value
-             */
-            return value;
-        };
-
-        /*
-         * Replace input key into its "human readable" equivalent defined in layerDescription.featureInfo.keys associative array
-         *
-         * @input {String} key : key to replace
-         * @input {OpenLayers.Feature} feature : feature reference
-         */
-        this.translate = function(key, feature) {
-
-            var c, k, keys;
-            
-            /*
-             * Paranoid mode
-             */
-            if (!feature || !key) {
-                return msp.Util._(key);
-            }
-
-            /*
-             * Check if keys array is defined
-             * This array has preseance to everything else
-             */
-            if (feature.layer["_msp"].layerDescription.hasOwnProperty("featureInfo")) {
-                
-                keys = feature.layer["_msp"].layerDescription.featureInfo.keys || [];
-                
-                /*
-                 * Roll over the featureInfo.keys associative array.
-                 * Associative array entry is the attribute name (i.e. key)
-                 * 
-                 * This array contains a list of objects
-                 * {
-                 *      v: // Value to display instead of key
-                 *      transform: // function to apply to value before instead of directly displayed it
-                 *            this function should returns a string
-                 * }
-                 */
-                for (k in keys) {
-
-                    /*
-                     * If key is found in array, get the corresponding value and exist the loop
-                     */
-                    if (key === k) {
-                        
-                        /*
-                         * Key value is now "v" value if specified
-                         */
-                        if (keys[k].hasOwnProperty("v")){
-                            return msp.Util._(keys[k].v);
-                        }
-                        
-                        break;
-                        
-                    }
-                }
-                
-            }
-            
-            /*
-             * If feature layer got a searchContext then use the connector
-             * metadataTranslator array to replace the key
-             */
-            c = feature.layer["_msp"].searchContext;
-            if (c && c.connector) {
-                return msp.Util._(c.connector.metadataTranslator[key] || key);
-            }
-
-            /*
-             * In any case returns a i18n translated string
-             */
-            return msp.Util._(key);
         };
         
         /**
@@ -663,7 +424,7 @@
             /*
              * Set title
              */
-            self.$m.append('<div class="actions"></div><div class="title">'+self.getTitle(feature)+'</div>');
+            self.$m.append('<div class="actions"></div><div class="title">'+msp.Map.Util.Feature.getTitle(feature)+'</div>');
             
             /*
              * Set actions
@@ -816,7 +577,7 @@
             /*
              * Set header
              */
-            title = msp.Util.stripTags(self.getTitle(feature));
+            title = msp.Util.stripTags(msp.Map.Util.Feature.getTitle(feature));
             $('.title', target.$h).attr('title', feature.layer.name + ' | ' + title)
             .html(title)
             .click(function(){
@@ -889,7 +650,7 @@
                     if (feature.attributes.hasOwnProperty('quicklook')) {
                         
                         id = msp.Util.getId();
-                        $thumb.html('<a id="'+id+'" class="image" jtitle="'+self.getTitle(feature)+'" title="'+msp.Util._("Show quicklook")+'" href="'+feature.attributes['quicklook']+'">'+content+'</a>');
+                        $thumb.html('<a id="'+id+'" class="image" jtitle="'+msp.Map.Util.Feature.getTitle(feature)+'" title="'+msp.Util._("Show quicklook")+'" href="'+feature.attributes['quicklook']+'">'+content+'</a>');
                         
                         /*
                          * Popup image
@@ -961,7 +722,7 @@
                          * Simple case : string
                          */
                         if (t === "string" && msp.Util.isUrl(v)) {
-                            $info.append('<tr><td>' + self.translate(k, feature) + '</td><td>&nbsp;</td><td><a target="_blank" title="'+v+'" href="'+v+'">'+ msp.Util._("Download") +'</a></td></tr>');
+                            $info.append('<tr><td>' + msp.Map.Util.Feature.translate(k, feature) + '</td><td>&nbsp;</td><td><a target="_blank" title="'+v+'" href="'+v+'">'+ msp.Util._("Download") +'</a></td></tr>');
                         }
                         /*
                          * Object case
@@ -1067,22 +828,22 @@
                                     }
                                     else {
                                         for (kkk in v[kk]) {
-                                            ts = self.translate(kkk, feature);
+                                            ts = msp.Map.Util.Feature.translate(kkk, feature);
                                             d.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
                                         }
                                     }
 
                                 }
                                 else {
-                                    ts = self.translate(k, feature);
-                                    $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + ' &rarr; ' + self.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
+                                    ts = msp.Map.Util.Feature.translate(k, feature);
+                                    $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + ' &rarr; ' + msp.Map.Util.Feature.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
                                 }
                             }
 
                         }
                         else {
-                            ts = self.translate(k, feature);
-                            $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + '</td><td>&nbsp;</td><td>' + self.getValue(feature,k,v) + '</td></tr>');
+                            ts = msp.Map.Util.Feature.translate(k, feature);
+                            $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + '</td><td>&nbsp;</td><td>' + msp.Map.Util.Feature.getValue(feature,k,v) + '</td></tr>');
                         }
                     }
                 }
@@ -1256,7 +1017,7 @@
                  * and feature layer name. Ensure that two identical
                  * feature leads to only one panel item 
                  */
-                var t = self.getTitle(feature), panelItem = msp.sp.add({
+                var t = msp.Map.Util.Feature.getTitle(feature), panelItem = msp.sp.add({
                     id:msp.Util.crc32(t + feature.layer["_msp"].layerDescription["type"]),
                     tt:t,
                     title:t,

@@ -47,6 +47,273 @@
     Map.Util = {};
     
     /**
+     * Feature functions
+     */
+    Map.Util.Feature = {
+        
+        /**
+         *
+         * Return feature icon url
+         * 
+         * Icon is assumed to be a square image of 75x75 px displayed within NorthPanel
+         *
+         * @input {OpenLayers.Feature} feature : input feature
+         *
+         */
+        getIcon:function(feature) {
+            
+            var style,defaultStyle,icon;
+            
+            /*
+             * Paranoid mode
+             */
+            if (!feature) {
+                return icon;
+            }
+            
+            /*
+             * Guess icon with the following preference order :
+             * 
+             *    - attributes icon
+             *    - attributes thumbnail
+             *    - feature style externalGraphic
+             *    - generic image 
+             * 
+             */
+            if (feature.attributes.icon) {
+                return feature.attributes.icon;
+            }
+            if (feature.attributes.thumbnail) {
+                return feature.attributes.thumbnail;
+            }
+             
+            /*
+             * This is quite experimental :)
+             */
+            if (feature.layer) {
+                 
+                /*
+                 * Get the default style object from styleMap
+                 */
+                style = feature.layer.styleMap.styles["default"];
+
+                /*
+                 * The defaultStyle descriptor should be defined directly
+                 * under feature.style property. If not, there is always
+                 * a valid defaultStyle descriptor under feature.layer.styleMap.styles["default"]
+                 */
+                defaultStyle = feature.style || style.defaultStyle;
+                if (defaultStyle.externalGraphic) {
+                    return Map.Util.KML.resolveStyleAttribute(feature, style, defaultStyle.externalGraphic);
+                }
+            }
+            
+            return icon;
+        },
+        
+        /**
+         * Return feature title if it's defined within layerDescription.featureInfo.title property
+         *
+         * @input {OpenLayers.Feature} feature : input feature
+         */
+        getTitle:function(feature) {
+
+            var k;
+            
+            /*
+             * Paranoid mode
+             */
+            if (!feature) {
+                return null;
+            }
+
+            /*
+             * First check if feature is a cluster
+             */
+            if (feature.cluster && feature.cluster.length > 0) {
+                return msp.Util._(feature.layer.name) + ": " + feature.cluster.length + " " + msp.Util._("entities");
+            }
+
+            /*
+             * User can define is own title with layerDescription.featureInfo.title property
+             */
+            if (feature.layer && feature.layer["_msp"].layerDescription.featureInfo && feature.layer["_msp"].layerDescription.featureInfo.title) {
+                
+                /*
+                 * The tricky part :
+                 * 
+                 * Parse title and replace keys between brackets {} with the corresponding value
+                 * eventually transformed with the getValue() function
+                 *
+                 * Example :
+                 *      title = "Hello my name is {name} {surname}"
+                 *      feature.attributes = {name:"Jerome", surname:"Gasperi"}
+                 *
+                 *      will return "Hello my name is Jerome Gasperi"
+                 * 
+                 */
+                return feature.layer["_msp"].layerDescription.featureInfo.title.replace(/{+([^}])+}/g, function(m,key,value) {
+                    var k = m.replace(/[{}]/g, '');
+                    return Map.Util.Feature.getValue(feature, k, feature.attributes[k]);
+                });
+                
+            }
+
+            /*
+             * Otherwise returns name or title or identifier or id
+             */
+            for (k in {
+                name:1, 
+                title:1, 
+                identifier:1
+            }) {
+                if (feature.attributes[k]) {
+                    return Map.Util.Feature.getValue(feature, k, feature.attributes[k]);
+                }
+            }
+            return feature.id || "";
+
+        },
+        
+        /*
+         * Get feature attribute value
+         * 
+         * If layerDescription.featureInfo.keys array is set and if a value attribute is set for "key"
+         * then input value is transformed according to the "value" definition
+         *
+         * @input {OpenLayers.Feature} feature : feature reference
+         * @input {String} key : key attribute name
+         * @input {String} value : value of the attribute
+         */
+        getValue:function(feature, key, value) {
+
+            var k, keys;
+            
+            /*
+             * Paranoid mode
+             */
+            if (!feature || !key) {
+                return value;
+            }
+
+            /*
+             * Check if keys array is defined
+             */
+            if (feature.layer && feature.layer["_msp"].layerDescription.hasOwnProperty("featureInfo")) {
+                
+                keys = feature.layer["_msp"].layerDescription.featureInfo.keys || [];
+
+                /*
+                 * Roll over the featureInfo.keys associative array.
+                 * Associative array entry is the attribute name (i.e. key)
+                 * 
+                 * This array contains a list of objects
+                 * {
+                 *      v: // Value to display instead of key
+                 *      transform: // function to apply to value before instead of directly displayed it
+                 *            this function should returns a string
+                 * }
+                 */
+                for (k in keys) {
+
+                    /*
+                     * If key is found in array, get the corresponding value and exist the loop
+                     */
+                    if (key === k) {
+                        
+                        /*
+                         * Transform value if specified
+                         */
+                        if ($.isFunction(keys[k].transform)) {
+                            return keys[k].transform(value);
+                        }
+                        break;
+                    }
+                }
+               
+            }
+            
+            /*
+             * In any case returns input value
+             */
+            return value;
+        },
+
+        /*
+         * Replace input key into its "human readable" equivalent defined in layerDescription.featureInfo.keys associative array
+         *
+         * @input {String} key : key to replace
+         * @input {OpenLayers.Feature} feature : feature reference
+         */
+        translate:function(key, feature) {
+
+            var c, k, keys;
+            
+            /*
+             * Paranoid mode
+             */
+            if (!feature || !key) {
+                return msp.Util._(key);
+            }
+
+            /*
+             * Check if keys array is defined
+             * This array has preseance to everything else
+             */
+            if (feature.layer["_msp"].layerDescription.hasOwnProperty("featureInfo")) {
+                
+                keys = feature.layer["_msp"].layerDescription.featureInfo.keys || [];
+                
+                /*
+                 * Roll over the featureInfo.keys associative array.
+                 * Associative array entry is the attribute name (i.e. key)
+                 * 
+                 * This array contains a list of objects
+                 * {
+                 *      v: // Value to display instead of key
+                 *      transform: // function to apply to value before instead of directly displayed it
+                 *            this function should returns a string
+                 * }
+                 */
+                for (k in keys) {
+
+                    /*
+                     * If key is found in array, get the corresponding value and exist the loop
+                     */
+                    if (key === k) {
+                        
+                        /*
+                         * Key value is now "v" value if specified
+                         */
+                        if (keys[k].hasOwnProperty("v")){
+                            return msp.Util._(keys[k].v);
+                        }
+                        
+                        break;
+                        
+                    }
+                }
+                
+            }
+            
+            /*
+             * If feature layer got a searchContext then use the connector
+             * metadataTranslator array to replace the key
+             */
+            c = feature.layer["_msp"].searchContext;
+            if (c && c.connector) {
+                return msp.Util._(c.connector.metadataTranslator[key] || key);
+            }
+
+            /*
+             * In any case returns a i18n translated string
+             */
+            return msp.Util._(key);
+        }
+        
+    };
+    
+    /**
      * Convert "input" to "format" using "precision"
      *  "input" can be one of the following :
      *    - OpenLayers.Bounds
