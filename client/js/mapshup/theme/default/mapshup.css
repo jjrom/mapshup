@@ -696,21 +696,21 @@ a.tab,
 }
 .apo:before{
     content: ' ';
-    border-color: transparent transparent #eee;
+    border-color: #eee transparent transparent;
     border-style: solid;
     border-width: 11px;
     position: absolute;
-    top: -22px;
-    right: 18px;
+    bottom: -22px;
+    left: 18px;
 }
 .apo:after{
     content:' ';
-    border-color: transparent transparent #f3961c;
+    border-color: #f3961c transparent transparent;
     border-style: solid;
     border-width: 9px;
     position: absolute;
-    top: -18px;
-    right: 20px;
+    bottom: -18px;
+    left: 20px;
 }
 
 /* Hilite class for feature information */

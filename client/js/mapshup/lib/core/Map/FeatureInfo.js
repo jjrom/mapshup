@@ -1176,9 +1176,8 @@
                      * Set action info menu position
                      */
                     self.$m.show().css({
-                        'left': xy.x - self.$m.outerWidth() + 31,
-                        'top': xy.y + 12
-                        //'top': xy.y - self.$m.outerHeight() - 12
+                        'left': xy.x - 31, //'left': xy.x - self.$m.outerWidth() + 31,
+                        'top': xy.y - self.$m.outerHeight() - 12 // 'top': xy.y + 12
                     });
 
                     /*
