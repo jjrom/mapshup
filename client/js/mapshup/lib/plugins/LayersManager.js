@@ -612,6 +612,16 @@
          */
         this.getPageIdx = function(item) {
             
+            var i, l;
+            
+            for (i = 0, l = this.items.length; i < l; i++) {
+                if (this.items[i].id === item.id) {
+                    return Math.floor(i / this.nbOfTabsPerPage());
+                }
+                
+            }
+            
+            return -1;
         };
         
         /**
@@ -1320,6 +1330,11 @@
              * Set the input $id as the new this.active item
              */
             self.active = item;
+            
+            /*
+             * Goto page where active tab is visible
+             */
+            self.goTo(self.getPageIdx(item));
             
         };
         
