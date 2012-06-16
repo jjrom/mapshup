@@ -509,6 +509,20 @@
         };
 
         /**
+         * Return number of tab page
+         */
+        this.nbOfPages = function() {
+            return Math.ceil((this.items.length - 1) / this.nbOfTabsPerPage()) - 1;
+        };
+        
+        /**
+         * Return number of tabs per page
+         */
+        this.nbOfTabsPerPage = function() {
+            return Math.round((2 * msp.$container.width() / 3) / 200);
+        };
+        
+        /**
          * Update tabs position
          * 
          * @input scope : reference to this object
@@ -525,13 +539,13 @@
             /*
              * Maximum number of tabs per page
              */
-            perPage = Math.round((2 * msp.$container.width() / 3) / 200);
+            perPage = scope.nbOfTabsPerPage();
             
             /*
              * Check that page is not greater that number of page
              * (cf. needed if resizing window when not on page 0)
              */
-            nbPage = Math.ceil((scope.items.length - 1) / perPage) - 1;
+            nbPage = scope.nbOfPages();
             if (scope.page > nbPage) {
                 scope.page = nbPage;
             }
@@ -591,6 +605,13 @@
             }
             
             return;
+        };
+        
+        /*
+         * Return the page number where an item is
+         */
+        this.getPageIdx = function(item) {
+            
         };
         
         /**
@@ -921,10 +942,9 @@
          */
         this.goTo = function(page) {
           
-            var perPage,nbPage,self = this;
+            var nbPage,self = this;
             
-            perPage = Math.round((2 * msp.$container.width() / 3) / 200);
-            nbPage = Math.ceil((self.items.length - 1) / perPage) - 1;
+            nbPage = self.nbOfPages();
             
             if (page < 0) {
                 self.page = nbPage;
