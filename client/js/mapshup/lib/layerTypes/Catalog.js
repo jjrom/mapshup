@@ -137,7 +137,28 @@
              * Layer creation
              */
             var newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);
+            
+            /*
+             * Add a setTime Function
+             */
+            newLayer["_msp"].setTime = function(interval) {
+                
+                var sc = newLayer["_msp"].searchContext;
+                if (sc) {
 
+                    /*
+                     * Update time interval
+                     */
+                    sc.setTime(interval);
+
+                    /*
+                     * Launch search
+                     */
+                    sc.search();
+                }
+          
+            };
+            
             /*
              * Add a featuresadded event
              */

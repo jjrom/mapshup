@@ -209,6 +209,29 @@
                 version:version
             }, options);
 
+            /*
+             * Add a setTime function
+             */
+            if (options.time) {
+                
+                newLayer["_msp"].setTime = function(interval) {
+                    
+                    /*
+                     * Currently only the first value of the interval is 
+                     * sent to the WMS server
+                     */
+                    var self = this, time = interval[0]; // + (interval[1] !== '' ? '/' + interval[1] : '');
+                    if (self.layerDescription.time) {
+                        self.layerDescription.time = self.layerDescription.time || {};
+                        self.layerDescription.time["value"] = time;
+                        newLayer.mergeNewParams({
+                            'time':time
+                        });
+                    }
+                };
+                
+            }
+            
             return newLayer;
 
         },
@@ -635,35 +658,6 @@
 
             return true;
 
-        },
-
-        /**
-         * Update WMS Time layer according to the new time
-         */
-        /**
-         * Set layer time filter
-         * 
-         * @input <OpenLayers.Layer> layer : target layer
-         * @input <array> interval : interval (see TimeLine.js)
-         */
-        setTime:function(layer, interval) {
-            
-            /*
-             * Currently only the first value of the interval is 
-             * sent to the WMS server
-             */
-            var time = interval[0]; // + (interval[1] !== '' ? '/' + interval[1] : '');
-            
-            if (layer && layer.mergeNewParams) {
-                
-                if (layer["_msp"].layerDescription.time) {
-                    layer["_msp"].layerDescription.time = layer["_msp"].layerDescription.time || {};
-                    layer["_msp"].layerDescription.time["value"] = time;
-                    layer.mergeNewParams({
-                        'time':time
-                    });
-                }
-            }
         },
 
         /**

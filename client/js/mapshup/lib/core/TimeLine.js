@@ -230,7 +230,7 @@
          */
         this.add = function(layer) {
             
-            var i, l, t, self = this;
+            var i, l, self = this;
             
             if (!self.enabled) {
                 return false;
@@ -243,13 +243,7 @@
                 return false;
             }
             
-            t = msp.Map.layerTypes[layer['_msp'].layerDescription.type];
-            
-            /*
-             * If layerType support setTime function
-             * then the layer can be added to the timeLine
-             */
-            if (t && $.isFunction(t.setTime)) {
+            if ($.isFunction(layer['_msp'].setTime)) {
                 for (i = 0, l = self.items.length; i < l; i++) {
                     if (self.items[i].id === layer.id) {
                         return false;
@@ -259,7 +253,6 @@
                     layer:layer,
                     upToDate:false
                 });
-                
                 return true;
             }
             
@@ -325,7 +318,7 @@
                  * Hidden layer are not updated !!!
                  */
                 if (item.layer.getVisibility()) {
-                    msp.Map.layerTypes[item.layer["_msp"].layerDescription.type].setTime(item.layer, interval);
+                    item.layer["_msp"].setTime(interval);
                     item.upToDate = true;
                 }
                 else {
