@@ -1125,6 +1125,11 @@
              */
             $('.fi', item.$d).html(size + "&nbsp;" + msp.Util._(size < 2 ? "feature" : "features"));
      
+            /*
+             * Show item
+             */
+            self.show(item);
+            
             return true;
                         
         };
