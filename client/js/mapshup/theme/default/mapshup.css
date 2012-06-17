@@ -985,6 +985,7 @@ a.tab img {
     cursor:move;
     cursor:grab;
     cursor: -moz-grab;
+    top:-1px;
     z-index:3;
 }
 
