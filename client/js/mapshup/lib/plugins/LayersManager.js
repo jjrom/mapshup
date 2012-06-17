@@ -1131,9 +1131,11 @@
             $('.fi', item.$d).html(size + "&nbsp;" + msp.Util._(size < 2 ? "feature" : "features"));
      
             /*
-             * Show item
+             * Show item except refreshable one !
              */
-            self.show(item);
+            if (!item.layer["_msp"].refreshable) {
+                self.show(item);
+            }
             
             return true;
                         
