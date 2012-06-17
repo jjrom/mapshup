@@ -688,10 +688,12 @@
                 /*
                  * Update menu position
                  */
-                self.updatePosition();
+                self.updatePosition(true);
 
             }
+            
             return true;
+            
         };
 
         /**
@@ -736,9 +738,9 @@
         };
 
         /*
-         * Update fmenu position
+         * Update feature info panel position
          */
-        this.updatePosition = function() {
+        this.updatePosition = function(visible) {
             
             var xy,
             self = this;
@@ -771,6 +773,41 @@
                         'left': xy.x - 31, //'left': xy.x - self.$d.outerWidth() + 31,
                         'top': xy.y - self.$d.outerHeight() - 12 // 'top': xy.y + 12
                     });
+                    
+                    /*
+                     * If visible is set to true then move the map
+                     * to ensure that feature info panel is completely
+                     * visible
+                     */
+                    if (visible) {
+                        
+                        /*
+                         * Check if LayersManager is visible
+                         */
+                        var lmo,top,left,dx,dy,c;
+                        
+                        lmo = $('.lm').offset();
+                        top = msp.$map.offset().top + (lmo ? lmo.top : 0) + 10;
+                        left = msp.$map.offset().left + msp.$map.width();
+                        dy = self.$d.offset().top - top;
+                        dx = left - self.$d.offset().left - self.$d.outerWidth() - 10;
+                        
+                        if (dx > 0) {
+                            dx = 0;
+                        }
+                        if (dy > 0) {
+                            dy = 0;
+                        }
+                    
+                        /*
+                         * Transform pixels to meters
+                         */
+                        if (dx < 0 || dy < 0) {
+                            c = msp.Map.map.getPixelFromLonLat(msp.Map.map.getCenter());
+                            msp.Map.map.setCenter(msp.Map.map.getLonLatFromPixel(new OpenLayers.Pixel(c.x - dx, c.y + dy)));
+                        }
+                        
+                    }
                     
                 }
             }
