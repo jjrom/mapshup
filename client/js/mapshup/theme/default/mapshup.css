@@ -149,7 +149,6 @@ body, .pfi, .pfi .header, .pn .header, .po .body, .active, .selected
 #tooltip .inner,
 #theBar .logo a,
 #menu .item:hover,
-#fmenu .actions a,
 a.tab,
 .button,
 .button a,
@@ -166,7 +165,8 @@ a.tab,
 .olControlAttribution,
 .lm,
 .lm .thumbs .mask,
-.lm .thumbs ul li a
+.lm .thumbs ul li a,
+a.fi .actions a
 {
     color:#fff;
 }
@@ -334,33 +334,6 @@ a.tab,
     text-shadow: black 1px 1px 3px;
 }
 
-/* Feature action menu - displayed after clicking on a feature */
-#fmenu {
-    display:none;
-    width:auto;
-    max-width:250px;
-    text-overflow:ellipsis;
-    height:auto;
-    z-index:10000;
-}
-#fmenu .actions {
-    height:30px;
-    white-space: nowrap;
-    text-align:center;
-}
-#fmenu .item {
-    cursor:pointer;
-    padding:3px;
-    margin:0px 5px;
-}
-#fmenu .item img {
-    height:16px;
-    width:auto;
-}
-#fmenu .title {
-    text-align:center;    
-}
-
 /* Coordinates following the mouse */
 #coords {
     position:absolute;
@@ -516,48 +489,6 @@ a.tab,
     line-height:37px;
 }
 
-/* Generic panel */
-.pn {
-    position:absolute;
-    background-color:#eee;
-    z-index:20000;
-}
-.pn a {
-    padding:0px;
-    background-color:transparent;
-}
-.pn a:hover{
-    background-color:transparent;
-    box-shadow: 0px 0px 0px 0 transparent;
-    border-bottom:1px solid #c76400;
-}
-.pn .header {
-    text-transform:uppercase;
-    font-size:1.3em;
-    text-align: center;
-    padding:5px 0px;
-}
-.pn .expdbl {
-    overflow:auto;
-}
-.pn .west {
-    float:left;
-    line-height:30px;
-    border-right: 1px solid #ccc;
-    width:59%;
-    height:100%;
-}
-.pn .east {
-    float:right;
-    text-align:left;
-    width:40%;
-    height:100%;
-}
-.pn .block {
-    padding:5px;
-    margin-bottom:5px;
-} 
-
 /* South panel */
 .pns {
     position:absolute;
@@ -688,15 +619,15 @@ a.tab,
 /* Popup with arrow (used by FeatureInfo fmenu) */
 .apo {
     background-clip: padding-box;
-    border: 1px solid #eee;
-    padding: 10px;
+    border: 1px solid #ccc;
+    padding: 5px;
     width:auto;
     height:100%;
     position: relative;
 }
 .apo:before{
     content: ' ';
-    border-color: #eee transparent transparent;
+    border-color: #ccc transparent transparent;
     border-style: solid;
     border-width: 11px;
     position: absolute;
@@ -705,7 +636,7 @@ a.tab,
 }
 .apo:after{
     content:' ';
-    border-color: #f3961c transparent transparent;
+    border-color: #eee transparent transparent;
     border-style: solid;
     border-width: 9px;
     position: absolute;
@@ -722,60 +653,145 @@ a.tab,
     z-index:10000;
 }
 
-/* FeatureInfo panel */
-.pfi .header {
-    padding:20px 0px 5px 0px;
-    font-size:1em;
+/*
+ * FeatureInfo panel
+ */
+ .fi {
+    position:absolute;
+    width:450px;
+    height:250px;
+    color:#000;
+    background-color:#eee;
+    display:none;
+    z-index:20000;
+}
+.fi .main {
+    position:absolute;
+    /*background-color:#eee;*/
+    top:5px;
+    left:5px;
+    right:5px;
+    bottom:5px;
+}
+.fi .header {
+    position:absolute;
+    top:0px;
+    left:0px;
+    height:20px;
+    width:100%;
+    text-transform:uppercase;
     font-weight: bold;
-    text-align:left;
+    text-align:center;
+    padding:5px 0px;
 }
-.pfi .title {
-    overflow:hidden;
-    cursor:pointer;
-    text-overflow:ellipsis;
-}
-.pfi .info {
-    padding:5px;
-    margin-bottom:5px;
-}
-.pfi .info table {
+.fi .tabs {
+    position:absolute;
+    top:20px;
+    left:0px;
+    height:30px;
     width:100%;
 }
-.pfi .thumb {
-    text-align: center;
+
+.fi a {
+    padding:0px;
+    background-color:transparent;
+}
+.fi a:hover{
+    background-color:transparent;
+    box-shadow: 0px 0px 0px 0 transparent;
+    border-bottom:1px solid #c76400;
+}
+
+.fi .title {
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.fi .west {
+    position:absolute;
+    left:0px;
+    top:50px;
+    width:150px;
+    height:200px;
+    border-right: 1px solid #ccc;
+}
+.fi .east {
+    position: absolute;
+    left:150px;
+    top:50px;
+    width:300px;
+    height:200px;
+    overflow-y: auto;
+}
+.fi .block {
     padding:5px;
     margin-bottom:5px;
 }
-.pfi .thumb img {
-    max-height:200px;
-    max-width:270px;
+.fi .info {
+    padding:5px;
+    margin-bottom:5px;
 }
-.pfi .sheader {
+.fi .info table {
+    width:100%;
+}
+.fi .thumb {
+    background-color:#fff;
+    width:125px;
+    height:125px;
+    text-align:center;
+    padding:5px;
+    margin:0px 0px 5px 5px;
+}
+.fi .thumb img {
+    max-height:125px;
+    max-width:125px;
+}
+.fi .actions {
+    height:30px;
+    width:125px;
+    background-color:#ccc;
+    margin-left:10px;
+    padding-top:10px;
+    white-space:nowrap;
+    text-align:center;
+}
+.fi .item {
+    cursor:pointer;
+    padding:3px;
+    margin:0px 5px;
+}
+.fi .item img {
+    height:16px;
+    width:auto;
+}
+/*
+.fi .sheader {
     height:30px;
     line-height:30px;
     text-transform:uppercase;
     background-color:#fff;
 }
-.pfi .sheader ul {
+.fi .sheader ul {
     height:30px;
     width:auto;
 }
-.pfi .sheader li {
+.fi .sheader li {
     list-style:none;
     float:left;
 }
-.pfi td {
+*/
+.fi td {
     padding:5px 0px;
 }
 
-.pfi tr:nth-child(even) {
+.fi tr:nth-child(even) {
     background:#ccc;
 }
 
-#pfit {
+#_fit {
     padding-bottom:10px;
 }
-#pfit li {
+#_fit li {
     padding-left:5px;
     display:inline;
 }
@@ -1274,7 +1290,7 @@ div.olControlMousePosition {
     left:0px;
     width:100%;
     height:58px;
-    z-index:19900;
+    z-index:20100;
 }
 
 /* North and South positionning differs */

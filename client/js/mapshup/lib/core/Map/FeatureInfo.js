@@ -56,11 +56,11 @@
         this.selected = null;
         
         /**
-         * Default metadata panel position
+         * Feature info popup dimension
          */
-        this.position = {
-            top:100,
-            right:50
+        this.dimension = {
+            w:100,
+            h:50
         };
         
         /**
@@ -76,64 +76,20 @@
             options = options || {};
             
             /*
-             * Feature Information is displayed within a dedicated panel
-             */
-            self.pn = new msp.Panel();
-            
-            /*
-             * Add content
              * 
-             * Structure of featureInfo panel
-             * 
-             *  ___________________________
-             * |  ________                 |
-             * | |        |     .tab       |
-             * | |        |     .info      |
-             * | | .thumb |                |
-             * | |        |                |
-             * | |________|                |
-             * |___________________________|
-             * |           .title          |
-             * |           .actions        |
-             * |_  ________________________|
-             *   \/
-             *   
-             *   <div>
-             *   
-             *   
-             *   </div>
-             * 
+             * Structure of feature info popup is defined
+             * within msp.Map.Util.Feature.toHTML()
              * 
              */
-            $content = self.pn.add('<div class="header"><div class="title"></div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi').addClass('shadow');
+            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('fi apo shadow');
+            self.$d.html('<div class="main"></div>');
             
             /*
              * Add close button to feature info panel
              */
-            msp.Util.addClose($content,function(e) {
+            msp.Util.addClose(self.$d, function(e) {
                 self.clear();
             });
-            
-            /*
-             * Set panel position and height
-             */
-            self.pn.$d.css({
-                'top':self.position.top,
-                'right':self.position.right
-            });
-            
-            /*
-             * Set div references
-             */
-            self.$t = $('.tabs', $content); // Tabs
-            self.$b = $('.body', $content); // Body
-            self.$h = $('.header', $content); // Header
-            self.$d = $('.pfi', $content); // Parent div
-            
-            /*
-             * Create feature menu div over the map container div
-             */
-            self.$m = msp.Util.$$("#fmenu", msp.$mcontainer).addClass("apo shadow");
             
             /*
              * Update menu position on map move
@@ -174,18 +130,18 @@
                     if (layer.getVisibility()) {
                         
                         /*
-                         * Show fmenu and panel content
+                         * Show feature info panel
                          */
-                        self.$m.show();
-                        self.pn.show();
+                        self.$d.show();
                         
                     }
                     else {
+                        
                         /*
-                         * Hide fmenu and panel content
+                         * Hide feature info panel
                          */
-                        self.$m.hide();
-                        self.pn.hide();
+                        self.$d.hide();
+                        
                     }
                 }
             });
@@ -222,26 +178,19 @@
         };
         
         /**
-         * Set $a html content
+         * Set actions content
          */
         this.setActions = function(feature) {
             
-            var a,d,i,l,connector,key,plugin,menuactions,_a,
+            var a,d,i,l,connector,key,plugin,menuactions,_a,$f,
             self = this,
             actions = [],
             fi = feature.layer["_msp"].layerDescription.featureInfo;
             
             /*
-             * Clear feature menu
+             * Clear actions menu
              */
-            self.$m.empty();
-            
-            /*
-             * Add a close button to feature action menu
-             */
-            msp.Util.addClose(self.$m, function(e){
-                self.clear();
-            });
+            $f = $('.actions', self.$d).empty();
             
             /*
              * Add "Center on feature" action
@@ -422,20 +371,15 @@
             }
             
             /*
-             * Set title
-             */
-            self.$m.append('<div class="actions"></div><div class="title">'+msp.Map.Util.Feature.getTitle(feature)+'</div>');
-            
-            /*
              * Set actions
              */
             for (i = 0, l = actions.length;i < l; i++) {
                 a = actions[i];
-                $('.actions', self.$m).append('<a class="item image" jtitle="'+msp.Util._(a.tt || a.title)+'" id="'+a.id+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/></a>');
+                $f.append('<a class="item image" jtitle="'+msp.Util._(a.tt || a.title)+'" id="'+a.id+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/></a>');
                 d = $('#'+a.id);
                 
                 /* Add tooltip */
-                msp.tooltip.add(d, 's');
+                msp.tooltip.add(d, 'n', 10);
                 
                 (function(d,a,f){
                     d.click(function(e) {
@@ -528,7 +472,7 @@
                 d = $('#'+a.id);
                 
                 /* Add tooltip */
-                msp.tooltip.add(d, 'n');
+                msp.tooltip.add(d, 'n', 10);
                 
                 (function(d,a,f){
                     d.click(function() {
@@ -547,330 +491,6 @@
             
         };
         
-        /**
-         * Set info popup html content
-         * 
-         * @input feature : the feature to display
-         * @input target : target object containing divs to display feature info
-         *                 This object should contain at least the following properties
-         *                 {
-         *                      $h: // header reference
-         *                      $t: // tab reference
-         *                      $b: // body reference
-         *                 }
-         *                 If target is not specified, it is assumed that
-         *                 the target is "this"
-         */
-        this.setInfo = function(feature, target) {
-            
-            var id,title,content,$info,$thumb,layerType,
-            self = this,
-            typeIsUnknown = true,
-            // Thumbnail of quicklook attributes
-            thumb = feature.attributes['thumbnail'] || feature.attributes['quicklook'] || null;
-
-            /*
-             * Target
-             */
-            target = target || self;
-            
-            /*
-             * Set header
-             */
-            title = msp.Util.stripTags(msp.Map.Util.Feature.getTitle(feature));
-            $('.title', target.$h).attr('title', feature.layer.name + ' | ' + title)
-            .html(title)
-            .click(function(){
-                self.zoomOn(feature);
-            });      
-                
-            /*
-             * Clean body
-             */
-            target.$b.empty();
-            
-            /*
-             * Clean tab
-             */
-            target.$t.empty();
-            
-            /*
-             * Roll over layer types to detect layer features that should be
-             * displayed using a dedicated setFeatureInfoBody function
-             */
-            if ((layerType = msp.Map.layerTypes[feature.layer["_msp"].layerDescription["type"]])) {
-                if ($.isFunction(layerType.setFeatureInfoBody)) {
-                    layerType.setFeatureInfoBody(feature, target.$b);
-                    typeIsUnknown = false;
-                }
-            }
-
-            /*
-             * If feature type is unknown, use default display
-             * 
-             * Two cases :
-             *  - feature get a 'thumbnail' property -> add two independant blocks
-             *  - feature does not get a 'thumbnail' property -> add one block
-             *  
-             * In both case, key/value are displayed within a <table>
-             * 
-             *      <div class="thumb"></div>
-             *      <div class="info"></div>
-             * 
-             * 
-             */
-            if (typeIsUnknown) {
-                
-                /*
-                 * Initialize $b content.
-                 * 
-                 * Structure :
-                 *  <div id="pfitm">
-                 *      <div class="thumb"></div>
-                 *      <div class="info"></div>
-                 *  </div>
-                 */
-                target.$b.html('<div id="pfitm"><div class="thumb"></div><div class="info"><table></table></div></div>');
-                $info = $('.info table', target.$b);
-                $thumb = $('.thumb', target.$b);
-                
-                /*
-                 * Display thumbnail
-                 */
-                if (thumb) {
-                    
-                    /*
-                     * Set content for $thumb with the thumbnail url
-                     */
-                    content = '<img src="'+thumb+'" class="padded">';
-                    
-                    /*
-                     * Display quicklook on popup if defined
-                     */
-                    if (feature.attributes.hasOwnProperty('quicklook')) {
-                        
-                        id = msp.Util.getId();
-                        $thumb.html('<a id="'+id+'" class="image" jtitle="'+msp.Map.Util.Feature.getTitle(feature)+'" title="'+msp.Util._("Show quicklook")+'" href="'+feature.attributes['quicklook']+'">'+content+'</a>');
-                        
-                        /*
-                         * Popup image
-                         */
-                        $('#'+id).click(function() {
-                            var $t = $(this);
-                            msp.Util.showPopupImage($t.attr('href'), $t.attr('jtitle'));
-                            return false;
-                        });
-                        
-                    }
-                    /*
-                     * No quicklook, only display thumbnail
-                     */
-                    else {
-                        $thumb.html(content);
-                    }
-                    
-                    /*
-                     * Add an action on "Add Quicklook to map" link
-                     * This action is added only if layer allow to display Quicklook on the map
-                     */
-                    if (feature.layer["_msp"].qlToMap) {
-                        id = msp.Util.getId()
-                        $thumb.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._('Add quicklook to map')+'</a>');
-                        $('#'+id).click(function() {
-                            msp.Map.addLayer({
-                                type:"Image",
-                                title:feature.attributes['identifier'],
-                                url:feature.attributes['quicklook'],
-                                bbox:feature.geometry.getBounds().toBBOX(),
-                                /* By default, quicklooks are added to the "Quicklooks" group */
-                                groupName:"Quicklooks"
-                            });
-                        });
-                    }
-                    
-                }
-                
-                
-                /*
-                 * Set variable and references
-                 */
-                var d,v,t,i,l,k,kk,kkk,ts;
-
-                /*
-                 * Roll over attributes  
-                 */   
-                for (k in feature.attributes) {
-
-                    /*
-                     * Special keywords
-                     */
-                    if (k === 'identifier' || k === 'icon' || k === 'thumbnail' || k === 'quicklook') {
-                        continue;
-                    }
-
-                    /*
-                     * Get key value
-                     */
-                    if((v = feature.attributes[k])) {
-
-                        /*
-                         * Check type
-                         */
-                        t = typeof v;
-
-                        /*
-                         * Simple case : string
-                         */
-                        if (t === "string" && msp.Util.isUrl(v)) {
-                            $info.append('<tr><td>' + msp.Map.Util.Feature.translate(k, feature) + '</td><td>&nbsp;</td><td><a target="_blank" title="'+v+'" href="'+v+'">'+ msp.Util._("Download") +'</a></td></tr>');
-                        }
-                        /*
-                         * Object case
-                         */
-                        else if (t === "object") {
-
-                            /*
-                             * Special case for _mapshup property
-                             * _mapshup defines specific actions and should contains optional properties
-                             *      - download : to add a download action
-                             *      - add : to add a layer
-                             * These actions are displayed within the actions list - see this.setActions(feature) function
-                             *
-                             */
-                            if (k === "_mapshup") {
-                                continue;
-                            }
-
-                            /*
-                             * Roll over properties name
-                             */
-                            for (kk in v) {
-
-                                /*
-                                 * Check type : if object => create a new tab
-                                 */
-                                if (typeof v[kk] === "object") {
-
-                                    /*
-                                     * Special case for photos array
-                                     * No tab is created but instead a photo gallery
-                                     * is displayed
-                                     */
-                                    if (kk === 'photo') {
-                                        for (i = 0, l = v[kk].length; i < l; i++) {
-                                            id = msp.Util.getId();
-                                            $thumb.append('<a href="'+v[kk][i]["url"]+'" title="'+v[kk][i]["name"]+'" id="'+id+'" class="image"><img height="50px" width="50px" src="'+v[kk][i]["url"]+'"/></a>');
-                                            /*
-                                             * Popup image
-                                             */
-                                            (function($id){
-                                                $id.click(function() {
-                                                    msp.Util.showPopupImage($id.attr('href'), $id.attr('title'));
-                                                    return false;
-                                                });    
-                                            })($('#'+id));
-                                            
-                                        }
-                                        continue;
-                                    }
-
-                                    /*
-                                     * Initialize tab
-                                     */
-                                    if (target.$t.is(':empty')) {
-                                        target.$t.html('<div id="pfit"><ul><li><a href="#pfitm" class="selected">'+msp.Util._("Description")+'</a></li></ul></div>');
-                                    }
-                                    
-                                    /*
-                                     * If v[kk] is not an array or is an empty array, go to the next property
-                                     */
-                                    if (typeof v[kk].length !== "number" || v[kk].length === 0) {
-                                        continue;
-                                    }
-                                    
-                                    /*
-                                     * If kk object is a non empty array, add a new tab
-                                     */
-                                    id = msp.Util.getId() ;
-                                    $('ul', target.$t).append('<li><a href="#' + id + '">' + msp.Util._(kk) + '</a></li>');
-                                    target.$b.append('<div id="'+id+'" class="noflw"><table></table></div>');
-
-                                    /*
-                                     * Table reference
-                                     */
-                                    d = $('table', $('#'+id));
-
-                                    /*
-                                     * Special case for videos
-                                     */
-                                    if (kk === "video" || kk === "audio") {
-                                        for (i = 0, l = v[kk].length; i < l; i++) {
-                                            
-                                            /*
-                                             * Popup video
-                                             */
-                                            id = msp.Util.getId();
-                                            
-                                            d.append('<tr><td><a id="'+id+'" href="'+v[kk][i]["url"]+'">' + v[kk][i]["name"] + '</a></td></tr>');
-                                            
-                                            
-                                            (function($id){
-                                                $id.click(function() {
-                                                    msp.Util.showPopupVideo({
-                                                        url:$id.attr('href'), 
-                                                        title:$id.attr('title')
-                                                    });
-                                                    return false;
-                                                });    
-                                            })($('#'+id));
-                                            
-                                        }
-                                    }
-                                    else {
-                                        for (kkk in v[kk]) {
-                                            ts = msp.Map.Util.Feature.translate(kkk, feature);
-                                            d.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
-                                        }
-                                    }
-
-                                }
-                                else {
-                                    ts = msp.Map.Util.Feature.translate(k, feature);
-                                    $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + ' &rarr; ' + msp.Map.Util.Feature.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
-                                }
-                            }
-
-                        }
-                        else {
-                            ts = msp.Map.Util.Feature.translate(k, feature);
-                            $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + '</td><td>&nbsp;</td><td>' + msp.Map.Util.Feature.getValue(feature,k,v) + '</td></tr>');
-                        }
-                    }
-                }
-
-                /*
-                 * Set the tabs if any
-                 */
-                $("#pfit ul").idTabs(); 
-
-            }
-            
-            /*
-             * Tricky...
-             * 
-             * Be sure that free panel height is recomputed
-             * after an image is loaded
-             */
-            $('img', target.$b).each(function(idx){
-                $(this).load(function(){
-                    if (target.pn.isVisible){
-                        target.pn.show();
-                    }
-                });
-            });
-            
-        };
-
         /**
          * Select feature and get its information
          * Called by "onfeatureselect" events
@@ -919,10 +539,9 @@
                     msp.Map.map.zoomToExtent(bounds);
                     
                     /*
-                     * Hide menu and metadata panel
+                     * Hide feature info panel
                      */
-                    self.$m.hide();
-                    self.pn.hide();
+                    self.$d.hide();
                     
                     return false;
                     
@@ -1054,7 +673,7 @@
                 /*
                  * Set info for feature
                  */
-                self.setInfo(feature);
+                msp.Map.Util.Feature.toHTML(feature, $('.main', self.$d));
 
                 /*
                  * Set actions for feature
@@ -1064,7 +683,7 @@
                 /*
                  * Show feature information
                  */
-                self.show();
+                self.$d.show();
 
                 /*
                  * Update menu position
@@ -1073,25 +692,6 @@
 
             }
             return true;
-        };
-        
-        /**
-         * Show feature info panel
-         */
-        this.show = function(target) {
-            
-            target = target || this;
-            
-            /*
-             * Show metadata panel
-             */
-            target.pn.show();
-            
-            /*
-             * Hide tabs if empty
-             */
-            target.$t.is(':empty') ? target.$t.hide() : target.$t.show();
-            
         };
 
         /**
@@ -1124,16 +724,11 @@
                 if (self._tun - self._tse > 0) {
                     
                     /*
-                     * Hide menu and fmenu
+                     * Hide feature info panel
                      */
                     msp.menu.hide();
-                    self.$m.hide();
+                    self.$d.hide();
             
-                    /*
-                     * Hide panel content
-                     */
-                    self.pn.hide();
-                    
                 }
                 
             }, 100);
@@ -1158,11 +753,8 @@
                  */
                 if (!self.selected.layer) {
                     
-                    // Hide menu
-                    self.$m.hide();
-                    
-                    // Hide panel
-                    self.pn.hide();
+                    // Hide feature info panel
+                    self.$d.hide();
                     
                     return false;
                 }
@@ -1175,16 +767,9 @@
                     /*
                      * Set action info menu position
                      */
-                    self.$m.show().css({
-                        'left': xy.x - 31, //'left': xy.x - self.$m.outerWidth() + 31,
-                        'top': xy.y - self.$m.outerHeight() - 12 // 'top': xy.y + 12
-                    });
-
-                    /*
-                     * Compute info panel max height
-                     */
-                    self.pn.$d.css({
-                        'max-height': Math.round(msp.$map.height() * 0.9) - self.pn.$d.offset().top
+                    self.$d.show().css({
+                        'left': xy.x - 31, //'left': xy.x - self.$d.outerWidth() + 31,
+                        'top': xy.y - self.$d.outerHeight() - 12 // 'top': xy.y + 12
                     });
                     
                 }

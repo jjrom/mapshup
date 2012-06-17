@@ -238,6 +238,323 @@
              */
             return value;
         },
+        
+        /**
+         * Set info popup html content
+         * 
+         *  ___________________________
+         * |          .title           | .header
+         * |___________________________|
+         * |___________________________| .tabs
+         * |  ________                 |
+         * | |        | |              | .body
+         * | |        | |   .info      |
+         * | | .thumb | |              |
+         * | |        | |              |
+         * | |________| |              |
+         * |  .actions  |              |
+         * |___________________________|
+         * 
+         * 
+         * @input feature : the feature to display
+         * @input $target : target jquery object to append feature info
+         *                 
+         */
+        toHTML:function(feature, $target) {
+            
+            /*
+             * Paranoid mode
+             */
+            if (!feature || !$target || $target.length === 0) {
+                return false;
+            }
+            
+            var id,
+                d,v,t,i,l,k,kk,kkk,ts,
+                $b,
+                $info,
+                $tabs,
+                $thumb,
+                layerType,
+                typeIsUnknown = true,
+                title = msp.Util.stripTags(Map.Util.Feature.getTitle(feature)),
+                thumb = feature.attributes['thumbnail'] || feature.attributes['quicklook'] || null; // Thumbnail of quicklook attributes
+                
+
+            /*
+             * Initialize $target content
+             * 
+             * <div class="header">
+             *      <div class="title"></div>
+             * </div>
+             * <div class="tabs"></div>
+             * <div class="body" id="_fitm">
+             *      <div class="thumb"></div>
+             *      <div class="info"></div>
+             * </div>
+             * 
+             */
+            $target.html('<div class="header"><div class="title"></div></div><div class="tabs"></div><div class="body"><div class="west"><div class="thumb"></div><div class="actions"></div></div><div class="east"><div id="_fitm"><div class="info"></div></div></div></div>');
+            
+            /*
+             * Set header
+             */
+            $('.title', $target).attr('title', feature.layer.name + ' | ' + title).html(title);      
+             
+            /*
+             * Set body and tabs reference
+             */
+            $b = $('.body', $target);
+            $tabs = $('.tabs', $target);
+            
+            /*
+             * Roll over layer types to detect layer features that should be
+             * displayed using a dedicated setFeatureInfoBody function
+             */
+            if ((layerType = msp.Map.layerTypes[feature.layer["_msp"].layerDescription["type"]])) {
+                if ($.isFunction(layerType.setFeatureInfoBody)) {
+                    layerType.setFeatureInfoBody(feature, $b);
+                    typeIsUnknown = false;
+                }
+            }
+
+            /*
+             * If feature type is unknown, use default display
+             *  
+             * In both case, key/value are displayed within a <table>
+             * 
+             *      <div class="thumb"></div>
+             *      <div class="info"></div>
+             * 
+             */
+            if (typeIsUnknown) {
+                
+                /*
+                 * Default feature info are set within an html table
+                 */
+                $('.info', $b).html('<table></table>');
+                $info = $('.info table', $b);
+                
+                /*
+                 * Set thumbnail
+                 */
+                if (thumb) {
+                    
+                    /*
+                     * Set content with the thumbnail url or quicklook url if thumbnail does not exist
+                     */
+                    $thumb = $('.thumb', $b);
+                    
+                    /*
+                     * Display quicklook on popup if defined
+                     */
+                    if (feature.attributes.hasOwnProperty('quicklook')) {
+                        
+                        id = msp.Util.getId();
+                        $thumb.html('<a id="'+id+'" class="image" jtitle="'+title+'" title="'+msp.Util._("Show quicklook")+'" href="'+feature.attributes['quicklook']+'"><img src="'+thumb+'"/></a>');
+                        
+                        /*
+                         * Popup image
+                         */
+                        $('#'+id).click(function() {
+                            var $t = $(this);
+                            msp.Util.showPopupImage($t.attr('href'), $t.attr('jtitle'));
+                            return false;
+                        });
+                        
+                    }
+                    /*
+                     * No quicklook, only display thumbnail
+                     */
+                    else {
+                        $thumb.html('<img src="'+thumb+'"/>');
+                    }
+                    
+                    /*
+                     * Add an action on "Add Quicklook to map" link
+                     * This action is added only if layer allow to display Quicklook on the map
+                     */
+                    if (feature.layer["_msp"].qlToMap) {
+                        id = msp.Util.getId()
+                        $thumb.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._('Add quicklook to map')+'</a>');
+                        $('#'+id).click(function() {
+                            msp.Map.addLayer({
+                                type:"Image",
+                                title:feature.attributes['identifier'],
+                                url:feature.attributes['quicklook'],
+                                bbox:feature.geometry.getBounds().toBBOX(),
+                                /* By default, quicklooks are added to the "Quicklooks" group */
+                                groupName:"Quicklooks"
+                            });
+                        });
+                    }
+                    
+                }
+                
+                /*
+                 * Roll over attributes  
+                 */   
+                for (k in feature.attributes) {
+
+                    /*
+                     * Special keywords
+                     */
+                    if (k === 'identifier' || k === 'icon' || k === 'thumbnail' || k === 'quicklook') {
+                        continue;
+                    }
+
+                    /*
+                     * Get key value
+                     */
+                    if((v = feature.attributes[k])) {
+
+                        /*
+                         * Check type
+                         */
+                        t = typeof v;
+
+                        /*
+                         * Simple case : string
+                         */
+                        if (t === "string" && msp.Util.isUrl(v)) {
+                            $info.append('<tr><td>' + Map.Util.Feature.translate(k, feature) + '</td><td>&nbsp;</td><td><a target="_blank" title="'+v+'" href="'+v+'">'+ msp.Util._("Download") +'</a></td></tr>');
+                        }
+                        /*
+                         * Object case
+                         */
+                        else if (t === "object") {
+
+                            /*
+                             * Special case for _mapshup property
+                             * _mapshup defines specific actions and should contains optional properties
+                             *      - download : to add a download action
+                             *      - add : to add a layer
+                             * These actions are displayed within the actions list - see this.setFooter(feature) function
+                             *
+                             */
+                            if (k === "_mapshup") {
+                                continue;
+                            }
+
+                            /*
+                             * Roll over properties name
+                             */
+                            for (kk in v) {
+
+                                /*
+                                 * Check type : if object => create a new tab
+                                 */
+                                if (typeof v[kk] === "object") {
+
+                                    /*
+                                     * Special case for photos array
+                                     * No tab is created but instead a photo gallery
+                                     * is displayed
+                                     */
+                                    if (kk === 'photo') {
+                                        for (i = 0, l = v[kk].length; i < l; i++) {
+                                            id = msp.Util.getId();
+                                            $thumb.append('<a href="'+v[kk][i]["url"]+'" title="'+v[kk][i]["name"]+'" id="'+id+'" class="image"><img height="50px" width="50px" src="'+v[kk][i]["url"]+'"/></a>');
+                                            /*
+                                             * Popup image
+                                             */
+                                            (function($id){
+                                                $id.click(function() {
+                                                    msp.Util.showPopupImage($id.attr('href'), $id.attr('title'));
+                                                    return false;
+                                                });    
+                                            })($('#'+id));
+                                            
+                                        }
+                                        continue;
+                                    }
+
+                                    /*
+                                     * Initialize tab
+                                     */
+                                    if ($tabs.is(':empty')) {
+                                        $tabs.html('<div id="_fit"><ul><li><a href="#_fitm" class="selected">'+msp.Util._("Description")+'</a></li></ul></div>');
+                                    }
+                                    
+                                    /*
+                                     * If v[kk] is not an array or is an empty array, go to the next property
+                                     */
+                                    if (typeof v[kk].length !== "number" || v[kk].length === 0) {
+                                        continue;
+                                    }
+                                    
+                                    /*
+                                     * If kk object is a non empty array, add a new tab
+                                     */
+                                    id = msp.Util.getId() ;
+                                    $('ul', $tabs).append('<li><a href="#' + id + '">' + msp.Util._(kk) + '</a></li>');
+                                    $b.append('<div id="'+id+'" class="noflw"><table></table></div>');
+
+                                    /*
+                                     * Table reference
+                                     */
+                                    d = $('table', $('#'+id));
+
+                                    /*
+                                     * Special case for videos
+                                     */
+                                    if (kk === "video" || kk === "audio") {
+                                        for (i = 0, l = v[kk].length; i < l; i++) {
+                                            
+                                            /*
+                                             * Popup video
+                                             */
+                                            id = msp.Util.getId();
+                                            
+                                            d.append('<tr><td><a id="'+id+'" href="'+v[kk][i]["url"]+'">' + v[kk][i]["name"] + '</a></td></tr>');
+                                            
+                                            
+                                            (function($id){
+                                                $id.click(function() {
+                                                    msp.Util.showPopupVideo({
+                                                        url:$id.attr('href'), 
+                                                        title:$id.attr('title')
+                                                    });
+                                                    return false;
+                                                });    
+                                            })($('#'+id));
+                                            
+                                        }
+                                    }
+                                    else {
+                                        for (kkk in v[kk]) {
+                                            ts = Map.Util.Feature.translate(kkk, feature);
+                                            d.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
+                                        }
+                                    }
+
+                                }
+                                else {
+                                    ts = Map.Util.Feature.translate(k, feature);
+                                    $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + ' &rarr; ' + Map.Util.Feature.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
+                                }
+                            }
+
+                        }
+                        else {
+                            ts = Map.Util.Feature.translate(k, feature);
+                            $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + '</td><td>&nbsp;</td><td>' + Map.Util.Feature.getValue(feature,k,v) + '</td></tr>');
+                        }
+                    }
+                }
+
+                /*
+                 * Set the tabs if any
+                 */
+                $("#_fit ul").idTabs();
+                
+            }
+            
+            //$tabs.is(':empty') ? $tabs.hide() : $tabs.show();
+
+            return true;
+            
+        },
 
         /*
          * Replace input key into its "human readable" equivalent defined in layerDescription.featureInfo.keys associative array
