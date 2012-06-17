@@ -271,7 +271,6 @@
             
             var id,
                 d,v,t,i,l,k,kk,kkk,ts,
-                $b,
                 $info,
                 $tabs,
                 $thumb,
@@ -288,13 +287,13 @@
              *      <div class="title"></div>
              * </div>
              * <div class="tabs"></div>
-             * <div class="body" id="_fitm">
+             * <div class="body">
              *      <div class="thumb"></div>
              *      <div class="info"></div>
              * </div>
              * 
              */
-            $target.html('<div class="header"><div class="title"></div></div><div class="tabs"></div><div class="body"><div class="west"><div class="thumb"></div><div class="actions"></div></div><div class="east"><div id="_fitm"><div class="info"></div></div></div></div>');
+            $target.html('<div class="header"><div class="title"></div></div><div class="tabs"></div><div class="west"><div class="thumb"></div><div class="actions"></div></div><div class="east"><div id="_fitm"><div class="info"></div></div></div>');
             
             /*
              * Set header
@@ -304,8 +303,63 @@
             /*
              * Set body and tabs reference
              */
-            $b = $('.body', $target);
             $tabs = $('.tabs', $target);
+            
+            /*
+             * Set thumbnail
+             */
+            if (thumb) {
+
+                /*
+                 * Set content with the thumbnail url or quicklook url if thumbnail does not exist
+                 */
+                $thumb = $('.thumb', $target);
+
+                /*
+                 * Display quicklook on popup if defined
+                 */
+                if (feature.attributes.hasOwnProperty('quicklook')) {
+
+                    id = msp.Util.getId();
+                    $thumb.html('<a id="'+id+'" class="image" jtitle="'+title+'" title="'+msp.Util._("Show quicklook")+'" href="'+feature.attributes['quicklook']+'"><img src="'+thumb+'"/></a>');
+
+                    /*
+                     * Popup image
+                     */
+                    $('#'+id).click(function() {
+                        var $t = $(this);
+                        msp.Util.showPopupImage($t.attr('href'), $t.attr('jtitle'));
+                        return false;
+                    });
+
+                }
+                /*
+                 * No quicklook, only display thumbnail
+                 */
+                else {
+                    $thumb.html('<img src="'+thumb+'"/>');
+                }
+
+                /*
+                 * Add an action on "Add Quicklook to map" link
+                 * This action is added only if layer allow to display Quicklook on the map
+                 */
+                if (feature.layer["_msp"].qlToMap) {
+                    id = msp.Util.getId()
+                    $thumb.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._('Add quicklook to map')+'</a>');
+                    $('#'+id).click(function() {
+                        msp.Map.addLayer({
+                            type:"Image",
+                            title:feature.attributes['identifier'],
+                            url:feature.attributes['quicklook'],
+                            bbox:feature.geometry.getBounds().toBBOX(),
+                            /* By default, quicklooks are added to the "Quicklooks" group */
+                            groupName:"Quicklooks"
+                        });
+                    });
+                }
+
+            }
             
             /*
              * Roll over layer types to detect layer features that should be
@@ -313,7 +367,7 @@
              */
             if ((layerType = msp.Map.layerTypes[feature.layer["_msp"].layerDescription["type"]])) {
                 if ($.isFunction(layerType.setFeatureInfoBody)) {
-                    layerType.setFeatureInfoBody(feature, $b);
+                    layerType.setFeatureInfoBody(feature, $('.info', $target));
                     typeIsUnknown = false;
                 }
             }
@@ -332,64 +386,8 @@
                 /*
                  * Default feature info are set within an html table
                  */
-                $('.info', $b).html('<table></table>');
-                $info = $('.info table', $b);
-                
-                /*
-                 * Set thumbnail
-                 */
-                if (thumb) {
-                    
-                    /*
-                     * Set content with the thumbnail url or quicklook url if thumbnail does not exist
-                     */
-                    $thumb = $('.thumb', $b);
-                    
-                    /*
-                     * Display quicklook on popup if defined
-                     */
-                    if (feature.attributes.hasOwnProperty('quicklook')) {
-                        
-                        id = msp.Util.getId();
-                        $thumb.html('<a id="'+id+'" class="image" jtitle="'+title+'" title="'+msp.Util._("Show quicklook")+'" href="'+feature.attributes['quicklook']+'"><img src="'+thumb+'"/></a>');
-                        
-                        /*
-                         * Popup image
-                         */
-                        $('#'+id).click(function() {
-                            var $t = $(this);
-                            msp.Util.showPopupImage($t.attr('href'), $t.attr('jtitle'));
-                            return false;
-                        });
-                        
-                    }
-                    /*
-                     * No quicklook, only display thumbnail
-                     */
-                    else {
-                        $thumb.html('<img src="'+thumb+'"/>');
-                    }
-                    
-                    /*
-                     * Add an action on "Add Quicklook to map" link
-                     * This action is added only if layer allow to display Quicklook on the map
-                     */
-                    if (feature.layer["_msp"].qlToMap) {
-                        id = msp.Util.getId()
-                        $thumb.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._('Add quicklook to map')+'</a>');
-                        $('#'+id).click(function() {
-                            msp.Map.addLayer({
-                                type:"Image",
-                                title:feature.attributes['identifier'],
-                                url:feature.attributes['quicklook'],
-                                bbox:feature.geometry.getBounds().toBBOX(),
-                                /* By default, quicklooks are added to the "Quicklooks" group */
-                                groupName:"Quicklooks"
-                            });
-                        });
-                    }
-                    
-                }
+                $('.info', $target).html('<table></table>');
+                $info = $('.info table', $target);
                 
                 /*
                  * Roll over attributes  
@@ -488,7 +486,7 @@
                                      */
                                     id = msp.Util.getId() ;
                                     $('ul', $tabs).append('<li><a href="#' + id + '">' + msp.Util._(kk) + '</a></li>');
-                                    $b.append('<div id="'+id+'" class="noflw"><table></table></div>');
+                                    $('.east', $target).append('<div id="'+id+'" class="noflw"><table></table></div>');
 
                                     /*
                                      * Table reference

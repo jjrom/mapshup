@@ -156,7 +156,7 @@
              *
              * (see http://www.flickr.com/services/api/misc.urls.html)
              */
-            $d.append('<div class="thumb"><a id="'+id+'" class="image" title="'+feature.attributes['name']+'" href="'+feature.attributes['quicklook']+'"><img src="'+feature.attributes['thumbnail']+'" class="padded"/></a></div><div class="info">'+feature.attributes['description']+'<br/><div class="tags"></div><br/><div class="center"><a target="_blank" href="http://www.flickr.com/photos/'+feature.attributes['owner']+'/'+feature.attributes['identifier']+'">'+msp.Util._("Go to flickr page")+'</a></div></div>');
+            $d.html('<div class="info">'+feature.attributes['description']+'<br/><div class="tags"></div><br/><div class="center"><a target="_blank" href="http://www.flickr.com/photos/'+feature.attributes['owner']+'/'+feature.attributes['identifier']+'">'+msp.Util._("Go to flickr page")+'</a></div></div>');
              
             /*
              * Popup image
