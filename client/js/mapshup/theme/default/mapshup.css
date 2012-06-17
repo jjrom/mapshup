@@ -617,7 +617,7 @@ a.tab,
 }
 
 /* Popup with arrow (used by FeatureInfo fmenu) */
-.apo {
+.apo, .napo {
     background-clip: padding-box;
     border: 1px solid #ccc;
     padding: 5px;

@@ -361,35 +361,10 @@
              */
             if (self.options.onTheFly) {
                 
-                var pn,$content;
-                
-                /*
-                 * Feature Information is displayed within a dedicated panel
-                 */
-                pn = new msp.Panel();
-
-                /*
-                 * Add content
-                 */
-                $content = pn.add('<div class="header"><div class="title"></div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi').addClass('shadow');
-
-                /*
-                 * Set panel position and height
-                 */
-                pn.$d.css({
-                    'top':100,
-                    'left':20
-                });
-
                 /*
                  * Set div references
                  */
-                self.target = {
-                    pn:pn,
-                    $t:$('.tabs', $content), // Tabs
-                    $b:$('.body', $content), // Body
-                    $h:$('.header', $content) // Header
-                }
+                self.$onTheFly = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('fi napo shadow').css('top', '100px').html('<div class="main"></div>');
                 
             }
             
@@ -1129,17 +1104,17 @@
                              * Constrain the over popup position
                              * to be totally included within the map
                              */
-                            var left = $div.offset().left + ($div.width() - self.target.pn.$d.width()) / 2;
+                            var left = $div.offset().left + ($div.width() - self.$onTheFly.width()) / 2;
                             left = Math.max(0, left);
-                            left = Math.min(left,msp.$container.width() - self.target.pn.$d.width());
-                            self.target.pn.$d.css({
+                            left = Math.min(left,msp.$container.width() - self.$onTheFly.width());
+                            self.$onTheFly.css({
                                 'left':left
                             });
-                            msp.Map.featureInfo.setInfo(f, self.target);
-                            msp.Map.featureInfo.show(self.target);
+                            msp.Map.Util.Feature.toHTML(f, $('.main', self.$onTheFly));
+                            self.$onTheFly.show();
                             
                         }).mouseout(function(e){
-                            self.target.pn.hide();
+                            self.$onTheFly.hide();
                         });
                     }
                 })(f,$('#'+id));
