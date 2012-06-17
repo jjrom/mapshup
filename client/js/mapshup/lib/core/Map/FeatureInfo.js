@@ -787,10 +787,10 @@
                         var lmo,top,left,dx,dy,c;
                         
                         lmo = $('.lm').offset();
-                        top = msp.$map.offset().top + (lmo ? lmo.top : 0) + 10;
+                        top = msp.$map.offset().top + (lmo ? lmo.top : 0) + 35;
                         left = msp.$map.offset().left + msp.$map.width();
                         dy = self.$d.offset().top - top;
-                        dx = left - self.$d.offset().left - self.$d.outerWidth() - 10;
+                        dx = left - self.$d.offset().left - self.$d.outerWidth() - 35;
                         
                         if (dx > 0) {
                             dx = 0;
