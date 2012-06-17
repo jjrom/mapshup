@@ -157,7 +157,7 @@
              * (see http://www.flickr.com/services/api/misc.urls.html)
              */
             $d.html('<div class="info">'+feature.attributes['description']+'<br/><div class="tags"></div><br/><div class="center"><a target="_blank" href="http://www.flickr.com/photos/'+feature.attributes['owner']+'/'+feature.attributes['identifier']+'">'+msp.Util._("Go to flickr page")+'</a></div></div>');
-             
+            
             /*
              * Popup image
              */
@@ -171,9 +171,9 @@
             if (feature.attributes["tags"]) {
                 tags = feature.attributes["tags"].split(' ');
                 for (i = 0, l = tags.length ; i < l; i++) {
-                    (function(tag) {
-                        $tags.append('<a href="#" id="t_'+tag+'">'+tag+'</a> ');
-                        $('#t_' + tag).click(function(){
+                    (function(tag, id) {
+                        $tags.append('<a href="#" id="'+id+'">'+tag+'</a> ');
+                        $('#' + id).click(function(){
                             Map.addLayer({
                                 type:"Flickr",
                                 title:tag,
@@ -183,7 +183,7 @@
                             });
                             return false;
                         });
-                    })(tags[i]);
+                    })(tags[i], msp.Util.getId());
                 }
             }
         },
