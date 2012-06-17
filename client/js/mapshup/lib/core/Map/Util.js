@@ -277,7 +277,7 @@
                 layerType,
                 typeIsUnknown = true,
                 title = msp.Util.stripTags(Map.Util.Feature.getTitle(feature)),
-                thumb = feature.attributes['thumbnail'] || feature.attributes['quicklook'] || null; // Thumbnail of quicklook attributes
+                thumb = feature.attributes['thumbnail'] || feature.attributes['quicklook'] || Map.Util.Feature.getIcon(feature) || msp.Util.getImgUrl('nodata.png'); // Thumbnail of quicklook attributes
                 
 
             /*
@@ -307,58 +307,52 @@
             
             /*
              * Set thumbnail
+             * 
              */
-            if (thumb) {
+            $thumb = $('.thumb', $target);
+
+            /*
+             * Display quicklook on popup if defined
+             */
+            if (feature.attributes.hasOwnProperty('quicklook')) {
+
+                id = msp.Util.getId();
+                $thumb.html('<a id="'+id+'" class="image" jtitle="'+title+'" title="'+msp.Util._("Show quicklook")+'" href="'+feature.attributes['quicklook']+'"><img src="'+thumb+'"/></a>');
 
                 /*
-                 * Set content with the thumbnail url or quicklook url if thumbnail does not exist
+                 * Popup image
                  */
-                $thumb = $('.thumb', $target);
+                $('#'+id).click(function() {
+                    var $t = $(this);
+                    msp.Util.showPopupImage($t.attr('href'), $t.attr('jtitle'));
+                    return false;
+                });
 
-                /*
-                 * Display quicklook on popup if defined
-                 */
-                if (feature.attributes.hasOwnProperty('quicklook')) {
+            }
+            /*
+             * No quicklook, only display thumbnail
+             */
+            else {
+                $thumb.html('<img src="'+thumb+'"/>');
+            }
 
-                    id = msp.Util.getId();
-                    $thumb.html('<a id="'+id+'" class="image" jtitle="'+title+'" title="'+msp.Util._("Show quicklook")+'" href="'+feature.attributes['quicklook']+'"><img src="'+thumb+'"/></a>');
-
-                    /*
-                     * Popup image
-                     */
-                    $('#'+id).click(function() {
-                        var $t = $(this);
-                        msp.Util.showPopupImage($t.attr('href'), $t.attr('jtitle'));
-                        return false;
+            /*
+             * Add an action on "Add Quicklook to map" link
+             * This action is added only if layer allow to display Quicklook on the map
+             */
+            if (feature.layer["_msp"].qlToMap) {
+                id = msp.Util.getId()
+                $thumb.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._('Add quicklook to map')+'</a>');
+                $('#'+id).click(function() {
+                    msp.Map.addLayer({
+                        type:"Image",
+                        title:feature.attributes['identifier'],
+                        url:feature.attributes['quicklook'],
+                        bbox:feature.geometry.getBounds().toBBOX(),
+                        /* By default, quicklooks are added to the "Quicklooks" group */
+                        groupName:"Quicklooks"
                     });
-
-                }
-                /*
-                 * No quicklook, only display thumbnail
-                 */
-                else {
-                    $thumb.html('<img src="'+thumb+'"/>');
-                }
-
-                /*
-                 * Add an action on "Add Quicklook to map" link
-                 * This action is added only if layer allow to display Quicklook on the map
-                 */
-                if (feature.layer["_msp"].qlToMap) {
-                    id = msp.Util.getId()
-                    $thumb.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._('Add quicklook to map')+'</a>');
-                    $('#'+id).click(function() {
-                        msp.Map.addLayer({
-                            type:"Image",
-                            title:feature.attributes['identifier'],
-                            url:feature.attributes['quicklook'],
-                            bbox:feature.geometry.getBounds().toBBOX(),
-                            /* By default, quicklooks are added to the "Quicklooks" group */
-                            groupName:"Quicklooks"
-                        });
-                    });
-                }
-
+                });
             }
             
             /*

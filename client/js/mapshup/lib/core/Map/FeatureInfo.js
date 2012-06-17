@@ -186,7 +186,7 @@
             self = this,
             actions = [],
             fi = feature.layer["_msp"].layerDescription.featureInfo;
-            
+           
             /*
              * Clear actions menu
              */
