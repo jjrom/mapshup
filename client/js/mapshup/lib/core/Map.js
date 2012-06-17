@@ -1602,7 +1602,7 @@
             h = bounds.getHeight(),
             c = bounds.getCenterLonLat(),
             e = msp.Util._("Cannot zoom : this feature is outside authorized extent");
-
+    
             /**
              * Bounds is too small => center to bounds
              */
