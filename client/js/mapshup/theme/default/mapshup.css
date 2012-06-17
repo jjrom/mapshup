@@ -139,7 +139,7 @@ input:placeholder {
  ***********************************/
 
 /* Darker color - BLACK */
-body, .pfi, .pfi .header, .pn .header, .po .body, .active, .selected
+body, .po .body, .active, .selected
 {
     color:#000;
 }
@@ -158,7 +158,6 @@ a.tab,
 .help h1,
 .help span.hilite,
 .tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
-.pn,
 .apo,
 .hover:hover,
 .featureHilite,
