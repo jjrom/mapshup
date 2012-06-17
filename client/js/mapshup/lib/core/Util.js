@@ -359,7 +359,7 @@
                 popup.$b.html('<div class="imageContent"><div class="padded"><img src="'+href+'" height="'+height+'" width="'+width+'"/><div class="innerTitle" style="width:'+width+'px;">'+title+'</div></div></div>');
                 popup.$d.css({
                     'left':(window.innerWidth - popup.$d.width()) / 2,
-                    'top':(window.innerHeight - popup.$d.height()) / 2
+                    'top':0
                 });
 
                 /*
