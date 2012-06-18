@@ -294,12 +294,11 @@
             
             if (b) {
                 $('.mask', self.$d).hide();
+                self.setTime(self.getInterval());
             }
             else {
                 $('.mask', self.$d).show();
-                
                 self.setTime(null);
-                
             }
             
         };
