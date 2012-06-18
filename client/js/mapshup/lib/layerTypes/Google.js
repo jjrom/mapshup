@@ -73,8 +73,10 @@
              * 
              * Apparently there is a bug with Safari and Google maps
              * Google layer are not added in this case
+             * 
+             * Update : Chrome browser on Mac OS X tells also that it is Safari...
              */
-            if (/Safari/.test(navigator.userAgent)) {
+            if (/Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)) {
                 return null;
             }
             
