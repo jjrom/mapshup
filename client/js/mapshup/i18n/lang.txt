@@ -37,7 +37,6 @@ Define a search area
 Delete
 Delete tab
 Description
-Display full resolution product on map
 Distance
 Download
 Do you really want to remove layer

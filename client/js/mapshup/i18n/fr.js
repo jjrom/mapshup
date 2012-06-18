@@ -38,7 +38,6 @@
     i["Delete"]="Supprimer";
     i["Delete tab"]="Supprimer un onglet";
     i["Description"]="Description";
-    i["Display full resolution product on map"]="Voir le produit pleine résolution sur la carte";
     i["Distance"]="Distance";
     i["Download"]="Télécharger";
     i["Do you really want to remove layer"]="Voulez-vous vraiment enlever la couche";
