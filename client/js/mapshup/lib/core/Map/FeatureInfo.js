@@ -258,7 +258,7 @@
                     actions.push({
                         id:msp.Util.getId(),
                         icon:"add.png",
-                        tt:_a["title"] || "Add to map",
+                        tt:_a["title"] || "Add to map",
                         title:"Add",
                         callback:function(a,f) {
                             
