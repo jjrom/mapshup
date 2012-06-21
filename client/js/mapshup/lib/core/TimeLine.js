@@ -172,6 +172,7 @@
              * Set time slider
              */
             self.$timeLine.dateRangeSlider({
+                arrows:false,
                 wheelMode:"scroll",
                 valueLabels:"change",
                 bounds:{
