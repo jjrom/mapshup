@@ -1194,6 +1194,13 @@
         }
         
         /*
+         * Never zoom on baseLayer
+         */
+         if (layer.isBaseLayer) {
+             return false;
+         }
+         
+        /*
          * mapshup special layers (i.e. mspLayer = true) and
          * initial layers are not processed
          */
