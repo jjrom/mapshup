@@ -227,107 +227,2532 @@ var s=document.getElementsByTagName('script');var src=s[s.length-1].src;var ok=t
  *     "This code is unrestricted: you are free to use it however you like."
  * 
  */
-(function(j){j.jqplot.Cursor=function(r){this.style="crosshair";this.previousCursor="auto";this.show=j.jqplot.config.enablePlugins;this.showTooltip=true;this.followMouse=false;this.tooltipLocation="se";this.tooltipOffset=6;this.showTooltipGridPosition=false;this.showTooltipUnitPosition=true;this.showTooltipDataPosition=false;this.tooltipFormatString="%.4P, %.4P";this.useAxesFormatters=true;this.tooltipAxisGroups=[];this.zoom=false;this.zoomProxy=false;this.zoomTarget=false;this.clickReset=false;this.dblClickReset=true;this.showVerticalLine=false;this.showHorizontalLine=false;this.constrainZoomTo="none";this.shapeRenderer=new j.jqplot.ShapeRenderer();this._zoom={start:[],end:[],started:false,zooming:false,isZoomed:false,axes:{start:{},end:{}},gridpos:{},datapos:{}};this._tooltipElem;this.zoomCanvas;this.cursorCanvas;this.intersectionThreshold=2;this.showCursorLegend=false;this.cursorLegendFormatString=j.jqplot.Cursor.cursorLegendFormatString;this._oldHandlers={onselectstart:null,ondrag:null,onmousedown:null};this.constrainOutsideZoom=true;this.showTooltipOutsideZoom=false;this.onGrid=false;j.extend(true,this,r)};j.jqplot.Cursor.cursorLegendFormatString="%s x:%s, y:%s";j.jqplot.Cursor.init=function(v,u,t){var r=t||{};this.plugins.cursor=new j.jqplot.Cursor(r.cursor);var w=this.plugins.cursor;if(w.show){j.jqplot.eventListenerHooks.push(["jqplotMouseEnter",b]);j.jqplot.eventListenerHooks.push(["jqplotMouseLeave",f]);j.jqplot.eventListenerHooks.push(["jqplotMouseMove",i]);if(w.showCursorLegend){t.legend=t.legend||{};t.legend.renderer=j.jqplot.CursorLegendRenderer;t.legend.formatString=this.plugins.cursor.cursorLegendFormatString;t.legend.show=true}if(w.zoom){j.jqplot.eventListenerHooks.push(["jqplotMouseDown",a]);if(w.clickReset){j.jqplot.eventListenerHooks.push(["jqplotClick",k])}if(w.dblClickReset){j.jqplot.eventListenerHooks.push(["jqplotDblClick",c])}}this.resetZoom=function(){var z=this.axes;if(!w.zoomProxy){for(var y in z){z[y].reset()}this.redraw()}else{var x=this.plugins.cursor.zoomCanvas._ctx;x.clearRect(0,0,x.canvas.width,x.canvas.height)}this.plugins.cursor._zoom.isZoomed=false;this.target.trigger("jqplotResetZoom",[this,this.plugins.cursor])};if(w.showTooltipDataPosition){w.showTooltipUnitPosition=false;w.showTooltipGridPosition=false;if(r.cursor.tooltipFormatString==undefined){w.tooltipFormatString=j.jqplot.Cursor.cursorLegendFormatString}}}};j.jqplot.Cursor.postDraw=function(){var y=this.plugins.cursor;y.zoomCanvas=new j.jqplot.GenericCanvas();this.eventCanvas._elem.before(y.zoomCanvas.createElement(this._gridPadding,"jqplot-zoom-canvas",this._plotDimensions));var x=y.zoomCanvas.setContext();y._tooltipElem=j('<div class="jqplot-cursor-tooltip" style="position:absolute;display:none"></div>');y.zoomCanvas._elem.before(y._tooltipElem);if(y.showVerticalLine||y.showHorizontalLine){y.cursorCanvas=new j.jqplot.GenericCanvas();this.eventCanvas._elem.before(y.cursorCanvas.createElement(this._gridPadding,"jqplot-cursor-canvas",this._plotDimensions));var x=y.cursorCanvas.setContext()}if(y.showTooltipUnitPosition){if(y.tooltipAxisGroups.length===0){var u=this.series;var v;var r=[];for(var t=0;t<u.length;t++){v=u[t];var w=v.xaxis+","+v.yaxis;if(j.inArray(w,r)==-1){r.push(w)}}for(var t=0;t<r.length;t++){y.tooltipAxisGroups.push(r[t].split(","))}}}};j.jqplot.Cursor.zoomProxy=function(x,t){var r=x.plugins.cursor;var w=t.plugins.cursor;r.zoomTarget=true;r.zoom=true;r.style="auto";r.dblClickReset=false;w.zoom=true;w.zoomProxy=true;t.target.bind("jqplotZoom",v);t.target.bind("jqplotResetZoom",u);function v(z,y,B,A,C){r.doZoom(y,B,x,C)}function u(y,z,A){x.resetZoom()}};j.jqplot.Cursor.prototype.resetZoom=function(w,x){var v=w.axes;var u=x._zoom.axes;if(!w.plugins.cursor.zoomProxy&&x._zoom.isZoomed){for(var t in v){v[t]._ticks=[];v[t].min=u[t].min;v[t].max=u[t].max;v[t].numberTicks=u[t].numberTicks;v[t].tickInterval=u[t].tickInterval;v[t].daTickInterval=u[t].daTickInterval}w.redraw();x._zoom.isZoomed=false}else{var r=x.zoomCanvas._ctx;r.clearRect(0,0,r.canvas.width,r.canvas.height)}w.target.trigger("jqplotResetZoom",[w,x])};j.jqplot.Cursor.resetZoom=function(r){r.resetZoom()};j.jqplot.Cursor.prototype.doZoom=function(y,v,z,D){var B=D;var A=z.axes;var t=B._zoom.axes;var u=t.start;var w=t.end;var x,C;var E=z.plugins.cursor.zoomCanvas._ctx;if((B.constrainZoomTo=="none"&&Math.abs(y.x-B._zoom.start[0])>6&&Math.abs(y.y-B._zoom.start[1])>6)||(B.constrainZoomTo=="x"&&Math.abs(y.x-B._zoom.start[0])>6)||(B.constrainZoomTo=="y"&&Math.abs(y.y-B._zoom.start[1])>6)){if(!z.plugins.cursor.zoomProxy){for(var r in v){if(B._zoom.axes[r]==undefined){B._zoom.axes[r]={};B._zoom.axes[r].numberTicks=A[r].numberTicks;B._zoom.axes[r].tickInterval=A[r].tickInterval;B._zoom.axes[r].daTickInterval=A[r].daTickInterval;B._zoom.axes[r].min=A[r].min;B._zoom.axes[r].max=A[r].max}if((B.constrainZoomTo=="none")||(B.constrainZoomTo=="x"&&r.charAt(0)=="x")||(B.constrainZoomTo=="y"&&r.charAt(0)=="y")){dp=v[r];if(dp!=null){if(dp>u[r]){A[r].min=u[r];A[r].max=dp}else{span=u[r]-dp;A[r].max=u[r];A[r].min=dp}A[r].tickInterval=null;A[r].daTickInterval=null;A[r]._ticks=[]}}}E.clearRect(0,0,E.canvas.width,E.canvas.height);z.redraw();B._zoom.isZoomed=true}z.target.trigger("jqplotZoom",[y,v,z,D])}};j.jqplot.preInitHooks.push(j.jqplot.Cursor.init);j.jqplot.postDrawHooks.push(j.jqplot.Cursor.postDraw);function e(F,t,C){var H=C.plugins.cursor;var x="";var L=false;if(H.showTooltipGridPosition){x=F.x+", "+F.y;L=true}if(H.showTooltipUnitPosition){var E;for(var D=0;D<H.tooltipAxisGroups.length;D++){E=H.tooltipAxisGroups[D];if(L){x+="<br />"}if(H.useAxesFormatters){var B=C.axes[E[0]]._ticks[0].formatter;var r=C.axes[E[1]]._ticks[0].formatter;var I=C.axes[E[0]]._ticks[0].formatString;var w=C.axes[E[1]]._ticks[0].formatString;x+=B(I,t[E[0]])+", "+r(w,t[E[1]])}else{x+=j.jqplot.sprintf(H.tooltipFormatString,t[E[0]],t[E[1]])}L=true}}if(H.showTooltipDataPosition){var v=C.series;var K=d(C,F.x,F.y);var L=false;for(var D=0;D<v.length;D++){if(v[D].show){var z=v[D].index;var u=v[D].label.toString();var G=j.inArray(z,K.indices);var A=undefined;var y=undefined;if(G!=-1){var J=K.data[G].data;if(H.useAxesFormatters){var B=v[D]._xaxis._ticks[0].formatter;var r=v[D]._yaxis._ticks[0].formatter;var I=v[D]._xaxis._ticks[0].formatString;var w=v[D]._yaxis._ticks[0].formatString;A=B(I,J[0]);y=r(w,J[1])}else{A=J[0];y=J[1]}if(L){x+="<br />"}x+=j.jqplot.sprintf(H.tooltipFormatString,u,A,y);L=true}}}}H._tooltipElem.html(x)}function g(E,C){var G=C.plugins.cursor;var B=G.cursorCanvas._ctx;B.clearRect(0,0,B.canvas.width,B.canvas.height);if(G.showVerticalLine){G.shapeRenderer.draw(B,[[E.x,0],[E.x,B.canvas.height]])}if(G.showHorizontalLine){G.shapeRenderer.draw(B,[[0,E.y],[B.canvas.width,E.y]])}var I=d(C,E.x,E.y);if(G.showCursorLegend){var t=j(C.targetId+" td.jqplot-cursor-legend-label");for(var D=0;D<t.length;D++){var x=j(t[D]).data("seriesIndex");var v=C.series[x];var u=v.label.toString();var F=j.inArray(x,I.indices);var z=undefined;var y=undefined;if(F!=-1){var J=I.data[F].data;if(G.useAxesFormatters){var A=v._xaxis._ticks[0].formatter;var r=v._yaxis._ticks[0].formatter;var H=v._xaxis._ticks[0].formatString;var w=v._yaxis._ticks[0].formatString;z=A(H,J[0]);y=r(w,J[1])}else{z=J[0];y=J[1]}}if(C.legend.escapeHtml){j(t[D]).text(j.jqplot.sprintf(G.cursorLegendFormatString,u,z,y))}else{j(t[D]).html(j.jqplot.sprintf(G.cursorLegendFormatString,u,z,y))}}}}function d(A,F,E){var B={indices:[],data:[]};var G,w,u,C,v,t;var z;var D=A.plugins.cursor;for(var w=0;w<A.series.length;w++){G=A.series[w];t=G.renderer;if(G.show){z=D.intersectionThreshold;if(G.showMarker){z+=G.markerRenderer.size/2}for(var v=0;v<G.gridData.length;v++){p=G.gridData[v];if(D.showVerticalLine){if(Math.abs(F-p[0])<=z){B.indices.push(w);B.data.push({seriesIndex:w,pointIndex:v,gridData:p,data:G.data[v]})}}}}}return B}function n(t,v){var z=v.plugins.cursor;var u=z._tooltipElem;switch(z.tooltipLocation){case"nw":var r=t.x+v._gridPadding.left-u.outerWidth(true)-z.tooltipOffset;var w=t.y+v._gridPadding.top-z.tooltipOffset-u.outerHeight(true);break;case"n":var r=t.x+v._gridPadding.left-u.outerWidth(true)/2;var w=t.y+v._gridPadding.top-z.tooltipOffset-u.outerHeight(true);break;case"ne":var r=t.x+v._gridPadding.left+z.tooltipOffset;var w=t.y+v._gridPadding.top-z.tooltipOffset-u.outerHeight(true);break;case"e":var r=t.x+v._gridPadding.left+z.tooltipOffset;var w=t.y+v._gridPadding.top-u.outerHeight(true)/2;break;case"se":var r=t.x+v._gridPadding.left+z.tooltipOffset;var w=t.y+v._gridPadding.top+z.tooltipOffset;break;case"s":var r=t.x+v._gridPadding.left-u.outerWidth(true)/2;var w=t.y+v._gridPadding.top+z.tooltipOffset;break;case"sw":var r=t.x+v._gridPadding.left-u.outerWidth(true)-z.tooltipOffset;var w=t.y+v._gridPadding.top+z.tooltipOffset;break;case"w":var r=t.x+v._gridPadding.left-u.outerWidth(true)-z.tooltipOffset;var w=t.y+v._gridPadding.top-u.outerHeight(true)/2;break;default:var r=t.x+v._gridPadding.left+z.tooltipOffset;var w=t.y+v._gridPadding.top+z.tooltipOffset;break}z._tooltipElem.css("left",r);z._tooltipElem.css("top",w)}function m(w){var u=w._gridPadding;var x=w.plugins.cursor;var v=x._tooltipElem;switch(x.tooltipLocation){case"nw":var t=u.left+x.tooltipOffset;var r=u.top+x.tooltipOffset;v.css("left",t);v.css("top",r);break;case"n":var t=(u.left+(w._plotDimensions.width-u.right))/2-v.outerWidth(true)/2;var r=u.top+x.tooltipOffset;v.css("left",t);v.css("top",r);break;case"ne":var t=u.right+x.tooltipOffset;var r=u.top+x.tooltipOffset;v.css({right:t,top:r});break;case"e":var t=u.right+x.tooltipOffset;var r=(u.top+(w._plotDimensions.height-u.bottom))/2-v.outerHeight(true)/2;v.css({right:t,top:r});break;case"se":var t=u.right+x.tooltipOffset;var r=u.bottom+x.tooltipOffset;v.css({right:t,bottom:r});break;case"s":var t=(u.left+(w._plotDimensions.width-u.right))/2-v.outerWidth(true)/2;var r=u.bottom+x.tooltipOffset;v.css({left:t,bottom:r});break;case"sw":var t=u.left+x.tooltipOffset;var r=u.bottom+x.tooltipOffset;v.css({left:t,bottom:r});break;case"w":var t=u.left+x.tooltipOffset;var r=(u.top+(w._plotDimensions.height-u.bottom))/2-v.outerHeight(true)/2;v.css({left:t,top:r});break;default:var t=u.right-x.tooltipOffset;var r=u.bottom+x.tooltipOffset;v.css({right:t,bottom:r});break}}function k(t,r,x,w,v){t.preventDefault();t.stopImmediatePropagation();var y=v.plugins.cursor;if(y.clickReset){y.resetZoom(v,y)}var u=window.getSelection;if(document.selection&&document.selection.empty){document.selection.empty()}else{if(u&&!u().isCollapsed){u().collapse()}}return false}function c(t,r,x,w,v){t.preventDefault();t.stopImmediatePropagation();var y=v.plugins.cursor;if(y.dblClickReset){y.resetZoom(v,y)}var u=window.getSelection;if(document.selection&&document.selection.empty){document.selection.empty()}else{if(u&&!u().isCollapsed){u().collapse()}}return false}function f(y,v,r,B,w){var x=w.plugins.cursor;x.onGrid=false;if(x.show){j(y.target).css("cursor",x.previousCursor);if(x.showTooltip&&!(x._zoom.zooming&&x.showTooltipOutsideZoom&&!x.constrainOutsideZoom)){x._tooltipElem.hide()}if(x.zoom){x._zoom.gridpos=v;x._zoom.datapos=r}if(x.showVerticalLine||x.showHorizontalLine){var D=x.cursorCanvas._ctx;D.clearRect(0,0,D.canvas.width,D.canvas.height)}if(x.showCursorLegend){var C=j(w.targetId+" td.jqplot-cursor-legend-label");for(var u=0;u<C.length;u++){var A=j(C[u]).data("seriesIndex");var t=w.series[A];var z=t.label.toString();if(w.legend.escapeHtml){j(C[u]).text(j.jqplot.sprintf(x.cursorLegendFormatString,z,undefined,undefined))}else{j(C[u]).html(j.jqplot.sprintf(x.cursorLegendFormatString,z,undefined,undefined))}}}}}function b(t,r,w,v,u){var x=u.plugins.cursor;x.onGrid=true;if(x.show){x.previousCursor=t.target.style.cursor;t.target.style.cursor=x.style;if(x.showTooltip){e(r,w,u);if(x.followMouse){n(r,u)}else{m(u)}x._tooltipElem.show()}if(x.showVerticalLine||x.showHorizontalLine){g(r,u)}}}function i(u,t,x,w,v){var y=v.plugins.cursor;var r=y.zoomCanvas._ctx;if(y.show){if(y.showTooltip){e(t,x,v);if(y.followMouse){n(t,v)}}if(y.showVerticalLine||y.showHorizontalLine){g(t,v)}}}function o(A){var z=A.data.plot;var v=z.eventCanvas._elem.offset();var y={x:A.pageX-v.left,y:A.pageY-v.top};var w={xaxis:null,yaxis:null,x2axis:null,y2axis:null,y3axis:null,y4axis:null,y5axis:null,y6axis:null,y7axis:null,y8axis:null,y9axis:null};var x=["xaxis","yaxis","x2axis","y2axis","y3axis","y4axis","y5axis","y6axis","y7axis","y8axis","y9axis"];var r=z.axes;var t,u;for(t=11;t>0;t--){u=x[t-1];if(r[u].show){w[u]=r[u].series_p2u(y[u.charAt(0)])}}return{offsets:v,gridPos:y,dataPos:w}}function h(B){var z=B.data.plot;var A=z.plugins.cursor;if(A.show&&A.zoom&&A._zoom.started&&!A.zoomTarget){var D=A.zoomCanvas._ctx;var x=o(B);var y=x.gridPos;var v=x.dataPos;A._zoom.gridpos=y;A._zoom.datapos=v;A._zoom.zooming=true;var w=y.x;var u=y.y;var C=D.canvas.height;var r=D.canvas.width;if(A.showTooltip&&!A.onGrid&&A.showTooltipOutsideZoom){e(y,v,z);if(A.followMouse){n(y,z)}}if(A.constrainZoomTo=="x"){A._zoom.end=[w,C]}else{if(A.constrainZoomTo=="y"){A._zoom.end=[r,u]}else{A._zoom.end=[w,u]}}var t=window.getSelection;if(document.selection&&document.selection.empty){document.selection.empty()}else{if(t&&!t().isCollapsed){t().collapse()}}l.call(A)}}function a(y,u,t,z,v){var x=v.plugins.cursor;j(document).one("mouseup.jqplot_cursor",{plot:v},q);var w=v.axes;if(document.onselectstart!=undefined){x._oldHandlers.onselectstart=document.onselectstart;document.onselectstart=function(){return false}}if(document.ondrag!=undefined){x._oldHandlers.ondrag=document.ondrag;document.ondrag=function(){return false}}if(document.onmousedown!=undefined){x._oldHandlers.onmousedown=document.onmousedown;document.onmousedown=function(){return false}}if(x.zoom){if(!x.zoomProxy){var A=x.zoomCanvas._ctx;A.clearRect(0,0,A.canvas.width,A.canvas.height)}if(x.constrainZoomTo=="x"){x._zoom.start=[u.x,0]}else{if(x.constrainZoomTo=="y"){x._zoom.start=[0,u.y]}else{x._zoom.start=[u.x,u.y]}}x._zoom.started=true;for(var r in t){x._zoom.axes.start[r]=t[r]}j(document).bind("mousemove.jqplotCursor",{plot:v},h)}}function q(A){var x=A.data.plot;var z=x.plugins.cursor;if(z.zoom&&z._zoom.zooming&&!z.zoomTarget){var w=z._zoom.gridpos.x;var t=z._zoom.gridpos.y;var v=z._zoom.datapos;var B=z.zoomCanvas._ctx.canvas.height;var r=z.zoomCanvas._ctx.canvas.width;var y=x.axes;if(z.constrainOutsideZoom&&!z.onGrid){if(w<0){w=0}else{if(w>r){w=r}}if(t<0){t=0}else{if(t>B){t=B}}for(var u in v){if(v[u]){if(u.charAt(0)=="x"){v[u]=y[u].series_p2u(w)}else{v[u]=y[u].series_p2u(t)}}}}if(z.constrainZoomTo=="x"){t=B}else{if(z.constrainZoomTo=="y"){w=r}}z._zoom.end=[w,t];z._zoom.gridpos={x:w,y:t};z.doZoom(z._zoom.gridpos,v,x,z)}z._zoom.started=false;z._zoom.zooming=false;j(document).unbind("mousemove.jqplotCursor",h);if(document.onselectstart!=undefined&&z._oldHandlers.onselectstart!=null){document.onselectstart=z._oldHandlers.onselectstart;z._oldHandlers.onselectstart=null}if(document.ondrag!=undefined&&z._oldHandlers.ondrag!=null){document.ondrag=z._oldHandlers.ondrag;z._oldHandlers.ondrag=null}if(document.onmousedown!=undefined&&z._oldHandlers.onmousedown!=null){document.onmousedown=z._oldHandlers.onmousedown;z._oldHandlers.onmousedown=null}}function l(){var A=this._zoom.start;var x=this._zoom.end;var v=this.zoomCanvas._ctx;var u,y,z,r;if(x[0]>A[0]){u=A[0];r=x[0]-A[0]}else{u=x[0];r=A[0]-x[0]}if(x[1]>A[1]){y=A[1];z=x[1]-A[1]}else{y=x[1];z=A[1]-x[1]}v.fillStyle="rgba(0,0,0,0.2)";v.strokeStyle="#999999";v.lineWidth=1;v.clearRect(0,0,v.canvas.width,v.canvas.height);v.fillRect(0,0,v.canvas.width,v.canvas.height);v.clearRect(u,y,r,z);v.strokeRect(u,y,r,z)}j.jqplot.CursorLegendRenderer=function(r){j.jqplot.TableLegendRenderer.call(this,r);this.formatString="%s"};j.jqplot.CursorLegendRenderer.prototype=new j.jqplot.TableLegendRenderer();j.jqplot.CursorLegendRenderer.prototype.constructor=j.jqplot.CursorLegendRenderer;j.jqplot.CursorLegendRenderer.prototype.draw=function(){if(this.show){var w=this._series;this._elem=j('<table class="jqplot-legend jqplot-cursor-legend" style="position:absolute"></table>');var z=false;for(var v=0;v<w.length;v++){s=w[v];if(s.show){var r=j.jqplot.sprintf(this.formatString,s.label.toString());if(r){var t=s.color;if(s._stack&&!s.fill){t=""}x.call(this,r,t,z,v);z=true}for(var u=0;u<j.jqplot.addLegendRowHooks.length;u++){var y=j.jqplot.addLegendRowHooks[u].call(this,s);if(y){x.call(this,y.label,y.color,z);z=true}}}}}function x(D,C,F,A){var B=(F)?this.rowSpacing:"0";var E=j('<tr class="jqplot-legend jqplot-cursor-legend"></tr>').appendTo(this._elem);E.data("seriesIndex",A);j('<td class="jqplot-legend jqplot-cursor-legend-swatch" style="padding-top:'+B+';"><div style="border:1px solid #cccccc;padding:0.2em;"><div class="jqplot-cursor-legend-swatch" style="background-color:'+C+';"></div></div></td>').appendTo(E);var G=j('<td class="jqplot-legend jqplot-cursor-legend-label" style="vertical-align:middle;padding-top:'+B+';"></td>');G.appendTo(E);G.data("seriesIndex",A);if(this.escapeHtml){G.text(D)}else{G.html(D)}}return this._elem}})(jQuery);/* jQRangeSlider * A javascript slider selector that supports dates *  * Copyright (C) Guillaume Gautreau 2010, 2011 * * This program is free software: you can redistribute it and/or modify * it under the terms of the GNU General Public License as published by * the Free Software Foundation, either version 3 of the License, or * (at your option) any later version. * This program is distributed in the hope that it will be useful, * but WITHOUT ANY WARRANTY; without even the implied warranty of * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the * GNU General Public License for more details. * You should have received a copy of the GNU General Public License * along with this program.  If not, see <http://www.gnu.org/licenses/>. */ (function ($, undefined) {    $.widget("ui.rangeSlider", {        options: {            bounds: {                min:0,                 max:100            },            scaleBounds: {                min:0,                 max:1000            },            scaleRatio:1,            defaultValues: {                min:10,                 max:50            },            wheelMode: null,            wheelSpeed: 4,            arrows: true,            valueLabels: "show",            formatter: null,            durationIn: 0,            durationOut: 400,            delayOut: 200        },		        _values: null,        _scaleValues: null,		        // Created elements        bar: null,        leftHandle: null,        rightHandle: null,        innerBar: null,        scaleBar:null, //oli        container: null,        arrows: null,        labels: null,        changing: {            min:false,             max:false        },        changed: {            min:false,             max:false        },		        // Scroll management        lastWheel : 0,        lastMouseX : 0, //oli        moveScale : true, //oli        lastScroll: 0,        scrollCount: 0,		        //oli        lastScaleScroll: 0,        scalePosition:0,        scaleRatio:0,        boundsOffset:0,        valueOffset:0,        scrollScaleCount: 0,        speed: 0,        toc: true,		        _create: function(){            this._values = this.options.defaultValues;            this._scaleValues = this.options.scaleBounds;  //oli            this.labels = {                left: null,                 right:null,                 leftDisplayed:true,                 rightDisplayed:true            };            this.arrows = {                left:null,                 right:null            };            this.changing = {                min:false,                 max:false            };            this.changed = {                min:false,                 max:false            };      		            this.leftHandle = $("<div class='ui-rangeSlider-handle  ui-rangeSlider-leftHandle' />")            .draggable({                axis:"x",                 containment: "parent",                drag: $.proxy(this._handleMoved, this),                 stop: $.proxy(this._handleStop, this),                containment: "parent"            })            .css("position", "absolute");            this.rightHandle = $("<div class='ui-rangeSlider-handle ui-rangeSlider-rightHandle' />")            .draggable({                axis:"x",                 containment: "parent",                drag: $.proxy(this._handleMoved, this),                 stop: $.proxy(this._handleStop, this),                containment: "parent"            })            .css("position", "absolute");			            this.innerBar = $("<div class='ui-rangeSlider-innerBar' />");            //oli            this.scaleBar = $("<div class='ui-rangeSlider-scaleBar' />");		            this.container = $("<div class='ui-rangeSlider-container' />");			            this.bar = $("<div class='ui-rangeSlider-bar' />")            .draggable({                axis:"x",                 containment: "parent",                drag: $.proxy(this._barMoved, this),                 stop: $.proxy(this._barStop, this),                containment: this.container                })            .bind("mousewheel", $.proxy(this._wheelOnBar, this));			            this.arrows.left = $("<div class='ui-rangeSlider-arrow ui-rangeSlider-leftArrow' />")            .bind("mousedown", $.proxy(this._startScrollLeft, this));			            this.arrows.right = $("<div class='ui-rangeSlider-arrow ui-rangeSlider-rightArrow' />")            .bind("mousedown", $.proxy(this._startScrollRight, this));			            $(document).bind("mouseup", $.proxy(this._stopScroll, this));            //oli            this.innerBar            .append(this.scaleBar);			            this.container            .append(this.leftHandle)            .append(this.rightHandle)            .append(this.innerBar)            .append(this.bar);			            this.element            .append(this.container)            .append(this.arrows.left)            .append(this.arrows.right)            .addClass("ui-rangeSlider")            .bind("mousewheel", $.proxy(this._wheelOnContainer, this));			            if (this.element.css("position") != "absolute"){                this.element.css("position", "relative");            }			            if (!this.options.arrows){                this.arrows.left.css("display", "none");                this.arrows.right.css("display", "none");                this.element.addClass("ui-rangeSlider-noArrow");            }else{                this.element.addClass("ui-rangeSlider-withArrows");            }			            if (this.options.valueLabels != "hide"){                this._createLabels();            }else{                this._destroyLabels();            }						            $(window).resize($.proxy(this._resize, this));			            this.option(this.options);						            // Seems that when all the elements are not ready, outerWidth does not return the good value            setTimeout($.proxy(this._initWidth, this), 1);			            //this._initWidth();            setTimeout($.proxy(this._initValues, this), 1);        //this._createScale();        },		        _initWidth: function(){            this.container.css("width", this.element.width() - this.container.outerWidth(true) + this.container.width());            this.innerBar.css("width", this.container.width() - this.innerBar.outerWidth(true) + this.innerBar.width());            //oli            this._createScale();        },		        _initValues: function(){            this.values(this.options.defaultValues.min, this.options.defaultValues.max);        },		        _setOption: function(key, value) {            if (key == "defaultValues")            {                if ((typeof value.min != "undefined")                     && (typeof value.max != "undefined")                     && parseFloat(value.min) === value.min                     && parseFloat(value.max) === value.max)                    {                    this.options.defaultValues = value;                }            }else if (key == "wheelMode" && (value == "zoom" || value == "scroll" || value===null)){                this.options.wheelMode = value;            }else if (key == "wheelSpeed" && parseFloat(value) !== NaN && Math.abs(parseFloat(value)) <= 100){                this.options.wheelSpeed = parseFloat(value);            }else if (key == "arrows" && (value === true || value === false) && value != this.options.arrows){                if (value){                    this.element                    .removeClass("ui-rangeSlider-noArrow")                    .addClass("ui-rangeSlider-withArrows");                    this.arrows.left.css("display", "block");                    this.arrows.right.css("display", "block");                }else{                    this.element                    .addClass("ui-rangeSlider-noArrow")                    .removeClass("ui-rangeSlider-withArrows");                    this.arrows.left.css("display", "none");                    this.arrows.right.css("display", "none");                }				                this.options.arrows = value;                this._initWidth();                this._position();            }else if (key == "valueLabels" && (value == "hide" || value == "show" || value == "change")){                this.options.valueLabels = value;				                if (value != "hide"){                    this._createLabels();                }else{                    this._destroyLabels();                }            }else if (key == "formatter" && value != null && typeof value == "function"){                this.options.formatter = value;                this._position();            }else if (key == "bounds" && (typeof value.min != "undefined")                 && (typeof value.max != "undefined")                 && parseFloat(value.min) === value.min                 && parseFloat(value.max) === value.max                && value.min < value.max) {                this.options.bounds = value;                this.values(this._values.min, this._values.max);            }else if (key == "scaleBounds" && (typeof value.min != "undefined")                 && (typeof value.max != "undefined")                 && parseFloat(value.min) === value.min                 && parseFloat(value.max) === value.max                && value.min < value.max) {                this.options.scaleBounds = value;            }else if (key == "scaleRatio" && (value != null)){                this.options.scaleRatio = value;            }        },		        _getPosition: function(value){            return (value - this.options.bounds.min) * (this.container.innerWidth() - 1) / (this.options.bounds.max - this.options.bounds.min);        },		        _getValue: function(position){            return position * (this.options.bounds.max - this.options.bounds.min) / (this.container.innerWidth() - 1) + this.options.bounds.min;        },        _getScaleValue: function(position){            //return position * (this.options.bounds.max - this.options.bounds.min) / (this.container.innerWidth() - 1) + this.options.bounds.min;            return position * (this.options.scaleBounds.max - this.options.scaleBounds.min) / (this.scaleBar.innerWidth() - 1) + this.options.scaleBounds.min;        },        _getScalePosition: function(value){            return (value - this.options.scaleBounds.min) * (this.scaleBar.innerWidth() - 1) / (this.options.scaleBounds.max - this.options.scaleBounds.min);        },		        _privateValues: function(min, max){            this._setValues(min, max);            this._position();			            return this._values;        },		        _trigger: function(eventName){            this.element.trigger(eventName, {                label: this.element,                values: this.values()            });        },		        //oli        /*		_createScale: function(){			var tick = 0;			var tickNb = 0;			var tickWidth = 100;			var tickPos=0;			var scaleUnit;						// clear old scale			this.scaleBar.empty();			this.boundsOffset=0;			this.valueOffset=0;			console.log("Creating scale..."+this._format(this.options.scaleBounds.min)+" to "+this._format(this.options.scaleBounds.max));						scaleRatio = (this.options.scaleBounds.max-this.options.scaleBounds.min)/(this.options.bounds.max-this.options.bounds.min);			//this.options.bounds.max = this.options.scaleBounds.max;			//this.options.bounds.min = this.options.bounds.max - (this.options.scaleBounds.max-this.options.scaleBounds.min)*this.scaleRatio;			console.log("Inner bar width :"+this.innerBar.width());			console.log("Inner bar width 2:"+((this.options.scaleBounds.max-this.options.scaleBounds.min)/864501929));			console.log("Scale unit size :"+(this.innerBar.width()/(this.options.bounds.max - this.options.bounds.min)));						//console.log("Scale ratio :"+scaleRatio);						console.log("Scale bar width :"+(this.innerBar.width()*scaleRatio));				this.scaleBar				.css("width", this.innerBar.width()*scaleRatio);							var cursor = 0;			var lastCursor = 100;			var dateArray;			var label;			while (cursor <= this.innerBar.width()*scaleRatio) {				dateArray=this._format(this._getScaleValue(cursor)).split("-");				if(dateArray[0]==1 && (cursor-1) != lastCursor) {					lastCursor=cursor;					if(dateArray[1]=="Jan") { //label=dateArray[2]; else label=dateArray[1];						scaleUnit = $("<span class='ui-rangeSlider-bigScaleUnit'>"+dateArray[2]+"</span>")							.css("position", "absolute")							.css("top", -7)							.css("left", cursor);						this.scaleBar							.append(scaleUnit);						} 					if(dateArray[1]!="Jan" && dateArray[1]!="Feb") { 						scaleUnit = $("<span class='ui-rangeSlider-scaleUnit'>"+dateArray[1]+"</span>")//						scaleUnit = $("<span class='ui-rangeSlider-scaleUnit'>"+"."+"</span>")							.css("position", "absolute")							.css("top",-1)							.css("left", cursor);						this.scaleBar							.append(scaleUnit);					}				}				cursor+=1;			}						this.scalePosition=0-this._getScalePosition(this.options.bounds.min);			this.scaleBar				.css("left",this.scalePosition);				//.css("left",tickWidth*tickNb*-1+tickWidth*tickNb);			},		*/        _createScale: function(){            var tick = 0;            var tickNb = 0;            var tickWidth = 100;            var tickPos=0;            var scaleUnit;            //var tune=86450192;            var tune=86450192*1;			            // clear old scale            this.scaleBar.empty();            this.boundsOffset=0;            this.valueOffset=0;            scaleRatio = (this.options.scaleBounds.max-this.options.scaleBounds.min)/(this.options.bounds.max-this.options.bounds.min);            //console.log("Scale ratio :"+scaleRatio);			            //console.log("Scale bar width :"+(this.innerBar.width()*scaleRatio));	            var scaleWidth = Math.floor((this.options.scaleBounds.max-this.options.scaleBounds.min)/tune*this.options.scaleRatio);            var scaleWidthRatio = scaleWidth/this.innerBar.width();            this.options.bounds.max = this.options.scaleBounds.max;            //this.options.bounds.max = this._values.max;            this.options.bounds.min = this.options.bounds.max - (this.options.scaleBounds.max-this.options.scaleBounds.min)/scaleWidthRatio;            /*console.log("Inner bar width :"+this.innerBar.width());            console.log("bounds visible: "+this._format(this.options.bounds.min)+" to "+this._format(this.options.bounds.max));			            console.log("Values: "+this._format(this._values.min)+" to "+this._format(this._values.max));			            console.log("scaleWidth: "+scaleWidth);            console.log("scaleWidthRatio: "+scaleWidthRatio);            */            this.scaleBar            .css("width", scaleWidth);				            var cursor = 0;            var lastCursor = 100;            var dateArray;            var label;            while (cursor <= scaleWidth) {                dateArray=this._format(this._getScaleValue(cursor)).split("-");                if(dateArray[0]==1 && (cursor-1) != lastCursor) {                    lastCursor=cursor;                    if(dateArray[1]=="Jan") {                         scaleUnit = $("<span class='ui-rangeSlider-bigScaleUnit'>"+dateArray[2]+"</span>")                        .css("position", "absolute")                        .css("top", -7)                        .css("left", cursor);                        this.scaleBar                        .append(scaleUnit);                    }                     if(dateArray[1]!="Jan" && dateArray[1]!="Feb") {                         scaleUnit = $("<span class='ui-rangeSlider-scaleUnit'>"+dateArray[1]+"</span>")                        //						scaleUnit = $("<span class='ui-rangeSlider-scaleUnit'>"+"."+"</span>")                        .css("position", "absolute")                        .css("top",-1)                        .css("left", cursor);                        this.scaleBar                        .append(scaleUnit);                    }                }                cursor+=1;            }			            this.scalePosition=0-this._getScalePosition(this.options.bounds.min);            /*			var scaleOffset = Math.floor((this.options.bounds.min-this._values.min+((this.options.bounds.max-this.options.bounds.min)/2))/tune*this.options.scaleRatio);			console.log("scaleOffset: "+scaleOffset);			console.log("additional offset: "+((this.options.bounds.max-this.options.bounds.min)/2)/tune*this.options.scaleRatio);			this.scalePosition=0-(this._getScalePosition(this.options.bounds.min)-scaleOffset);			*/		            this.scaleBar            .css("left",this.scalePosition);        //.css("left",tickWidth*tickNb*-1+tickWidth*tickNb);	        },				        //oli        _positionScaleRight: function(quantity){            var lastPos=this.scalePosition;            this.scalePosition += quantity;            if(this.scalePosition <= (this.scaleBar.width()*-1)+this.innerBar.width()) {                this.scalePosition = (this.scaleBar.width()*-1)+this.innerBar.width();            }            if(this.scalePosition >= 0 ) {                this.scalePosition = 0;            }            this.boundsOffset+=lastPos-this.scalePosition;            this.scaleBar            .css("left", this.scalePosition);            this._positionLabels();        },        _position: function(){            var leftPosition = this._getPosition(this._values.min);            var rightPosition = this._getPosition(this._values.max);			            this._positionHandles();            this.bar            .css("left", leftPosition)            .css("width", rightPosition- leftPosition + this.bar.width() - this.bar.outerWidth(true) + 1);        },		        _positionHandles: function(){            var left = this._getPosition(this._values.min);            var right = this._getPosition(this._values.max) - this.rightHandle.outerWidth(true) + 1;            this.leftHandle.css("left", left);            this.rightHandle.css("left", right);			            this._positionLabels();        },		        _barMoved: function(event, ui){            var left = ui.position.left;			            var right = left + this.bar.outerWidth(true) - 1;            this._startScaleScroll();	// oli	            this._setValues(this._getValue(left), this._getValue(right));            this._positionHandles();				        },		        _barStop: function(event, ui){            this._position();            this._prepareFiringChanged();        },		        _switchHandles: function(){            var temp = this.leftHandle;            this.leftHandle = this.rightHandle;            this.rightHandle = temp;				            this.leftHandle            .removeClass("ui-rangeSlider-rightHandle")            .addClass("ui-rangeSlider-leftHandle");            this.rightHandle            .addClass("ui-rangeSlider-rightHandle")            .removeClass("ui-rangeSlider-leftHandle");        },		        _handleMoved: function(event, ui){            var min = this._values.min;            var max = this._values.max;            // oli             this.moveScale=false;            if (ui.helper[0] == this.leftHandle[0]){                min = this._getValue(ui.position.left);            }else if (ui.helper[0] == this.rightHandle[0])            {                max = this._getValue(ui.position.left - 1 + ui.helper.outerWidth(true));            }else{                return;            }			            if (min > max){                this._switchHandles();                var temp = min;                min = max;                max = temp;            }				            this._privateValues(min, max);			            this._startScaleScroll();		// oli	        },		        _handleStop: function(event, ui){            this._position();            this._prepareFiringChanged();            // oli             this.moveScale=true;        },		        _changing: function(min, max){            this._trigger("valuesChanging");			            var show = false;            if (min && !this.changing.min){                this._trigger("minValueChanging");                this.changing.min = true;                show = true;            }			            if (max && !this.changing.max){                this._trigger("maxValueChanging");                this.changing.max = true;                show = true;            }			            if (show){                this._showLabels();            }        },		        _prepareFiringChanged: function(){            this.lastWheel = Math.random();            var last = this.lastWheel;            setTimeout($.proxy(function(){                this._fireChanged(last);            }, this), 300);        },		        _fireChanged: function(last){            if (this.lastWheel == last && !this.bar.hasClass("ui-draggable-dragging") && !this.leftHandle.hasClass("ui-draggable-dragging") && !this.rightHandle.hasClass("ui-draggable-dragging")){                var changed = false;                this._hideLabels();                if (this.changing.min){                    this.changing.min = false;                    this._trigger("minValueChanged");                    changed = true;                }				                if (this.changing.max){                    this.changing.max = false;                    this._trigger("maxValueChanged");                    changed = true;                }				                if (changed){                    this._trigger("valuesChanged");                }				            }        },		        _setValuesHandles: function(min, max){	            this._setValues(min, max);            this._positionHandles();        },	        _setValues_good: function(min, max){            var oldValues = this._values;            var difference = Math.abs(max-min);			            if (difference >= this.options.bounds.max - this.options.bounds.min){                this._values.min = this.options.bounds.min;                this._values.max = this.options.bounds.max;            }else{                values = {                    min: Math.min(max, min),                     max:Math.max(min, max)                    };				                if (values.min < this.options.bounds.min){                    values.min = this.options.bounds.min;                    values.max = values.min + difference;                }else if (values.max > this.options.bounds.max){                    values.max = this.options.bounds.max;                    values.min = values.max - difference;                }				                this._values = values;            }            // oli            //this._startScaleScroll();			            this._changing(oldValues.min != this._values.min, oldValues.max != this._values.max);            this._prepareFiringChanged();        },        _setValues: function(min, max){            var oldValues = this._values;            var difference = Math.abs(max-min);            if (difference >= this.options.bounds.max - this.options.bounds.min){                this._values.min = this.options.bounds.min;                this._values.max = this.options.bounds.max;            }else{                values = {                    min: Math.min(max, min),                     max:Math.max(min, max)                    };                if (values.min < this.options.bounds.min){                    values.min = this.options.bounds.min;                    values.max = values.min + difference;                }else if (values.max > this.options.bounds.max){                    values.max = this.options.bounds.max;                    values.min = values.max - difference;                }                this._values = values;            }            // oli            //this._startScaleScroll();			            //this._changing(oldValues.min != this._values.min, oldValues.max != this._values.max);            this._changing(true,true);            this._prepareFiringChanged();        },		        _resize: function(){            //oli commented to get faster window resize since slider width is fixed.            this._initWidth();            this._position();        },				        // oli        _startScaleScroll: function(){            this.lastScaleScroll = Math.random();            this.scrollScaleCount = 0;	//oli	            this.bounceScaleCount = 0;	//oli			            //console.log("toc:"+this.toc+(this._values.min == this.options.bounds.min));            if(this._values.min == this.options.bounds.min) {                if(this.toc) {                    this.speed=0;                    this.toc=false;                }                this._continueScaleScrolling(10,this.lastScaleScroll);            }             if(this._values.max == this.options.bounds.max) {                if(this.toc) {                    this.speed=0;                    this.toc=false;                }                this._continueScaleScrolling(-10,this.lastScaleScroll);            } 			        },        _continueScaleScrolling: function(quantity, lastScale){            if (lastScale == this.lastScaleScroll){                //var factor = Math.min(Math.floor(this.scrollScaleCount / 5) + 1, 100) / 4;                var factor = this.scrollScaleCount * quantity                this._positionScaleRight(quantity + factor);                //this._positionScaleRight(quantity + (Math.abs(this.speed)+1));                this.scrollScaleCount++;                setTimeout($.proxy(function(){                    this._continueScaleScrolling(quantity, lastScale);                }, this), 50);            }			        },        _scaleBounce: function(direction,quantity){            if (quantity != 0) {                // var factor = Math.min(Math.floor(this.bounceScaleCount / 5) + 1, 100) / 4;                this._positionScaleRight(quantity);                quantity = quantity+(1*direction);                setTimeout($.proxy(function(){                    this._continueScaleScrolling(-1, quantity);                }, this), 50);            }			        },				        /*		 * Scrolling		 */		        _startScrollLeft: function(event, ui){            this.lastScroll = Math.random();            this.scrollCount = 0;            this._continueScrollingRight(-10, this.lastScroll);        },		        _startScrollRight: function(event, ui){            this.lastScroll = Math.random();            this.scrollCount = 0;            this._continueScrollingRight(10, this.lastScroll);        },		        _continueScrollingRight: function(quantity, last){            if (last == this.lastScroll){                var factor = Math.min(Math.floor(this.scrollCount / 5) + 1, 100) / 4;				                this.scrollRight(quantity * factor);                this.scrollCount++;                setTimeout($.proxy(function(){                    this._continueScrollingRight(quantity, last);                }, this), 50);            }        },		        _stopScroll: function(event, ui){            this.lastScroll = Math.random();            //this.toc = true;            this.lastScaleScroll = Math.random();        },		        /*		 * Mouse wheel		 */		        _wheelOnBar: function(event, delta, deltaX, deltaY){            if (this.options.wheelMode == "zoom"){                this.zoomIn(-deltaY);                return false;            }        },		        _wheelOnContainer: function(event, delta, deltaX, deltaY){            if (this.options.wheelMode == "scroll"){                //this.speed+=Math.abs(deltaY);                this.scrollRight(-deltaY);                return false;            }        },		        /*		 * Value labels		 */        _createLabel: function(label, classes){            if (label == null){                label = $("<div class='ui-rangeSlider-label'/>")                .addClass(classes)                .css("position", "absolute");                this.element.append(label);				                this._positionLabels();            }			            return label;        },		        _destroyLabel: function(label){            if (label != null){                label.remove();                label = null;            }			            return label;        },		        _createLabels: function(){            this.labels.left = this._createLabel(this.labels.left, "ui-rangeSlider-leftLabel");            this.labels.right = this._createLabel(this.labels.right, "ui-rangeSlider-rightLabel");			            if (this.options.valueLabels == "change"){                this.labels.left.css("display", "none");                this.labels.right.css("display", "none");                this.labels.leftDisplayed = false;                this.labels.rightDisplayed = false;            }else{                this.labels.leftDisplayed = true;                this.labels.rightDisplayed = true;                this.labels.left.css("display", "block");                this.labels.right.css("display", "block");				                this._position();            }        },		        _destroyLabels: function(){            this.labels.left = this._destroyLabel(this.labels.left);            this.labels.right = this._destroyLabel(this.labels.right);        },		        _positionLabel: function(label, position){            var topPos = this.leftHandle.offset().top - label.outerHeight(true);            var parent = label.offsetParent();			            var leftPos = position - parent.offset().left;            var topPos = topPos - parent.offset().top;			            label            .css("left", leftPos)            .css("top", topPos);        },		        _positionLabels: function(){            if (this.labels.left != null && this.labels.right != null){                this.valueOffset=this._getValue(this.boundsOffset)-this.options.bounds.min;                this.labels.left.text(this._format(this._values.min+this.valueOffset));                 this.labels.right.text(this._format(this._values.max+this.valueOffset));				                var minSize = this.labels.leftDisplayed ? this.labels.left.outerWidth(true) : 0;                var maxSize = this.labels.rightDisplayed ? this.labels.right.outerWidth(true) : 0;                var leftBound = 0;                var rightBound = $(window).width() - maxSize;                var minLeft = Math.max(leftBound, this.leftHandle.offset().left + this.leftHandle.outerWidth(true) / 2 - minSize / 2);                 var maxLeft = Math.min(rightBound, this.rightHandle.offset().left + this.rightHandle.outerWidth(true) / 2 - maxSize / 2);				                // Need to find a better position                if (minLeft + minSize >= maxLeft){                    var diff =  minLeft + minSize - maxLeft;                    minLeft = Math.max(leftBound, minLeft - diff / 2);                    maxLeft = Math.min(rightBound, minLeft + minSize);                    minLeft = Math.max(leftBound, maxLeft - minSize);                }				                if (this.labels.leftDisplayed) this._positionLabel(this.labels.left, minLeft);                if (this.labels.rightDisplayed) this._positionLabel(this.labels.right, maxLeft);            }        },		        _format: function(value){            if (typeof this.options.formatter != "undefined" && this.options.formatter != null){                return this.options.formatter(value);            }else{                return this._defaultFormat(value);            }        },		        _defaultFormat: function(value){            return Math.round(value);        },        /*				_showLabels: function(){			if (this.options.valueLabels == "change" && !this.privateChange){				if (this.changing.min && !this.labels.leftDisplayed){					this.labels.left.stop(true, true).fadeIn(this.options.durationIn);					this.labels.leftDisplayed = true;				}								if (this.changing.max && !this.labels.rightDisplayed){					this.labels.rightDisplayed = true;					this.labels.right.stop(true, true).fadeIn(this.options.durationIn);				}			}		},*/		        _showLabels: function(){            if (this.options.valueLabels == "change" && !this.privateChange){                if ((this.changing.min && !this.labels.leftDisplayed)||(this.changing.max && !this.labels.rightDisplayed)){                    this.labels.rightDisplayed = true;                    this.labels.leftDisplayed = true;                    this.labels.right.stop(true, true).fadeIn(this.options.durationIn);                    this.labels.left.stop(true, true).fadeIn(this.options.durationIn);                }            }        },        _hideLabels: function(){            if (this.options.valueLabels == "change" && this.labels.left != null && this.labels.right != null){                this.labels.leftDisplayed = false;                this.labels.rightDisplayed = false;                this.labels.left.stop(true, true).delay(this.options.delayOut).fadeOut(this.options.durationOut);                this.labels.right.stop(true, true).delay(this.options.delayOut).fadeOut(this.options.durationOut);            }        },		        /*		 * Public methods		 */		        values: function(min, max){            if (typeof min != "undefined"                 && typeof max != "undefined")                {                this.internalChange = false;                this._privateValues(min,max);                this.internalChange = true;            }			            //return this._values;             return {                min:this._values.min+this.valueOffset,                max:this._values.max+this.valueOffset                };        },		        min: function(min){            return this.values(min, this._values.max).min;        },		        max: function(max){            return this.values(this._values.min, max).max;        },		        zoomIn: function(quantity){            var diff = this._values.max - this._values.min;					            min = this._values.min + quantity * this.options.wheelSpeed * diff / 200;            max = this._values.max - quantity * this.options.wheelSpeed * diff / 200;			            this._privateValues(min, max);        },		        zoomOut: function(quantity){            this.zoomIn(-quantity);        },		        scrollLeft: function(quantity){            if (typeof quantity == 'undefined')                quantity = 10;            this.scrollRight(-quantity);        },		        scrollRight: function(quantity){            if (typeof quantity == "undefined")                quantity = 10;            var diff = this._values.max - this._values.min;			            //var diff = this.options.bounds.max - this.options.bounds.min;		            min = this._values.min + quantity * this.options.wheelSpeed * diff / 100;            max = this._values.max + quantity * this.options.wheelSpeed * diff / 100;			            this._startScaleScroll();						            this._privateValues(min, max);			        },		        destroy: function(){            this.element.removeClass("ui-rangeSlider-withArrows")            .removeClass("ui-rangeSlider-noArrow");            this.bar.detach();            this.leftHandle.detach();            this.rightHandle.detach();            this.innerBar.detach();            this.container.detach();            this.arrows.left.detach();            this.arrows.right.detach();            this.element.removeClass("ui-rangeSlider");            this._destroyLabels();            delete this.options;			            $.Widget.prototype.destroy.apply(this, arguments);        }    });})(jQuery);/* jQRangeSlider
+(function(j){j.jqplot.Cursor=function(r){this.style="crosshair";this.previousCursor="auto";this.show=j.jqplot.config.enablePlugins;this.showTooltip=true;this.followMouse=false;this.tooltipLocation="se";this.tooltipOffset=6;this.showTooltipGridPosition=false;this.showTooltipUnitPosition=true;this.showTooltipDataPosition=false;this.tooltipFormatString="%.4P, %.4P";this.useAxesFormatters=true;this.tooltipAxisGroups=[];this.zoom=false;this.zoomProxy=false;this.zoomTarget=false;this.clickReset=false;this.dblClickReset=true;this.showVerticalLine=false;this.showHorizontalLine=false;this.constrainZoomTo="none";this.shapeRenderer=new j.jqplot.ShapeRenderer();this._zoom={start:[],end:[],started:false,zooming:false,isZoomed:false,axes:{start:{},end:{}},gridpos:{},datapos:{}};this._tooltipElem;this.zoomCanvas;this.cursorCanvas;this.intersectionThreshold=2;this.showCursorLegend=false;this.cursorLegendFormatString=j.jqplot.Cursor.cursorLegendFormatString;this._oldHandlers={onselectstart:null,ondrag:null,onmousedown:null};this.constrainOutsideZoom=true;this.showTooltipOutsideZoom=false;this.onGrid=false;j.extend(true,this,r)};j.jqplot.Cursor.cursorLegendFormatString="%s x:%s, y:%s";j.jqplot.Cursor.init=function(v,u,t){var r=t||{};this.plugins.cursor=new j.jqplot.Cursor(r.cursor);var w=this.plugins.cursor;if(w.show){j.jqplot.eventListenerHooks.push(["jqplotMouseEnter",b]);j.jqplot.eventListenerHooks.push(["jqplotMouseLeave",f]);j.jqplot.eventListenerHooks.push(["jqplotMouseMove",i]);if(w.showCursorLegend){t.legend=t.legend||{};t.legend.renderer=j.jqplot.CursorLegendRenderer;t.legend.formatString=this.plugins.cursor.cursorLegendFormatString;t.legend.show=true}if(w.zoom){j.jqplot.eventListenerHooks.push(["jqplotMouseDown",a]);if(w.clickReset){j.jqplot.eventListenerHooks.push(["jqplotClick",k])}if(w.dblClickReset){j.jqplot.eventListenerHooks.push(["jqplotDblClick",c])}}this.resetZoom=function(){var z=this.axes;if(!w.zoomProxy){for(var y in z){z[y].reset()}this.redraw()}else{var x=this.plugins.cursor.zoomCanvas._ctx;x.clearRect(0,0,x.canvas.width,x.canvas.height)}this.plugins.cursor._zoom.isZoomed=false;this.target.trigger("jqplotResetZoom",[this,this.plugins.cursor])};if(w.showTooltipDataPosition){w.showTooltipUnitPosition=false;w.showTooltipGridPosition=false;if(r.cursor.tooltipFormatString==undefined){w.tooltipFormatString=j.jqplot.Cursor.cursorLegendFormatString}}}};j.jqplot.Cursor.postDraw=function(){var y=this.plugins.cursor;y.zoomCanvas=new j.jqplot.GenericCanvas();this.eventCanvas._elem.before(y.zoomCanvas.createElement(this._gridPadding,"jqplot-zoom-canvas",this._plotDimensions));var x=y.zoomCanvas.setContext();y._tooltipElem=j('<div class="jqplot-cursor-tooltip" style="position:absolute;display:none"></div>');y.zoomCanvas._elem.before(y._tooltipElem);if(y.showVerticalLine||y.showHorizontalLine){y.cursorCanvas=new j.jqplot.GenericCanvas();this.eventCanvas._elem.before(y.cursorCanvas.createElement(this._gridPadding,"jqplot-cursor-canvas",this._plotDimensions));var x=y.cursorCanvas.setContext()}if(y.showTooltipUnitPosition){if(y.tooltipAxisGroups.length===0){var u=this.series;var v;var r=[];for(var t=0;t<u.length;t++){v=u[t];var w=v.xaxis+","+v.yaxis;if(j.inArray(w,r)==-1){r.push(w)}}for(var t=0;t<r.length;t++){y.tooltipAxisGroups.push(r[t].split(","))}}}};j.jqplot.Cursor.zoomProxy=function(x,t){var r=x.plugins.cursor;var w=t.plugins.cursor;r.zoomTarget=true;r.zoom=true;r.style="auto";r.dblClickReset=false;w.zoom=true;w.zoomProxy=true;t.target.bind("jqplotZoom",v);t.target.bind("jqplotResetZoom",u);function v(z,y,B,A,C){r.doZoom(y,B,x,C)}function u(y,z,A){x.resetZoom()}};j.jqplot.Cursor.prototype.resetZoom=function(w,x){var v=w.axes;var u=x._zoom.axes;if(!w.plugins.cursor.zoomProxy&&x._zoom.isZoomed){for(var t in v){v[t]._ticks=[];v[t].min=u[t].min;v[t].max=u[t].max;v[t].numberTicks=u[t].numberTicks;v[t].tickInterval=u[t].tickInterval;v[t].daTickInterval=u[t].daTickInterval}w.redraw();x._zoom.isZoomed=false}else{var r=x.zoomCanvas._ctx;r.clearRect(0,0,r.canvas.width,r.canvas.height)}w.target.trigger("jqplotResetZoom",[w,x])};j.jqplot.Cursor.resetZoom=function(r){r.resetZoom()};j.jqplot.Cursor.prototype.doZoom=function(y,v,z,D){var B=D;var A=z.axes;var t=B._zoom.axes;var u=t.start;var w=t.end;var x,C;var E=z.plugins.cursor.zoomCanvas._ctx;if((B.constrainZoomTo=="none"&&Math.abs(y.x-B._zoom.start[0])>6&&Math.abs(y.y-B._zoom.start[1])>6)||(B.constrainZoomTo=="x"&&Math.abs(y.x-B._zoom.start[0])>6)||(B.constrainZoomTo=="y"&&Math.abs(y.y-B._zoom.start[1])>6)){if(!z.plugins.cursor.zoomProxy){for(var r in v){if(B._zoom.axes[r]==undefined){B._zoom.axes[r]={};B._zoom.axes[r].numberTicks=A[r].numberTicks;B._zoom.axes[r].tickInterval=A[r].tickInterval;B._zoom.axes[r].daTickInterval=A[r].daTickInterval;B._zoom.axes[r].min=A[r].min;B._zoom.axes[r].max=A[r].max}if((B.constrainZoomTo=="none")||(B.constrainZoomTo=="x"&&r.charAt(0)=="x")||(B.constrainZoomTo=="y"&&r.charAt(0)=="y")){dp=v[r];if(dp!=null){if(dp>u[r]){A[r].min=u[r];A[r].max=dp}else{span=u[r]-dp;A[r].max=u[r];A[r].min=dp}A[r].tickInterval=null;A[r].daTickInterval=null;A[r]._ticks=[]}}}E.clearRect(0,0,E.canvas.width,E.canvas.height);z.redraw();B._zoom.isZoomed=true}z.target.trigger("jqplotZoom",[y,v,z,D])}};j.jqplot.preInitHooks.push(j.jqplot.Cursor.init);j.jqplot.postDrawHooks.push(j.jqplot.Cursor.postDraw);function e(F,t,C){var H=C.plugins.cursor;var x="";var L=false;if(H.showTooltipGridPosition){x=F.x+", "+F.y;L=true}if(H.showTooltipUnitPosition){var E;for(var D=0;D<H.tooltipAxisGroups.length;D++){E=H.tooltipAxisGroups[D];if(L){x+="<br />"}if(H.useAxesFormatters){var B=C.axes[E[0]]._ticks[0].formatter;var r=C.axes[E[1]]._ticks[0].formatter;var I=C.axes[E[0]]._ticks[0].formatString;var w=C.axes[E[1]]._ticks[0].formatString;x+=B(I,t[E[0]])+", "+r(w,t[E[1]])}else{x+=j.jqplot.sprintf(H.tooltipFormatString,t[E[0]],t[E[1]])}L=true}}if(H.showTooltipDataPosition){var v=C.series;var K=d(C,F.x,F.y);var L=false;for(var D=0;D<v.length;D++){if(v[D].show){var z=v[D].index;var u=v[D].label.toString();var G=j.inArray(z,K.indices);var A=undefined;var y=undefined;if(G!=-1){var J=K.data[G].data;if(H.useAxesFormatters){var B=v[D]._xaxis._ticks[0].formatter;var r=v[D]._yaxis._ticks[0].formatter;var I=v[D]._xaxis._ticks[0].formatString;var w=v[D]._yaxis._ticks[0].formatString;A=B(I,J[0]);y=r(w,J[1])}else{A=J[0];y=J[1]}if(L){x+="<br />"}x+=j.jqplot.sprintf(H.tooltipFormatString,u,A,y);L=true}}}}H._tooltipElem.html(x)}function g(E,C){var G=C.plugins.cursor;var B=G.cursorCanvas._ctx;B.clearRect(0,0,B.canvas.width,B.canvas.height);if(G.showVerticalLine){G.shapeRenderer.draw(B,[[E.x,0],[E.x,B.canvas.height]])}if(G.showHorizontalLine){G.shapeRenderer.draw(B,[[0,E.y],[B.canvas.width,E.y]])}var I=d(C,E.x,E.y);if(G.showCursorLegend){var t=j(C.targetId+" td.jqplot-cursor-legend-label");for(var D=0;D<t.length;D++){var x=j(t[D]).data("seriesIndex");var v=C.series[x];var u=v.label.toString();var F=j.inArray(x,I.indices);var z=undefined;var y=undefined;if(F!=-1){var J=I.data[F].data;if(G.useAxesFormatters){var A=v._xaxis._ticks[0].formatter;var r=v._yaxis._ticks[0].formatter;var H=v._xaxis._ticks[0].formatString;var w=v._yaxis._ticks[0].formatString;z=A(H,J[0]);y=r(w,J[1])}else{z=J[0];y=J[1]}}if(C.legend.escapeHtml){j(t[D]).text(j.jqplot.sprintf(G.cursorLegendFormatString,u,z,y))}else{j(t[D]).html(j.jqplot.sprintf(G.cursorLegendFormatString,u,z,y))}}}}function d(A,F,E){var B={indices:[],data:[]};var G,w,u,C,v,t;var z;var D=A.plugins.cursor;for(var w=0;w<A.series.length;w++){G=A.series[w];t=G.renderer;if(G.show){z=D.intersectionThreshold;if(G.showMarker){z+=G.markerRenderer.size/2}for(var v=0;v<G.gridData.length;v++){p=G.gridData[v];if(D.showVerticalLine){if(Math.abs(F-p[0])<=z){B.indices.push(w);B.data.push({seriesIndex:w,pointIndex:v,gridData:p,data:G.data[v]})}}}}}return B}function n(t,v){var z=v.plugins.cursor;var u=z._tooltipElem;switch(z.tooltipLocation){case"nw":var r=t.x+v._gridPadding.left-u.outerWidth(true)-z.tooltipOffset;var w=t.y+v._gridPadding.top-z.tooltipOffset-u.outerHeight(true);break;case"n":var r=t.x+v._gridPadding.left-u.outerWidth(true)/2;var w=t.y+v._gridPadding.top-z.tooltipOffset-u.outerHeight(true);break;case"ne":var r=t.x+v._gridPadding.left+z.tooltipOffset;var w=t.y+v._gridPadding.top-z.tooltipOffset-u.outerHeight(true);break;case"e":var r=t.x+v._gridPadding.left+z.tooltipOffset;var w=t.y+v._gridPadding.top-u.outerHeight(true)/2;break;case"se":var r=t.x+v._gridPadding.left+z.tooltipOffset;var w=t.y+v._gridPadding.top+z.tooltipOffset;break;case"s":var r=t.x+v._gridPadding.left-u.outerWidth(true)/2;var w=t.y+v._gridPadding.top+z.tooltipOffset;break;case"sw":var r=t.x+v._gridPadding.left-u.outerWidth(true)-z.tooltipOffset;var w=t.y+v._gridPadding.top+z.tooltipOffset;break;case"w":var r=t.x+v._gridPadding.left-u.outerWidth(true)-z.tooltipOffset;var w=t.y+v._gridPadding.top-u.outerHeight(true)/2;break;default:var r=t.x+v._gridPadding.left+z.tooltipOffset;var w=t.y+v._gridPadding.top+z.tooltipOffset;break}z._tooltipElem.css("left",r);z._tooltipElem.css("top",w)}function m(w){var u=w._gridPadding;var x=w.plugins.cursor;var v=x._tooltipElem;switch(x.tooltipLocation){case"nw":var t=u.left+x.tooltipOffset;var r=u.top+x.tooltipOffset;v.css("left",t);v.css("top",r);break;case"n":var t=(u.left+(w._plotDimensions.width-u.right))/2-v.outerWidth(true)/2;var r=u.top+x.tooltipOffset;v.css("left",t);v.css("top",r);break;case"ne":var t=u.right+x.tooltipOffset;var r=u.top+x.tooltipOffset;v.css({right:t,top:r});break;case"e":var t=u.right+x.tooltipOffset;var r=(u.top+(w._plotDimensions.height-u.bottom))/2-v.outerHeight(true)/2;v.css({right:t,top:r});break;case"se":var t=u.right+x.tooltipOffset;var r=u.bottom+x.tooltipOffset;v.css({right:t,bottom:r});break;case"s":var t=(u.left+(w._plotDimensions.width-u.right))/2-v.outerWidth(true)/2;var r=u.bottom+x.tooltipOffset;v.css({left:t,bottom:r});break;case"sw":var t=u.left+x.tooltipOffset;var r=u.bottom+x.tooltipOffset;v.css({left:t,bottom:r});break;case"w":var t=u.left+x.tooltipOffset;var r=(u.top+(w._plotDimensions.height-u.bottom))/2-v.outerHeight(true)/2;v.css({left:t,top:r});break;default:var t=u.right-x.tooltipOffset;var r=u.bottom+x.tooltipOffset;v.css({right:t,bottom:r});break}}function k(t,r,x,w,v){t.preventDefault();t.stopImmediatePropagation();var y=v.plugins.cursor;if(y.clickReset){y.resetZoom(v,y)}var u=window.getSelection;if(document.selection&&document.selection.empty){document.selection.empty()}else{if(u&&!u().isCollapsed){u().collapse()}}return false}function c(t,r,x,w,v){t.preventDefault();t.stopImmediatePropagation();var y=v.plugins.cursor;if(y.dblClickReset){y.resetZoom(v,y)}var u=window.getSelection;if(document.selection&&document.selection.empty){document.selection.empty()}else{if(u&&!u().isCollapsed){u().collapse()}}return false}function f(y,v,r,B,w){var x=w.plugins.cursor;x.onGrid=false;if(x.show){j(y.target).css("cursor",x.previousCursor);if(x.showTooltip&&!(x._zoom.zooming&&x.showTooltipOutsideZoom&&!x.constrainOutsideZoom)){x._tooltipElem.hide()}if(x.zoom){x._zoom.gridpos=v;x._zoom.datapos=r}if(x.showVerticalLine||x.showHorizontalLine){var D=x.cursorCanvas._ctx;D.clearRect(0,0,D.canvas.width,D.canvas.height)}if(x.showCursorLegend){var C=j(w.targetId+" td.jqplot-cursor-legend-label");for(var u=0;u<C.length;u++){var A=j(C[u]).data("seriesIndex");var t=w.series[A];var z=t.label.toString();if(w.legend.escapeHtml){j(C[u]).text(j.jqplot.sprintf(x.cursorLegendFormatString,z,undefined,undefined))}else{j(C[u]).html(j.jqplot.sprintf(x.cursorLegendFormatString,z,undefined,undefined))}}}}}function b(t,r,w,v,u){var x=u.plugins.cursor;x.onGrid=true;if(x.show){x.previousCursor=t.target.style.cursor;t.target.style.cursor=x.style;if(x.showTooltip){e(r,w,u);if(x.followMouse){n(r,u)}else{m(u)}x._tooltipElem.show()}if(x.showVerticalLine||x.showHorizontalLine){g(r,u)}}}function i(u,t,x,w,v){var y=v.plugins.cursor;var r=y.zoomCanvas._ctx;if(y.show){if(y.showTooltip){e(t,x,v);if(y.followMouse){n(t,v)}}if(y.showVerticalLine||y.showHorizontalLine){g(t,v)}}}function o(A){var z=A.data.plot;var v=z.eventCanvas._elem.offset();var y={x:A.pageX-v.left,y:A.pageY-v.top};var w={xaxis:null,yaxis:null,x2axis:null,y2axis:null,y3axis:null,y4axis:null,y5axis:null,y6axis:null,y7axis:null,y8axis:null,y9axis:null};var x=["xaxis","yaxis","x2axis","y2axis","y3axis","y4axis","y5axis","y6axis","y7axis","y8axis","y9axis"];var r=z.axes;var t,u;for(t=11;t>0;t--){u=x[t-1];if(r[u].show){w[u]=r[u].series_p2u(y[u.charAt(0)])}}return{offsets:v,gridPos:y,dataPos:w}}function h(B){var z=B.data.plot;var A=z.plugins.cursor;if(A.show&&A.zoom&&A._zoom.started&&!A.zoomTarget){var D=A.zoomCanvas._ctx;var x=o(B);var y=x.gridPos;var v=x.dataPos;A._zoom.gridpos=y;A._zoom.datapos=v;A._zoom.zooming=true;var w=y.x;var u=y.y;var C=D.canvas.height;var r=D.canvas.width;if(A.showTooltip&&!A.onGrid&&A.showTooltipOutsideZoom){e(y,v,z);if(A.followMouse){n(y,z)}}if(A.constrainZoomTo=="x"){A._zoom.end=[w,C]}else{if(A.constrainZoomTo=="y"){A._zoom.end=[r,u]}else{A._zoom.end=[w,u]}}var t=window.getSelection;if(document.selection&&document.selection.empty){document.selection.empty()}else{if(t&&!t().isCollapsed){t().collapse()}}l.call(A)}}function a(y,u,t,z,v){var x=v.plugins.cursor;j(document).one("mouseup.jqplot_cursor",{plot:v},q);var w=v.axes;if(document.onselectstart!=undefined){x._oldHandlers.onselectstart=document.onselectstart;document.onselectstart=function(){return false}}if(document.ondrag!=undefined){x._oldHandlers.ondrag=document.ondrag;document.ondrag=function(){return false}}if(document.onmousedown!=undefined){x._oldHandlers.onmousedown=document.onmousedown;document.onmousedown=function(){return false}}if(x.zoom){if(!x.zoomProxy){var A=x.zoomCanvas._ctx;A.clearRect(0,0,A.canvas.width,A.canvas.height)}if(x.constrainZoomTo=="x"){x._zoom.start=[u.x,0]}else{if(x.constrainZoomTo=="y"){x._zoom.start=[0,u.y]}else{x._zoom.start=[u.x,u.y]}}x._zoom.started=true;for(var r in t){x._zoom.axes.start[r]=t[r]}j(document).bind("mousemove.jqplotCursor",{plot:v},h)}}function q(A){var x=A.data.plot;var z=x.plugins.cursor;if(z.zoom&&z._zoom.zooming&&!z.zoomTarget){var w=z._zoom.gridpos.x;var t=z._zoom.gridpos.y;var v=z._zoom.datapos;var B=z.zoomCanvas._ctx.canvas.height;var r=z.zoomCanvas._ctx.canvas.width;var y=x.axes;if(z.constrainOutsideZoom&&!z.onGrid){if(w<0){w=0}else{if(w>r){w=r}}if(t<0){t=0}else{if(t>B){t=B}}for(var u in v){if(v[u]){if(u.charAt(0)=="x"){v[u]=y[u].series_p2u(w)}else{v[u]=y[u].series_p2u(t)}}}}if(z.constrainZoomTo=="x"){t=B}else{if(z.constrainZoomTo=="y"){w=r}}z._zoom.end=[w,t];z._zoom.gridpos={x:w,y:t};z.doZoom(z._zoom.gridpos,v,x,z)}z._zoom.started=false;z._zoom.zooming=false;j(document).unbind("mousemove.jqplotCursor",h);if(document.onselectstart!=undefined&&z._oldHandlers.onselectstart!=null){document.onselectstart=z._oldHandlers.onselectstart;z._oldHandlers.onselectstart=null}if(document.ondrag!=undefined&&z._oldHandlers.ondrag!=null){document.ondrag=z._oldHandlers.ondrag;z._oldHandlers.ondrag=null}if(document.onmousedown!=undefined&&z._oldHandlers.onmousedown!=null){document.onmousedown=z._oldHandlers.onmousedown;z._oldHandlers.onmousedown=null}}function l(){var A=this._zoom.start;var x=this._zoom.end;var v=this.zoomCanvas._ctx;var u,y,z,r;if(x[0]>A[0]){u=A[0];r=x[0]-A[0]}else{u=x[0];r=A[0]-x[0]}if(x[1]>A[1]){y=A[1];z=x[1]-A[1]}else{y=x[1];z=A[1]-x[1]}v.fillStyle="rgba(0,0,0,0.2)";v.strokeStyle="#999999";v.lineWidth=1;v.clearRect(0,0,v.canvas.width,v.canvas.height);v.fillRect(0,0,v.canvas.width,v.canvas.height);v.clearRect(u,y,r,z);v.strokeRect(u,y,r,z)}j.jqplot.CursorLegendRenderer=function(r){j.jqplot.TableLegendRenderer.call(this,r);this.formatString="%s"};j.jqplot.CursorLegendRenderer.prototype=new j.jqplot.TableLegendRenderer();j.jqplot.CursorLegendRenderer.prototype.constructor=j.jqplot.CursorLegendRenderer;j.jqplot.CursorLegendRenderer.prototype.draw=function(){if(this.show){var w=this._series;this._elem=j('<table class="jqplot-legend jqplot-cursor-legend" style="position:absolute"></table>');var z=false;for(var v=0;v<w.length;v++){s=w[v];if(s.show){var r=j.jqplot.sprintf(this.formatString,s.label.toString());if(r){var t=s.color;if(s._stack&&!s.fill){t=""}x.call(this,r,t,z,v);z=true}for(var u=0;u<j.jqplot.addLegendRowHooks.length;u++){var y=j.jqplot.addLegendRowHooks[u].call(this,s);if(y){x.call(this,y.label,y.color,z);z=true}}}}}function x(D,C,F,A){var B=(F)?this.rowSpacing:"0";var E=j('<tr class="jqplot-legend jqplot-cursor-legend"></tr>').appendTo(this._elem);E.data("seriesIndex",A);j('<td class="jqplot-legend jqplot-cursor-legend-swatch" style="padding-top:'+B+';"><div style="border:1px solid #cccccc;padding:0.2em;"><div class="jqplot-cursor-legend-swatch" style="background-color:'+C+';"></div></div></td>').appendTo(E);var G=j('<td class="jqplot-legend jqplot-cursor-legend-label" style="vertical-align:middle;padding-top:'+B+';"></td>');G.appendTo(E);G.data("seriesIndex",A);if(this.escapeHtml){G.text(D)}else{G.html(D)}}return this._elem}})(jQuery);/**
+ * jQRangeSlider
  * A javascript slider selector that supports dates
- * 
- * Copyright (C) Guillaume Gautreau 2010, 2011
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright (C) Guillaume Gautreau 2012
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ */
 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ (function($, undefined){
 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ 	"use strict";
+
+ 	$.widget("ui.rangeSliderMouseTouch", $.ui.mouse, {
+
+ 		_mouseInit: function(){
+ 			var that = this;
+ 			$.ui.mouse.prototype._mouseInit.apply(this);
+ 			this._mouseDownEvent = false;
+
+ 			this.element.bind('touchstart.' + this.widgetName, function(event) {
+				return that._touchStart(event);
+			});
+ 		},
+
+ 		_mouseDestroy: function(){
+ 			$(document)
+ 				.unbind('touchmove.' + this.widgetName, this._touchMoveDelegate)
+				.unbind('touchend.' + this.widgetName, this._touchEndDelegate);
+ 			
+ 			$.ui.mouse.prototype._mouseDestroy.apply(this);
+ 		},
+
+ 		_touchStart: function(event){
+ 			event.which = 1;
+ 			event.preventDefault();
+
+ 			this._fillTouchEvent(event);
+
+ 			var that = this,
+ 				downEvent = this._mouseDownEvent;
+
+ 			this._mouseDown(event);
+
+ 			if (downEvent !== this._mouseDownEvent){
+
+ 				this._touchEndDelegate = function(event){
+ 					that._touchEnd(event);
+ 				}
+
+ 				this._touchMoveDelegate = function(event){
+ 					that._touchMove(event);
+ 				}
+
+ 				$(document)
+					.bind('touchmove.' + this.widgetName, this._touchMoveDelegate)
+					.bind('touchend.' + this.widgetName, this._touchEndDelegate);
+ 			}
+ 		},
+
+ 		_touchEnd: function(event){
+ 			this._fillTouchEvent(event);
+ 			this._mouseUp(event);
+
+ 			$(document)
+				.unbind('touchmove.' + this.widgetName, this._touchMoveDelegate)
+				.unbind('touchend.' + this.widgetName, this._touchEndDelegate);
+
+			this._mouseDownEvent = false;
+
+			// No other choice to reinitialize mouseHandled
+			$(document).trigger("mouseup");
+ 		},
+
+ 		_touchMove: function(event){
+ 			event.preventDefault();
+ 			this._fillTouchEvent(event);
+
+ 			return this._mouseMove(event);
+ 		},
+
+ 		_fillTouchEvent: function(event){
+ 			var touch;
+
+ 			if (typeof event.targetTouches === "undefined" && typeof event.changedTouches === "undefined"){
+ 				touch = event.originalEvent.targetTouches[0] || event.originalEvent.changedTouches[0];
+ 			} else {
+ 				touch = event.targetTouches[0] || event.changedTouches[0];
+ 			}
+
+ 			event.pageX = touch.pageX;
+ 			event.pageY = touch.pageY;
+ 		}
+ 	});
+ })(jQuery);/**
+ * jQRangeSlider
+ * A javascript slider selector that supports dates
+ *
+ * Copyright (C) Guillaume Gautreau 2012
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ */
+
+ (function($, undefined){
+ 	"use strict";
+
+ 	$.widget("ui.rangeSliderDraggable", $.ui.rangeSliderMouseTouch, {
+ 		cache: null,
+
+ 		options: {
+ 			containment: null
+ 		},
+
+ 		_create: function(){
+ 			setTimeout($.proxy(this._initElement, this), 10);
+ 		},
+
+ 		_initElement: function(){
+ 			this._mouseInit();
+ 			this._cache();
+ 		},
+
+ 		_setOption: function(key, value){
+ 			if (key == "containment"){
+ 				if (value === null || $(value).length == 0){
+ 					this.options.containment = null
+ 				}else{
+ 					this.options.containment = $(value);
+ 				}
+ 			}
+ 		},
+
+ 		/*
+ 		 * UI mouse widget
+ 		 */
+
+ 		_mouseStart: function(event){
+ 			this._cache();
+ 			this.cache.click = {
+ 					left: event.pageX,
+ 					top: event.pageY
+ 			};
+
+ 			this.cache.initialOffset = this.element.offset();
+
+ 			this._triggerMouseEvent("mousestart");
+
+ 			return true;
+ 		},
+
+ 		_mouseDrag: function(event){
+ 			var position = event.pageX - this.cache.click.left;
+
+ 			position = this._constraintPosition(position + this.cache.initialOffset.left);
+
+ 			this._applyPosition(position);
+
+ 			this._triggerMouseEvent("drag");
+
+ 			return false;
+ 		},
+
+ 		_mouseStop: function(event){
+ 			this._triggerMouseEvent("stop");
+ 		},
+
+ 		/*
+ 		 * To be overriden
+ 		 */
+
+ 		_constraintPosition: function(position){
+ 			if (this.element.parent().length !== 0){
+ 				position = Math.min(position, 
+ 					this.cache.parent.offset.left + this.cache.parent.width - this.cache.width.outer);
+ 				position = Math.max(position, this.cache.parent.offset.left);
+ 			}
+
+ 			return position;
+ 		},
+
+ 		_applyPosition: function(position){
+ 			var offset = {
+ 				top: this.cache.offset.top,
+ 				left: position
+ 			}
+
+ 			this.element.offset({left:position});
+
+ 			this.cache.offset = offset;
+ 		},
+
+ 		/*
+ 		 * Private utils
+ 		 */
+
+ 		_cacheIfNecessary: function(){
+ 			if (this.cache === null){
+ 				this._cache();
+ 			}
+ 		},
+
+ 		_cache: function(){
+ 			this.cache = {};
+
+ 			this._cacheMargins();
+ 			this._cacheParent();
+ 			this._cacheDimensions();
+
+ 			this.cache.offset = this.element.offset();
+ 		},
+
+ 		_cacheMargins: function(){
+ 			this.cache.margin = {
+ 				left: this._parsePixels(this.element, "marginLeft"),
+ 				right: this._parsePixels(this.element, "marginRight"),
+ 				top: this._parsePixels(this.element, "marginTop"),
+ 				bottom: this._parsePixels(this.element, "marginBottom")
+ 			};
+ 		},
+
+ 		_cacheParent: function(){
+ 			if (this.options.parent !== null){
+ 				var container = this.element.parent();
+
+	 			this.cache.parent = {
+	 				offset: container.offset(),
+	 				width: container.width()
+	 			}
+ 			}else{
+ 				this.cache.parent = null;
+ 			}
+ 		},
+
+ 		_cacheDimensions: function(){
+ 			this.cache.width = {
+ 				outer: this.element.outerWidth(),
+ 				inner: this.element.width()
+ 			}
+ 		},
+
+ 		_parsePixels: function(element, string){
+ 			return parseInt(element.css(string), 10) || 0;
+ 		},
+
+ 		_triggerMouseEvent: function(event){
+ 			var data = this._prepareEventData();
+
+ 			this.element.trigger(event, data);
+ 		},
+
+ 		_prepareEventData: function(){
+ 			return {
+ 				element: this.element,
+ 				offset: this.cache.offset || null
+ 			};
+ 		}
+ 	});
+	
+ })(jQuery);/**
+ * jQRangeSlider
+ * A javascript slider selector that supports dates
+ *
+ * Copyright (C) Guillaume Gautreau 2012
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ *
+ */
+
+
+ (function($, undefined){
+	"use strict";
+
+	$.widget("ui.rangeSliderHandle", $.ui.rangeSliderDraggable, {
+		currentMove: null,
+		margin: 0,
+		parentElement: null,
+
+		options: {
+			isLeft: true,
+			bounds: {min:0, max:100},
+			range: false,
+			value: 0,
+			step: false
+		},
+
+		_value: 0,
+		_left: 0,
+
+		_create: function(){
+			$.ui.rangeSliderDraggable.prototype._create.apply(this);
+
+			this.element
+				.css("position", "absolute")
+				.css("top", 0)
+				.addClass("ui-rangeSlider-handle")
+				.toggleClass("ui-rangeSlider-leftHandle", this.options.isLeft)
+				.toggleClass("ui-rangeSlider-rightHandle", !this.options.isLeft);
+
+			this._value = this.options.value;
+		},
+
+		_setOption: function(key, value){
+			if (key === "isLeft" && (value === true || value === false) && value != this.options.isLeft){
+				this.options.isLeft = value;
+
+				this.element
+					.toggleClass("ui-rangeSlider-leftHandle", this.options.isLeft)
+					.toggleClass("ui-rangeSlider-rightHandle", !this.options.isLeft);
+
+				this._position(this._value);
+
+				this.element.trigger("switch", this.options.isLeft);
+			} else if (key === "step" && this._checkStep(value)){
+				this.options.step = value;
+				this.update();
+			} else if (key === "bounds"){
+				this.options.bounds = value;
+				this.update();
+			}else if (key === "range" && this._checkRange(value)){
+				this.options.range = value;
+				this.update();
+			}
+
+			$.ui.draggable.prototype._setOption.apply(this, [key, value]);
+		},
+
+		_checkRange: function(range){
+			return range === false ||
+				((typeof range.min === "undefined" || range.min === false || parseFloat(range.min) === range.min)
+					&& (typeof range.max === "undefined" || range.max === false || parseFloat(range.max) === range.max));
+		},
+
+		_checkStep: function(step){
+			return (step === false || parseFloat(step) == step);
+		},
+
+		_initElement: function(){
+			$.ui.rangeSliderDraggable.prototype._initElement.apply(this);
+			
+			if (this.cache.parent.width === 0 || this.cache.parent.width === null){
+				setTimeout($.proxy(this._initElement, this), 500);
+			}else{
+				this._position(this.options.value);
+				this._triggerMouseEvent("initialize");
+			}
+		},
+
+		_bounds: function(){
+			return this.options.bounds;
+		},
+
+		/*
+		 * From draggable
+		 */
+
+		_cache: function(){
+			$.ui.rangeSliderDraggable.prototype._cache.apply(this);
+
+			this._cacheParent();
+		},
+
+		_cacheParent: function(){
+			var parent = this.element.parent();
+
+			this.cache.parent = {
+				element: parent,
+				offset: parent.offset(),
+				padding: {
+					left: this._parsePixels(parent, "paddingLeft")
+				},
+				width: parent.width()
+			}
+		},
+
+		_position: function(value){
+			var left = this._getPositionForValue(value);
+
+			this._applyPosition(left);
+		},
+
+		_constraintPosition: function(position){
+			var value = this._getValueForPosition(position);
+
+			return this._getPositionForValue(value);
+		},
+
+		_applyPosition: function(left){
+			$.ui.rangeSliderDraggable.prototype._applyPosition.apply(this, [left]);
+
+			this._left = left;
+			this._setValue(this._getValueForPosition(left));
+			this._triggerMouseEvent("moving");
+		},
+
+		_prepareEventData: function(){
+			var data = $.ui.rangeSliderDraggable.prototype._prepareEventData.apply(this);
+
+			data.value = this._value;
+
+			return data;
+		},
+
+		/*
+		 * Value
+		 */
+		_setValue: function(value){
+			if (value != this._value){
+				this._value = value;
+			}
+		},
+
+		_constraintValue: function(value){
+			value = Math.min(value, this._bounds().max);
+			value = Math.max(value, this._bounds().min);
+		
+			value = this._round(value);
+
+			if (this.options.range !== false){
+				var min = this.options.range.min || false,
+					max = this.options.range.max || false;
+
+				if (min !== false){
+					value = Math.max(value, this._round(min));
+				}
+
+				if (max !== false){
+					value = Math.min(value, this._round(max));
+				}
+			}
+
+			return value;
+		},
+
+		_round: function(value){
+			if (this.options.step !== false && this.options.step > 0){
+				return Math.round(value / this.options.step) * this.options.step;
+			}
+
+			return value;
+		},
+
+		_getPositionForValue: function(value){
+			if (this.cache.parent.offset == null){
+				return 0;
+			}
+
+			value = this._constraintValue(value);
+
+			var ratio = (value - this.options.bounds.min) / (this.options.bounds.max - this.options.bounds.min),
+				position = this.cache.parent.offset.left;
+
+			if (!this.options.isLeft){
+				position -= this.cache.width.outer;
+			}
+
+
+			return position + ratio * this.cache.parent.width;
+		},
+
+		_getValueForPosition: function(position){
+			if (!this.options.isLeft){
+				position += this.cache.width.outer;
+			}
+
+			var ratio = (position - this.cache.parent.offset.left) / this.cache.parent.width,
+				raw = ratio * (this.options.bounds.max - this.options.bounds.min) + this.options.bounds.min;
+
+			return this._constraintValue(raw);
+		},
+
+		/*
+		 * Public
+		 */
+
+		value: function(value){
+			if (typeof value != "undefined"){
+				this._cache();
+
+				value = this._constraintValue(value);
+
+				this._position(value);
+			}
+
+			return this._value;
+		},
+
+		update: function(){
+			this._cache();
+			var value = this._constraintValue(this._value),
+				position = this._getPositionForValue(value);
+
+			if (value != this._value){
+				this._position(value);
+				this._triggerMouseEvent("update");
+			}else if (position != this.cache.offset.left){
+				this._position(value);
+				this._triggerMouseEvent("update");
+			}
+		},
+
+		position: function(position){
+			if (typeof position != "undefined"){
+				this._cache();
+				
+				position = this._constraintPosition(position);
+				this._applyPosition(position);
+			}
+
+			return this._left;
+		},
+
+		add: function(value, step){
+			return value + step;
+		},
+
+		substract: function(value, step){
+			return value - step;
+		},
+
+		stepsBetween: function(val1, val2){
+			if (this.options.step === false){
+				return val2 - val1;
+			}
+
+			return (val2 - val1) / this.options.step;
+		},
+
+		multiplyStep: function(step, factor){
+			return step * factor;
+		},
+
+		moveRight: function(quantity){
+			var previous;
+
+			if (this.options.step == false){
+				previous = this._left;
+				this.position(this._left + quantity);
+
+				return this._left - previous;
+			}
+			
+			previous = this._value;
+			this.value(this.add(previous, this.multiplyStep(this.options.step, quantity)));
+
+			return this.stepsBetween(previous, this._value);
+		},
+
+		moveLeft: function(quantity){
+			return -this.moveRight(-quantity);
+		},
+
+		stepRatio: function(){
+			if (this.options.step == false){
+				return 1;
+			}else{
+				var steps = (this.options.bounds.max - this.options.bounds.min) / this.options.step;
+				return this.cache.parent.width / steps;
+			}
+		}
+	});
+ })(jQuery);/**
+ * jQRangeSlider
+ * A javascript slider selector that supports dates
+ *
+ * Copyright (C) Guillaume Gautreau 2012
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ *
+ */
+
+(function($, undefined){
+	"use strict";
+
+	$.widget("ui.rangeSliderBar", $.ui.rangeSliderDraggable, {
+		options: {
+			leftHandle: null,
+			rightHandle: null,
+			bounds: {min: 0, max: 100},
+			type: "rangeSliderHandle",
+			range: false,
+			drag: function() {},
+			stop: function() {},
+			values: {min: 0, max:20},
+			wheelSpeed: 4,
+			wheelMode: null
+		},
+
+		_values: {min: 0, max: 20},
+		_waitingToInit: 2,
+		_wheelTimeout: false,
+
+		_create: function(){
+			$.ui.rangeSliderDraggable.prototype._create.apply(this);
+
+			this.element
+				.css("position", "absolute")
+                                /* Remove jrom
+				.css("top", 0)
+                                */
+				.addClass("ui-rangeSlider-bar");
+
+			this.options.leftHandle
+				.bind("initialize", $.proxy(this._onInitialized, this))
+				.bind("mousestart", $.proxy(this._cache, this))
+				.bind("stop", $.proxy(this._onHandleStop, this));
+
+			this.options.rightHandle
+				.bind("initialize", $.proxy(this._onInitialized, this))
+				.bind("mousestart", $.proxy(this._cache, this))
+				.bind("stop", $.proxy(this._onHandleStop, this));
+
+			this._bindHandles();
+
+			this._values = this.options.values;
+		},
+
+		_setOption: function(key, value){
+			if (key === "range"){
+				this._setRangeOption(value);
+			} else if (key === "wheelSpeed"){
+				this._setWheelSpeedOption(value);
+			} else if (key === "wheelMode"){
+				this._setWheelModeOption(value);
+			}
+		},
+
+		_setRangeOption: function(value){
+			if (typeof value != "object" || value === null){
+				value = false;
+			}
+
+			if (value === false && this.options.range === false){
+				return;
+			}
+
+			if (value !== false){
+				var min = typeof value.min === "undefined" ? this.options.range.min || false : value.min,
+					max = typeof value.max === "undefined" ? this.options.range.max || false : value.max;
+
+				this.options.range = {
+					min: min,
+					max: max
+				};
+			}else{
+				this.options.range = false;
+			}
+
+			this._setLeftRange();
+			this._setRightRange();
+		},
+
+		_setWheelSpeedOption: function(value){
+			if (typeof value === "number" && value > 0){
+				this.options.wheelSpeed = value;
+			}
+		},
+
+		_setWheelModeOption: function(value){
+			if (value === null || value === false || value === "zoom" || value === "scroll"){
+				if (this.options.wheelMode !== value){
+					this.element.parent().unbind("mousewheel.bar");
+				}
+
+				this._bindMouseWheel(value);
+				this.options.wheelMode = value;
+			}
+		},
+
+		_bindMouseWheel: function(mode){
+			if (mode === "zoom"){
+				this.element.parent().bind("mousewheel.bar", $.proxy(this._mouseWheelZoom, this));
+			}else if (mode === "scroll"){
+				this.element.parent().bind("mousewheel.bar", $.proxy(this._mouseWheelScroll, this));
+			}
+		},
+
+		_setLeftRange: function(){
+			if (this.options.range == false){
+				return false;
+			}
+
+			var rightValue = this._values.max,
+				leftRange = {min: false, max: false};
+
+			if ((this.options.range.min || false) !== false){
+				leftRange.max = this._leftHandle("substract", rightValue, this.options.range.min);
+			}else{
+				leftRange.max = false;
+			}
+
+			if ((this.options.range.max || false) !== false){
+				leftRange.min = this._leftHandle("substract", rightValue, this.options.range.max);
+			}else{
+				leftRange.min = false;
+			}
+
+			this._leftHandle("option", "range", leftRange);
+		},
+
+		_setRightRange: function(){
+			var leftValue = this._values.min,
+				rightRange = {min: false, max:false};
+
+			if ((this.options.range.min || false) !== false){
+				rightRange.min = this._rightHandle("add", leftValue, this.options.range.min);
+			}else {
+				rightRange.min = false;
+			}
+
+			if ((this.options.range.max || false) !== false){
+				rightRange.max = this._rightHandle("add", leftValue, this.options.range.max);
+			}else{
+				rightRange.max = false;
+			}
+
+			this._rightHandle("option", "range", rightRange);
+		},
+
+		_deactivateRange: function(){
+			this._leftHandle("option", "range", false);
+			this._rightHandle("option", "range", false);
+		},
+
+		_reactivateRange: function(){
+			this._setRangeOption(this.options.range);
+		},
+
+		_onInitialized: function(){
+			this._waitingToInit--;
+
+			if (this._waitingToInit === 0){
+				this._initMe();
+			}
+		},
+
+		_initMe: function(){
+			this._cache();
+			this.min(this.options.values.min);
+			this.max(this.options.values.max);
+
+			var left = this._leftHandle("position"),
+				right = this._rightHandle("position") + this.options.rightHandle.width();
+
+			this.element.offset({
+				left: left
+			});
+
+			this.element.css("width", right - left);
+		},
+
+		_leftHandle: function(){
+			return this._handleProxy(this.options.leftHandle, arguments);
+		},
+
+		_rightHandle: function(){
+			return this._handleProxy(this.options.rightHandle, arguments);
+		},
+
+		_handleProxy: function(element, args){
+			var array = Array.prototype.slice.call(args);
+
+			return element[this.options.type].apply(element, array);
+		},
+
+		/*
+		 * Draggable
+		 */
+
+		_cache: function(){
+			$.ui.rangeSliderDraggable.prototype._cache.apply(this);
+
+			this._cacheHandles();
+		},
+
+		_cacheHandles: function(){
+			this.cache.rightHandle = {};
+			this.cache.rightHandle.width = this.options.rightHandle.width();
+			this.cache.rightHandle.offset = this.options.rightHandle.offset();
+
+			this.cache.leftHandle = {};
+			this.cache.leftHandle.offset = this.options.leftHandle.offset();
+		},
+
+		_mouseStart: function(event){
+			$.ui.rangeSliderDraggable.prototype._mouseStart.apply(this, [event]);
+
+			this._deactivateRange();
+		},
+
+		_mouseStop: function(event){
+			$.ui.rangeSliderDraggable.prototype._mouseStop.apply(this, [event]);
+
+			this._cacheHandles();
+
+			this._values.min = this._leftHandle("value");
+			this._values.max = this._rightHandle("value");
+			this._reactivateRange();
+
+			this._leftHandle().trigger("stop");
+			this._rightHandle().trigger("stop");
+		},
+
+		/*
+		 * Event binding
+		 */
+
+		_onDragLeftHandle: function(event, ui){
+			this._cacheIfNecessary();
+
+			if (this._switchedValues()){
+				this._switchHandles();
+				this._onDragRightHandle(event, ui);
+				return;
+			}
+
+			this._values.min = ui.value;
+			this.cache.offset.left = ui.offset.left;
+			this.cache.leftHandle.offset = ui.offset;
+
+			this._positionBar();
+		},
+
+		_onDragRightHandle: function(event, ui){
+			this._cacheIfNecessary();
+
+			if (this._switchedValues()){
+				this._switchHandles(),
+				this._onDragLeftHandle(event, ui);
+				return;
+			}
+
+			this._values.max = ui.value;
+			this.cache.rightHandle.offset = ui.offset;
+
+			this._positionBar();
+		},
+
+		_positionBar: function(){
+			var width = this.cache.rightHandle.offset.left + this.cache.rightHandle.width - this.cache.leftHandle.offset.left;
+			this.cache.width.inner = width;
+
+			this.element
+				.css("width", width)
+				.offset({left: this.cache.leftHandle.offset.left});
+		},
+
+		_onHandleStop: function(){
+			this._setLeftRange();
+			this._setRightRange();
+		},
+
+		_switchedValues: function(){
+			if (this.min() > this.max()){
+				var temp = this._values.min;
+				this._values.min = this._values.max;
+				this._values.max = temp;
+
+				return true;
+			}
+
+			return false;
+		},
+
+		_switchHandles: function(){
+			var temp = this.options.leftHandle;
+
+			this.options.leftHandle = this.options.rightHandle;
+			this.options.rightHandle = temp;
+
+			this._leftHandle("option", "isLeft", true);
+			this._rightHandle("option", "isLeft", false);
+
+			this._bindHandles();
+			this._cacheHandles();
+		},
+
+		_bindHandles: function(){
+			this.options.leftHandle
+				.unbind(".bar")
+				.bind("drag.bar update.bar moving.bar", $.proxy(this._onDragLeftHandle, this));
+
+			this.options.rightHandle
+				.unbind(".bar")
+				.bind("drag.bar update.bar moving.bar", $.proxy(this._onDragRightHandle, this));
+		},
+
+		_constraintPosition: function(left){
+			var position = {},
+				right;
+
+			position.left = $.ui.rangeSliderDraggable.prototype._constraintPosition.apply(this, [left]);
+
+			position.left = this._leftHandle("position", position.left);
+
+			right = this._rightHandle("position", position.left + this.cache.width.outer - this.cache.rightHandle.width);
+			position.width = right - position.left + this.cache.rightHandle.width;
+
+			return position;
+		},
+
+		_applyPosition: function(position){
+			$.ui.rangeSliderDraggable.prototype._applyPosition.apply(this, [position.left]);
+			this.element.width(position.width);
+		},
+
+		/*
+		 * Mouse wheel
+		 */
+
+		_mouseWheelZoom: function(event, delta, deltaX, deltaY){
+			var middle = this._values.min + (this._values.max - this._values.min) / 2,
+				leftRange = {},
+				rightRange = {};
+
+			if (this.options.range === false || this.options.range.min === false){
+				leftRange.max = middle;
+				rightRange.min = middle;
+			} else {
+				leftRange.max = middle - this.options.range.min / 2;
+				rightRange.min = middle + this.options.range.min / 2;
+			}
+
+			if (this.options.range !== false && this.options.range.max !== false){
+				leftRange.min = middle - this.options.range.max / 2;
+				rightRange.max = middle + this.options.range.max / 2;
+			}
+
+			this._leftHandle("option", "range", leftRange);
+			this._rightHandle("option", "range", rightRange);
+
+			clearTimeout(this._wheelTimeout);
+			this._wheelTimeout = setTimeout($.proxy(this._wheelStop, this), 200);
+
+			this.zoomOut(deltaY * this.options.wheelSpeed);
+
+			return false;
+		},
+
+		_mouseWheelScroll: function(event, delta, deltaX, deltaY){
+			if (this._wheelTimeout === false){
+				this.startScroll();
+			} else {
+				clearTimeout(this._wheelTimeout);
+			}
+
+			this._wheelTimeout = setTimeout($.proxy(this._wheelStop, this), 200);
+
+			this.scrollLeft(deltaY * this.options.wheelSpeed);
+			return false;
+		},
+
+		_wheelStop: function(){
+			this.stopScroll();
+			this._wheelTimeout = false;
+		},
+
+		/*
+		 * Public
+		 */
+
+		min: function(value){
+			return this._leftHandle("value", value);
+		},
+
+		max: function(value){
+			return this._rightHandle("value", value);
+		},
+
+		startScroll: function(){
+			this._deactivateRange();
+		},
+
+		stopScroll: function(){
+			this._reactivateRange();
+			this._triggerMouseEvent("stop");
+		},
+
+		scrollLeft: function(quantity){
+			quantity = quantity || 1;
+
+			if (quantity < 0){
+				return this.scrollRight(-quantity);
+			}
+
+			quantity = this._leftHandle("moveLeft", quantity);
+			this._rightHandle("moveLeft", quantity);
+
+			this.update();
+			this._triggerMouseEvent("scroll");
+		},
+
+		scrollRight: function(quantity){
+			quantity = quantity || 1;
+
+			if (quantity < 0){
+				return this.scrollLeft(-quantity);
+			}
+
+			quantity = this._rightHandle("moveRight", quantity);
+			this._leftHandle("moveRight", quantity);
+
+			this.update();
+			this._triggerMouseEvent("scroll");
+		},
+
+		zoomIn: function(quantity){
+			quantity = quantity || 1;
+
+			if (quantity < 0){
+				return this.zoomOut(-quantity);
+			}
+
+			var newQuantity = this._rightHandle("moveLeft", quantity);
+
+			if (quantity > newQuantity){
+				newQuantity = newQuantity / 2;
+				this._rightHandle("moveRight", newQuantity);
+			}
+
+			this._leftHandle("moveRight", newQuantity);
+
+			this.update();
+			this._triggerMouseEvent("zoom");
+		},
+
+		zoomOut: function(quantity){
+			quantity = quantity || 1;
+
+			if (quantity < 0){
+				return this.zoomIn(-quantity);
+			}
+
+			var newQuantity = this._rightHandle("moveRight", quantity);
+
+			if (quantity > newQuantity){
+				newQuantity = newQuantity / 2;
+				this._rightHandle("moveLeft", newQuantity);
+			}
+
+			this._leftHandle("moveLeft", newQuantity);
+
+			this.update();
+			this._triggerMouseEvent("zoom");
+		},
+
+		values: function(min, max){
+			if (typeof min !== "undefined" && typeof max !== "undefined")
+			{
+				var minValue = Math.min(min, max),
+					maxValue = Math.max(min, max);
+
+				this._deactivateRange();
+				this.options.leftHandle.unbind(".bar");
+				this.options.rightHandle.unbind(".bar");
+
+				this._values.min = this._leftHandle("value", minValue);
+				this._values.max = this._rightHandle("value", maxValue);
+
+				this._bindHandles();
+				this._reactivateRange();
+
+				this.update();
+			}
+
+			return {
+				min: this._values.min,
+				max: this._values.max
+			};
+		},
+
+		update: function(){
+			this._values.min = this.min();
+			this._values.max = this.max();
+
+			this._cache();
+			this._positionBar();
+		}
+
+	});
+
+})(jQuery);/**
+ * jQRangeSlider
+ * A javascript slider selector that supports dates
+ *
+ * Copyright (C) Guillaume Gautreau 2012
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ *
+ */
+
+(function($, undefined){
+	
+	"use strict";
+
+	$.widget("ui.rangeSliderLabel", $.ui.rangeSliderMouseTouch, {
+		options: {
+			handle: null,
+			formatter: false,
+			handleType: "rangeSliderHandle",
+			show: "show",
+			durationIn: 0,
+			durationOut: 500,
+			delayOut: 500,
+			isLeft: false
+		},
+
+		cache: null,
+		_positionner: null,
+		_valueContainer:null,
+		_innerElement:null,
+
+		_create: function(){
+			this.options.isLeft = this._handle("option", "isLeft");
+
+			this.element
+				.addClass("ui-rangeSlider-label")
+				.css("position", "absolute")
+				.css("display", "block");
+
+			this._valueContainer = $("<div class='ui-rangeSlider-label-value' />")
+				.appendTo(this.element);
+
+			this._innerElement = $("<div class='ui-rangeSlider-label-inner' />")
+				.appendTo(this.element);
+
+			this._toggleClass();
+
+			this.options.handle
+				.bind("moving", $.proxy(this._onMoving, this))
+				.bind("update", $.proxy(this._onUpdate, this))
+				.bind("switch", $.proxy(this._onSwitch, this));
+
+			if (this.options.show !== "show"){
+				this.element.hide();
+			}
+
+			this._mouseInit();
+		},
+
+		_handle: function(){
+			var args = Array.prototype.slice.apply(arguments);
+
+			return this.options.handle[this.options.handleType].apply(this.options.handle, args);
+		},
+
+		_setOption: function(key, value){
+			if (key === "show"){
+				this._updateShowOption(value);
+			} else if (key === "durationIn" || key === "durationOut" || key === "delayOut"){
+				this._updateDurations(key, value);
+			}
+		},
+
+		_updateShowOption: function(value){
+			this.options.show = value;
+
+			if (this.options.show !== "show"){
+				this.element.hide();
+			}else{
+				this.element.show();
+				this._display(this.options.handle[this.options.handleType]("value"));
+				this._positionner.PositionLabels();
+			}
+			
+			this._positionner.options.show = this.options.show;
+		},
+
+		_updateDurations: function(key, value){
+			if (parseInt(value) !== value) return;
+
+			this._positionner.options[key] = value;
+			this.options[key] = value;
+		},
+
+		_display: function(value){
+			if (this.options.formatter == false){
+				this._displayText(Math.round(value));
+			}else{
+				this._displayText(this.options.formatter(value));
+			}
+		},
+
+		_displayText: function(text){
+			this._valueContainer.text(text);
+		},
+
+		_toggleClass: function(){
+			this.element.toggleClass("ui-rangeSlider-leftLabel", this.options.isLeft)
+				.toggleClass("ui-rangeSlider-rightLabel", !this.options.isLeft);
+		},
+
+		/*
+		 * Mouse touch redirection
+		 */
+		_mouseDown: function(event){
+			this.options.handle.trigger(event);
+		},
+
+		_mouseUp: function(event){
+			this.options.handle.trigger(event);
+		},
+
+		_mouseMove: function(event){
+			this.options.handle.trigger(event);
+		},
+
+		/*
+		 * Event binding
+		 */
+		_onMoving: function(event, ui){
+			this._display(ui.value);
+		},
+
+		_onUpdate: function(event, ui){
+			if (this.options.show === "show"){
+				this._display(ui.value);
+			}
+		},
+
+		_onSwitch: function(event, isLeft){
+			this.options.isLeft = isLeft;
+			
+			this._toggleClass();
+			this._positionner.PositionLabels();
+		},
+
+		/*
+		 * Label pair
+		 */
+		pair: function(label){
+			if (this._positionner != null) return;
+
+			this._positionner = new LabelPositioner(this.element, label, this.widgetName, {
+				show: this.options.show,
+				durationIn: this.options.durationIn,
+				durationOut: this.options.durationOut,
+				delayOut: this.options.delayOut
+			});
+
+			label[this.widgetName]("positionner", this._positionner);
+		},
+
+		positionner: function(pos){
+			if (typeof pos !== "undefined"){
+				this._positionner = pos;
+			}
+
+			return this._positionner;
+		},
+
+		update: function(){
+			this._display(this._handle("value"));
+			this._positionner.PositionLabels();
+		}
+	});
+
+	function LabelPositioner(label1, label2, type, options){
+		this.label1 = label1;
+		this.label2 = label2;
+		this.type = type;
+		this.options = options;
+		this.handle1 = this.label1[this.type]("option", "handle");
+		this.handle2 = this.label2[this.type]("option", "handle");
+		this.cache = null;
+		this.left = label1;
+		this.right = label2;
+		this.moving = false;
+
+		this.Init = function(){
+			this.BindHandle(this.handle1);
+			this.BindHandle(this.handle2);
+
+			if (this.options.show === "show"){
+				setTimeout($.proxy(this.PositionLabels, this), 1);
+			}
+		}
+
+		this.Cache = function(){
+			this.cache = {};
+			this.cache.label1 = {};
+			this.cache.label2 = {};
+			this.cache.handle1 = {};
+			this.cache.handle2 = {};
+
+			this.CacheElement(this.label1, this.cache.label1);
+			this.CacheElement(this.label2, this.cache.label2);
+			this.CacheElement(this.handle1, this.cache.handle1);
+			this.CacheElement(this.handle2, this.cache.handle2);
+		}
+
+		this.CacheIfNecessary = function(){
+			if (this.cache === null){
+				this.Cache();
+			}else{
+				this.CacheWidth(this.label1, this.cache.label1);
+				this.CacheWidth(this.label2, this.cache.label2);
+				this.CacheHeight(this.label1, this.cache.label1);
+				this.CacheHeight(this.label2, this.cache.label2);
+			}
+		}
+
+		this.CacheElement = function(label, cache){
+			this.CacheWidth(label, cache);
+			this.CacheHeight(label, cache);
+
+			cache.offset = label.offset();
+			cache.margin = {
+				left: this.ParsePixels("marginLeft", label),
+				right: this.ParsePixels("marginRight", label)
+			};
+
+			cache.border = {
+				left: this.ParsePixels("borderLeftWidth", label),
+				right: this.ParsePixels("borderRightWidth", label)
+			};
+
+			cache.outerWidth = cache.width + cache.margin.left + cache.margin.right + cache.border.left + cache.border.right;
+		}
+
+		this.CacheWidth = function(label, cache){
+			cache.width = label.width();
+			cache.outerWidth = label.outerWidth();
+		}
+
+		this.CacheHeight = function(label, cache){
+			cache.outerHeightMargin = label.outerHeight(true);
+		},
+
+		this.ParsePixels = function(name, element){
+			return parseInt(element.css(name), 10) || 0;
+		}
+
+		this.BindHandle = function(handle){
+			handle.bind("moving update", $.proxy(this.onHandleMoving, this));
+			handle.bind("stop", $.proxy(this.onHandleStop, this));
+		}
+
+		this.PositionLabels = function(){
+			this.CacheIfNecessary();
+
+			var label1Pos = this.GetRawPosition(this.cache.label1, this.cache.handle1),
+				label2Pos = this.GetRawPosition(this.cache.label2, this.cache.handle2);
+
+			this.ConstraintPositions(label1Pos, label2Pos);
+
+			this.label1.offset({left:label1Pos.left});
+			this.label2.offset({left:label2Pos.left});
+		}
+
+		this.ConstraintPositions = function(pos1, pos2){
+			if (pos1.center < pos2.center && pos1.outerRight > pos2.outerLeft){
+				pos1 = this.getLeftPosition(pos1, pos2);
+				pos2 = this.getRightPosition(pos1, pos2);
+			}else if (pos1.center > pos2.center && pos2.outerRight > pos1.outerLeft){
+				pos2 = this.getLeftPosition(pos2, pos1);
+				pos1 = this.getRightPosition(pos2, pos1);
+			}
+		}
+
+		this.getLeftPosition = function(left, right){
+			var center = (right.center + left.center) / 2,
+				leftPos = center - left.cache.outerWidth - left.cache.margin.right + left.cache.border.left;
+
+			left.left = leftPos;
+
+			return left;
+		}
+
+		this.getRightPosition = function(left, right){
+			var center = (right.center + left.center) / 2;
+
+			right.left = center + right.cache.margin.left + right.cache.border.left;
+
+			return right;
+		}
+
+		this.ShowIfNecessary = function(){
+			if (this.options.show === "show" || this.moving) return;
+
+			this.label1.stop().fadeIn(this.options.durationIn || 0);
+			this.label2.stop().fadeIn(this.options.durationIn || 0);
+			this.moving = true;
+		},
+
+		this.HideIfNeeded = function(lastMove){
+			if (this.moving === true){
+				this.label1.stop().delay(this.options.delayOut || 0).fadeOut(this.options.durationOut || 0);
+				this.label2.stop().delay(this.options.delayOut || 0).fadeOut(this.options.durationOut || 0);
+				this.moving = false;
+			}
+		},
+
+		this.onHandleMoving = function(event, ui){
+			this.CacheIfNecessary();
+			this.ShowIfNecessary();
+			this.UpdateHandlePosition(ui);
+
+			this.PositionLabels();
+		}
+
+		this.onHandleStop = function(event, ui){
+			this.HideIfNeeded();
+		},
+
+		this.UpdateHandlePosition = function(ui){
+			if (ui.element[0] == this.handle1[0]){
+				this.UpdatePosition(ui, this.cache.handle1);
+			}else{
+				this.UpdatePosition(ui, this.cache.handle2);
+			}
+		}
+
+		this.UpdatePosition = function(element, cache){
+			cache.offset = element.offset;
+		}
+
+		this.GetRawPosition = function(labelCache, handleCache){
+			var handleCenter = handleCache.offset.left + handleCache.outerWidth / 2,
+				labelLeft = handleCenter - labelCache.outerWidth / 2,
+				labelRight = labelLeft + labelCache.outerWidth - labelCache.border.left - labelCache.border.right,
+				outerLeft = labelLeft - labelCache.margin.left - labelCache.border.left,
+				top = handleCache.offset.top - labelCache.outerHeightMargin;
+
+			return {
+				left: labelLeft,
+				outerLeft: outerLeft,
+				top: top,
+				right: labelRight,
+				outerRight: outerLeft + labelCache.outerWidth + labelCache.margin.left + labelCache.margin.right,
+				cache: labelCache,
+				center: handleCenter
+			}
+		}
+
+		this.Init();
+	}
+
+})(jQuery);
+
+
+/**
+ * jQRangeSlider
+ * A javascript slider selector that supports dates
+ *
+ * Copyright (C) Guillaume Gautreau 2012
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ *
  */
 
 (function ($, undefined) {
+    "use strict";
+
+    $.widget("ui.rangeSlider", {
+        options: {
+            bounds: {
+                min:0, 
+                max:100
+            },
+            defaultValues: {
+                min:20, 
+                max:50
+            },
+            wheelMode: null,
+            wheelSpeed: 4,
+            arrows: true,
+            valueLabels: "show",
+            formatter: null,
+            durationIn: 0,
+            durationOut: 400,
+            delayOut: 200,
+            range: {
+                min: false, 
+                max: false
+            },
+            step: false
+        },
+
+        _values: null,
+        _valuesChanged: false,
+
+        // Created elements
+        bar: null,
+        leftHandle: null,
+        rightHandle: null,
+        innerBar: null,
+        container: null,
+        arrows: null,
+        labels: null,
+        changing: {
+            min:false, 
+            max:false
+        },
+        changed: {
+            min:false, 
+            max:false
+        },
+                
+        _create: function(){
+            this._values = {
+                min: this.options.defaultValues.min,
+                max: this.options.defaultValues.max
+            };
+
+            this.labels = {
+                left: null, 
+                right:null, 
+                leftDisplayed:true, 
+                rightDisplayed:true
+            };
+            this.arrows = {
+                left:null, 
+                right:null
+            };
+            this.changing = {
+                min:false, 
+                max:false
+            };
+            this.changed = {
+                min:false, 
+                max:false
+            };
+
+            if (this.element.css("position") !== "absolute"){
+                this.element.css("position", "relative");
+            }
+
+            this.container = $("<div class='ui-rangeSlider-container' />").appendTo(this.element);
+            this.innerBar = $("<div class='ui-rangeSlider-innerBar' />");
+                       
+            this.leftHandle = this._createHandle({
+                isLeft: true,
+                bounds: this.options.bounds,
+                value: this.options.defaultValues.min,
+                step: this.options.step
+            }).appendTo(this.container);
+	
+            this.rightHandle = this._createHandle({
+                isLeft: false,
+                bounds: this.options.bounds,
+                value: this.options.defaultValues.max,
+                step: this.options.step
+            }).appendTo(this.container);
+
+            this._createBar();
+
+            this.container.prepend(this.innerBar);
+
+            this.arrows.left = this._createArrow("left");
+            this.arrows.right = this._createArrow("right");
+
+            this.element.addClass("ui-rangeSlider");
+
+            if (!this.options.arrows){
+                this.arrows.left.css("display", "none");
+                this.arrows.right.css("display", "none");
+                this.element.addClass("ui-rangeSlider-noArrow");
+            }else{
+                this.element.addClass("ui-rangeSlider-withArrows");
+            }
+            if (this.options.valueLabels !== "hide"){
+                this._createLabels();
+            }else{
+                this._destroyLabels();
+            }
+
+            this._bindResize();
+
+            setTimeout($.proxy(this.resize, this), 1);
+            setTimeout($.proxy(this._initValues, this), 1);
+        },
+
+        _bindResize: function(){
+            var that = this;
+
+            this._resizeProxy = function(e){
+                that.resize(e);
+            };
+
+            $(window).resize(this._resizeProxy);
+        },
+
+        _initWidth: function(){
+            this.container.css("width", this.element.width() - this.container.outerWidth(true) + this.container.width());
+            this.innerBar.css("width", this.container.width() - this.innerBar.outerWidth(true) + this.innerBar.width());
+                        
+        },
+
+        _initValues: function(){
+            this.values(this.options.defaultValues.min, this.options.defaultValues.max);
+        },
+
+        _setOption: function(key, value) {
+            var option = this.options;
+			
+            if (key === "defaultValues")
+            {
+                if ((typeof value.min !== "undefined") && (typeof value.max !== "undefined") && parseFloat(value.min) === value.min && parseFloat(value.max) === value.max)
+                {
+                    this.options.defaultValues = value;
+                }
+            }else if (key === "wheelMode" || key === "wheelSpeed"){
+                this._bar("option", key, value);
+                this.options[key] = this._bar("option", key);
+            }else if (key === "arrows" && (value === true || value === false) && value !== this.options.arrows){
+                this._setArrowsOption(value);
+            }else if (key === "valueLabels"){
+                this._setLabelsOption(value);
+            }else if (key === "durationIn" || key === "durationOut" || key === "delayOut"){
+                this._setLabelsDurations(key, value);
+            }else if (key === "formatter" && value !== null && typeof value === "function"){
+                this.options.formatter = value;
+				
+                if (this.options.valueLabels !== "hide"){
+                    this._destroyLabels();
+                    this._createLabels();
+                }
+            }else if (key === "bounds" && typeof value.min !== "undefined" && typeof value.max !== "undefined"){
+                this.bounds(value.min, value.max);
+            }else if (key === "range"){
+                this._bar("option", "range", value);
+                this.options.range = this._bar("option", "range");
+                this._changed(true);
+            }else if (key === "step"){
+                this.options.step = value;
+                this._leftHandle("option", "step", value);
+                this._rightHandle("option", "step", value);
+                this._changed(true);
+            }
+        },
+
+        _validProperty: function(object, name, defaultValue){
+            if (object === null || typeof object[name] === "undefined"){
+                return defaultValue;
+            }
+
+            return object[name];
+        },
+
+        _setLabelsOption: function(value){
+            if (value !== "hide" && value !== "show" && value !== "change"){
+                return;
+            }
+
+            this.options.valueLabels = value;
+
+            if (value !== "hide"){
+                this._createLabels();
+                this._leftLabel("update");
+                this._rightLabel("update");
+            }else{
+                this._destroyLabels();
+            }
+        },
+
+        _setArrowsOption: function(value){
+            if (value === true){
+                this.element
+                .removeClass("ui-rangeSlider-noArrow")
+                .addClass("ui-rangeSlider-withArrows");
+                this.arrows.left.css("display", "block");
+                this.arrows.right.css("display", "block");
+                this.options.arrows = true;
+            }else if (value === false){
+                this.element
+                .addClass("ui-rangeSlider-noArrow")
+                .removeClass("ui-rangeSlider-withArrows");
+                this.arrows.left.css("display", "none");
+                this.arrows.right.css("display", "none");
+                this.options.arrows = false;
+            }
+
+            this._initWidth();
+        },
+
+        _setLabelsDurations: function(key, value){
+            if (parseInt(value, 10) !== value) return;
+
+            if (this.labels.left !== null){
+                this._leftLabel("option", key, value);
+            }
+
+            if (this.labels.right !== null){
+                this._rightLabel("option", key, value);
+            }
+
+            this.options[key] = value;
+        },
+
+        _createHandle: function(options){
+            return $("<div />")
+            [this._handleType()](options)
+            .bind("drag", $.proxy(this._changing, this))
+            .bind("stop", $.proxy(this._changed, this));
+        },
+		
+        _createBar: function(){
+            this.bar = $("<div />")
+            .prependTo(this.container)
+            .bind("drag scroll zoom", $.proxy(this._changing, this))
+            .bind("stop", $.proxy(this._changed, this));
+			
+            this._bar({
+                leftHandle: this.leftHandle,
+                rightHandle: this.rightHandle,
+                values: {
+                    min: this.options.defaultValues.min, 
+                    max: this.options.defaultValues.max
+                    },
+                type: this._handleType(),
+                range: this.options.range
+            });
+
+            this.options.range = this._bar("option", "range");
+        },
+
+        _createArrow: function(whichOne){
+            var arrow = $("<div class='ui-rangeSlider-arrow' />")
+            .append("<div class='ui-rangeSlider-arrow-inner' />")
+            .addClass("ui-rangeSlider-" + whichOne + "Arrow")
+            .css("position", "absolute")
+            .css(whichOne, 0)
+            .appendTo(this.element),
+            target;
+
+            if (whichOne === "right"){
+                target = $.proxy(this._scrollRightClick, this);
+            }else{
+                target = $.proxy(this._scrollLeftClick, this);
+            }
+
+            arrow.bind("mousedown touchstart", target);
+
+            return arrow;
+        },
+
+        _proxy: function(element, type, args){
+            var array = Array.prototype.slice.call(args);
+
+            return element[type].apply(element, array);
+        },
+
+        _handleType: function(){
+            return "rangeSliderHandle";
+        },
+
+        _barType: function(){
+            return "rangeSliderBar";
+        },
+
+        _bar: function(){
+            return this._proxy(this.bar, this._barType(), arguments);
+        },
+
+        _labelType: function(){
+            return "rangeSliderLabel";
+        },
+
+        _leftLabel: function(){
+            return this._proxy(this.labels.left, this._labelType(), arguments);
+        },
+
+        _rightLabel: function(){
+            return this._proxy(this.labels.right, this._labelType(), arguments);
+        },
+
+        _leftHandle: function(){
+            return this._proxy(this.leftHandle, this._handleType(), arguments);
+        },
+
+        _rightHandle: function(){
+            return this._proxy(this.rightHandle, this._handleType(), arguments);
+        },
+
+        _getValue: function(position, handle){
+            if (handle === this.rightHandle){	
+                position = position - handle.outerWidth();
+            }
+			
+            return position * (this.options.bounds.max - this.options.bounds.min) / (this.container.innerWidth() - handle.outerWidth(true)) + this.options.bounds.min;
+        },
+
+        _trigger: function(eventName){
+            var that = this;
+
+            setTimeout(function(){
+                that.element.trigger(eventName, {
+                    label: that.element,
+                    values: that.values()
+                });
+            }, 1);
+        },
+
+        _changing: function(event, ui){
+            if(this._updateValues()){
+                this._trigger("valuesChanging");
+                this._valuesChanged = true;
+            }
+        },
+
+        _changed: function(isAutomatic){
+            if (this._updateValues() || this._valuesChanged){
+                this._trigger("valuesChanged");
+
+                if (isAutomatic !== true){
+                    this._trigger("userValuesChanged");					
+                }
+
+                this._valuesChanged = false;
+            }
+        },
+
+        _updateValues: function(){
+            var left = this._leftHandle("value"),
+            right = this._rightHandle("value"),
+            min = this._min(left, right),
+            max = this._max(left, right),
+            changing = (min !== this._values.min || max !== this._values.max);
+
+            this._values.min = this._min(left, right);
+            this._values.max = this._max(left, right);
+
+            return changing;
+        },
+
+        _min: function(value1, value2){
+            return Math.min(value1, value2);
+        },
+
+        _max: function(value1, value2){
+            return Math.max(value1, value2);
+        },
+
+        /*
+         * Value labels
+         */
+        _createLabel: function(label, handle){
+            var params;
+
+            if (label === null){
+                params = this._getLabelConstructorParameters(label, handle);
+                label = $("<div />")
+                .appendTo(this.element)
+                [this._labelType()](params);
+            }else{
+                params = this._getLabelRefreshParameters(label, handle);
+
+                label[this._labelType()](params);
+            }
+
+            return label;
+        },
+
+        _getLabelConstructorParameters: function(label, handle){
+            return {
+                handle: handle,
+                handleType: this._handleType(),
+                formatter: this._getFormatter(),
+                show: this.options.valueLabels,
+                durationIn: this.options.durationIn,
+                durationOut: this.options.durationOut,
+                delayOut: this.options.delayOut
+            };
+        },
+
+        _getLabelRefreshParameters: function(label, handle){
+            return {
+                formatter: this._getFormatter(),
+                show: this.options.valueLabels,
+                durationIn: this.options.durationIn,
+                durationOut: this.options.durationOut,
+                delayOut: this.options.delayOut
+            };
+        },
+
+        _getFormatter: function(){
+            if (this.options.formatter === false || this.options.formatter === null){
+                return this._defaultFormatter;
+            }
+
+            return this.options.formatter;
+        },
+
+        _defaultFormatter: function(value){
+            return Math.round(value);
+        },
+
+        _destroyLabel: function(label){
+            if (label !== null){
+                label.remove();
+                label = null;
+            }
+
+            return label;
+        },
+
+        _createLabels: function(){
+            this.labels.left = this._createLabel(this.labels.left, this.leftHandle);
+            this.labels.right = this._createLabel(this.labels.right, this.rightHandle);
+
+            this._leftLabel("pair", this.labels.right);
+        },
+
+        _destroyLabels: function(){
+            this.labels.left = this._destroyLabel(this.labels.left);
+            this.labels.right = this._destroyLabel(this.labels.right);
+        },
+
+        /*
+         * Scrolling
+         */
+        _stepRatio: function(){
+            return this._leftHandle("stepRatio");
+        },
+
+        _scrollRightClick: function(e){
+            e.preventDefault();
+            this._bar("startScroll");
+            this._bindStopScroll();
+
+            this._continueScrolling("scrollRight", 4 * this._stepRatio(), 1);
+        },
+
+        _continueScrolling: function(action, timeout, quantity, timesBeforeSpeedingUp){
+            this._bar(action, quantity);
+            timesBeforeSpeedingUp = timesBeforeSpeedingUp || 5;
+            timesBeforeSpeedingUp--;
+
+            var that = this,
+            minTimeout = 16,
+            maxQuantity = Math.max(1, 4 / this._stepRatio());
+
+            this._scrollTimeout = setTimeout(function(){
+                if (timesBeforeSpeedingUp === 0){
+                    if (timeout > minTimeout){
+                        timeout = Math.max(minTimeout, timeout / 1.5);	
+                    } else {
+                        quantity = Math.min(maxQuantity, quantity * 2);
+                    }
+					
+                    timesBeforeSpeedingUp = 5;
+                }
+
+                that._continueScrolling(action, timeout, quantity, timesBeforeSpeedingUp);
+            }, timeout);
+        },
+
+        _scrollLeftClick: function(e){
+            e.preventDefault();
+
+            this._bar("startScroll");
+            this._bindStopScroll();
+
+            this._continueScrolling("scrollLeft", 4 * this._stepRatio(), 1);
+        },
+
+        _bindStopScroll: function(){
+            var that = this;
+            this._stopScrollHandle = function(e){
+                e.preventDefault();
+                that._stopScroll();
+            };
+
+            $(document).bind("mouseup touchend", this._stopScrollHandle);
+        },
+
+        _stopScroll: function(){
+            $(document).unbind("mouseup touchend", this._stopScrollHandle);
+            this._bar("stopScroll");
+            clearTimeout(this._scrollTimeout);
+        },
+
+        /*
+         * Public methods
+         */
+        values: function(min, max){
+            var val = this._bar("values", min, max);
+
+            if (typeof min !== "undefined" && typeof max !== "undefined"){
+                this._changed(false);
+            }
+
+            return val;
+        },
+
+        min: function(min){
+            this._values.min = this.values(min, this._values.max).min;
+
+            return this._values.min;
+        },
+
+        max: function(max){
+            this._values.max = this.values(this._values.min, max).max;
+
+            return this._values.max;
+        },
+		
+        bounds: function(min, max){
+            if ((typeof min !== "undefined") && (typeof max !== "undefined") 
+                && parseFloat(min) === min && parseFloat(max) === max && min < max){
+				
+                this._setBounds(min, max);
+                this._changed(true);
+            }
+			
+            return this.options.bounds;
+        },
+
+        _setBounds: function(min, max){
+            this.options.bounds = {
+                min: min, 
+                max: max
+            };
+            this._leftHandle("option", "bounds", this.options.bounds);
+            this._rightHandle("option", "bounds", this.options.bounds);
+            this._bar("option", "bounds", this.options.bounds);
+        },
+
+        zoomIn: function(quantity){
+            this._bar("zoomIn", quantity)
+        },
+
+        zoomOut: function(quantity){
+            this._bar("zoomOut", quantity);
+        },
+
+        scrollLeft: function(quantity){
+            this._bar("startScroll");
+            this._bar("scrollLeft", quantity);
+            this._bar("stopScroll");
+        },
+
+        scrollRight: function(quantity){
+            this._bar("startScroll");
+            this._bar("scrollRight", quantity);
+            this._bar("stopScroll");
+        },
+		
+        /**
+         * Resize
+         */
+        resize: function(){
+            this._initWidth();
+            this._leftHandle("update");
+            this._rightHandle("update");
+        },
+
+        destroy: function(){
+            this.element.removeClass("ui-rangeSlider-withArrows")
+            .removeClass("ui-rangeSlider-noArrow");
+            this.bar.detach();
+            this.leftHandle.detach();
+            this.rightHandle.detach();
+            this.innerBar.detach();
+            this.container.detach();
+            this.arrows.left.detach();
+            this.arrows.right.detach();
+            this.element.removeClass("ui-rangeSlider");
+            this._destroyLabels();
+            delete this.options;
+
+            $(window).unbind("resize", this._resizeProxy);
+
+            $.Widget.prototype.destroy.apply(this, arguments);
+        }
+                
+    });
+})(jQuery);/**
+ * jQRangeSlider
+ * A javascript slider selector that supports dates
+ *
+ * Copyright (C) Guillaume Gautreau 2012
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ *
+ */
+
+(function($, undefined){
+	"use strict";
+
+	$.widget("ui.dateRangeSliderHandle", $.ui.rangeSliderHandle, {
+		_steps: false,
+		_boundsValues: {},
+
+		_create: function(){
+			$.ui.rangeSliderHandle.prototype._create.apply(this);
+			this._createBoundsValues();
+		},
+
+		_getValueForPosition: function(position){
+			var min = this.options.bounds.min.valueOf(),
+				max = this.options.bounds.max.valueOf();
+
+			if (!this.options.isLeft){
+				position += this.cache.width.outer;
+			}
+
+			var ratio = (position - this.cache.parent.offset.left) / this.cache.parent.width,
+				raw = ratio * (max - min) + min;
+
+			return this._constraintValue(new Date(raw));
+		},
+
+		_setOption: function(key, value){
+			if (key === "step"){
+				this.options.step = value;
+				this._createSteps();
+				this.update();
+				return;
+			}
+
+			$.ui.rangeSliderHandle.prototype._setOption.apply(this, [key, value]);
+
+			if (key === "bounds"){
+				this._createBoundsValues();
+			}
+		},
+
+		_createBoundsValues: function(){
+			this._boundsValues = {
+					min: this.options.bounds.min.valueOf(),
+					max: this.options.bounds.max.valueOf()
+			};
+		},
+
+		_bounds: function(){
+			return this._boundsValues;
+		},
+
+		_createSteps: function(){
+			if (this.options.step === false || !this._isValidStep()){
+				this._steps = false;
+				return;
+			}
+
+			var minDate = new Date(this.options.bounds.min),
+				maxDate = new Date(this.options.bounds.max),
+				stepDate = minDate,
+				i = 0;
+
+			this._steps = [];
+
+			while (stepDate <= maxDate){
+				this._steps.push(stepDate.valueOf());
+
+				stepDate = this._addStep(minDate, i, this.options.step);
+				i++;
+			}
+		},
+
+		_isValidStep: function(){
+			return typeof this.options.step === "object";
+		},
+
+		_addStep: function(reference, factor, step){
+			var result = new Date(reference.valueOf());
+
+			result = this._addThing(result, "FullYear", factor, step.years);
+			result = this._addThing(result, "Month", factor, step.months);
+			result = this._addThing(result, "Date", factor, step.days);
+			result = this._addThing(result, "Hours", factor, step.hours);
+			result = this._addThing(result, "Minutes", factor, step.minutes);
+			result = this._addThing(result, "Seconds", factor, step.seconds);
+
+			return result;
+		},
+
+		_addThing: function(date, thing, factor, base){
+			if (factor === 0 || (base || 0) === 0){
+				return date;
+			}
+
+			date["set" + thing](
+				date["get" + thing]() + factor * (base || 0)
+				);
+
+			return date;
+		},
+
+		_round: function(value){
+			if (this._steps === false){
+				return value;
+			}
+
+			var max = this.options.bounds.max.valueOf(),
+				min = this.options.bounds.min.valueOf(),
+				ratio = (value - min) / (max - min),
+				index = Math.floor(this._steps.length * ratio),
+				before, after;
+
+			while (this._steps[index] > value){
+				index--;
+			}
+
+			while (index + 1 < this._steps.length && this._steps[index + 1] <= value){
+				index++;
+			}
+
+			if (index >= this._steps.length - 1){
+				return this._steps[this._steps.length - 1];
+			} else if (index == 0){
+				return this._steps[0];
+			}
+
+			before = this._steps[index];
+			after = this._steps[index + 1];
+
+			if (value - before < after - value){
+				return before;
+			}
+
+			return after;
+		},
+
+		update: function(){
+			this._createBoundsValues();
+			this._createSteps();
+			$.ui.rangeSliderHandle.prototype.update.apply(this);
+		},
+
+		add: function(date, step){
+			return this._addStep(new Date(date), 1, step).valueOf();
+		},
+
+		substract: function(date, step){
+			return this._addStep(new Date(date), -1, step).valueOf();
+		},
+
+		stepsBetween: function(date1, date2){
+			if (this.options.step === false){
+				return val2 - val1;
+			}
+
+			var min = Math.min(date1, date2),
+				max = Math.max(date1, date2),
+				steps = 0,
+				negative = false,
+				negativeResult = date1 > date2;
+
+			if (this.add(min, this.options.step) - min < 0){
+				negative = true;
+			}
+
+			while (min < max){
+					if (negative){
+						max = this.add(max, this.options.step);
+					}else{
+						min = this.add(min, this.options.step);	
+					}
+					
+					steps++;
+				}
+
+			return negativeResult ? -steps : steps;
+		},
+
+		multiplyStep: function(step, factor){
+			var result = {};
+
+			for (var name in step){
+				result[name] = step[name] * factor;
+			}
+
+			return result;
+		},
+
+		stepRatio: function(){
+			if (this.options.step == false){
+				return 1;
+			}else{
+				var steps = this._steps.length;
+				return this.cache.parent.width / steps;
+			}
+		}
+	});
+})(jQuery);/**
+ * jQRangeSlider
+ * A javascript slider selector that supports dates
+ *
+ * Copyright (C) Guillaume Gautreau 2012
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ *
+ * Modified for mapshup -  (C) Jerome Gasperi 2012
+ * Licensed under the CeCILL-B licence
+ */
+/*
+ * Override of jQRangeSlider class for mapshup :
+ *  - override _create() function
+ *  - override _initWidth() function
+ *  - add _getScaleValue() function
+ *  - add _getScalePosition() function
+ *  - add _positionScaleRight() function
+ *  - add _createScale() function
+ *
+ */
+(function ($, undefined) {
+    "use strict";
+	
     $.widget("ui.dateRangeSlider", $.ui.rangeSlider, {
         options: {
             bounds: {
-                min: new Date(2010,0,1), 
-                max: new Date()
-            },
-            scaleBounds: {
                 min: new Date(2000,0,1), 
-                max: new Date()
+                max: new Date(2012,0,1)
             },
             defaultValues: {
-                min: new Date(2010,1,11), 
-                max: new Date()
+                min: new Date(2011,0,1), 
+                max: new Date(2012,0,1)
             }
         },
-	
+        
+        /* START mapshup */
+        scaleBar:null,
+        /* END mapshup */
+
+        /*
+         * Override jQRangeSlider _create function to support mapshup Date slider
+         * This function add an implicit scaleBar
+         */
+        _create: function(){
+            $.ui.rangeSlider.prototype._create.apply(this);
+
+            /* Add scaleBar within the inner bar */
+            this.scaleBar = $("<div class='ui-rangeSlider-scaleBar' />");
+            this.innerBar.append(this.scaleBar);
+                        
+            this.element.addClass("ui-dateRangeSlider");
+        },
+
+        destroy: function(){
+            this.element.removeClass("ui-dateRangeSlider");
+            $.ui.rangeSlider.prototype.destroy.apply(this);
+        },
+
         _setOption: function(key, value){
-            if ((key == "defaultValues" || key== "bounds" || key== "scaleBounds"|| key== "scaleRatio") && typeof value != "undefined" && value != null && typeof value.min != "undefined" && typeof value.max != "undefined" && value.min instanceof Date && value.max instanceof Date){
+            if ((key === "defaultValues" || key === "bounds") && typeof value !== "undefined" && value !== null && typeof value.min !== "undefined" && typeof value.max !== "undefined" && value.min instanceof Date && value.max instanceof Date){
                 $.ui.rangeSlider.prototype._setOption.apply(this, [key, {
                     min:value.min.valueOf(), 
                     max:value.max.valueOf()
                 }]);
             }else{
-                $.ui.rangeSlider.prototype._setOption.apply(this, arguments);
+                $.ui.rangeSlider.prototype._setOption.apply(this, this._toArray(arguments));
             }
         },
-		
+
+        _handleType: function(){
+            return "dateRangeSliderHandle";
+        },
+
         option: function(key, value){
-            if (key == "bounds" || key == "defaultValues"){
+            if (key === "bounds" || key === "defaultValues"){
                 var result = $.ui.rangeSlider.prototype.option.apply(this, arguments);
-				
+
                 return {
                     min:new Date(result.min), 
                     max:new Date(result.max)
                 };
             }
-			
-            return $.ui.rangeSlider.prototype.option.apply(this, arguments);
+
+            return $.ui.rangeSlider.prototype.option.apply(this, this._toArray(arguments));
         },
-		
-        _defaultFormat: function(value){
-            var month = value.getMonth() + 1;
-            var monthArray=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-            var day = value.getDate();
-            //return "" + value.getFullYear() + "-" + (month < 10 ? "0" + month : month) 
-            //	+ "-" + (day < 10 ? "0" + day : day);
-            return "" +(day < 10 ? "0" + day : day) + "-" + monthArray[month-1] + "-" + value.getFullYear() ;
+
+        _defaultFormatter: function(value){
+            var month = value.getMonth() + 1,
+            day = value.getDate();
+
+            return "" + value.getFullYear() + "-" + (month < 10 ? "0" + month : month) + "-" + (day < 10 ? "0" + day : day);
         },
-		
-        _format: function(value){
-            return $.ui.rangeSlider.prototype._format.apply(this, [new Date(value)]);
+
+        _getFormatter: function(){
+            var formatter = this.options.formatter;
+
+            if (this.options.formatter === false || this.options.formatter === null){
+                formatter = this._defaultFormatter;
+            }
+
+            return (function(formatter){
+                return function(value){
+                    return formatter(new Date(value));
+                }
+            })(formatter);
         },
-		
+        
+        /*
+         * Override jQRangeSlider initWidth function to force initialisation
+         * of mapshup scale bar
+         */
+        _initWidth: function(){
+            $.ui.rangeSlider.prototype._initWidth.apply(this);
+            this._createScale();
+        },
+
         values: function(min, max){
-            if (typeof min != "undefined" && typeof max != "undefined" && min instanceof Date && max instanceof Date)
+            var values = null;
+			
+            if (typeof min !== "undefined" && typeof max !== "undefined" && min instanceof Date && max instanceof Date)
             {
                 values = $.ui.rangeSlider.prototype.values.apply(this, [min.valueOf(), max.valueOf()]);
             }else{
-                values = $.ui.rangeSlider.prototype.values.apply(this, arguments);
+                values = $.ui.rangeSlider.prototype.values.apply(this, this._toArray(arguments));
             }
-			
+
             return {
                 min: new Date(values.min), 
                 max: new Date(values.max)
             };
         },
-		
+
         min: function(min){
-            if (typeof min != "undefined" && min instanceof Date){
+            if (typeof min !== "undefined" && min instanceof Date){
                 return new Date($.ui.rangeSlider.prototype.min.apply(this, [min.valueOf()]));
             }
-			
+
             return new Date($.ui.rangeSlider.prototype.min.apply(this));
         },
-		
+
         max: function(max){
-            if (typeof max != "undefined" && max instanceof Date){
+            if (typeof max !== "undefined" && max instanceof Date){
                 return new Date($.ui.rangeSlider.prototype.max.apply(this, [max.valueOf()]));
             }
-			
+
             return new Date($.ui.rangeSlider.prototype.max.apply(this));
-        }		
+        },
+		
+        _toArray: function(argsObject){
+            return Array.prototype.slice.call(argsObject);
+        },
+        
+        /* START mashup */
+        _getScaleValue: function(position){
+            return (position *  (this.options.bounds.max.getTime() - this.options.bounds.min.getTime()) / (this.scaleBar.width() - 1)) + this.options.bounds.min.getTime();
+        },
+        
+        _getScalePosition: function(value){
+            return (value.getTime() - this.options.bounds.min.getTime()) * (this.scaleBar.width() - 1) / (this.options.bounds.max.getTime() - this.options.bounds.min.getTime());
+        },
+       
+        /*
+         * Create a numerical scale with dates
+         * The scale extends from min to max bounds
+         * 
+         */
+        _createScale: function(){
+
+            /* clear old scale */
+            this.scaleBar.empty();
+            
+            /*
+             * Cursor value goes from 0 to scaleBar width
+             */
+            var i, j, p1, w, scaleUnit,
+                minWidthPerYear = 150,
+                scaleWidth = this.innerBar.width(),
+                y1 = this.options.bounds.min.getFullYear(),
+                y2 = this.options.bounds.max.getFullYear(),
+                ySteps = Math.floor(((y2 - y1) * minWidthPerYear) / scaleWidth) + 1;
+            
+            
+            this.scaleBar.css("width", scaleWidth);
+
+            /*
+             * Display years
+             */
+            for (i = y1; i <= y2; i++) {
+                
+                /*
+                 * Get date position
+                 */
+                p1 = this._getScalePosition(new Date(i, 0, 1));
+                
+                /*
+                 * Compute year width
+                 */
+                w = this._getScalePosition(new Date(i+1, 0, 1)) - p1;
+                
+                /*
+                 * Alternate background each years
+                 */
+                scaleUnit = $('<span class="ui-rangeSlider-bgy"></span>').css({
+                    "left":p1,
+                    "width":w,
+                    "background-color":"rgba(255,255,255,"+(i % 2 === 0 ? "0" : "0.3")+")"
+                });
+                this.scaleBar.append(scaleUnit);
+                
+                /*
+                 * Only display one year per ySteps
+                 */
+                if ((i / ySteps) % 1 === 0) {
+                    scaleUnit = $('<span class="ui-rangeSlider-bigScaleUnit">'+i+'</span>').css("left", p1);
+                    this.scaleBar.append(scaleUnit);
+                }
+                
+                /*
+                 * Alternate background each month
+                 */
+                for (j = 0; j < 12; j++) {
+                    p1 = this._getScalePosition(new Date(i, j, 1));
+                    w = this._getScalePosition(new Date(i, j + 1, 1)) - p1;
+                    scaleUnit = $('<span class="ui-rangeSlider-bgm"></span>').css({
+                        "left":p1,
+                        "width":w,
+                        "background-color":"rgba(0,0,0,"+(j % 2 === 0 ? "0.1" : "0.2")+")"
+                    });
+                    this.scaleBar.append(scaleUnit);
+                }
+                
+            }
+            
+        },
+         
+        /*
+         * Override bounds public method
+         */
+        bounds: function(min, max){
+            var result;
+
+            if (typeof min !== "undefined" && min instanceof Date
+                && typeof max !== "undefined" && max instanceof Date) {
+                result = $.ui.rangeSlider.prototype.bounds.apply(this, [min.valueOf(), max.valueOf()]);
+            } else {
+                result = $.ui.rangeSlider.prototype.bounds.apply(this, this._toArray(arguments));
+            }
+
+            this._setBounds(min, max);
+            this._initWidth();
+            this._changed(true);
+
+            return {
+                min: new Date(result.min), 
+                max: new Date(result.max)
+            };
+        }
+        /* END mapshup */
+        
     });
 })(jQuery);

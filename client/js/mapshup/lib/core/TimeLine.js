@@ -43,9 +43,24 @@
     
     
     /*
-     * @input boolean b : true to enable timeLine - false otherwise
+     * @input {Object} options : timeLine options
+     *                   {
+     *                      enable://true to enable timeLine, false otherwise
+     *                      absolutes:{
+     *                          min:// TimeLine minimum year selectable
+     *                          max:// TimeLine maximum year selectable
+     *                      },
+     *                      bounds:{
+     *                          min:// TimeLine displayed start date
+     *                          max:// TimeLine displayed end date
+     *                      },
+     *                      values:{
+     *                          min:// Selected start date for interval
+     *                          max:// Selected end date for interval
+     *                      }
+     *                   }
      */
-    msp.TimeLine = function(b) {
+    msp.TimeLine = function(options) {
         
         /*
          * Only one TimeLine object instance is created
@@ -53,16 +68,6 @@
         if (msp.TimeLine._o) {
             return msp.TimeLine._o;
         }
-        
-        /*
-         * Oldest date
-         */
-        this.min = new Date(2000,0,1);
-        
-        /*
-         * Newest date
-         */
-        this.max = new Date();
         
         /*
          * True if initialized
@@ -94,16 +99,37 @@
          * Initialize TimeLine 
          * TimeLine is located immediatly below mapshup header
          * 
-         * @input b : boolean - true to enable timeLine - false otherwise
+         * @input {Object} options : timeLine options
+         *                   {
+         *                      enable://true to enable timeLine, false otherwise
+         *                      absolutes:{
+         *                          min:// TimeLine minimum year selectable
+         *                          max:// TimeLine maximum year selectable
+         *                      },
+         *                      bounds:{
+         *                          min:// TimeLine displayed start date
+         *                          max:// TimeLine displayed end date
+         *                      },
+         *                      values:{
+         *                          min:// Selected start date for interval
+         *                          max:// Selected end date for interval
+         *                      }
+         *                   }
          */
-        this.init = function(b) {
+        this.init = function(options) {
             
-            var self = this;
+            var fct,
+                id1 = msp.Util.getId(),
+                id2 = msp.Util.getId(),
+                t = "",
+                self = this;
+            
+            options = options || {};
             
             /*
              * No timeLine
              */
-            if (!b) {
+            if (!options.enable) {
                 return false;
             }
             
@@ -116,27 +142,39 @@
              * </div>
              * 
              */
-            self.$d = msp.Util.$$('#timeLine', $('#mwrapper')).html('<div class="timeLine"><div class="mask"><h2>'+msp.Util._("Date filter disabled")+'</h2>('+msp.Util._("Click to enable")+')</div></div>')
+            self.$d = msp.Util.$$('#timeLine', $('#mwrapper')).html('<div class="timeLine"></div><div class="mask"><h2>'+msp.Util._("Date filter disabled")+'</h2>('+msp.Util._("Click to enable")+')</div><form></form>')
+            
+            /*
+             * Set absolutes values if not set
+             */
+            for (var i = options.absolutes.min; i <= options.absolutes.max; i++) {
+                t += '<option value="'+i+'">'+i+'</option>';
+            }
             
             /*
              * Create actions Toolbar
              */
             self.tb = new msp.Toolbar({
-                parent:$(self.$d), 
+                parent:$('form', self.$d), 
                 classes:'tools'
             });
-            /*
+            
             self.tb.add({
                 id:msp.Util.getId(),
-                icon:msp.Util.getImgUrl("refresh.png"),
-                tt:msp.Util._("Refresh layers"),
+                tt:msp.Util._("Change time scale lower bound"),
+                html:'from <select id="'+id1+'">'+t+'</select>',
                 activable:false,
-                switchable:false,
-                callback:function() {
-                    self.refresh();
-                }
+                switchable:false
             });
-            */
+            
+            self.tb.add({
+                id:msp.Util.getId(),
+                tt:msp.Util._("Change time scale upper bound"),
+                html:'to <select id="'+id2+'">'+t+'</select>',
+                activable:false,
+                switchable:false
+            });
+            
             self.tb.add({
                 id:msp.Util.getId(),
                 icon:msp.Util.getImgUrl("disable.png"),
@@ -156,7 +194,6 @@
                 e.stopPropagation();
                 self.enable(true);
             });
-                
             
             /*
              * Set timeLine reference
@@ -169,16 +206,26 @@
             self.resize(self);
             
             /*
+             * Initialize values for time interval
+             */
+            self.min = options.values.min;
+            self.max = options.values.max;
+            
+            /*
+             * Initialize values for scale interval
+             */
+            self.amin = options.bounds.min.getFullYear();
+            self.amax = options.bounds.max.getFullYear();
+            
+            /*
              * Set time slider
              */
             self.$timeLine.dateRangeSlider({
                 arrows:false,
                 wheelMode:"scroll",
                 valueLabels:"change",
-                bounds:{
-                    min:new Date(2000,0,1),
-                    max:new Date()
-                }
+                bounds:options.bounds,
+                defaultValues:options.values
             });
             
             /*
@@ -202,6 +249,49 @@
             });
             
             /*
+             * Ensure that selectable bounds are the same as the input bounds
+             */
+            $('#'+id1+' option[value='+self.amin+']').attr("selected", "selected");
+            $('#'+id2+' option[value='+self.amax+']').attr("selected", "selected");
+            
+            fct = function(msg) {
+                
+                var v1 = $('#'+id1).attr('value'),
+                    v2 = $('#'+id2).attr('value');
+               
+                /*
+                 * lower bound is always lower than upper bound
+                 */
+                if (parseInt(v1) < parseInt(v2)) {
+                    self.amin = v1;
+                    self.amax = v2;
+                    self.$timeLine.dateRangeSlider('bounds', new Date(v1,0,1), new Date(v2,0,1));
+                }
+                else {
+                    msp.Util.message(msp.Util._(msg));
+                    return false;
+                }
+                
+                return true;
+                
+            };
+            
+            /*
+             * Bind dateRangeSlider bounds(min, max) method to the selector onchange event
+             */
+            $('#'+id1).change(function() {
+                if (!fct("Error : lower bound should be lower than upper bound")) {
+                    $('#'+id1+' option[value='+self.amin+']').attr("selected", "selected");
+                }
+            });
+            $('#'+id2).change(function() {
+                 if (!fct("Error : upper bound should be upper than lower bound")) {
+                    $('#'+id2+' option[value='+self.amax+']').attr("selected", "selected");
+                }
+            });
+            
+            
+            /*
              * Move map object
              */
             $('.map').css({
@@ -215,15 +305,6 @@
             
             return true;
             
-        };
-        
-        /*
-         * Recompute size when window is resized
-         */
-        this.resize = function(scope) {
-            scope.$timeLine.css({
-                width:(100 - (100.0 * 80 / msp.$map.width()))+'%'
-            });
         };
         
         /*
@@ -262,6 +343,26 @@
         };
         
         /*
+         * Enable/disable date filters
+         */
+        this.enable = function(b) {
+            
+            var self = this;
+            
+            self.enabled = b;
+            
+            if (b) {
+                $('.mask', self.$d).hide();
+                self.setTime(self.getInterval());
+            }
+            else {
+                $('.mask', self.$d).show();
+                self.setTime(null);
+            }
+            
+        };
+        
+        /*
          * Return time interval in ISO 8601
          * 
          * @return interval : array of 2 ISO 8601 dates
@@ -285,23 +386,12 @@
         };
         
         /*
-         * Enable/disable date filters
+         * Recompute size when window is resized
          */
-        this.enable = function(b) {
-            
-            var self = this;
-            
-            self.enabled = b;
-            
-            if (b) {
-                $('.mask', self.$d).hide();
-                self.setTime(self.getInterval());
-            }
-            else {
-                $('.mask', self.$d).show();
-                self.setTime(null);
-            }
-            
+        this.resize = function(scope) {
+            scope.$timeLine.css({
+                width:(100 - ((100 + scope.tb.$d.outerWidth()) * 80 / msp.$map.width()))+'%'
+            });
         };
         
         /*
@@ -354,7 +444,7 @@
         /* 
          * Initialize object
          */
-        this.init(b);
+        this.init(options);
         
         /*
          * Create unique instance

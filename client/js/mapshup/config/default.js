@@ -88,11 +88,6 @@
      */
     c["general"].displayScale = true;
     
-    /**
-     * True to enable timeLine
-     */
-    c["general"].displayTimeLine = true;
-
     /*
      * If true, feature are highlited when mouse over
      * (Note : this option is automatically set to false for touch devices)
@@ -182,6 +177,46 @@
      * Note: for touch devices, this option is automatically set to true
      */
     c["general"].teleport = false;
+
+    /**
+     * TimeLine configuration
+     *  
+     * TimeLine is located immediatly below mapshup header
+     * 
+     * Options
+     * 
+     *      {
+     *          enable://true to enable timeLine, false otherwise
+     *          absolutes:{
+     *              min:// TimeLine minimum bounds year
+     *              max:// TimeLine maximum bounds year
+     *          },
+     *          bounds:{
+     *              min:// TimeLine displayed start date
+     *              max:// TimeLine displayed end date
+     *          },
+     *          values:{
+     *              min:// Selected start date for interval
+     *              max:// Selected end date for interval
+     *          }
+     *      }
+     *      
+     */
+    c["general"].timeLine = {
+        enable:true, //true to enable timeLine, false otherwise
+        absolutes:{
+            min:1990,
+            max:(new Date()).getFullYear() + 1
+        },
+        bounds:{
+            min:new Date(2000,0,1),
+            max:new Date()
+        },
+        values:{
+            min:new Date(2011,0,1),
+            max:new Date()
+        }
+    };
 
     /**
      * Available languages. A language file must be called "lang".js and located
