@@ -2669,7 +2669,8 @@ var s=document.getElementsByTagName('script');var src=s[s.length-1].src;var ok=t
             /*
              * Cursor value goes from 0 to scaleBar width
              */
-            var i, j, p1, w, scaleUnit,
+            var i, j, p1, w,
+                scaleUnit = "",
                 minWidthPerYear = 150,
                 scaleWidth = this.innerBar.width(),
                 y1 = this.options.bounds.min.getFullYear(),
@@ -2680,7 +2681,8 @@ var s=document.getElementsByTagName('script');var src=s[s.length-1].src;var ok=t
             this.scaleBar.css("width", scaleWidth);
 
             /*
-             * Display years
+             * Create scaleUnit html
+             * Do not use jQuery append to speed up things
              */
             for (i = y1; i <= y2; i++) {
                 
@@ -2697,19 +2699,13 @@ var s=document.getElementsByTagName('script');var src=s[s.length-1].src;var ok=t
                 /*
                  * Alternate background each years
                  */
-                scaleUnit = $('<span class="ui-rangeSlider-bgy"></span>').css({
-                    "left":p1,
-                    "width":w,
-                    "background-color":"rgba(255,255,255,"+(i % 2 === 0 ? "0" : "0.3")+")"
-                });
-                this.scaleBar.append(scaleUnit);
+                scaleUnit += '<span class="ui-rangeSlider-bgy" style="left:'+p1+'px;width:'+w+'px;background-color:rgba(255,255,255,'+(i % 2 === 0 ? "0" : "0.3")+');"></span>';
                 
                 /*
                  * Only display one year per ySteps
                  */
                 if ((i / ySteps) % 1 === 0) {
-                    scaleUnit = $('<span class="ui-rangeSlider-bigScaleUnit">'+i+'</span>').css("left", p1);
-                    this.scaleBar.append(scaleUnit);
+                    scaleUnit += '<span class="ui-rangeSlider-bigScaleUnit" style="left:'+p1+'px;">'+i+'</span>';
                 }
                 
                 /*
@@ -2718,15 +2714,13 @@ var s=document.getElementsByTagName('script');var src=s[s.length-1].src;var ok=t
                 for (j = 0; j < 12; j++) {
                     p1 = this._getScalePosition(new Date(i, j, 1));
                     w = this._getScalePosition(new Date(i, j + 1, 1)) - p1;
-                    scaleUnit = $('<span class="ui-rangeSlider-bgm"></span>').css({
-                        "left":p1,
-                        "width":w,
-                        "background-color":"rgba(0,0,0,"+(j % 2 === 0 ? "0.1" : "0.2")+")"
-                    });
-                    this.scaleBar.append(scaleUnit);
+                    scaleUnit += '<span class="ui-rangeSlider-bgm" style="left:'+p1+'px;width:'+w+'px;background-color:rgba(0,0,0,'+(j % 2 === 0 ? "0.1" : "0.2")+');"></span>';                    
                 }
                 
             }
+            
+            /* One big append is better than several small ones :) */
+            this.scaleBar.append(scaleUnit);
             
         },
          
