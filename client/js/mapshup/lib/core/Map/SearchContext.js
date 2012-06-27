@@ -579,7 +579,6 @@
                         
                         if (!features || l === 0) {
                             msp.Util.message(msp.Util._(layer.name) + " : " + msp.Util._("No result"));
-                            msp.Map.onFeaturesAdded(layer);
                         }
                         else {
                             
@@ -599,7 +598,16 @@
                             }
                             */
                         }
-
+                        
+                        /* 
+                         * Bug of OpenLayers 2.12 ? No "featuresadded" event is triggered
+                         * after layer.addFeatures
+                         * 
+                         * Tells mapshup that layer has been updated
+                         * 
+                         */
+                        msp.Map.onFeaturesAdded(layer);
+                        
                         /*
                          * Avoid case where server don't take care of numRecordsPerPage value
                          */
