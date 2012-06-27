@@ -1588,6 +1588,8 @@
          */
         zoomTo: function(bounds) {
 
+            var self = this;
+            
             /*
              * Paranoid mode
              */
@@ -1607,23 +1609,22 @@
              * Bounds is too small => center to bounds
              */
             if (w < 1 && h < 1) {
-                if (msp.Map.map.restrictedExtent && !msp.Map.map.restrictedExtent.containsBounds(bounds, true)) {
+                if (self.map.restrictedExtent && !self.map.restrictedExtent.containsBounds(bounds, true)) {
                     msp.Util.message(e);
                 }
                 else {
-                    msp.Map.map.setCenter(c, 9);
+                    self.map.setCenter(c, Math.max(9,self.map.getZoom()));
                 }
             }
             /**
              * Bounds is ok => zoom to bounds + quarter of bounds
              */
             else {
-                //bounds = new OpenLayers.Bounds(c.lon - w * f, c.lat - h * f, c.lon + w * f, c.lat + h * f);
-                if (msp.Map.map.restrictedExtent && !msp.Map.map.restrictedExtent.containsBounds(bounds, true)) {
+                if (self.map.restrictedExtent && !self.map.restrictedExtent.containsBounds(bounds, true)) {
                     msp.Util.message(e);
                 }
                 else {
-                    msp.Map.map.zoomToExtent(bounds);
+                    self.map.zoomToExtent(bounds);
                 }
             }       
 
