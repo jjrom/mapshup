@@ -912,10 +912,12 @@
          * Get degreesOrHour, minutes and seconds
          */
         coordinate = Math.abs(coordinate);
-        degreesOrHours = Math.floor(coordinate);
+        /* Bitwise operator is faster than Map.floor */
+        degreesOrHours = coordinate|0;
         minutes = (coordinate - degreesOrHours)/(1/60);
         tmp = minutes;
-        minutes = Math.floor(minutes);
+        /* Bitwise operator is faster than Map.floor */
+        minutes = minutes|0;
         seconds = Math.round((tmp - minutes)/(1/60) * 10) / 10;
         if(seconds >= 60) { 
             seconds -= 60; 

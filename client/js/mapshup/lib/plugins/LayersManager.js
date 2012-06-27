@@ -591,7 +591,8 @@
             
             for (i = 0, l = this.items.length; i < l; i++) {
                 if (this.items[i].id === item.id) {
-                    return Math.floor(i / this.nbOfTabsPerPage());
+                    /* Bitwise operator is faster than Map.floor */
+                    return (i / this.nbOfTabsPerPage())|0;
                 }
                 
             }
@@ -854,7 +855,8 @@
                 if(scrollAllow){
                     scrollAllow = false;
                     var spacefit = $(window).width() - 44,
-                    fit = Math.floor(spacefit / self.tw),
+                    /* Bitwise operator is faster than Map.floor */
+                    fit = (spacefit / self.tw)|0,
                     left = parseFloat($ul.css('left'),10),
                     moveleft = left - (fit*self.tw),
                     ulWidth = msp.Util.getHashSize(item.features) * self.tw + self.tw;
@@ -878,7 +880,8 @@
                 if(scrollAllow){
                     scrollAllow = false;
                     var spacefit = $(window).width() - 44,
-                    fit = Math.floor(spacefit / self.tw),
+                    /* Bitwise operator is faster than Map.floor */
+                    fit = (spacefit / self.tw)|0,
                     left = parseFloat($ul.css('left'),10),
                     moveleft = left + (fit*self.tw);
 

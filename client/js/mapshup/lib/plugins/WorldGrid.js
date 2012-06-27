@@ -242,9 +242,12 @@
                 }
             }
 
-            //round the LL center to an even number based on the interval
-            mapCenterLL.x = Math.floor(mapCenterLL.x/llInterval)*llInterval;
-            mapCenterLL.y = Math.floor(mapCenterLL.y/llInterval)*llInterval;
+            /*
+             * round the LL center to an even number based on the interval
+             * (Bitwise operator is faster than Map.floor)
+             */
+            mapCenterLL.x = ((mapCenterLL.x/llInterval)|0)*llInterval;
+            mapCenterLL.y = ((mapCenterLL.y/llInterval)|0)*llInterval;
 
             /* 
              * The following 2 blocks calculate the nodes of the grid along a 
