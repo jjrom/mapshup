@@ -2675,7 +2675,7 @@ var s=document.getElementsByTagName('script');var src=s[s.length-1].src;var ok=t
             scaleWidth = this.innerBar.width(),
             y1 = this.options.bounds.min.getFullYear(),
             y2 = this.options.bounds.max.getFullYear(),
-            ySteps = Math.floor(((y2 - y1) * minWidthPerYear) / scaleWidth) + 1;
+            ySteps = ((((y2 - y1) * minWidthPerYear) / scaleWidth)|0) + 1;
             
             this.scaleBar.css("width", scaleWidth);
 
@@ -2735,7 +2735,7 @@ var s=document.getElementsByTagName('script');var src=s[s.length-1].src;var ok=t
                     * Write month from 01 (january) to 12 (december)
                     */
                     m = j + 1 < 10 ? "0" + (j + 1) : j + 1;
-                    mSteps = Math.floor((minWidthPerYear) / (12 * w)) + 1;
+                    mSteps = (((minWidthPerYear) / (12 * w))|0) + 1;
                     
                    /*
                     * Only display one month per mSteps
