@@ -2669,20 +2669,21 @@ var s=document.getElementsByTagName('script');var src=s[s.length-1].src;var ok=t
             /*
              * Cursor value goes from 0 to scaleBar width
              */
-            var i, j, p1, w,
-                scaleUnit = "",
-                minWidthPerYear = 150,
-                scaleWidth = this.innerBar.width(),
-                y1 = this.options.bounds.min.getFullYear(),
-                y2 = this.options.bounds.max.getFullYear(),
-                ySteps = Math.floor(((y2 - y1) * minWidthPerYear) / scaleWidth) + 1;
-            
+            var i, j, p1, w, m, mSteps,
+            scaleUnit = "",
+            minWidthPerYear = 150,
+            scaleWidth = this.innerBar.width(),
+            y1 = this.options.bounds.min.getFullYear(),
+            y2 = this.options.bounds.max.getFullYear(),
+            ySteps = Math.floor(((y2 - y1) * minWidthPerYear) / scaleWidth) + 1;
             
             this.scaleBar.css("width", scaleWidth);
 
             /*
              * Create scaleUnit html
              * Do not use jQuery append to speed up things
+             * 
+             * First compute years
              */
             for (i = y1; i <= y2; i++) {
                 
@@ -2697,7 +2698,7 @@ var s=document.getElementsByTagName('script');var src=s[s.length-1].src;var ok=t
                 w = this._getScalePosition(new Date(i+1, 0, 1)) - p1;
                 
                 /*
-                 * Alternate background each years
+                 * Alternate background each year
                  */
                 scaleUnit += '<span class="ui-rangeSlider-bgy" style="left:'+p1+'px;width:'+w+'px;background-color:rgba(255,255,255,'+(i % 2 === 0 ? "0" : "0.3")+');"></span>';
                 
@@ -2709,12 +2710,39 @@ var s=document.getElementsByTagName('script');var src=s[s.length-1].src;var ok=t
                 }
                 
                 /*
-                 * Alternate background each month
+                 * Compute months
                  */
                 for (j = 0; j < 12; j++) {
+                    
+                   /*
+                    * Get month position
+                    */
                     p1 = this._getScalePosition(new Date(i, j, 1));
+                    
+                    
+                   /*
+                    * Get month width
+                    */
                     w = this._getScalePosition(new Date(i, j + 1, 1)) - p1;
-                    scaleUnit += '<span class="ui-rangeSlider-bgm" style="left:'+p1+'px;width:'+w+'px;background-color:rgba(0,0,0,'+(j % 2 === 0 ? "0.1" : "0.2")+');"></span>';                    
+                    
+                    
+                   /*
+                    * Alternate background each month
+                    */
+                    scaleUnit += '<span class="ui-rangeSlider-bgm" style="left:'+p1+'px;width:'+w+'px;background-color:rgba(0,0,0,'+(j % 2 === 0 ? "0.1" : "0.2")+');"></span>';
+
+                   /*
+                    * Write month from 01 (january) to 12 (december)
+                    */
+                    m = j + 1 < 10 ? "0" + (j + 1) : j + 1;
+                    mSteps = Math.floor((minWidthPerYear) / (12 * w)) + 1;
+                    
+                   /*
+                    * Only display one month per mSteps
+                    */
+                    if ((j / mSteps) % 1 === 0) {
+                        scaleUnit += '<span class="ui-rangeSlider-scaleUnit" style="left:'+p1+'px;">'+m+'</span>';
+                    }
                 }
                 
             }
@@ -2746,7 +2774,7 @@ var s=document.getElementsByTagName('script');var src=s[s.length-1].src;var ok=t
                 max: new Date(result.max)
             };
         }
-        /* END mapshup */
+    /* END mapshup */
         
     });
 })(jQuery);
