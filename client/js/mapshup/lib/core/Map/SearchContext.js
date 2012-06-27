@@ -535,7 +535,7 @@
                 dataType:"json",
                 success: function(data) {
 
-                    var l;
+                    var l, lm = msp.Plugins.LayersManager;
                     
                     /*
                      * First check if there is no error
@@ -589,6 +589,13 @@
                              */
                             msp.Map.Util.zoomOnAfterLoad(layer);
                             
+                            /*
+                             * Show result in LayersManager
+                             */
+                            if (lm && lm._o) {
+                                lm._o.show(lm._o.get(layer['_msp'].mspID));
+                            }
+                                
                             /*
                              * Show layer if it is hidden ?
                              */

@@ -1132,13 +1132,6 @@
              * Set features info
              */
             $('.lyi', item.$d).html(size + "&nbsp;" + msp.Util._(size < 2 ? "feature" : "features"));
-     
-            /*
-             * Show item except refreshable one !
-             */
-            if (!item.layer["_msp"].refreshable) {
-                self.show(item);
-            }
             
             return true;
                         

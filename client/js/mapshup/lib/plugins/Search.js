@@ -223,6 +223,8 @@
              */
             msp.Map.events.register("layersend", self, function(action, layer, scope) {
 
+                var lm = msp.Plugins.LayersManager;
+                
                 /*
                  * Process event only if a non loaded OpenSearch layer is defined
                  */
@@ -254,6 +256,13 @@
                                  * Automatically zoom on result extent
                                  */
                                 //msp.Map.zoomTo(layer.getDataExtent());
+                                
+                                /*
+                                 * Show item on layer manager
+                                 */
+                                if (lm && lm._o) {
+                                    lm._o.show(lm._o.get(layer['_msp'].mspID));
+                                }
                                 
                                 /*
                                  * If only one feature is present in the result,
