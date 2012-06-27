@@ -267,10 +267,11 @@
                                 /*
                                  * If only one feature is present in the result,
                                  * then automatically select it
-                                 */
+                                
                                 if (layer.features.length === 1) {
                                     msp.Map.featureInfo.select(layer.features[0], true);
                                 }
+                                */
                             }
                             
                         }
