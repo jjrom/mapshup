@@ -955,16 +955,15 @@ a.tab img {
 
 .ui-rangeSlider-scaleUnit{
     position:absolute;
-    height:100%;
-    line-height:40px;
+    font-size:0.8em;
     color:#000;
+    bottom:0px;
     z-index:1;
 }
 .ui-rangeSlider-bigScaleUnit{
     position:absolute;
-    line-height:40px;
     height:100%;
-    font-size:2em;
+    font-size:1.5em;
     z-index:3;
 }
 .ui-rangeSlider-bgy{
@@ -977,6 +976,7 @@ a.tab img {
     position:absolute;
     line-height:20px;
     height:20px;
+    bottom:0px;
     z-index:2;
 }
 

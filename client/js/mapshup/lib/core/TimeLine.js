@@ -215,7 +215,7 @@
              * Initialize values for scale interval
              */
             self.amin = options.bounds.min.getFullYear();
-            self.amax = options.bounds.max.getFullYear();
+            self.amax = options.bounds.max.getFullYear() + 1;
             
             /*
              * Set time slider
