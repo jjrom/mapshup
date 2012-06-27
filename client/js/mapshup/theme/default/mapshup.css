@@ -881,8 +881,7 @@ a.tab img {
 /*
  * TimeLine
  */
-#timeLine/*,
-.ui-rangeSlider .ui-rangeSlider-bigScaleUnit*/
+#timeLine
 {
     background-color:#f3961c;
 }
@@ -985,7 +984,7 @@ a.tab img {
     width:10px;
     height:40px;
     margin:0px;
-    background:rgba(255, 255, 255, 0.5);
+    background:rgba(255, 0, 255, 0.4);
     cursor:col-resize;
     z-index:4;
 }
@@ -993,7 +992,7 @@ a.tab img {
     position:absolute;
     height:40px;
     margin: 1px 0px;
-    background-color:rgba(255, 255, 255, 0.5);
+    background-color:rgba(255, 0, 255, 0.4);
     cursor:move;
     cursor:grab;
     cursor: -moz-grab;
