@@ -2700,7 +2700,7 @@ var s=document.getElementsByTagName('script');var src=s[s.length-1].src;var ok=t
                 /*
                  * Alternate background each year
                  */
-                scaleUnit += '<span class="ui-rangeSlider-bgy" style="left:'+p1+'px;width:'+w+'px;background-color:rgba(255,255,255,'+(i % 2 === 0 ? "0" : "0.3")+');"></span>';
+                scaleUnit += '<span class="ui-rangeSlider-bgy" style="left:'+p1+'px;width:'+w+'px;background-color:rgba(255,255,255,'+(i % 2 === 0 ? "0" : "0.2")+');"></span>';
                 
                 /*
                  * Only display one year per ySteps
