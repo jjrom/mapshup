@@ -50,11 +50,16 @@
         }
         
         /*
+         * List of UTFGrid layers
+         */
+        this.layers = [];
+        
+        /*
          * Init plugin
          */
         this.init = function(options) {
             
-            var ctrl, self = this;
+            var self = this;
             
             /**
              * Init options
@@ -66,52 +71,136 @@
              */
             self.$d = msp.Util.$$('#'+msp.Util.getId()).addClass("utfginfo");
             
-            /*
-             * Add controls tool to Map.map object
-             */
-            ctrl = new OpenLayers.Control.UTFGrid({
-                id:"__CONTROL_UTFGRID__",
-                handlerMode: 'move',
-                callback:function(a) {
-                    self.getFeatureInfo(a, self);
+           /*
+            * Define action on mousemove
+            */
+            msp.$map.mousemove(function (e){
+                
+                var i, l, items, layer, idx,
+                    lonLat = msp.Map.map.getLonLatFromPixel(msp.Map.mousePosition);
+                
+                if (!lonLat) { 
+                    return;
+                }    
+
+                if (self.layers.length > 0) {
+                    items = {};
+                    for (i = 0, l = self.layers.length; i<l; i++) {
+                        layer = self.layers[i];
+                        items[OpenLayers.Util.indexOf(msp.Map.map.layers, layer)] = {
+                            attributes:layer.getFeatureInfo(lonLat),
+                            modifiers:layer["_msp"].layerDescription["featureInfo"]
+                        }
+                    }
+                    self.getInfo(items);
                 }
+                
             });
             
-            msp.Map.map.addControl(ctrl);
-
+            /*
+             * Track layersend events to add/remove UTFGrid layers
+             */
+            msp.Map.events.register("layersend", self, function(action, layer, scope) {
+                
+                var i,l;
+                
+                /*
+                 * Only process UTFGrid layers
+                 */
+                if (!layer || !layer["_msp"] || !layer["_msp"].layerDescription) {
+                    return false;
+                }
+                
+                if (layer["_msp"].layerDescription["type"] !== "UTFGrid") {
+                    return false;
+                }
+                
+                if (action === "add") {
+                    scope.layers.push(layer);
+                }
+                else if (action === "remove") {
+                    for (i = 0, l = scope.layers.length ; i < l; i++) {
+                    if (scope.layers[i].id === layer.id) {
+                        scope.layers.splice(i,1);
+                        break;
+                    }
+                }
+                }
+                
+                return true;
+                
+            });
+            
             return self;
             
         };
         
         /*
-         * Display feature info
+         * Display items info
+         * 
+         * @input {Array} items : array of item
+         *          {
+         *              attributes: // object of attributes
+         *                  { data://, id://}
+         *              modifiers: // object modifier
+         *                  {
+         *                      title: // title to be displayed
+         *                      keys:{
+         *                          '...':{
+         *                              transform:function()
+         *                          }
+         *                      }
+         *                  }
+         *              
+         *          }
          */
-        this.getFeatureInfo = function(attributes, scope) {
+        this.getInfo = function(items) {
             
-            var k, v;
+            var a, k, keys, item, o, c = "";
             
-            attributes = attributes || {};
+            items = items || {};
             
-            for (k in attributes) {
+            /*
+             * Roll over items
+             */
+            for (item in items) {
                 
-                /*
-                 * Display container
-                 */
-                if (attributes[k]) {
-                    v = attributes[k].data;
-                    if (v) {
-                        msp.Map.$featureHilite.html("<p>" + v.ADMIN + "</p><br/><img src='data:image/png;base64," + v.flagpng + "'/>").show();
-                        //scope.$d.html("<p>" + v.ADMIN + "</p><br/><img src='data:image/png;base64," + v.flagpng + "'/>").show();
-                        return true;
+                o = items[item];
+                o.attributes  = o.attributes || {};
+                o.modifiers  = o.modifiers || {};
+                keys = o.attributes.data || null;
+                
+                if (keys) {
+
+                    if (o.modifiers.title) {
+                        c = msp.Util.replaceKeys(o.modifiers.title, keys, o.modifiers.keys);
                     }
+                    else {
+
+                       /*
+                        * Roll over data key
+                        */
+                        for (k in keys) {
+                            c += '<p>'+k+' : ' + keys[k] + '</p>';
+                        }
+
+                    }
+
                 }
-                
-            } 
+   
+            }
+            
+            if (c !== "") {
+                msp.Map.$featureHilite.html(c).show();
+                return true;
+            }
+            //msp.Map.$featureHilite.html("<p>" + v.ADMIN + "</p><br/><img src='data:image/png;base64," + v.flagpng + "'/>").show();
+            //scope.$d.html("<p>" + v.ADMIN + "</p><br/><img src='data:image/png;base64," + v.flagpng + "'/>").show();
             
             /*
              * Hide container
              */
-           //scope.$d.hide();
+            //scope.$d.hide();
             
             return false;
             

@@ -1199,19 +1199,21 @@
          * keys with obj properties.
          * Example :
          *      str = "Hello my name is {name} {surname}"
-         *      obj = {name:"Jerome", surname:"Gasperi"}
+         *      keys = {name:"Jerome", surname:"Gasperi"}
+         *      modifiers = {name:{transform:function(v){...}}
          *
          *      will return "Hello my name is Jerome Gasperi"
          *
          * @input {String} str : string with keys to process
-         * @input {Object} obj : object containing the property keys
+         * @input {Object} keys : object containing the property keys
+         * @input {Object} modifiers : object containing the property keys
          */
-        replaceKeys: function (str, obj) {
+        replaceKeys: function (str, keys, modifiers) {
 
             /*
              * Paranoid mode
              */
-            obj = obj || {};
+            keys = keys || {};
 
             /*
              * Be sure that str is a string
@@ -1221,9 +1223,47 @@
                 /*
                  * Replace all {key} within string by obj[key] value
                  */
-                return str.replace(/{+([^}])+}/g, function(m,key,value) {
-                    return obj[m.replace(/[{}]/g, '')];
+                return str.replace(/{+([^}])+}/g, function(m) {
+                    
+                    var k,
+                        key = m.replace(/[{}]/g, ''),
+                        value = keys[key];
+                    
+                   /*
+                    * Roll over the modifiers associative array.
+                    * 
+                    * Associative array entry is the key
+                    * 
+                    * This array contains a list of objects
+                    * {
+                    *      transform: // function to apply to value before instead of directly displayed it
+                    *            this function should returns a string
+                    * }
+                    */
+                    for (k in modifiers) {
+
+                        /*
+                        * If key is found in array, get the corresponding value and exist the loop
+                        */
+                        if (key === k) {
+
+                            /*
+                            * Transform value if specified
+                            */
+                            if ($.isFunction(modifiers[k].transform)) {
+                                return modifiers[k].transform(value);
+                            }
+                            break;
+                        }
+                    }
+
+                    /*
+                    * In any case returns input value
+                    */
+                    return value;
+                    
                 });
+                
             }
 
             return str;
