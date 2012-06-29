@@ -1282,14 +1282,14 @@
                                 /*
                                  * Title is first 'name' or 'title' or 'identifier' or 'id'
                                  */
-                                self.$featureHilite.html(msp.Map.Util.Feature.getTitle(e.feature)).show();
+                                self.$featureHilite.html(msp.Map.Util.Feature.getTitle(e.feature)).attr("hilited", "hilited").show();
 
                             }
-
+                            
                             return true;
                         },
                         featureunhighlighted:function(e){
-                            self.$featureHilite.empty().hide();
+                            self.$featureHilite.empty().attr("hilited", "").hide();
                         }
                     }
                 }));

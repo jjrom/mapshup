@@ -76,13 +76,23 @@
             */
             msp.$map.mousemove(function (e){
                 
+                /*
+                 * Never display UTFGrid info if a vector feature is already hilited
+                 */
+                if (msp.Map.$featureHilite.attr("hilited") === "hilited") { 
+                    return false;
+                }
+                
                 var i, l, items, layer, z, mz,
                     lonLat = msp.Map.map.getLonLatFromPixel(msp.Map.mousePosition);
                 
                 if (!lonLat) { 
-                    return;
+                    return false;
                 }    
-
+                
+                /*
+                 * Roll over UTFGrid layers
+                 */
                 if (self.layers.length > 0) {
                     items = {};
                     for (i = 0, l = self.layers.length; i<l; i++) {
@@ -113,6 +123,8 @@
                     self.getInfo(items);
                     
                 }
+                
+                return true;
                 
             });
             
