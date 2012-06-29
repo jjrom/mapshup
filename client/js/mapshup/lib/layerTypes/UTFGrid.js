@@ -68,7 +68,9 @@
                 url:layerDescription.url,
                 useJSONP:true,
                 displayInLayerSwitcher:false,
-                utfgridResolution:layerDescription.utfgridResolution || 4
+                utfgridResolution:layerDescription.utfgridResolution || 4,
+                z:layerDescription.z || [0,22],
+                bbox:layerDescription.bbox || "-180,-90,180,90"
             });
             
             return new OpenLayers.Layer.UTFGrid(options);

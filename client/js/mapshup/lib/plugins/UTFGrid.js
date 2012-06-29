@@ -76,7 +76,7 @@
             */
             msp.$map.mousemove(function (e){
                 
-                var i, l, items, layer, idx,
+                var i, l, items, layer, z, mz,
                     lonLat = msp.Map.map.getLonLatFromPixel(msp.Map.mousePosition);
                 
                 if (!lonLat) { 
@@ -86,13 +86,25 @@
                 if (self.layers.length > 0) {
                     items = {};
                     for (i = 0, l = self.layers.length; i<l; i++) {
+                        
                         layer = self.layers[i];
-                        items[OpenLayers.Util.indexOf(msp.Map.map.layers, layer)] = {
-                            attributes:layer.getFeatureInfo(lonLat),
-                            modifiers:layer["_msp"].layerDescription["info"]
+                        
+                        /*
+                         * Do not send request outside valid zoom levels and bbox
+                         */
+                        z = layer["_msp"].layerDescription["z"];
+                        mz = msp.Map.map.getZoom();
+                        if (mz >= z[0] && mz <= z[1]) {
+                            items[OpenLayers.Util.indexOf(msp.Map.map.layers, layer)] = {
+                                attributes:layer.getFeatureInfo(lonLat),
+                                modifiers:layer["_msp"].layerDescription["info"]
+                            }
                         }
+                        
                     }
+                    
                     self.getInfo(items);
+                    
                 }
                 
             });
