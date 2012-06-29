@@ -77,6 +77,7 @@ echo "Populating $moldir directory with theme directory..."
 cp -Rf $oldir/img $moldir/
 cp -Rf $oldir/theme/default/img $moldir/theme/default/
 cp -Rf $oldir/theme/default/style.css $moldir/theme/default
+cp -Rf $oldir/theme/default/style.mobile.css $moldir/theme/default
 cp -Rf addons/google.tidy.css $moldir/theme/default
 cp -Rf addons/layer-switcher-maximize.png $moldir/img/
 cp -Rf addons/layer-switcher-minimize.png $moldir/img/
