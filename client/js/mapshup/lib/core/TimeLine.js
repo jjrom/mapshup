@@ -303,6 +303,11 @@
              */
             msp.events.register("resizeend", self, self.resize);
             
+            /*
+             * Resize
+             */
+            self.resize(self);
+            
             return true;
             
         };
