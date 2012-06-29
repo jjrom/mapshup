@@ -36,7 +36,6 @@
 #  The fact that you are presently reading this means that you have had
 #  knowledge of the CeCILL-B license and that you accept its terms.
 #
-
 echo "Building mjquery"
 
 # First create mjquery
@@ -51,27 +50,31 @@ then
 fi
 
 echo "Building mjquery.js"
-cat $jquerydir/jquery-1.7.2.min.js > $mjquerydir/mjquery.js
-cat $jquerydir/jquery-ui-1.8.21.custom.min.js >> $mjquerydir/mjquery.js
+cat $jquerydir/jquery-1.7.2.min.js > $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jquery-ui-1.8.21.custom.min.js >> $mjquerydir/mjquery.js.tmp
 
-cat $jquerydir/idTabs/jquery.idTabs.min.js >> $mjquerydir/mjquery.js
-cat $jquerydir/jqplot/jquery.jqplot.min.js >> $mjquerydir/mjquery.js
-cat $jquerydir/jqplot/plugins/jqplot.canvasTextRenderer.min.js >> $mjquerydir/mjquery.js
-cat $jquerydir/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js >> $mjquerydir/mjquery.js
-cat $jquerydir/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js >> $mjquerydir/mjquery.js
-cat $jquerydir/jqplot/plugins/jqplot.highlighter.min.js >> $mjquerydir/mjquery.js
-cat $jquerydir/jqplot/plugins/jqplot.cursor.min.js >> $mjquerydir/mjquery.js
-cat $jquerydir/jQRangeSlider/jQRangeSliderMouseTouch.js >> $mjquerydir/mjquery.js
-cat $jquerydir/jQRangeSlider/jQRangeSliderDraggable.js >> $mjquerydir/mjquery.js
-cat $jquerydir/jQRangeSlider/jQRangeSliderHandle.js >> $mjquerydir/mjquery.js
-cat $jquerydir/jQRangeSlider/jQRangeSliderBar.js >> $mjquerydir/mjquery.js
-cat $jquerydir/jQRangeSlider/jQRangeSliderLabel.js >> $mjquerydir/mjquery.js
-cat $jquerydir/jQRangeSlider/jQRangeSlider.js >> $mjquerydir/mjquery.js
-cat $jquerydir/jQRangeSlider/jQDateRangeSliderHandle.js >> $mjquerydir/mjquery.js
-cat $jquerydir/jQRangeSlider/mjQDateRangeSlider.js >> $mjquerydir/mjquery.js
+cat $jquerydir/idTabs/jquery.idTabs.min.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jqplot/jquery.jqplot.min.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jqplot/plugins/jqplot.canvasTextRenderer.min.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jqplot/plugins/jqplot.highlighter.min.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jqplot/plugins/jqplot.cursor.min.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderMouseTouch.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderDraggable.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderHandle.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderBar.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderLabel.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSlider.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/jQDateRangeSliderHandle.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/mjQDateRangeSlider.js >> $mjquerydir/mjquery.js.tmp
 
 echo "Building mjquery.css"
 cat $jquerydir/jqplot/jquery.jqplot.min.css >> $mjquerydir/mjquery.css
 
+echo "Compress mjquery"
+java -jar ./yuicompressor-2.4.2.jar $mjquerydir/mjquery.js.tmp --type js > $mjquerydir/mjquery.js.tmp2
+cat ./license.txt $mjquerydir/mjquery.js.tmp2 > $mjquerydir/mjquery.js
+/bin/rm $mjquerydir/mjquery.js.tmp*
 echo "Done !"
 
