@@ -50,6 +50,11 @@
         }
         
         /*
+         * Active status
+         */
+        this.active = true;
+        
+        /*
          * Store last hilited grid object
          */
         this._current = {};
@@ -58,6 +63,11 @@
          * List of UTFGrid layers
          */
         this.layers = [];
+        
+        /*
+         * True to display geometry if available
+         */
+        this.useGeo = true;
         
         /*
          * Init plugin
@@ -82,9 +92,10 @@
             msp.$map.mousemove(function (e){
                 
                 /*
+                 * Do nothing if plugin is inactive
                  * Never display UTFGrid info if a vector feature is already hilited
                  */
-                if (msp.Map.$featureHilite.attr("hilited") === "hilited") { 
+                if (!self.active || msp.Map.$featureHilite.attr("hilited") === "hilited") { 
                     return false;
                 }
                 
@@ -195,6 +206,26 @@
         };
         
         /*
+         * Activate or deactivate UTFGrid detection
+         */
+        this.activate = function(b) {
+            this.active = b;
+            if (!b) {
+                this.layer.destroyFeatures();
+            }
+        };
+        
+        /*
+         * Activate or deactivate UTFGrid detection
+         */
+        this.activateGeo = function(b) {
+            this.useGeo = b;
+            if (!b) {
+                this.layer.destroyFeatures();
+            }
+        };
+        
+        /*
          * Display items info
          * 
          * @input {Array} items : array of item
@@ -258,7 +289,7 @@
                     /*
                      * Add geometry
                      */
-                    if (keys["wkt"]) {
+                    if (self.useGeo && keys["wkt"]) {
                         features.push(new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT(keys["wkt"])));
                     }
                     
