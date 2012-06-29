@@ -61,6 +61,11 @@
             }
             
             /*
+             * Valid bbox for UTFGrid read from configuration
+             */
+            var bbox = layerDescription.bbox ? layerDescription.bbox.split(",") : ["-180","-90","180","90"];
+            
+            /*
              * Extends options
              */
             $.extend(options,{
@@ -68,9 +73,12 @@
                 url:layerDescription.url,
                 useJSONP:true,
                 displayInLayerSwitcher:false,
-                utfgridResolution:layerDescription.utfgridResolution || 4,
+                utfgridResolution:layerDescription.utfgridResolution || 4
+            });
+            
+            $.extend(options["_msp"],{
                 z:layerDescription.z || [0,22],
-                bbox:layerDescription.bbox || "-180,-90,180,90"
+                bounds:Map.Util.d2p(new OpenLayers.Bounds(parseFloat(bbox[0]), parseFloat(bbox[1]), parseFloat(bbox[2]), parseFloat(bbox[3])))
             });
             
             return new OpenLayers.Layer.UTFGrid(options);

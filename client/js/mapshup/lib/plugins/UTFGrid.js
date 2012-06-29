@@ -90,15 +90,22 @@
                         layer = self.layers[i];
                         
                         /*
-                         * Do not send request outside valid zoom levels and bbox
+                         * Do not send request outside of zoom levels bounds
                          */
-                        z = layer["_msp"].layerDescription["z"];
+                        z = layer["_msp"].z;
                         mz = msp.Map.map.getZoom();
                         if (mz >= z[0] && mz <= z[1]) {
-                            items[OpenLayers.Util.indexOf(msp.Map.map.layers, layer)] = {
-                                attributes:layer.getFeatureInfo(lonLat),
-                                modifiers:layer["_msp"].layerDescription["info"]
+                            
+                           /*
+                            * Do not send request outside of bbox
+                            */
+                           if (layer["_msp"].bounds.containsLonLat(lonLat)) {
+                                items[OpenLayers.Util.indexOf(msp.Map.map.layers, layer)] = {
+                                    attributes:layer.getFeatureInfo(lonLat),
+                                    modifiers:layer["_msp"].layerDescription["info"]
+                                }
                             }
+                            
                         }
                         
                     }
@@ -131,6 +138,7 @@
             msp.Map.addLayer({
                 type:"Generic",
                 title:self.layer.name,
+                zoomOnAfterLoad:false,
                 unremovable:true,
                 mspLayer:true,
                 layer:self.layer
