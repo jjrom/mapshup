@@ -50,6 +50,11 @@
         }
         
         /*
+         * Store last hilited grid object
+         */
+        this._current = {};
+        
+        /*
          * List of UTFGrid layers
          */
         this.layers = [];
@@ -100,23 +105,18 @@
                         layer = self.layers[i];
                         
                         /*
-                         * Do not send request outside of zoom levels bounds
+                         * Do not send request outside of zoom levels and location bounds
                          */
                         z = layer["_msp"].z;
                         mz = msp.Map.map.getZoom();
-                        if (mz >= z[0] && mz <= z[1]) {
-                            
-                           /*
-                            * Do not send request outside of bbox
-                            */
-                           if (layer["_msp"].bounds.containsLonLat(lonLat)) {
-                                items[OpenLayers.Util.indexOf(msp.Map.map.layers, layer)] = {
-                                    attributes:layer.getFeatureInfo(lonLat),
-                                    modifiers:layer["_msp"].layerDescription["info"]
-                                }
-                            }
-                            
+                        
+                        if ((mz >= z[0] && mz <= z[1]) && layer["_msp"].bounds.containsLonLat(lonLat)) {
+                            items[OpenLayers.Util.indexOf(msp.Map.map.layers, layer)] = {
+                                attributes:layer.getFeatureInfo(lonLat),
+                                modifiers:layer["_msp"].layerDescription["info"]
+                            }  
                         }
+                        
                         
                     }
                     
@@ -215,7 +215,7 @@
          */
         this.getInfo = function(items) {
             
-            var k, keys, item, o, c = "";
+            var k, keys, item, o, c = "", features = [], self = this;
             
             items = items || {};
             
@@ -231,6 +231,16 @@
                 
                 if (keys) {
 
+                    /*
+                     * Optimize !
+                     * If new keys is the same as the one already
+                     * displayed do not reprocess things
+                     */
+                    if (JSON.stringify(keys) === JSON.stringify(self._current)) {
+                        msp.Map.$featureHilite.show();
+                        return false;
+                    }
+                    
                     if (o.modifiers.title) {
                         c = msp.Util.replaceKeys(o.modifiers.title, keys, o.modifiers.keys);
                     }
@@ -246,25 +256,41 @@
                     }
 
                     /*
-                     * Display geometry
+                     * Add geometry
                      */
                     if (keys["wkt"]) {
-                        this.layer.destroyFeatures();
-                        this.layer.addFeatures(new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT(keys["wkt"])));
+                        features.push(new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT(keys["wkt"])));
                     }
+                    
+                    self._current = keys;
                 }
    
             }
             
             if (c !== "") {
+               
+               /*
+                * Display tooltip
+                */
                 msp.Map.$featureHilite.html(c).show();
+                
+               /*
+                * Display geometry
+                */
+                if (features.length > 0) {
+                    self.layer.destroyFeatures();
+                    self.layer.addFeatures(features);
+                }
+                
                 return true;
             }
             
             /*
              * Hide container
              */
-            //scope.$d.hide();
+            self.layer.destroyFeatures();
+            self._current = {};
+            msp.Map.$featureHilite.hide();
             
             return false;
             
