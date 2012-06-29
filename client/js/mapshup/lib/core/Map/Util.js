@@ -1245,6 +1245,6 @@
         return false;
         
     };
-
+    
     
 })(window.msp, window.msp.Map);

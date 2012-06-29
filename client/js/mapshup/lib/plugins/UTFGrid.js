@@ -89,12 +89,39 @@
                         layer = self.layers[i];
                         items[OpenLayers.Util.indexOf(msp.Map.map.layers, layer)] = {
                             attributes:layer.getFeatureInfo(lonLat),
-                            modifiers:layer["_msp"].layerDescription["featureInfo"]
+                            modifiers:layer["_msp"].layerDescription["info"]
                         }
                     }
                     self.getInfo(items);
                 }
                 
+            });
+            
+            /*
+             * Create overlay layer to display polygon on hover
+             */
+            self.layer = new OpenLayers.Layer.Vector("__LAYER_UTFGRID__", {
+                projection:msp.Map.sm,
+                displayInLayerSwitcher:false,
+                styleMap:new OpenLayers.StyleMap({
+                    'default':{
+                        strokeColor:'white',
+                        strokeWidth: 1,
+                        fillColor:'yellow',
+                        fillOpacity: 0.2
+                    }
+                })
+            });
+
+            /**
+             * Add Drawing layer to Map object
+             */
+            msp.Map.addLayer({
+                type:"Generic",
+                title:self.layer.name,
+                unremovable:true,
+                mspLayer:true,
+                layer:self.layer
             });
             
             /*
@@ -156,7 +183,7 @@
          */
         this.getInfo = function(items) {
             
-            var a, k, keys, item, o, c = "";
+            var k, keys, item, o, c = "";
             
             items = items || {};
             
@@ -186,6 +213,13 @@
 
                     }
 
+                    /*
+                     * Display geometry
+                     */
+                    if (keys["wkt"]) {
+                        this.layer.destroyFeatures();
+                        this.layer.addFeatures(new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT(keys["wkt"])));
+                    }
                 }
    
             }
@@ -194,8 +228,6 @@
                 msp.Map.$featureHilite.html(c).show();
                 return true;
             }
-            //msp.Map.$featureHilite.html("<p>" + v.ADMIN + "</p><br/><img src='data:image/png;base64," + v.flagpng + "'/>").show();
-            //scope.$d.html("<p>" + v.ADMIN + "</p><br/><img src='data:image/png;base64," + v.flagpng + "'/>").show();
             
             /*
              * Hide container

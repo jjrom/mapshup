@@ -1228,7 +1228,7 @@
                     var k,
                         key = m.replace(/[{}]/g, ''),
                         value = keys[key];
-                    
+                        
                    /*
                     * Roll over the modifiers associative array.
                     * 
