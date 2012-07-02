@@ -68,7 +68,7 @@
          */
         this.init = function(options) {
 
-            var $content,self = this;
+            var self = this;
             
             /*
              * Init options
@@ -619,7 +619,12 @@
              * Set the current selected object
              */
             msp.Map.featureInfo.selected = feature;
- 
+            
+            /*
+             * Call mapshup featureselect event
+             */
+            msp.Map.events.trigger("featureselected", feature);
+            
             /*
              * If layerType.resolvedUrlAttributeName is set,
              * display feature info within an iframe
