@@ -476,7 +476,13 @@
              * Event feature selection
              */
             msp.Map.events.register("featureselected", self, function (feature, scope) {
-                scope.show(scope.get(feature.layer['_msp'].mspID));
+                
+                /*
+                 * Select or unselect ?
+                 */
+                scope.hilite(feature);
+                
+                //scope.jumpTo(feature);
             });
             
             /*
@@ -954,6 +960,54 @@
             self.updateTabs(self);
           
         };
+        
+        /**
+         * Hilite selected feature
+         * 
+         * @input {OpenLayers.Feature} f
+         */
+        this.hilite = function(f) {
+            
+            var i, item, l, self = this;
+            
+            /*
+             * Unselect feature -> unhilite selected feature
+             */
+            if (f === null) {
+                for (i = 0, l = self.items.length; i < l; i++) {
+                    $('li a', self.items[i].$d).removeClass("hidden");
+                }
+            }
+            else {
+                for (i = 0, l = self.items.length; i < l; i++) {
+                    $('li a', self.items[i].$d).addClass("hidden");
+                }
+                item = self.get(f.layer['_msp'].mspID);
+                self.show(item);
+                $('#'+msp.Util.encode(f.id)).removeClass("hidden");
+            }
+            
+        };
+        
+        /**
+         * Jump to the input feature
+         * 
+         * @input {OpenLayers.Feature} f
+         */
+        this.jumpTo = function(f) {
+            
+            var self = this,
+                item = self.get(f.layer['_msp'].mspID),
+                $ul = $('ul', item.$d);
+            
+            self.show(item);
+            
+            /*$ul.animate({
+                'left':'-'+($('#'+msp.Util.encode(f.id)).offset().left - 54)+'px'
+            },200);*/
+            
+        };
+        
         
         /**
          * Remove a layer from the panel
