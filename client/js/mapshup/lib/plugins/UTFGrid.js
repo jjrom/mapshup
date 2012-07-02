@@ -95,7 +95,11 @@
                  * Do nothing if plugin is inactive
                  * Never display UTFGrid info if a vector feature is already hilited
                  */
-                if (!self.active || msp.Map.$featureHilite.attr("hilited") === "hilited") { 
+                if (!self.active || msp.Map.$featureHilite.attr("hilited") === "hilited") {
+                    
+                    /* Important - reset last hilited object if any */
+                    self._current = {};
+                    
                     return false;
                 }
                 
