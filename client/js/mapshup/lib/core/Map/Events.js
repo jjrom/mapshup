@@ -41,24 +41,30 @@
  */
 (function (msp) {
       
-    msp.Map.Events = function(map) {
+    msp.Map.Events = function(Map) {
 
         /*
          * Only one Events object instance is created
          */
-        if (msp.Map.Events._o) {
-            return msp.Map.Events._o;
+        if (Map.Events._o) {
+            return Map.Events._o;
         }
         
         /*
          * Reference to msp.Map
          */
-        this.map = map;
+        this.map = Map.map;
         
         /*
          * Set events hashtable
          */
         this.events = {
+            
+            /*
+             * Array containing handlers to be call after
+             * a feature is selected
+             */
+            featureselected:[],
             
             /*
              * Array containing handlers to be call after
@@ -96,7 +102,7 @@
         };
        
         /*
-         * Register an event to jMap
+         * Register an event to msp.Map
          *
          * @input <String> eventname : Event name => 'resizeend', 'layersend', 'moveend'
          * @input <function> scope : scope related to this event
@@ -185,9 +191,9 @@
                         
                         var layer, loading = false;
                         
-                        for (i = 0, l = self.map.map.layers.length; i < l; i++) {
+                        for (i = 0, l = self.map.layers.length; i < l; i++) {
 
-                            layer = self.map.map.layers[i];
+                            layer = self.map.layers[i];
                             
                             /* Don't care of mapshup layers */
                             if (!layer.hasOwnProperty('_msp') || layer["_msp"].mspLayer) {
@@ -206,7 +212,7 @@
                         }
                         if (!loading) {
                             msp.isLoaded = true;
-                            msp.Map.map.restrictedExtent ? msp.Map.map.zoomToExtent(msp.Map.map.restrictedExtent) : msp.Map.setCenter(msp.Map.Util.d2p(new OpenLayers.LonLat(msp.Map.initialLocation.lon,msp.Map.initialLocation.lat)), msp.Map.initialLocation.zoom, true);
+                            self.map.restrictedExtent ? self.map.zoomToExtent(self.map.restrictedExtent) : Map.setCenter(Map.Util.d2p(new OpenLayers.LonLat(Map.initialLocation.lon,Map.initialLocation.lat)), Map.initialLocation.zoom, true);
                         }
                     }
                 }
@@ -260,7 +266,7 @@
             else if (eventname === 'moveend') {
                 for (i = 0, l = self.events["moveend"].length; i < l; i++) {
                     obj = self.events["moveend"][i];
-                    obj.handler(self.map.map, obj.scope);
+                    obj.handler(self.map, obj.scope);
                 }
             }
             /*
@@ -273,29 +279,15 @@
                 }
             }
             /*
-             * Trigger visibilitychanged to each handlers
+             * Trigger other handlers
              */
-            else if (eventname === 'visibilitychanged') {
+            else {
                 /*
-                 * extra is a layer object
+                 * extra is a layer or a feature object
                  */
                 if (extra) {
-                    for (i = 0, l = self.events["visibilitychanged"].length; i < l; i++) {
-                        obj = self.events["visibilitychanged"][i];
-                        obj.handler(extra, obj.scope);
-                    } 
-                }
-            }
-            /*
-             * Trigger indexchanged to each handlers
-             */
-            else if (eventname === 'indexchanged') {
-                /*
-                 * extra is a layer object
-                 */
-                if (extra) {
-                    for (i = 0, l = self.events["indexchanged"].length; i < l; i++) {
-                        obj = self.events["indexchanged"][i];
+                    for (i = 0, l = self.events[eventname].length; i < l; i++) {
+                        obj = self.events[eventname][i];
                         obj.handler(extra, obj.scope);
                     } 
                 }
@@ -305,7 +297,7 @@
         /*
          * Create unique object instance
          */
-        msp.Map.Events._o = this;
+        Map.Events._o = this;
         
         return this;
 
