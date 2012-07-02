@@ -285,12 +285,10 @@
                 /*
                  * extra is a layer or a feature object
                  */
-                if (extra) {
-                    for (i = 0, l = self.events[eventname].length; i < l; i++) {
-                        obj = self.events[eventname][i];
-                        obj.handler(extra, obj.scope);
-                    } 
-                }
+                for (i = 0, l = self.events[eventname].length; i < l; i++) {
+                    obj = self.events[eventname][i];
+                    obj.handler(extra, obj.scope);
+                } 
             }
         }
         
