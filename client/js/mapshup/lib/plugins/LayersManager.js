@@ -66,7 +66,7 @@
          * Structure 
          * {
          *      id: // unique id for this item
-         *      raster: // boolean if true then the item is the raster item
+         *      type: // if 'r' then the item is the raster item
          *      icon: // icon to display in the title tab
          *      title: // text to display in the title tab
          *      layer: // layer reference (null for raster item - see below)
@@ -975,16 +975,13 @@
              */
             if (f === null) {
                 for (i = 0, l = self.items.length; i < l; i++) {
-                    $('li a', self.items[i].$d).removeClass("hidden");
+                    $('li a', self.items[i].$d).removeClass("hilite");
                 }
             }
             else {
-                for (i = 0, l = self.items.length; i < l; i++) {
-                    $('li a', self.items[i].$d).addClass("hidden");
-                }
                 item = self.get(f.layer['_msp'].mspID);
                 self.show(item);
-                $('#'+msp.Util.encode(f.id)).removeClass("hidden");
+                $('#'+msp.Util.encode(f.id)).addClass("hilite");
             }
             
         };
