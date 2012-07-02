@@ -718,6 +718,11 @@
             msp.Map.featureInfo.selected = null;
             
             /*
+             * Call mapshup featureselect event
+             */
+            msp.Map.events.trigger("featureselected", null);
+            
+            /*
              * This is really and awfully tricky...
              * If user select another feature, the current feature is unselected
              * before the new one is selected.
