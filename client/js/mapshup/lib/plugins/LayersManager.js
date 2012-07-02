@@ -473,6 +473,13 @@
             });
             
             /*
+             * Event feature selection
+             */
+            msp.Map.events.register("featureselected", self, function (feature, scope) {
+                scope.show(scope.get(feature.layer['_msp'].mspID));
+            });
+            
+            /*
              * Recompute tab position on window resize
              */
             msp.Map.events.register("resizeend", self, function(scope) {
