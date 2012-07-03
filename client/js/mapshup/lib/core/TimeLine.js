@@ -429,6 +429,10 @@
          */
         this.toISO8601 = function(date) {
             
+            if (!date || !$.isFunction(date.getMonth)) {
+                return '1900-01-01T00:00:00';
+            }
+            
             var m = "" + (date.getMonth() + 1),
             d = "" + date.getDate();
             
