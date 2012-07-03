@@ -543,12 +543,14 @@
                 /*
                  * Set date
                  */
-                interval =  msp.timeLine.getInterval();
-                if (service.searchParams.hasOwnProperty("time:start")) {
-                    service.searchParams["time:start"] = interval[0];
-                }
-                if (service.searchParams.hasOwnProperty("time:end")) {
-                    service.searchParams["time:end"] = interval[1];
+                if (msp.timeLine.enabled) {
+                    interval =  msp.timeLine.getInterval();
+                    if (service.searchParams.hasOwnProperty("time:start")) {
+                        service.searchParams["time:start"] = interval[0];
+                    }
+                    if (service.searchParams.hasOwnProperty("time:end")) {
+                        service.searchParams["time:end"] = interval[1];
+                    }
                 }
             }
             
