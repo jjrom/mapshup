@@ -123,7 +123,7 @@
             }else{
                 values = $.ui.rangeSlider.prototype.values.apply(this, this._toArray(arguments));
             }
-
+            
             return {
                 min: new Date(values.min), 
                 max: new Date(values.max)
