@@ -129,11 +129,25 @@
              */
             msp.Map.events.register("moveend", self, function(map, scope) {
                 
+                var i,l,m;
                 /*
                  * Update search BBOX for non initial layers
                  */
-                for (var i = 0, l = scope.registeredCatalogs.length; i < l; i++) {
-                    scope.registeredCatalogs[i]._msp.searchContext.setBBOX(msp.Map.map.getExtent());
+                for (i = 0, l = scope.registeredCatalogs.length; i < l; i++) {
+                    
+                    /*
+                     * Important : if search attribute is set, then BBOX should not be updated
+                     * the first time
+                     */
+                    m = scope.registeredCatalogs[i]._msp;
+                    
+                    if (!m.layerDescription.search) {
+                        m.searchContext.setBBOX(msp.Map.map.getExtent());
+                    }
+                    else {
+                        delete m.layerDescription.search;
+                    }
+                    
                 }
                 
             });
