@@ -504,7 +504,7 @@
             /*
              * Avoid XSS vulnerability
              */
-            self.$input.val(msp.Util.htmlEntitiesEncode($.trim(self.$input.val())));
+            self.$input.val(msp.Util.noScript($.trim(self.$input.val())));
 
             /*
              * Set special params

@@ -286,6 +286,13 @@
         },
         
         /**
+         * Avoid code injection
+         */
+        noScript: function(str) {
+            return $('<div>'+str+'</div>').html();
+        },
+        
+        /**
          * Add a "display image" action to the given jquery 'a'
          * A click on 'a' will open the image within a fullscreen popup
          */
@@ -580,7 +587,7 @@
                  */
                 input = $('#'+id);
                 if (value) {
-                    input.val(this.htmlEntitiesEncode(value));
+                    input.val(this.noScript(value));
                 }
                 /*
                  * Or set input text box placeholder
@@ -597,7 +604,7 @@
                     /*
                      * Input value is encoded to avoid javascript code injection
                      */   
-                    var v = self.htmlEntitiesEncode($(this).val());
+                    var v = self.noScript($(this).val());
                     
                     /*
                      * Return or tab keys
@@ -878,42 +885,6 @@
              * Returns the input value
              */
             return value;
-        },
-        
-        /**
-         * Remove the < and > character to avoid script injection
-         * // 60 3C && // 62 3E
-         */
-        htmlEntitiesEncode: function(str) {
-            
-            /*
-             * Paranoid mode
-             */
-            if (!str) {
-                return null;
-            }
-            
-            return str.replace(/</g,'&lt;').replace(/>/g,'&gt;'); 
-        },
-         
-        /**
-         * Dirty hack to decode htmlentities
-         * and get true length of string
-         */
-        htmlEntitiesDecode: function(str) {
-            
-            /*
-             * Paranoid mode
-             */
-            if (!str) {
-                return null;
-            }
-            
-            var ta = document.createElement("textarea");
-            ta.innerHTML = str.replace(/</g,"&lt;").replace(/>/g,"&gt;");
-            var decodedStr = ta.value;
-            ta = null;
-            return decodedStr;
         },
         
         /**
@@ -1302,9 +1273,19 @@
          *                        'false' the middle of str is shrinked
          */
         shorten: function(str,sizemax,end) {
-            str = this.htmlEntitiesDecode(str);
+            
+            if (!str) {
+                return null;
+            }
+            
+            var ta = document.createElement("textarea");
+            ta.innerHTML = str.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+            str = ta.value;
+            ta = null;
             end = end || false;
+            
             if (str) {
+                
                 var size = str.length;
                 
                 /*
