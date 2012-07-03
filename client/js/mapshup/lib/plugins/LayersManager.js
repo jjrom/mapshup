@@ -852,7 +852,7 @@
          */
         this.addPagination = function(item) {
             
-            var $ul, scrollAllow = true, self = this;
+            var $ul, self = this;
             
             if (!item) {
                 return false;
@@ -865,51 +865,44 @@
 
             $('#'+item.id+'n').click(function(e) {
 
-                if(scrollAllow){
-                    scrollAllow = false;
-                    var spacefit = $(window).width() - 44,
-                    /* Bitwise operator is faster than Map.floor */
-                    fit = (spacefit / self.tw)|0,
-                    left = parseFloat($ul.css('left'),10),
-                    moveleft = left - (fit*self.tw),
-                    ulWidth = msp.Util.getHashSize(item.features) * self.tw + self.tw;
+                var spacefit = $(window).width() - 44,
+                /* Bitwise operator is faster than Map.floor */
+                fit = (spacefit / self.tw)|0,
+                left = parseFloat($ul.css('left'),10),
+                moveleft = left - (fit*self.tw),
+                ulWidth = msp.Util.getHashSize(item.features) * self.tw + self.tw;
 
-                    /*
-                     * We reach the last page. If click on next, 
-                     * then go back at the beginning
-                     */
-                    if(ulWidth - Math.abs(left) < $(window).width()){
-                        moveleft = 0;
-                    }
-                    $ul.animate({
-                        'left':moveleft+'px'
-                    },200,function(){
-                        scrollAllow = true;
-                    });
-                    e.preventDefault();
+                /*
+                 * We reach the last page. If click on next, 
+                 * then go back at the beginning
+                 */
+                if(ulWidth - Math.abs(left) < $(window).width()){
+                    moveleft = 0;
                 }
+                $ul.animate({
+                    'left':moveleft+'px'
+                },200);
+                e.preventDefault();
+                
             });
             $('#'+item.id+'p').click(function(e) {
-                if(scrollAllow){
-                    scrollAllow = false;
-                    var spacefit = $(window).width() - 44,
-                    /* Bitwise operator is faster than Map.floor */
-                    fit = (spacefit / self.tw)|0,
-                    left = parseFloat($ul.css('left'),10),
-                    moveleft = left + (fit*self.tw);
+                
+                var spacefit = $(window).width() - 44,
+                /* Bitwise operator is faster than Map.floor */
+                fit = (spacefit / self.tw)|0,
+                left = parseFloat($ul.css('left'),10),
+                moveleft = left + (fit*self.tw);
 
-                    if(left >= 0){ 
-                        scrollAllow = true;
-                        e.preventDefault();
-                        return;
-                    }
-                    $ul.animate({
-                        'left':moveleft+'px'
-                    },200,function(){
-                        scrollAllow = true;
-                    });
+                if(left >= 0){ 
+                    scrollAllow = true;
                     e.preventDefault();
+                    return;
                 }
+                $ul.animate({
+                    'left':moveleft+'px'
+                },200);
+                e.preventDefault();
+                
             });
 
             return true;
@@ -1143,7 +1136,7 @@
                  *     then force text span display
                  */
                 icon = msp.Map.Util.Feature.getIcon(f);
-                $ul.append('<li><a href="" id="'+id+'"><span'+(icon ? '' : ' style="display:block;"')+' class="title">'+$('<div>'+msp.Map.Util.Feature.getTitle(f)+'</div>').text()+'</span><img src="'+(icon ? icon : msp.Util.getImgUrl('nodata.png'))+'"></a></li>');
+                $ul.append('<li><a href="" id="'+id+'">'+(icon ? '' : '<span class="title">'+$('<div>'+msp.Map.Util.Feature.getTitle(f)+'</div>').text()+'</span>')+'<img src="'+(icon ? icon : msp.Util.getImgUrl('nodata.png'))+'"></a></li>');
                 (function(f,$div){
                     $div.click(function(e){
                         

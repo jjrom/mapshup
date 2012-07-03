@@ -1440,7 +1440,7 @@ div.olControlMousePosition {
     font-size:9px;
     padding:2px 2px;
     border-top:1px solid #111;
-    display:none;
+    display:block;
     text-align:center;
     overflow:hidden;
     text-overflow:ellipsis;
@@ -1448,10 +1448,6 @@ div.olControlMousePosition {
     opacity:0.8;
     filter:progid:DXImageTransform.Microsoft.Alpha(opacity=80);
 }
-
-/*.lm .thumbs a:hover span.title{
-    display:block;
-}*/
 
 .lm .rtools {
     position:absolute;
