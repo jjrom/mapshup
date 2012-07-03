@@ -880,11 +880,17 @@
                  * Move only if we do not reach the last page
                  */
                 if(ulWidth - Math.abs(left) > $(window).width()){
-                    $ul.animate({
-                        'left':moveleft+'px'
-                    },100,function(){
+                    if (!f) {
+                        $ul.animate({
+                            'left':moveleft+'px'
+                        },100,function(){
+                            self.scrollTo(f);
+                        });
+                    }
+                    else {
+                        $ul.css('left', moveleft+'px');
                         self.scrollTo(f);
-                    });
+                    }
                 }
                 
                 e.preventDefault();
@@ -900,12 +906,19 @@
                     e.preventDefault();
                     return;
                 }
-                $ul.animate({
-                    'left':moveleft+'px'
-                },100,function(){
+                
+                if (!f) {
+                    $ul.animate({
+                        'left':moveleft+'px'
+                    },100,function(){
+                        self.scrollTo(f);
+                    });
+                    e.preventDefault();
+                }
+                else {
+                    $ul.css('left', moveleft+'px');
                     self.scrollTo(f);
-                });
-                e.preventDefault();
+                }
                 
             });
 
