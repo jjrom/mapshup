@@ -72,10 +72,10 @@ DEBUG=$6
 if [ ! -x $TARGET ]
 then
 	echo ""
-	echo "Clone mercurial repository $1"
+	echo "Clone git repository $1"
 
-        # Export mercurial last repository
-        hg clone $REPO -r mapshup2 /tmp/_mspexport
+        # Export git last repository
+        git clone $REPO /tmp/_mspexport
         EXPORTDIR=`echo /tmp/_mspexport/client/`
         SERVERDIR=`echo /tmp/_mspexport/server/`
 	
