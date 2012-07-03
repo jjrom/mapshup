@@ -384,7 +384,7 @@
                 /* Lang does not exist - load english */
                 error:function() {
                     $.ajax({
-                        url:c["general"].rootUrl + c["i18n"].path+"/en.js",
+                        url:self.Config["general"].rootUrl + c.path+"/en.js",
                         async:true,
                         dataType:"script",
                         success:function() {
