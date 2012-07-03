@@ -114,7 +114,7 @@
                     error:function() {
                         msp.Util.message(msp.Util._("Error : cannot perform action"));
                     }
-                }, !layerDescription.initialLayer ? {
+                }, !layerDescription.initial ? {
                     title:msp.Util._("Loading shapefile"), 
                     cancel:true
                 } : null);

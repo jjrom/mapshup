@@ -112,7 +112,7 @@
                  * Important : non valid layers loaded during
                  * startup are discarded without asking user
                  */
-                if (!layerDescription.initialLayer) {
+                if (!layerDescription.initial) {
                     this.update(layerDescription, Map.addLayer);
                 }
                 return null;

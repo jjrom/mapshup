@@ -348,7 +348,7 @@
                 icon:msp.Util.getPropertyValue(layerDescription, "icon", msp.Util.getImgUrl(msp.Util.getPropertyValue(layerType, "icon", null))),
 
                 /** True : the layer is load during startup */
-                initialLayer:msp.Util.getPropertyValue(layerDescription, "initialLayer", false),
+                initial:msp.Util.getPropertyValue(layerDescription, "initial", false),
                 
                 /** True : the layer content is initialized */
                 initialized:msp.Util.getPropertyValue(_options, "forceInitialized", false),
@@ -889,12 +889,12 @@
                 if (layer["_msp"] && layer["_msp"].layerDescription && !layer["_msp"].mspLayer) {
 
                     /*
-                     * Initialize object with an initialLayer property set to true
+                     * Initialize object with an initial property set to true
                      * to avoid zoomOnAfterLoad process after reading a context
                      * (see msp.Map.Util.zoomOnAfterLoad(layer) function for more explanation)
                      */
                     ld = {
-                        initialLayer:true
+                        initial:true
                     };
                     
                     /*

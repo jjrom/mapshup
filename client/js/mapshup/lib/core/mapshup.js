@@ -492,7 +492,7 @@
                      */
                     self.Map.addLayer(c.layers[i], {
                         noDeletionCheck:true,
-                        initialLayer:true
+                        initial:true
                     });
                    
                 }

@@ -1206,7 +1206,7 @@
          * mapshup special layers (i.e. mspLayer = true) and
          * initial layers are not processed
          */
-        if (layer["_msp"].mspLayer || layer["_msp"].initialLayer) {
+        if (layer["_msp"].mspLayer || layer["_msp"].initial) {
             return false;
         }
         
