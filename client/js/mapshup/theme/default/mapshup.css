@@ -1449,9 +1449,9 @@ div.olControlMousePosition {
     filter:progid:DXImageTransform.Microsoft.Alpha(opacity=80);
 }
 
-.lm .thumbs a:hover span.title{
+/*.lm .thumbs a:hover span.title{
     display:block;
-}
+}*/
 
 .lm .rtools {
     position:absolute;
