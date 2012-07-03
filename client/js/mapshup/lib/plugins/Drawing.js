@@ -150,8 +150,8 @@
                     $('#featureDescV').click(function() {
                         var f = event.feature;
                         if (f) {
-                            f.attributes.name = $('#featureTitle').val();
-                            f.attributes.description = $('#featureDesc').val();
+                            f.attributes.name = msp.Util.htmlEntitiesEncode($('#featureTitle').val());
+                            f.attributes.description = msp.Util.htmlEntitiesEncode($('#featureDesc').val());
                         }
                         msp.mask.hide();
                         popup.remove();
