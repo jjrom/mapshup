@@ -478,11 +478,11 @@
             msp.Map.events.register("featureselected", self, function (feature, scope) {
                 
                 /*
-                 * Select or unselect ?
+                 * Hilite and scrollTo feature
                  */
                 scope.hilite(feature);
+                scope.scrollTo(feature);
                 
-                //scope.jumpTo(feature);
             });
             
             /*
@@ -979,7 +979,6 @@
                 item = self.get(f.layer['_msp'].mspID);
                 self.show(item);
                 $('#'+msp.Util.encode(f.id)).addClass("hilite");
-                self.scrollTo(f);
             }
             
         };

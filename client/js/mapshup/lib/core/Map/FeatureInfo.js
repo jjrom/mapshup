@@ -580,6 +580,13 @@
             }
             
             /*
+             * Call mapshup featureselect event unless the selected was triggered
+             */
+            if (!self._triggered) {
+                msp.Map.events.trigger("featureselected", feature);
+            }
+            
+            /*
              * Set _triggered to false (see above)
              */
             self._triggered = false;
@@ -619,11 +626,6 @@
              * Set the current selected object
              */
             msp.Map.featureInfo.selected = feature;
-            
-            /*
-             * Call mapshup featureselect event
-             */
-            msp.Map.events.trigger("featureselected", feature);
             
             /*
              * If layerType.resolvedUrlAttributeName is set,
