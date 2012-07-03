@@ -179,8 +179,7 @@
                 wrapDateLine:true,
                 transitionEffect:'resize',
                 /* WMS can be set as background (isBaseLayer:true) or as overlay */
-                isBaseLayer:msp.Util.getPropertyValue(layerDescription, "isBaseLayer", false),
-                zoomOnAfterLoad:false // never zoom on WMS layer after load
+                isBaseLayer:msp.Util.getPropertyValue(layerDescription, "isBaseLayer", false)
             }
             );
             

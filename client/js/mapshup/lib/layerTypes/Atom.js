@@ -203,9 +203,9 @@
                     layer.addFeatures(features);
                     
                     /*
-                     * Zoom on layer after load
+                     * Zoom on layer
                      */
-                    Map.Util.zoomOnAfterLoad(layer);
+                    Map.Util.zoomOn(layer);
 
                     /*
                      * Reindex layer

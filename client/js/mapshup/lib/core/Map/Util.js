@@ -1184,7 +1184,7 @@
      * is set to true and the map is not centered any more on this layer even if
      * its content changes
      */
-    Map.Util.zoomOnAfterLoad = function(layer) {
+    Map.Util.zoomOn = function(layer) {
         
         var extent;
         
@@ -1196,31 +1196,9 @@
         }
         
         /*
-         * Never zoom on baseLayer
+         * Only zoom on layer that are initialized
          */
-         if (layer.isBaseLayer) {
-             return false;
-         }
-         
-        /*
-         * mapshup special layers (i.e. mspLayer = true) and
-         * initial layers are not processed
-         */
-        if (layer["_msp"].mspLayer || layer["_msp"].initial) {
-            return false;
-        }
-        
-        /*
-         * Never zoom on a tracked layer
-         */
-        if (layer["_msp"].refresh) {
-            return false;
-        }
-        
-        /*
-         * Only zoom on layer that are initialized and that specify it 
-         */
-        if (layer["_msp"].zoomOnAfterLoad && layer["_msp"].initialized) {
+        if (layer["_msp"].initialized) {
 
             /*
              * Vector layers have a getDataExtent() function that returns bounds

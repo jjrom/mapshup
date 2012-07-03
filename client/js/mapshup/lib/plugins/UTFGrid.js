@@ -165,7 +165,6 @@
             msp.Map.addLayer({
                 type:"Generic",
                 title:self.layer.name,
-                zoomOnAfterLoad:false,
                 unremovable:true,
                 mspLayer:true,
                 layer:self.layer

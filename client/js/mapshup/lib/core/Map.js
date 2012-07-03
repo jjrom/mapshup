@@ -381,10 +381,7 @@
                 selectable:msp.Util.getPropertyValue(layerDescription, "selectable", msp.Util.getPropertyValue(layerType, "selectable", false)),
 
                 /** True : no remove button in LayersManager panel */
-                unremovable:msp.Util.getPropertyValue(layerDescription, "unremovable", false),
-
-                /** True : automatically zoom on the layer extent after the first load if the added layer is not visible within the map view */
-                zoomOnAfterLoad:msp.Util.getPropertyValue(layerDescription, "zoomOnAfterLoad", true)
+                unremovable:msp.Util.getPropertyValue(layerDescription, "unremovable", false)
 
             };
 
@@ -468,17 +465,6 @@
                             }
                         }
 
-                        /*
-                         * The map is centered on the layer extent after the FIRST load of this layer
-                         * This centering is only done if the added layer, or part of the added layer,
-                         * is not already visible in the map view
-                         *
-                         * Note : if newLayer has already been loaded then the _msp.initialized attribute
-                         * is set to true and the map is not centered any more on this layer even if
-                         * its content changes
-                         */
-                        msp.Map.Util.zoomOnAfterLoad(this);
-                        
                         /*
                          * Check the geometry type of layer
                          * Point and Line geometries should be moved
@@ -797,11 +783,8 @@
                         layer["_msp"].searchContext.items = s.items;
 
                         //
-                        // Launch unitary search -
-                        // Note that zoomOnAfterLoad is set to false to avoid
-                        // a zoom on catalog result after a successfull search
+                        // Launch unitary search
                         //
-                        layer["_msp"].zoomOnAfterLoad = false;
                         layer["_msp"].searchContext.search(s.nextRecord);
 
                     }
@@ -889,9 +872,8 @@
                 if (layer["_msp"] && layer["_msp"].layerDescription && !layer["_msp"].mspLayer) {
 
                     /*
-                     * Initialize object with an initial property set to true
-                     * to avoid zoomOnAfterLoad process after reading a context
-                     * (see msp.Map.Util.zoomOnAfterLoad(layer) function for more explanation)
+                     * Initialize object with an initial property set to true to indicate that
+                     * layer has been added through context
                      */
                     ld = {
                         initial:true

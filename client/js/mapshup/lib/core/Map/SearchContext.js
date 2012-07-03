@@ -587,7 +587,7 @@
                             /*
                              * Zoom on layer extent
                              */
-                            msp.Map.Util.zoomOnAfterLoad(layer);
+                            msp.Map.Util.zoomOn(layer);
                             
                             /*
                              * Show result in LayersManager
@@ -622,11 +622,6 @@
                             self.numRecordsPerPage = l;
                         }
                         
-                        /*
-                         * See msp.Map.loadContext for explanation
-                         */
-                        layer["_msp"].zoomOnAfterLoad = true;
-
                         /*
                          * Set nextRecord new value
                          */

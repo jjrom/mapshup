@@ -111,7 +111,7 @@
             }
             
             /*
-             * Register events
+             * Remove layer event
              */
             msp.Map.events.register("layersend", self, function(action, layer, scope) {
 
@@ -122,6 +122,20 @@
                     scope.remove(layer);
                 }
 
+            });
+            
+            /*
+             * Update search BBOX on map move
+             */
+            msp.Map.events.register("moveend", self, function(map, scope) {
+                
+                /*
+                 * Update search BBOX for non initial layers
+                 */
+                for (var i = 0, l = scope.registeredCatalogs.length; i < l; i++) {
+                    scope.registeredCatalogs[i]._msp.searchContext.setBBOX(msp.Map.map.getExtent());
+                }
+                
             });
             
             return true;
@@ -397,17 +411,14 @@
             
             if (s) {
 
-                //
-                // Update the search items
-                //
+                /*
+                 * Update the search items
+                 */
                 layer["_msp"].searchContext.items = s.items;
 
-                //
-                // Launch unitary search -
-                // Note that zoomOnAfterLoad is set to false to avoid
-                // a zoom on catalog result after a successfull search
-                //
-                layer["_msp"].zoomOnAfterLoad = false;
+                /*
+                 * Launch unitary search -
+                 */
                 layer["_msp"].searchContext.search(s.nextRecord);
 
             }
