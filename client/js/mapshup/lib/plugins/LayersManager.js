@@ -489,7 +489,7 @@
              * Recompute tab position on window resize
              */
             msp.Map.events.register("resizeend", self, function(scope) {
-                scope.updateTabs(scope);
+                scope.resize(scope);
             });
             
             return self;
@@ -511,13 +511,13 @@
         };
         
         /**
-         * Update tabs position
+         * Update tabs position and ul left position
          * 
          * @input scope : reference to this object
          */
-        this.updateTabs = function(scope) {
+        this.resize = function(scope) {
             
-            var first,last,perPage,nbPage,i,$t;
+            var first,last,perPage,nbPage,i,l,$t;
             
             /*
              * Hide all tabs except rastertab
@@ -592,6 +592,12 @@
                 }).show();
             }
             
+            /*
+             * Initialize ul positions
+             */
+            for (i = 0, l = scope.items.length; i < l; i++) {
+                $('ul',scope.items[i].$d).css('left', 0);
+            }
             return;
         };
         
@@ -839,7 +845,7 @@
             /*
              * Update tabs position
              */
-            self.updateTabs(self);
+            self.resize(self);
             
             /*
              * Return the newly created item
@@ -863,44 +869,42 @@
              */
             $ul = $('ul', item.$d);
 
-            $('#'+item.id+'n').click(function(e) {
+            $('#'+item.id+'n').click(function(e, f) {
 
-                var spacefit = $(window).width() - 44,
                 /* Bitwise operator is faster than Map.floor */
-                fit = (spacefit / self.tw)|0,
-                left = parseFloat($ul.css('left'),10),
-                moveleft = left - (fit*self.tw),
+                var left = parseInt($ul.css('left'),10),
+                moveleft = left - (((($(window).width() - 44) / self.tw)|0)*self.tw),
                 ulWidth = msp.Util.getHashSize(item.features) * self.tw + self.tw;
 
                 /*
-                 * We reach the last page. If click on next, 
-                 * then go back at the beginning
+                 * Move only if we do not reach the last page
                  */
-                if(ulWidth - Math.abs(left) < $(window).width()){
-                    moveleft = 0;
+                if(ulWidth - Math.abs(left) > $(window).width()){
+                    $ul.animate({
+                        'left':moveleft+'px'
+                    },100,function(){
+                        self.scrollTo(f);
+                    });
                 }
-                $ul.animate({
-                    'left':moveleft+'px'
-                },200);
+                
                 e.preventDefault();
                 
             });
-            $('#'+item.id+'p').click(function(e) {
+            $('#'+item.id+'p').click(function(e, f) {
                 
-                var spacefit = $(window).width() - 44,
                 /* Bitwise operator is faster than Map.floor */
-                fit = (spacefit / self.tw)|0,
-                left = parseFloat($ul.css('left'),10),
-                moveleft = left + (fit*self.tw);
+                var left = parseInt($ul.css('left'),10),
+                moveleft = left + (((($(window).width() - 44) / self.tw)|0)*self.tw);
 
                 if(left >= 0){ 
-                    scrollAllow = true;
                     e.preventDefault();
                     return;
                 }
                 $ul.animate({
                     'left':moveleft+'px'
-                },200);
+                },100,function(){
+                    self.scrollTo(f);
+                });
                 e.preventDefault();
                 
             });
@@ -950,7 +954,7 @@
                 self.page = page;
             }
             
-            self.updateTabs(self);
+            self.resize(self);
           
         };
         
@@ -975,26 +979,36 @@
                 item = self.get(f.layer['_msp'].mspID);
                 self.show(item);
                 $('#'+msp.Util.encode(f.id)).addClass("hilite");
+                self.scrollTo(f);
             }
             
         };
         
         /**
-         * Jump to the input feature
+         * Scroll feature thumbWrapper
          * 
-         * @input {OpenLayers.Feature} f
+         * @input {OpenLayers.Feature} feature to scroll to
          */
-        this.jumpTo = function(f) {
+        this.scrollTo = function(f) {
             
-            var self = this,
-                item = self.get(f.layer['_msp'].mspID),
-                $ul = $('ul', item.$d);
+            if (!f) {
+                return false;
+            }
             
-            self.show(item);
+            var width, left, item, self = this;
             
-            /*$ul.animate({
-                'left':'-'+($('#'+msp.Util.encode(f.id)).offset().left - 54)+'px'
-            },200);*/
+            item = self.get(f.layer['_msp'].mspID);
+            left = $('#'+msp.Util.encode(f.id)).offset().left;
+            width = $('.thumbsWrapper',item.$d).width();
+            
+            if (left < 0) {
+                $('#'+item.id+'p').trigger('click', f);
+            }
+            else if (left > width) {
+                $('#'+item.id+'n').trigger('click', f);
+            }
+            
+            return true;
             
         };
         
@@ -1039,7 +1053,7 @@
                     /*
                      * Update tabs position
                      */
-                    self.updateTabs(self);
+                    self.resize(self);
                     
                     /*
                      * Activate first element
