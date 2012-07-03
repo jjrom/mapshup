@@ -1161,6 +1161,7 @@
                          */
                         msp.Map.zoomTo(f.geometry.getBounds());
                         msp.Map.featureInfo.select(f, true);
+                        self.hilite(f);
                         
                         return false; 
                     });
