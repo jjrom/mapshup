@@ -130,6 +130,7 @@
              * No timeLine
              */
             if (!options.enable) {
+                self.enabled = false;
                 return false;
             }
             
