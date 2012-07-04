@@ -764,8 +764,10 @@
                  * A feature is selected - User zoom out and the corresponding
                  * feature is cluserized. Thus, selected.layer does not exist.
                  * To avoid this, hide the feature info panel if selected.layer is null 
+                 * 
+                 * If layer exist but is not visible, hide the feature info panel
                  */
-                if (!self.selected.layer) {
+                if (!self.selected.layer || !self.selected.layer.getVisibility()) {
                     
                     // Hide feature info panel
                     self.$d.hide();
