@@ -52,7 +52,7 @@
         /*
          * Active status
          */
-        this.active = true;
+        this.active = false;
         
         /*
          * Store last hilited grid object
@@ -82,20 +82,21 @@
             self.options = options || {};
 
             /*
-             * Create info container
+             * Create UTFGrid alert container
              */
-            self.$d = msp.Util.$$('#'+msp.Util.getId()).addClass("utfginfo");
+            self.$d = msp.Util.$$('#'+msp.Util.getId()).addClass("utfginfo shadow").click(function(){
+                self.activate(!self.active);
+            });
             
-           /*
-            * Define action on mousemove
-            */
+            /*
+             * Define action on mousemove
+             */
             msp.$map.mousemove(function (e){
                 
                 /*
-                 * Do nothing if plugin is inactive
                  * Never display UTFGrid info if a vector feature is already hilited
                  */
-                if (!self.active || msp.Map.$featureHilite.attr("hilited") === "hilited") {
+                if (msp.Map.$featureHilite.attr("hilited") === "hilited") {
                     
                     /* Important - reset last hilited object if any */
                     self._current = {};
@@ -104,7 +105,8 @@
                 }
                 
                 var i, l, items, layer, z, mz,
-                    lonLat = msp.Map.map.getLonLatFromPixel(msp.Map.mousePosition);
+                show = false,
+                lonLat = msp.Map.map.getLonLatFromPixel(msp.Map.mousePosition);
                 
                 if (!lonLat) { 
                     return false;
@@ -126,18 +128,36 @@
                         mz = msp.Map.map.getZoom();
                         
                         if ((mz >= z[0] && mz <= z[1]) && layer["_msp"].bounds.containsLonLat(lonLat)) {
-                            items[OpenLayers.Util.indexOf(msp.Map.map.layers, layer)] = {
-                                attributes:layer.getFeatureInfo(lonLat),
-                                modifiers:layer["_msp"].layerDescription["info"]
-                            }  
+                            
+                            /*
+                             * Show info if UTFGrid is active
+                             */
+                            if (self.active) {
+                                items[OpenLayers.Util.indexOf(msp.Map.map.layers, layer)] = {
+                                    attributes:layer.getFeatureInfo(lonLat),
+                                    modifiers:layer["_msp"].layerDescription["info"]
+                                }
+                            }
+                            
+                            show = true;
+                            
                         }
                         
-                        
                     }
+                    
+                    /*
+                     * Show or hide UTFGrid alert container depending on UTFGrid data are present or not
+                     */
+                    show ? self.$d.show() : self.$d.hide();
                     
                     self.getInfo(items);
                     
                 }
+                
+                /*
+                 * Activate or deactivate UTFGrid alert during startup
+                 */
+                self.activate(self.active);
                 
                 return true;
                 
@@ -193,11 +213,11 @@
                 }
                 else if (action === "remove") {
                     for (i = 0, l = scope.layers.length ; i < l; i++) {
-                    if (scope.layers[i].id === layer.id) {
-                        scope.layers.splice(i,1);
-                        break;
+                        if (scope.layers[i].id === layer.id) {
+                            scope.layers.splice(i,1);
+                            break;
+                        }
                     }
-                }
                 }
                 
                 return true;
@@ -213,6 +233,7 @@
          */
         this.activate = function(b) {
             this.active = b;
+            this.$d.html(msp.Util._((b ? "Hide" : "Show") +" thematic metadata"));
             if (!b) {
                 this.layer.destroyFeatures();
             }
@@ -280,7 +301,7 @@
                     }
                     else {
 
-                       /*
+                        /*
                         * Roll over data key
                         */
                         for (k in keys) {
@@ -303,12 +324,12 @@
             
             if (c !== "") {
                
-               /*
+                /*
                 * Display tooltip
                 */
                 msp.Map.$featureHilite.html(c).show();
                 
-               /*
+                /*
                 * Display geometry
                 */
                 if (features.length > 0) {

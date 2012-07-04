@@ -94,6 +94,7 @@
     i["Hi"]="Salut";
     i["Hide"]="Masquer";
     i["Hide this layer"]="Masquer cette couche";
+    i["Hide thematic metadata"]="Masquer les informations thématiques";
     i["Images"]="Images";
     i["Initializing 3D mode"]="Initialisation du mode 3D";
     i["Item"]="Element";
@@ -167,6 +168,7 @@
     i["Share"]="Partager";
     i["Show"]="Afficher";
     i["Show quicklook"]="Afficher l'image";
+    i["Show thematic metadata"]="Afficher les informations thématiques";
     i["Sign in"]="Connectez-vous";
     i["Sign out"]="Déconnecter";
     i["Size"]="Taille";

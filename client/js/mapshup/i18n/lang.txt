@@ -91,6 +91,7 @@ Global view
 Google libraries not loaded. Streetview is disabled
 Hi
 Hide
+Hide thematic metadata
 Hide this layer
 Images
 Initializing 3D mode
@@ -163,6 +164,7 @@ Set
 Share
 Show
 Show quicklook
+Show thematic metadata
 Sign in
 Sign out
 Size

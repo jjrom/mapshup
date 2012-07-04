@@ -1583,10 +1583,18 @@ div.olControlMousePosition {
  /* UTFGrid */
  .utfginfo {
     position:absolute;
-    top:150px;
-    right:50px;
-    width:150px;
-    height:auto;
+    color:#fff;
+    text-transform: uppercase;
+    background-color:rgba(53, 153, 255, 0.6); /* #3399ff */
+    padding:5px;
+    top:200px;
+    left:50px;
+    width:auto;
+    height:30px;
+    line-height:30px;
     display:none;
     z-index:30000;
+}
+.utfginfo:hover {
+    background-color:#3399ff;
 }
