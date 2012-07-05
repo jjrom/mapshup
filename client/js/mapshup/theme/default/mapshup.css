@@ -1583,6 +1583,7 @@ div.olControlMousePosition {
  /* UTFGrid */
  .utfginfo {
     position:absolute;
+    cursor:pointer;
     color:#fff;
     text-transform: uppercase;
     background-color:rgba(53, 153, 255, 0.6); /* #3399ff */
