@@ -118,11 +118,7 @@
          */
         this.init = function(options) {
             
-            var fct,
-                id1 = msp.Util.getId(),
-                id2 = msp.Util.getId(),
-                t = "",
-                self = this;
+            var self = this;
             
             options = options || {};
             
@@ -135,6 +131,11 @@
             }
             
             /*
+             * Set absolutes values
+             */
+            self.absolutes = options.absolutes;
+            
+            /*
              * Create timeLine object
              * 
              * <div id="timeLine">
@@ -143,37 +144,25 @@
              * </div>
              * 
              */
-            self.$d = msp.Util.$$('#timeLine', $('#mwrapper')).html('<div class="timeLine"></div><div class="mask"><h2>'+msp.Util._("Date filter disabled")+'</h2>('+msp.Util._("Click to enable")+')</div><form></form>')
-            
-            /*
-             * Set absolutes values if not set
-             */
-            for (var i = options.absolutes.min; i <= options.absolutes.max; i++) {
-                t += '<option value="'+i+'">'+i+'</option>';
-            }
+            self.$d = msp.Util.$$('#timeLine', $('#mwrapper')).html('<div class="timeLine"></div><div class="mask"><h2>'+msp.Util._("Date filter disabled")+'</h2>('+msp.Util._("Click to enable")+')</div>')
             
             /*
              * Create actions Toolbar
              */
             self.tb = new msp.Toolbar({
-                parent:$('form', self.$d), 
+                parent:self.$d, 
                 classes:'tools'
             });
             
             self.tb.add({
                 id:msp.Util.getId(),
-                tt:msp.Util._("Change time scale lower bound"),
-                html:'from <select id="'+id1+'">'+t+'</select>',
+                icon:msp.Util.getImgUrl("clock.png"),
+                tt:msp.Util._("Change time line bounds"),
                 activable:false,
-                switchable:false
-            });
-            
-            self.tb.add({
-                id:msp.Util.getId(),
-                tt:msp.Util._("Change time scale upper bound"),
-                html:'to <select id="'+id2+'">'+t+'</select>',
-                activable:false,
-                switchable:false
+                switchable:false,
+                callback:function() {
+                    self.askConfig();
+                }
             });
             
             self.tb.add({
@@ -250,49 +239,6 @@
             });
             
             /*
-             * Ensure that selectable bounds are the same as the input bounds
-             */
-            $('#'+id1+' option[value='+self.amin+']').attr("selected", "selected");
-            $('#'+id2+' option[value='+self.amax+']').attr("selected", "selected");
-            
-            fct = function(msg) {
-                
-                var v1 = $('#'+id1).attr('value'),
-                    v2 = $('#'+id2).attr('value');
-               
-                /*
-                 * lower bound is always lower than upper bound
-                 */
-                if (parseInt(v1) < parseInt(v2)) {
-                    self.amin = v1;
-                    self.amax = v2;
-                    self.$timeLine.dateRangeSlider('bounds', new Date(v1,0,1), new Date(v2,0,1));
-                }
-                else {
-                    msp.Util.message(msp.Util._(msg));
-                    return false;
-                }
-                
-                return true;
-                
-            };
-            
-            /*
-             * Bind dateRangeSlider bounds(min, max) method to the selector onchange event
-             */
-            $('#'+id1).change(function() {
-                if (!fct("Error : lower bound should be lower than upper bound")) {
-                    $('#'+id1+' option[value='+self.amin+']').attr("selected", "selected");
-                }
-            });
-            $('#'+id2).change(function() {
-                 if (!fct("Error : upper bound should be upper than lower bound")) {
-                    $('#'+id2+' option[value='+self.amax+']').attr("selected", "selected");
-                }
-            });
-            
-            
-            /*
              * Move map object
              */
             $('.map').css({
@@ -349,6 +295,91 @@
         };
         
         /*
+         * Display popup to change bounds values
+         */
+        this.askConfig = function() {
+            
+            var i, p, fct,
+                t = "",
+                id1 = msp.Util.getId(),
+                id2 = msp.Util.getId(),
+                self = this;
+            
+            /*
+             * Be sure that popup is not already displayed
+             */
+            if (self._p) {
+                return false;
+            }
+            
+            /*
+             * Set absolutes values if not set
+             */
+            for (i = self.absolutes.min; i <= self.absolutes.max; i++) {
+                t += '<option value="'+i+'">'+i+'</option>';
+            }
+            
+            /*
+             * Set search popup
+             */
+            self._p = new msp.Popup({
+                modal:true,
+                header:'<p>TimeLine</p>',
+                body:'<div class="description"><form>Change scale bounds from <select id="'+id1+'">'+t+'</select> to <select id="'+id2+'">'+t+'</select></form></div>',
+                onClose:function() {
+                    self._p = null;
+                }
+            });
+            
+            /*
+             * Ensure that selectable bounds are the same as the input bounds
+             */
+            $('#'+id1+' option[value='+self.amin+']').attr("selected", "selected");
+            $('#'+id2+' option[value='+self.amax+']').attr("selected", "selected");
+            
+            fct = function(msg) {
+                
+                var v1 = $('#'+id1).attr('value'),
+                    v2 = $('#'+id2).attr('value');
+               
+                /*
+                 * lower bound is always lower than upper bound
+                 */
+                if (parseInt(v1) < parseInt(v2)) {
+                    self.amin = v1;
+                    self.amax = v2;
+                    self.$timeLine.dateRangeSlider('bounds', new Date(v1,0,1), new Date(v2,0,1));
+                }
+                else {
+                    msp.Util.message(msp.Util._(msg));
+                    return false;
+                }
+                
+                return true;
+                
+            };
+            
+            /*
+             * Bind dateRangeSlider bounds(min, max) method to the selector onchange event
+             */
+            $('#'+id1).change(function() {
+                if (!fct("Error : lower bound should be lower than upper bound")) {
+                    $('#'+id1+' option[value='+self.amin+']').attr("selected", "selected");
+                }
+            });
+            $('#'+id2).change(function() {
+                 if (!fct("Error : upper bound should be upper than lower bound")) {
+                    $('#'+id2+' option[value='+self.amax+']').attr("selected", "selected");
+                }
+            });
+            
+            self._p.show();
+            
+            return true;
+            
+        };
+        
+        /*
          * Enable/disable date filters
          */
         this.enable = function(b) {
@@ -396,7 +427,7 @@
          */
         this.resize = function(scope) {
             scope.$timeLine.css({
-                width:(100 - ((100 + scope.tb.$d.outerWidth()) * 80 / msp.$map.width()))+'%'
+                width:(100 - (180 * 80 / msp.$map.width()))+'%'
             });
         };
         
