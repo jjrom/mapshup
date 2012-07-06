@@ -95,17 +95,11 @@
 
             /**
              * Layer creation
+             * 
+             * "featuresadded" event is not register because the Wikipedia plugin
+             * send a "loadend" after all features have been added
              */
-            var newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);
-
-            /*
-             * Add a featuresadded event
-             */
-            newLayer.events.register("featuresadded", newLayer, function() {
-                Map.onFeaturesAdded(this);
-            });
-
-            return newLayer;
+            return new OpenLayers.Layer.Vector(layerDescription.title, options);
         }
     }
 })(window.msp, window.msp.Map);
