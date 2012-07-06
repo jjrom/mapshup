@@ -387,6 +387,7 @@
          *   - remove
          *   - update (not used here)
          *   - features
+         *   - featuresupdated
          */
         this.onLayersEnd = function(action, layer, scope) {
 
@@ -407,7 +408,7 @@
              *  - vector layers are updated on "features" action
              *  - WMS layer are update on "update" action
              */
-            else if (action === "features" || (action === "update" && layer.CLASS_NAME === "OpenLayers.Layer.WMS")) {
+            else if (action === "features" || action === "featureskeep" || (action === "update" && layer.CLASS_NAME === "OpenLayers.Layer.WMS")) {
                 scope.removeLayer(layer);
                 scope.addLayer(layer);
             }
