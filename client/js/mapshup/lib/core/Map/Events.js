@@ -38,6 +38,14 @@
 
 /**
  * Define msp.Map events
+ * 
+ * Note on actions. Action name can be :
+ * 
+ *   - "add" : when a layer is added
+ *   - "remove" : when a layer is removed
+ *   - "update" : when a layer is updated (for instance after all WMS tiles has been loaded)
+ *   - "features" : when features are added to a layer and replaced eventual existing layer features 
+ *   - "featureskeep" : when features are added to existing features within a layer
  */
 (function (msp) {
       
@@ -180,7 +188,16 @@
                     }
                     
                     for (i = 0, l = self.events["layersend"].length; i < l; i++) {
+                        
                         obj = self.events["layersend"][i];
+                        
+                        /*
+                         * Update layer index if needed
+                         */
+                        if (extra.layer && extra.action === extra.action === "features") {
+                            msp.Map.Util.updateIndex(extra.layer);
+                        }
+                        
                         obj.handler(extra.action, extra.layer, obj.scope);
                     }
                     
