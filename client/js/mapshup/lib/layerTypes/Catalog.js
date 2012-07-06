@@ -158,13 +158,6 @@
                 }
           
             };
-            
-            /*
-             * Add a featuresadded event
-             */
-            newLayer.events.register("featuresadded", newLayer, function() {
-                Map.onFeaturesAdded(this);
-            });
 
             /**
              * Add this catalog to the list of catalogs

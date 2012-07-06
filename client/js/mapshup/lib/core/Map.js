@@ -805,28 +805,6 @@
         },
         
         /*
-         * Called when features are added to layer
-         *
-         * @param <Object> layer
-         *
-         */
-        onFeaturesAdded: function(layer) {
-
-            /*
-             * Update index
-             */
-            this.Util.updateIndex(layer);
-
-            /*
-             * Tell Map that map.layers changed
-             */
-            this.events.trigger("layersend", {
-                action:"features",
-                layer:layer
-            });
-        },
-
-        /*
          * Get current map context represented by
          * 
          *  - map extent

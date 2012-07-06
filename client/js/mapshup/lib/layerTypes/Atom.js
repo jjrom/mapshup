@@ -124,7 +124,15 @@
                  * Add a featuresadded event
                  */
                 newLayer.events.register("featuresadded", newLayer, function() {
-                    Map.onFeaturesAdded(this);
+                    
+                   /*
+                    * Tell mapshup that features were added
+                    */
+                    Map.events.trigger("layersend", {
+                        action:"features",
+                        layer:newLayer
+                    });
+                    
                 });
                 
                 /**
