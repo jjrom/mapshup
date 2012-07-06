@@ -183,7 +183,7 @@
                 /*
                  * Add pagination action
                  */
-                lm.addPagination(self.item);
+                lm.paginate(self.item);
                 
                 /*
                  * Add new item to the items array
@@ -497,17 +497,18 @@
              */
             msp.Map.events.register("resizeend", self, function(scope) {
                
-               /*
+                /*
                 * Set tab positions
                 */
                 scope.refreshTabs(scope);
                 
-               /*
-                * Reinitialize ul positions
+                /*
+                * Reinitialize ul positions and update pagination
                 */
-               for (var i = 0, l = scope.items.length; i < l; i++) {
-                   $('ul',scope.items[i].$d).css('left', 0);
-               }
+                for (var i = 0, l = scope.items.length; i < l; i++) {
+                    $('ul',scope.items[i].$d).css('left', 0);
+                    scope.updatePaginate(scope.items[i]);
+                }
                
             });
             
@@ -536,7 +537,7 @@
          */
         this.refreshTabs = function(scope) {
             
-            var first,last,perPage,nbPage,i,$t;
+            var first,last,perPage,nbPage,i,l,$t;
             
             /*
              * Hide all tabs except rastertab
@@ -611,6 +612,13 @@
                 }).show();
             }
             
+            /*
+             * Feature thumb pagination
+             */
+            for (i = 0, l = scope.items.length; i < l; i++) {
+                 
+                }
+           
             return;
         };
         
@@ -738,7 +746,7 @@
                 /*
                  * Add pagination action
                  */
-                self.addPagination(item);
+                self.paginate(item);
                 
                 /*
                  * Set tools
@@ -864,7 +872,7 @@
         /**
          * Add previous/next actions on item tab
          */
-        this.addPagination = function(item) {
+        this.paginate = function(item) {
             
             var $ul, self = this;
             
@@ -892,7 +900,13 @@
                         $ul.animate({
                             'left':moveleft+'px'
                         },100,function(){
+                            
                             self.scrollTo(f);
+                           /*
+                            * Update pagination display
+                            */
+                            self.updatePaginate(item);
+              
                         });
                     }
                     else {
@@ -903,7 +917,7 @@
                 
                 e.preventDefault();
                 
-            });
+            }).hide();
             $('#'+item.id+'p').click(function(e, f) {
                 
                 /* Bitwise operator is faster than Map.floor */
@@ -920,6 +934,12 @@
                         'left':moveleft+'px'
                     },100,function(){
                         self.scrollTo(f);
+                        
+                       /*
+                        * Update pagination display
+                        */
+                        self.updatePaginate(item);
+              
                     });
                     e.preventDefault();
                 }
@@ -928,7 +948,7 @@
                     self.scrollTo(f);
                 }
                 
-            });
+            }).hide();
 
             return true;
         };
@@ -1028,10 +1048,15 @@
                 $('#'+item.id+'n').trigger('click', f);
             }
             
+           /*
+            * Update pagination display
+            */
+            self.updatePaginate(item);
+                
+                
             return true;
             
         };
-        
         
         /**
          * Remove a layer from the panel
@@ -1256,7 +1281,7 @@
                     e.stopPropagation();
                         
                     item.layer["_msp"].searchContext.next();
-                        
+                   
                     return false; 
                 });
             }
@@ -1267,9 +1292,9 @@
             $('.loading', item.$tab).css('visibility', item.layer["_msp"].isLoaded ? 'hidden' : 'visible');
             
             /*
-             * Set features info
+             * Update pagination
              */
-            //$('.lyi', item.$d).html(size + "&nbsp;" + msp.Util._(size < 2 ? "feature" : "features"));
+            self.updatePaginate(item);
             
             return true;
                         
@@ -1446,6 +1471,31 @@
              * Goto page where active tab is visible
              */
             self.goTo(self.getPageIdx(item));
+            
+        };
+        
+        /*
+         * Update pagination visibility
+         */
+        this.updatePaginate = function(item) {
+            
+            var $ul = $('ul', item.$d),
+            $p = $('#'+item.id+'p'),
+            $n = $('#'+item.id+'n');
+            
+            if ($('li', $ul).size() > 0) {
+            
+                /*
+                 * Display previous 
+                 */
+                $('li a', $ul).first().offset().left < 0 ? $p.show() : $p.hide();
+
+                /*
+                 * Display next
+                 */
+                $('li a', $ul).last().offset().left > $('.thumbsWrapper',item.$d).width() ? $n.show() : $n.hide();
+            
+            }
             
         };
         
