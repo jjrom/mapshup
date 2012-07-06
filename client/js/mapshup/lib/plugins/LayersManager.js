@@ -421,7 +421,7 @@
                          * First check if item exist - if so update content
                          * Otherwise add a new item and show panel
                          */
-                        if (!scope.updateFeatures(item, msp.Map.Util.getFeatures(layer, layer['_msp'].layerDescription.sort))) {
+                        if (!scope.setFeatures(item, msp.Map.Util.getFeatures(layer, layer['_msp'].layerDescription.sort), false)) {
 
                             item = scope.add({
                                 icon:layer["_msp"].icon,
@@ -446,10 +446,17 @@
                     }
 
                     /*
-                     * Layer is updated
+                     * Refresh layer features content
                      */
                     if ((action ==="update" || action === "features") && !layer._tobedestroyed) {
-                        scope.updateFeatures(item, msp.Map.Util.getFeatures(layer, layer['_msp'].layerDescription.sort));
+                        scope.setFeatures(item, msp.Map.Util.getFeatures(layer, layer['_msp'].layerDescription.sort), false);
+                    }
+
+                    /*
+                     * Update layer features content
+                     */
+                    if (action === "featureskeep" && !layer._tobedestroyed) {
+                        scope.setFeatures(item, msp.Map.Util.getFeatures(layer, layer['_msp'].layerDescription.sort), true);
                     }
 
                     /*
@@ -489,7 +496,19 @@
              * Recompute tab position on window resize
              */
             msp.Map.events.register("resizeend", self, function(scope) {
-                scope.resize(scope);
+               
+               /*
+                * Set tab positions
+                */
+                scope.refreshTabs(scope);
+                
+               /*
+                * Reinitialize ul positions
+                */
+               for (var i = 0, l = scope.items.length; i < l; i++) {
+                   $('ul',scope.items[i].$d).css('left', 0);
+               }
+               
             });
             
             return self;
@@ -515,9 +534,9 @@
          * 
          * @input scope : reference to this object
          */
-        this.resize = function(scope) {
+        this.refreshTabs = function(scope) {
             
-            var first,last,perPage,nbPage,i,l,$t;
+            var first,last,perPage,nbPage,i,$t;
             
             /*
              * Hide all tabs except rastertab
@@ -592,12 +611,6 @@
                 }).show();
             }
             
-            /*
-             * Initialize ul positions
-             */
-            for (i = 0, l = scope.items.length; i < l; i++) {
-                $('ul',scope.items[i].$d).css('left', 0);
-            }
             return;
         };
         
@@ -781,7 +794,7 @@
                             $d.attr('jtitle', content.layer["_msp"].refresh ? "Stop tracking" : "Start tracking");
                             $('img', $d).attr('src',msp.Util.getImgUrl(content.layer["_msp"].refresh ? "spinoff.png" : "spin.png"));
                         }
-                   });
+                    });
                 }
                
                 /*
@@ -840,12 +853,12 @@
             /*
              * Update item content
              */
-            self.updateFeatures(item, content.features);
+            self.setFeatures(item, content.features, false);
             
             /*
              * Update tabs position
              */
-            self.resize(self);
+            self.refreshTabs(self);
             
             /*
              * Return the newly created item
@@ -967,7 +980,7 @@
                 self.page = page;
             }
             
-            self.resize(self);
+            self.refreshTabs(self);
           
         };
         
@@ -1065,7 +1078,7 @@
                     /*
                      * Update tabs position
                      */
-                    self.resize(self);
+                    self.refreshTabs(self);
                     
                     /*
                      * Activate first element
@@ -1094,18 +1107,20 @@
         };
         
         /*
-         * Update features array of an existing item
+         * Set a new thumbs array from a features array 
          * 
-         * @input item
+         * @input item 
+         * @input features
+         * @input boolean update : true to update, false to refresh
          */
-        this.updateFeatures = function(item, features) {
+        this.setFeatures = function(item, features, update) {
             
-            var i, f, icon, $m, size, id, $ul, self = this;
+            var i, start, max, f, icon, $m, size, id, $ul, self = this;
             
             /*
              * Paranoid mode
              */
-            if (!item) {
+            if (!item || !item.layer) {
                 return false;
             }
             
@@ -1120,6 +1135,12 @@
             size = features.length;
             
             /*
+             * The total number of features is the size of the features array
+             * except for layers with paginated search (catalogs)
+             */
+            max = item.layer["_msp"].searchContext ? item.layer["_msp"].searchContext.totalResults : size;
+            
+            /*
              * Tell user that layer is empty 
              */
             $m = $('#'+item.layer["_msp"].mspID+"m2");
@@ -1127,16 +1148,39 @@
             
             /*
              * Populate <ul> with items and set max width
+             * 
+             * If layer got a search context and the totalResults
+             * is greater than the number of features, then we
+             * add an additionnal "more..." thumb :)
+             * 
              */
-            $ul = $('ul', item.$d).empty().css({
-                'left':'0px',
-                'width': ((size * self.tw) + self.tw) + 'px'
+            $ul = $('ul', item.$d).css({
+                'width': ((size * self.tw) + self.tw + (max > size ? self.tw : 0)) + 'px'
             });
+            
+            /*
+             * If thumbs is updated do not reinit the layer
+             */
+            if (!update) {
+                $ul.empty().css({
+                    'left':'0px'
+                });
+            }
+            
+            /*
+             * Remove the 'more...' thumb 
+             */
+            $('#'+item.id+'mre').remove();
+            
+            /*
+             * Optimization - only repaint the new features in case of update
+             */
+            start = update ? $('li', $ul).size() : 0;
             
             /*
              * Roll over features
              */ 
-            for (i = 0; i < size; i++) {
+            for (i = start; i < size; i++) {
                 
                 f = features[i];
                 
@@ -1199,6 +1243,27 @@
                         });
                     }
                 })(f,$('#'+id));
+            }
+            
+            /*
+             * Add an additionnal thumb at the end of the thumbs for pagination
+             */
+            if (max > size) {
+                
+                $ul.append('<li><a href="" id="'+item.id+'mre"><span class="title">'+msp.Util._('Get more result')+'</span></a></li>');
+                
+                /*
+                 * Launch a new search
+                 */
+                $('#'+item.id+'mre').click(function(e){
+                        
+                    e.preventDefault();
+                    e.stopPropagation();
+                        
+                    item.layer["_msp"].searchContext.next();
+                        
+                    return false; 
+                });
             }
             
             /*
