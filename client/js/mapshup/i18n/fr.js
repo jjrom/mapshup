@@ -89,6 +89,7 @@
     i["Get capabilities"]="Récupération du fichier Capabilities";
     i["Get elevation profile"]="Obtenez le profil d&#39;élévation";
     i["Get feature info"]="Obtenir des information";
+    i["Get more results"]="Afficher plus de résultats";
     i["Global view"]="Vue globale";
     i["Google libraries not loaded. Streetview is disabled"]="La bibliothèque Google n&#39;est pas chargée. Streetview est désactivé";
     i["Hi"]="Salut";

@@ -87,6 +87,7 @@ Flickr
 Get capabilities
 Get elevation profile
 Get feature info
+Get more results
 Global view
 Google libraries not loaded. Streetview is disabled
 Hi

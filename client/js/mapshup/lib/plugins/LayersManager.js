@@ -1250,7 +1250,7 @@
              */
             if (max > size) {
                 
-                $ul.append('<li><a href="" id="'+item.id+'mre"><span class="title">'+msp.Util._('Get more result')+'</span></a></li>');
+                $ul.append('<li><a href="" id="'+item.id+'mre"><span class="title">'+msp.Util._('Get more results')+'</span></a></li>');
                 
                 /*
                  * Launch a new search
