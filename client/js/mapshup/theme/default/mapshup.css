@@ -1342,27 +1342,27 @@ div.olControlMousePosition {
     top:58px;
     width:100%;
 }
-.lm .thumbs .navigation {
+.lm .thumbs .previous, .lm .thumbs .next {
     position:absolute;
-    top:0px;
-    left:0px;
+    top:10px;
+    font-size:3em;
     margin:0px;
-    width:100px;
+    width:20px;
     height:100%;
+    line-height:100%;
     text-align:center;
-    border-right:3px solid #000;
-    background-color:rgba(199,100,0,0.3);
     z-index:10;
 }
-.lm .thumbs .navigation .lyi {
-    padding:5px 0 5px 0px;
-    text-transform:none;
+.lm .thumbs .previous {
+    left:5px;
 }
-.lm .thumbs .navigation .lyp {
-    font-size:3em;
+
+.lm .thumbs .next {
+    right:5px;
 }
-.lm .thumbs .navigation a {
-    color:#fff;
+
+.lm .thumbs .previous a, .lm .thumbs .next a {
+    color:#eee;
 }
 .lm .thumbs span.close {
     top:0px;
@@ -1374,8 +1374,8 @@ div.olControlMousePosition {
 }
 .lm .thumbs .thumbsWrapper{
     height:100%;
-    left:102px;
-    right:0px;
+    left:35px;
+    right:35px;
     overflow:hidden;
     position:absolute;
     top:0;

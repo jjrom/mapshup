@@ -139,7 +139,7 @@
                 e.stopPropagation();
                 self.goTo(self.page - 1);
             }).css({
-                left:103+'px'
+                left:35+'px'
             });
             self.$next = $('#'+idn).click(function(e){
                 e.preventDefault();
@@ -167,7 +167,7 @@
                     id:id,
                     type:'r',
                     features:[],
-                    $d:msp.Util.$$('#'+id, lm.$d).addClass("thumbs images").html('<div class="thumbsWrapper"><ul></ul></div><div class="text"><div class="navigation"><div class="lyi">'+msp.Util._("Images")+'</div><div class="lyp"><a href="#" id="'+id+'p" title="'+msp.Util._("Previous page")+'">&laquo;</a>&nbsp;<a href="#" id="'+id+'n" title="'+msp.Util._("Next page")+'">&raquo;</a></div></div></div>'),
+                    $d:msp.Util.$$('#'+id, lm.$d).addClass("thumbs images").html('<div class="thumbsWrapper"><ul></ul></div><div class="previous"><a href="#" id="'+id+'p" title="'+msp.Util._("Previous page")+'">&laquo;</a></div><div class="next"><a href="#" id="'+id+'n" title="'+msp.Util._("Next page")+'">&raquo;</a></div>'),
                     $tab:$('#'+tid)
                 };
 
@@ -594,7 +594,7 @@
              */
             if (scope.items[first] && scope.items[first].id !== scope.rasterItem.item.id) {
                 scope.items[first].$tab.css({
-                    left:scope.$next.is(':visible') ? scope.$next.position().left + scope.$next.outerWidth() : 103
+                    left:scope.$next.is(':visible') ? scope.$next.position().left + scope.$next.outerWidth() : 35
                 }).show();
             }
             
@@ -683,20 +683,15 @@
                  *      <div class="thumbsWrapper">
                  *        <ul></ul>
                  *      </div>
-                 *      <div class="text">
-                 *          <div class="navigation">
-                 *              <div>
-                 *                  ....
-                 *              </div>
-                 *              <div>
-                 *                  <a href="#" id="{uid}p"></a>
-                 *                  <a href="#" id="{uid}n"></a>
-                 *              <div>
-                 *          </div>    
+                 *      <div class="previous">
+                 *          <a href="#" id="{uid}p"></a>
                  *      </div>
+                 *      <div class="next">
+                 *          <a href="#" id="{uid}n"></a>
+                 *      <div>
                  *  </div>
                  */
-                $d = msp.Util.$$('#'+id, self.$d).addClass("thumbs images").html('<div class="thumbsWrapper"><ul></ul></div><div class="text"><div class="navigation"><div class="lyi"></div><div class="lyp"><a href="#" id="'+uid+'p" title="'+msp.Util._("Previous page")+'">&laquo;</a>&nbsp;<a href="#" id="'+uid+'n" title="'+msp.Util._("Next page")+'">&raquo;</a></div></div></div><div id="'+uid+'m2" class="mask"><h2>'+msp.Util._("This layer is empty")+'</h2></div><div id="'+uid+'m" class="mask maskh"><h2>'+msp.Util._("This layer is hidden")+'</h2>(Click to show it)</div>');
+                $d = msp.Util.$$('#'+id, self.$d).addClass("thumbs images").html('<div class="thumbsWrapper"><ul></ul></div><div class="previous"><a href="#" id="'+uid+'p" title="'+msp.Util._("Previous page")+'">&laquo;</a></div><div class="next"><a href="#" id="'+uid+'n" title="'+msp.Util._("Next page")+'">&raquo;</a></div><div id="'+uid+'m2" class="mask"><h2>'+msp.Util._("This layer is empty")+'</h2></div><div id="'+uid+'m" class="mask maskh"><h2>'+msp.Util._("This layer is hidden")+'</h2>(Click to show it)</div>');
                 
                 /*
                  * Append tab to panel
@@ -1274,7 +1269,7 @@
             /*
              * Set features info
              */
-            $('.lyi', item.$d).html(size + "&nbsp;" + msp.Util._(size < 2 ? "feature" : "features"));
+            //$('.lyi', item.$d).html(size + "&nbsp;" + msp.Util._(size < 2 ? "feature" : "features"));
             
             return true;
                         
