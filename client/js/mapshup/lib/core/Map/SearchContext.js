@@ -543,13 +543,30 @@
                      */
                     if (!data) {
                         
-                        msp.Util.message(layer.name + " : " + msp.Util._("No resut"));
+                        /*
+                         * Endless search
+                         * If nextRecord is greater than 1 then it is assumes that the search
+                         * is paginate. In this case the existing features are not removed
+                         * Otherwise it is assumes that this is a new search and the existing
+                         * features are removed
+                         */
+                        if (nextRecord === 1) {
+                            layer.destroyFeatures();
+                        }
                         
                         /*
-                         * Clean layer
+                         * Tells mapshup that features changed
                          */
-                        layer.destroyFeatures();
-                        msp.Map.onFeaturesAdded(layer);
+                        msp.Map.events.trigger("layersend", {
+                            action:"features",
+                            layer:layer
+                        });
+                        
+                        /*
+                         * Be kind with user
+                         */
+                        msp.Util.message(layer.name + " : " + msp.Util._("No resut"));
+                        
                         
                     }
                     else if (data.error) {
@@ -558,10 +575,16 @@
                     else {
 
                         /*
-                         * Clean layer
+                         * Endless search
+                         * If nextRecord is greater than 1 then it is assumes that the search
+                         * is paginate. In this case the existing features are not removed
+                         * Otherwise it is assumes that this is a new search and the existing
+                         * features are removed
                          */
-                        layer.destroyFeatures();
-
+                        if (nextRecord === 1) {
+                            layer.destroyFeatures();
+                        }
+                        
                         /*
                          * Process the GeoJSON result
                          *
@@ -572,16 +595,25 @@
                             externalProjection:msp.Map.pc
                         }).read(data);
 
+                        
                         /*
-                         * Be kind with users !
+                         * Empty result
                          */
                         l = features.length;
                         
                         if (!features || l === 0) {
+                            
+                            /*
+                             * Be kind with users !
+                             */
                             msp.Util.message(msp.Util._(layer.name) + " : " + msp.Util._("No result"));
+                            
                         }
                         else {
                             
+                            /*
+                             * Add features to the layer 
+                             */
                             layer.addFeatures(features);
                             
                             /*
@@ -595,25 +627,8 @@
                             if (lm && lm._o) {
                                 lm._o.show(lm._o.get(layer['_msp'].mspID));
                             }
-                                
-                            /*
-                             * Show layer if it is hidden ?
-                             */
-                            /*
-                            if (!layer.visibility) {
-                                msp.Map.Util.setVisibility(layer, true);
-                            }
-                            */
+                            
                         }
-                        
-                        /* 
-                         * Bug of OpenLayers 2.12 ? No "featuresadded" event is triggered
-                         * after layer.addFeatures
-                         * 
-                         * Tells mapshup that layer has been updated
-                         * 
-                         */
-                        msp.Map.onFeaturesAdded(layer);
                         
                         /*
                          * Avoid case where server don't take care of numRecordsPerPage value
@@ -632,7 +647,20 @@
                          * If data.totalResults is not set then set totalResults to the number of features
                          */
                         layer["_msp"].searchContext.totalResults = data.hasOwnProperty("totalResults") ? data.totalResults : l;
-
+                        
+                        /*
+                         * Endless search - Tricky part
+                         * 
+                         * If this is the first search (i.e. nextRecord === 1) then
+                         * tell LayersManager to compute entirely features thumbs (send "features" action)
+                         * Otherwise tells LayersManager to refresh features thumbs without removing
+                         * previous features (send "featureskeep" action)
+                         */
+                        msp.Map.events.trigger("layersend", {
+                            action:nextRecord === 1 ? "features" : "featureskeep",
+                            layer:layer
+                        });
+                        
                         /*
                          * Finally tells callback function that the search was
                          * successfully performed
