@@ -185,8 +185,7 @@ a.tab:hover
 /* Box shadow */
 #theBar,
 a.tab,
-.tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
-.lm .thumbs
+.tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev
 {
     box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
     -o-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
