@@ -360,8 +360,6 @@ a.tab,
 }
 .mask .loading a {
     background-color:#666;
-    box-shadow: 1px 1px 5px 0 rgba(128,128,128,0.5);
-    text-shadow: black 1px 1px 3px;
 }
 
 /**
