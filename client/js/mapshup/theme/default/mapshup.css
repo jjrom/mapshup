@@ -1197,10 +1197,10 @@ div.olControlMousePosition {
 }
 
 .olHandlerBoxZoomBox {
-    border: 1px solid #fff;
+    border: 2px dashed #f3961c;
     position: absolute;
     background-color: #fff;
-    opacity: 0.20;
+    opacity: 0.50;
     font-size: 1px;
     filter: alpha(opacity=50);
 }
