@@ -148,7 +148,6 @@ body, .po .body, .active, .selected
 #theBar,
 #tooltip .inner,
 #theBar .logo a,
-#menu .item:hover,
 a.tab,
 .button,
 .button a,
@@ -318,6 +317,7 @@ a.tab,
     width:180px;
     padding:5px;
     background-color:#eee;
+    border: 1px solid #ccc;
     -webkit-transform: rotate(-10deg);	
     -moz-transform: rotate(-10deg);
     -ms-transform: rotate(-10deg);
@@ -326,8 +326,8 @@ a.tab,
 }
 
 #menu .item:hover {
-    background-color:#666;
-    text-shadow: black 1px 1px 3px;
+    background-color:#ccc;
+    border: 1px solid #eee;
 }
 
 /* Coordinates following the mouse */
