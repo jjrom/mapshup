@@ -636,6 +636,7 @@ a.tab,
 /* Hilite class for feature information */
 .featureHilite {
     position:absolute;
+    border: 1px solid #fff;
     max-width:250px;
     padding:10px;
     overflow:hidden;
