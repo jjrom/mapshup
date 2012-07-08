@@ -1393,8 +1393,6 @@ div.olControlMousePosition {
     float:left;
     margin-top:2px;
     padding:2px;
-    text-shadow:1px 1px 1px #000;
-    text-decoration:none;
     height:50px;
     width:50px;
     -moz-opacity:.40; filter:alpha(opacity=40); opacity:.40;
