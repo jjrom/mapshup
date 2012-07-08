@@ -1107,7 +1107,7 @@
                      * (Note : this allow to display hilited feature info outside the map)
                      */
                     if (self.$featureHilite.length === 0) {
-                        self.$featureHilite = msp.Util.$$('#'+msp.Util.getId(), msp.$map).addClass("featureHilite shadow").hide();
+                        self.$featureHilite = msp.Util.$$('#'+msp.Util.getId(), msp.$map).addClass("featureHilite").hide();
                     }
 
                 }

@@ -732,7 +732,7 @@
              * Create a message container and associate it
              * to a new entry within the messages array
              */
-            msp.$container.append('<div id="' + id + '" class="message shadow"><div class="content"></div></div>');
+            msp.$container.append('<div id="' + id + '" class="message"><div class="content"></div></div>');
             $d = $('#' + id);
             self.messages[id] = $d;
             

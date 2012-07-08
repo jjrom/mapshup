@@ -250,11 +250,11 @@
                     rad = (angle * Math.PI) / 180;
 
                     if (left) {
-                        $m.append('<div class="item right shadow" id="'+item.id+'">'+msp.Util._(item.ti)+'&nbsp;<img class="middle" src="'+msp.Util.getImgUrl(item.ic)+'"/></div>');
+                        $m.append('<div class="item right" id="'+item.id+'">'+msp.Util._(item.ti)+'&nbsp;<img class="middle" src="'+msp.Util.getImgUrl(item.ic)+'"/></div>');
                         x = Math.cos(rad) * a - 200 + offsetX;
                     }
                     else {
-                        $m.append('<div class="item left shadow" id="'+item.id+'"><img class="middle" src="'+msp.Util.getImgUrl(item.ic)+'"/>&nbsp;'+msp.Util._(item.ti)+'</div>');
+                        $m.append('<div class="item left" id="'+item.id+'"><img class="middle" src="'+msp.Util.getImgUrl(item.ic)+'"/>&nbsp;'+msp.Util._(item.ti)+'</div>');
                         x = Math.cos(rad) * a - offsetX;
                     }
 

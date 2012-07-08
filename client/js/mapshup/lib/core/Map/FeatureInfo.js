@@ -81,7 +81,7 @@
              * within msp.Map.Util.Feature.toHTML()
              * 
              */
-            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('fi apo shadow');
+            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('fi apo');
             self.$d.html('<div class="main"></div>');
             
             /*

@@ -97,8 +97,6 @@
              *      </div>
              * </div>
              */
-            /*this.$d = msp.Util.$$('#gnm', msp.$map).html('<div class="content"><div class="header"></div></div>').addClass("apo shadow");
-            */
             this.$d = msp.Util.$$('#gnm', msp.$map).html('<div class="content"><div class="header"></div></div>')
             .css({
                 'background-image': 'url("'+msp.Util.getImgUrl("whereami_arrowdown.png")+'")',

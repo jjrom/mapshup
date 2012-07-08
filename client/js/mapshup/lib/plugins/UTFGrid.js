@@ -84,7 +84,7 @@
             /*
              * Create UTFGrid alert container
              */
-            self.$d = msp.Util.$$('#'+msp.Util.getId()).addClass("utfginfo shadow").click(function(){
+            self.$d = msp.Util.$$('#'+msp.Util.getId()).addClass("utfginfo").click(function(){
                 self.activate(!self.active);
             });
             

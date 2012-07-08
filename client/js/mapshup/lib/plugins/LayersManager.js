@@ -364,7 +364,7 @@
                 /*
                  * Set div references
                  */
-                self.$onTheFly = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('fi napo shadow').css('top', '100px').html('<div class="main"></div>');
+                self.$onTheFly = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('fi napo').css('top', '100px').html('<div class="main"></div>');
                 
             }
             

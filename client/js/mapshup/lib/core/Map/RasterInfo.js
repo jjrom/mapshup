@@ -78,7 +78,7 @@
             /*
              * Add content
              */
-            $content = self.pn.add('<div class="header"><div class="title"></div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi').addClass('shadow');
+            $content = self.pn.add('<div class="header"><div class="title"></div></div><div class="tabs"></div><div class="body expdbl"></div>', 'pfi');
             
             /*
              * Set panel position and height
