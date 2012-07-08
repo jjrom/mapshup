@@ -1415,9 +1415,6 @@ div.olControlMousePosition {
     height:44px;
     background-color:#000;
     border:3px solid #f9f9f9;
-    -moz-box-shadow:1px 1px 3px #000;
-    -webkit-box-shadow:1px 1px 3px #000;
-    box-shadow:1px 1px 3px #000;
 }
 
 .lm .thumbs a span.title {
