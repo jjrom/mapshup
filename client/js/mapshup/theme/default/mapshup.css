@@ -222,7 +222,7 @@ a.tab,
 }
 .map {
     position:absolute;
-    top:35px; /* Fullscreen map */
+    top:35px; /* Fullscreen map should be 0px */
     left:0px;
     right:0px;
     bottom:0px;
@@ -750,22 +750,7 @@ a.tab,
     height:16px;
     width:auto;
 }
-/*
-.fi .sheader {
-    height:30px;
-    line-height:30px;
-    text-transform:uppercase;
-    background-color:#fff;
-}
-.fi .sheader ul {
-    height:30px;
-    width:auto;
-}
-.fi .sheader li {
-    list-style:none;
-    float:left;
-}
-*/
+
 .fi td {
     padding:5px 0px;
 }
@@ -854,7 +839,8 @@ a.tab img {
     top:24px;
     right:0px;
     display:none;
-    background-color:rgba(243,150,28,0.5);
+    background-color:#f3961c;
+    border-top: 1px dashed #fff;
 }
 .tab .tools .item {
     text-align:center;
