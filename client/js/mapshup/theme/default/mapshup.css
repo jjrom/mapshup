@@ -513,11 +513,7 @@ a.tab,
 .po {
     position:absolute;
     display:none;
-    border: 1px solid rgba(0, 0, 0, 0.333);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    -o-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    border: 1px solid #ccc;
 }
 
 /* Popup fixed size */
