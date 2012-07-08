@@ -107,7 +107,6 @@ input[type="password"],input[type="text"] {
     -moz-box-sizing: border-box;
     background: none repeat scroll 0 0 #FFFFFF;
     border-color: #C0C0C0 #D9D9D9 #D9D9D9;
-    border-radius: 1px 1px 1px 1px;
     border-right: 1px solid #D9D9D9;
     border-style: solid;
     border-width: 1px;
@@ -1085,7 +1084,6 @@ a.tab img {
 /* Button */
 .button {
     background: #5C6166;
-    border-radius: 2px 2px 2px 2px;
     font-family:Arial, sans-serif;
     display: block;
     padding: 6px;
@@ -1216,9 +1214,6 @@ div.olControlMousePosition {
 .olControlOverviewMapElement {
     padding: 1px 0px 1px 1px;
     background-color:#000;
-    -moz-border-radius: 0 0 0 0;
-    -webkit-border-radius: 0 0 0 0;
-    border-radius: 0 0 0 0;
     filter:alpha(opacity=70);
     opacity:0.7;
 }
