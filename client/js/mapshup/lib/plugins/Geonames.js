@@ -92,16 +92,10 @@
              * Plugin div creation
              *
              * <div id="gnm">
-             *      <div class="content">
-             *          <div class="header"></div>
-             *      </div>
+             *      <div class="header"></div>
              * </div>
              */
-            this.$d = msp.Util.$$('#gnm', msp.$map).html('<div class="content"><div class="header"></div></div>')
-            .css({
-                'background-image': 'url("'+msp.Util.getImgUrl("whereami_arrowdown.png")+'")',
-                'background-position':'37px 100%'
-            });
+            this.$d = msp.Util.$$('#gnm', msp.$map).addClass("apo").html('<div class="content"><div class="header"></div></div>');
                 
             var scope = this,
             popup = {
@@ -118,15 +112,15 @@
                          */
                         xy = feature ? msp.Map.map.getPixelFromLonLat(feature.geometry.getBounds().getCenterLonLat()) : {
                             x:(msp.$map.width() - scope.$d.width()) / 2,
-                            y:(msp.$map.height() / 2) - scope.$d.height() - 20
+                            y:(msp.$map.height() / 2) - scope.$d.height()
                         };
 
                     /*
                      * Update div position
                      */
                     scope.$d.css({
-                        'left':xy.x - 58,
-                        'top':xy.y - scope.$d.height()
+                        'left': xy.x - 31,
+                        'top': xy.y - scope.$d.outerHeight() - 9
                     });
 
                     /**
@@ -239,7 +233,7 @@
                             scope.layer.addFeatures(newFeature);
 
                             /*
-                             * Hide existing #jWhereAmI and force the 
+                             * Hide existing div and set 
                              * layer visibility to true
                              */
                             scope.$d.hide();
