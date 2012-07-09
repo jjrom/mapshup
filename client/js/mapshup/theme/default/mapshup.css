@@ -155,7 +155,6 @@ a.tab,
 .help h1,
 .help span.hilite,
 .tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
-.apo,
 .hover:hover,
 .featureHilite,
 .olControlAttribution,
@@ -170,7 +169,6 @@ a.fi .actions a
 /* Main colored background-color - ORANGE CLAIR */
 #theBar,
 .tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
-.apo,
 .featureHilite,
 .sp a.active,
 a.tab.active,
@@ -181,7 +179,6 @@ a.tab:hover
 
 /* Box shadow */
 #theBar,
-a.tab,
 .tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev
 {
     box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
@@ -781,6 +778,7 @@ a.tab,
     width:auto;
     text-align:center;
     background-color:#fff;
+    border: 1px solid #ccc;
     padding:20px;
     z-index:38001;
 }
@@ -980,31 +978,6 @@ a.tab img {
     cursor:grabbing;
 }
 
-.ui-rangeSlider-arrow{
-    position:absolute;
-    font-size:3em;
-    height:40px;
-    line-height:40px;
-    width:26px;
-    text-align:center;
-    cursor:pointer;
-}
-
-.ui-rangeSlider-arrow.ui-rangeSlider-leftArrow{
-    left:0px;
-}
-
-.ui-rangeSlider-arrow.ui-rangeSlider-leftArrow:before{
-    content:'\00AB';
-}
-
-.ui-rangeSlider-arrow.ui-rangeSlider-rightArrow{
-    right:0px;
-}
-
-.ui-rangeSlider-arrow.ui-rangeSlider-rightArrow:before{
-    content:'\00BB';
-}
 
 .ui-rangeSlider-container{
     position:absolute;
@@ -1013,11 +986,7 @@ a.tab img {
     margin:0px 0px 50px 0px;
 }
 
-.ui-rangeSlider-withArrows .ui-rangeSlider-container{
-    margin:0px 35px;
-}
-
-.ui-rangeSlider-noArrow .ui-rangeSlider-container{
+.ui-rangeSlider .ui-rangeSlider-container{
     margin:0;
 }
 
@@ -1499,16 +1468,13 @@ div.olControlMousePosition {
     position:absolute;
     width:auto;
     min-width:200px;
-    height:71px;
+    height:40px;
     display:none;
-    background-repeat:no-repeat;
+    background-color:#f3961c;
     z-index:10100;
 }
-#gnm .content {
-    color:#000;
-    background-color:#f3961c;
-    height:50px;
-    width:100%;
+#gnm.apo:after {
+    border-color: #f3961c transparent transparent;
 }
 #gnm .header{
     float:none;
