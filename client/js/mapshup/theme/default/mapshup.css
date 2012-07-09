@@ -1253,6 +1253,9 @@ div.olControlMousePosition {
     right:20px;
     height:20px;
 }
+.olControlScaleLineTop, .olControlScaleLineBottom {
+    background-color:#eee;
+}
 
 #__CONTROL_ATTRIBUTION__ {
     background-color: rgba(255, 255, 255, 0.7);
