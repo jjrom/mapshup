@@ -1243,7 +1243,7 @@
                         return false; 
                     });
                     if (self.options.onTheFly) {
-                        $div.mouseover(function(e){
+                        $div.hover(function(e){
                             
                             /*
                              * Constrain the over popup position
@@ -1258,7 +1258,7 @@
                             msp.Map.Util.Feature.toHTML(f, $('.main', self.$onTheFly));
                             self.$onTheFly.show();
                             
-                        }).mouseout(function(e){
+                        },function(e){
                             self.$onTheFly.hide();
                         });
                     }

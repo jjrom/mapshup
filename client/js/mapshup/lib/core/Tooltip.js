@@ -91,7 +91,7 @@
              */
             if (!msp.Util.device.touch) {
 
-                domelement.mouseover(function(){
+                domelement.hover(function(){
 
                     var domelement = $(this);
 
@@ -165,7 +165,7 @@
 
                     self.$t.show();
 
-                }).mouseout(function(){
+                }, function(){
                     self.remove();
                 });
             }
