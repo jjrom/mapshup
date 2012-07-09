@@ -1149,7 +1149,7 @@
                 /*
                  * Hide divs when mouse is outside of msp.$map
                  */
-                msp.$map.mouseout(function (e){
+                msp.$map.mouseleave(function (e){
                     msp.Map.$coords.hide();
                     self.$featureHilite.hide();
                     return true;
