@@ -331,9 +331,11 @@
             }
             /*
              * No quicklook, only display thumbnail
+             * Note : add a "dftthb" class to tell mapshup that the thumbnail
+             * was added by mapshup and not by reading metadata
              */
             else {
-                $thumb.html('<img src="'+thumb+'"/>');
+                $thumb.html('<img class="dftthb" src="'+thumb+'"/>');
             }
 
             /*
@@ -446,6 +448,8 @@
                                     if (kk === 'photo') {
                                         for (i = 0, l = v[kk].length; i < l; i++) {
                                             id = msp.Util.getId();
+                                            /* Remove default thumbnail if any */
+                                            $('.dftthb', $thumb).remove();
                                             $thumb.append('<a href="'+v[kk][i]["url"]+'" title="'+v[kk][i]["name"]+'" id="'+id+'" class="image"><img height="50px" width="50px" src="'+v[kk][i]["url"]+'"/></a>');
                                             /*
                                              * Popup image
