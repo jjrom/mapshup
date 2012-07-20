@@ -968,7 +968,7 @@
                 handleRightClicks:true,
                 zoomWheelEnabled:true,
                 mouseWheelOptions:{
-                    interval:200,
+                    interval:50,
                     cumulative:false
                 },
                 dragPanOptions:{
