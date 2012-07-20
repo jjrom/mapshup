@@ -107,7 +107,7 @@
                 
                 if (event.keyCode === 13 || event.keyCode === 9) {
                     
-                    var lonlat,s,v = $.trim($(this).val()),key, service = null, c = v.split(' ');
+                    var lonlat,s,count = 0,v = $.trim($(this).val()),key, service = null, c = v.split(' ');
                     
                     /*
                      * Nothing to search
@@ -173,28 +173,33 @@
                      * Search for this shortcut within search services
                      */
                     for (key in self.services) {
+                        
+                        /*
+                         * Store the service
+                         */
+                        service = self.services[key];
+                        count++;
+                        
                         if (self.services[key].shortcut) {
                             if (s === self.services[key].shortcut + ':') {
-                                
-                                /*
-                                 * A service is found
-                                 */
-                                service = self.services[key];
                                 
                                 /*
                                  * Remove shortcut from the input bar
                                  */
                                 self.$input.val(v.substring(2,v.length));
                                 
-                                break;
+                                return self.search(service);
+                                
                             }   
                         }
+                        
                     }
                     
                     /*
                      * 4. Normal keywords case
+                     * Automatically search if only one service is present
                      */
-                    return self.search(service);
+                     return self.search(count > 1 ? null : service);
                 }
             });
             
@@ -211,7 +216,8 @@
                 self.add(d.url,{
                     type:d.stype,
                     shortcut:d.shortcut,
-                    msg:false
+                    msg:false,
+                    clusterized:d.clusterized
                 });
             }
 
@@ -380,7 +386,14 @@
                     d.title = d.name;
                     d.value = d.URLTemplate;
                     d.icon = d.icon ? msp.Util.getImgUrl(d.icon) : null;
-                    d.shortcut = options.shortcut
+                    d.shortcut = options.shortcut;
+                    
+                    /*
+                     * Clusterization
+                     */
+                    if (options.hasOwnProperty("clusterized")) {
+                        d.clusterized = options.clusterized;
+                    }
                     
                     /*
                      * Add new service
@@ -467,6 +480,13 @@
                 title:self.$input.val(),
                 q:self.$input.val()
             };
+            
+            /*
+             * Clusterization
+             */
+            if (service.hasOwnProperty("clusterized")) {
+                layerDescription.clusterized = service.clusterized;
+            }
             
             layer = msp.Map.Util.getLayerByMspID((new msp.Map.LayerDescription(layerDescription, msp.Map)).getMspID());
             
