@@ -479,7 +479,6 @@
              * Extend layerDescription with input options
              */
             $.extend(layerDescription, service.options);
-            
             layer = msp.Map.Util.getLayerByMspID((new msp.Map.LayerDescription(layerDescription, msp.Map)).getMspID());
             
             /*

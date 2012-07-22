@@ -123,7 +123,7 @@
          */
         this.getMspID = function() {
 
-            var layerType = this.map.layerTypes[this.obj.type];
+            var o = this.obj, layerType = this.map.layerTypes[o.type];
 
             /*
              * Layer type does not exists => return null
@@ -136,7 +136,26 @@
              * Default MspID is msp.crc32(layerDescription.type + (layerDescription.url || layerDescription.title || ""))
              * unless specified in the layerType object
              */
-            return $.isFunction(layerType.getMspID) ? layerType.getMspID(this.obj) : msp.Util.crc32(this.obj.type + (this.obj.title || ""));
+            if ($.isFunction(layerType.getMspID)) {
+                return layerType.getMspID(o);
+            }
+            else {
+                
+                /*
+                 * 
+                 * Special case of "replace" property - use "url" instead of "title" for unique identifier
+                 */
+                if (o.replace && o.hasOwnProperty("url")) {
+                    
+                    /*
+                     * Important : split url to remove additionnal parameters (i.e. after "?" char)
+                     */
+                    return msp.Util.crc32(o.type + o.url.split('?')[0]);
+                    
+                }
+            }
+            
+            return msp.Util.crc32(o.type + (o.title || ""));
         };
         
         /**
