@@ -217,7 +217,7 @@
                     type:d.stype,
                     shortcut:d.shortcut,
                     msg:false,
-                    clusterized:d.clusterized
+                    options:d.options || {}
                 });
             }
 
@@ -387,13 +387,7 @@
                     d.value = d.URLTemplate;
                     d.icon = d.icon ? msp.Util.getImgUrl(d.icon) : null;
                     d.shortcut = options.shortcut;
-                    
-                    /*
-                     * Clusterization
-                     */
-                    if (options.hasOwnProperty("clusterized")) {
-                        d.clusterized = options.clusterized;
-                    }
+                    d.options = options.options;
                     
                     /*
                      * Add new service
@@ -482,11 +476,9 @@
             };
             
             /*
-             * Clusterization
+             * Extend layerDescription with input options
              */
-            if (service.hasOwnProperty("clusterized")) {
-                layerDescription.clusterized = service.clusterized;
-            }
+            $.extend(layerDescription, service.options);
             
             layer = msp.Map.Util.getLayerByMspID((new msp.Map.LayerDescription(layerDescription, msp.Map)).getMspID());
             
