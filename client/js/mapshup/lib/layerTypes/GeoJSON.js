@@ -106,7 +106,9 @@
              * read from data description
              */
             if (layerDescription.hasOwnProperty("data")) {
-                self.load(layerDescription.data, layerDescription, newLayer);
+                if (!self.load(layerDescription.data, layerDescription, newLayer)) {
+                    msp.Map.removeLayer(newLayer, false);
+                }
             }
             /*
              * Otherwise, read data asynchronously from url
@@ -150,7 +152,9 @@
                     async:true,
                     dataType:"json",
                     success:function(data) {
-                        self.load(data, layerDescription, this.layer);
+                        if (!self.load(data, layerDescription, this.layer)) {
+                            msp.Map.removeLayer(this.layer, false);
+                        }
                     }
                 });
                 
@@ -171,7 +175,7 @@
              */
             if (!data || data.error) {
                 msp.Util.message(layer.name + " : " + (data ? data.error["message"] : "Error"), -1);
-                msp.Map.removeLayer(layer, false);
+                return false
             }
             else {
                 
@@ -180,7 +184,7 @@
                  */
                 if (data.features.length === 0) {
                     msp.Util.message(msp.Util._(layer.name)+ " : " + msp.Util._("No result"));
-                    msp.Map.removeLayer(layer, false);
+                    return false;
                 }
                 else {
                     
@@ -221,6 +225,8 @@
                 }
                 
             }
+            
+            return true;
 
         }
         

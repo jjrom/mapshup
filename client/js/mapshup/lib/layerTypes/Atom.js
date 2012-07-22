@@ -102,11 +102,13 @@
             newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);
 
             /*
-             * If layerDescription.data is set, the GeoJSON stream is directly
+             * If layerDescription.data is set, the Atom stream is directly
              * read from data description
              */
             if (layerDescription.hasOwnProperty("data")) {
-                self.load(layerDescription.data, layerDescription, newLayer);
+                if (!self.load(layerDescription.data, layerDescription, newLayer)) {
+                    msp.Map.removeLayer(newLayer, false);
+                }
             }
             /*
              * Otherwise, read data asynchronously from url
@@ -143,7 +145,9 @@
                     layer:newLayer,
                     async:true,
                     success:function(data) {
-                        self.load(data, layerDescription, this.layer);
+                        if (!self.load(data, layerDescription, this.layer)) {
+                            msp.Map.removeLayer(this.layer, false);
+                        }
                     }
                 });
                 
@@ -181,7 +185,7 @@
             }
             catch(e) {
                 msp.Util.message(layer.name + " : " + msp.Util._("Error"), -1);
-                msp.Map.removeLayer(layer, false);
+                return false;
             }
             
             if (features) {
@@ -191,7 +195,7 @@
                  */
                 if (features.length === 0) {
                     msp.Util.message(msp.Util._(layer.name)+ " : " + msp.Util._("No result"));
-                    msp.Map.removeLayer(layer, false);
+                    return false;
                 }
                 else {
                     
@@ -223,6 +227,8 @@
                 }
             
             }
+            
+            return true;
 
         }
         
