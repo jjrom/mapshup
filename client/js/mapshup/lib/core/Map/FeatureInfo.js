@@ -339,7 +339,7 @@
 
                 connector = feature.layer["_msp"].searchContext.connector;
                 
-                if (connector.action) {                    
+                if (connector && connector.action) {                    
                 
                     /*
                      * Add feature action
