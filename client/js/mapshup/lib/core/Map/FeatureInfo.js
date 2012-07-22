@@ -592,32 +592,6 @@
             self._triggered = false;
             
             /*
-             * If the feature belongs to a layer with a SearchContext
-             * then we should hilite the corresponding line in the result panel
-             */
-            if (feature.layer["_msp"].searchContext) {
-                
-                var $t = feature.layer["_msp"].searchContext.$t;
-                
-                if ($t) {
-                
-                    /*
-                     * Remove active class for every <tr>
-                     */
-                    $t.removeClass('active');
-                    
-                    /*
-                     * Hilite the feature corresponding element in search result
-                     */
-                    $t.each(function(idx) {
-                        if ($(this).attr('fid') === feature.id) {
-                            $(this).addClass('active');
-                        }
-                    });
-                }     
-            }
-            
-            /*
              * Hide menu
              */
             msp.menu.hide();
