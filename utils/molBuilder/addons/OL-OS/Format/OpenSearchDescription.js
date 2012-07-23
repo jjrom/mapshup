@@ -100,7 +100,7 @@ OpenLayers.Format.OpenSearchDescription = OpenLayers.Class(OpenLayers.Format.XML
             }
             else if (format) { // Only add recognized formats
                 URL.URLTemplate = urlNodes[i].getAttribute("template");
-                URL.searchParams = this.parseURLTemplate(URL.URLTemplate);
+                //URL.searchParams = this.parseURLTemplate(URL.URLTemplate);
                 desc.formats[format]=URL;        	
             }
         }
