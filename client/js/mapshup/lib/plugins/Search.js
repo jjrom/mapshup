@@ -199,7 +199,7 @@
                      * 4. Normal keywords case
                      * Automatically search if only one service is present
                      */
-                     return self.search(count > 1 ? null : service);
+                    return self.search(count > 1 ? null : service);
                 }
             });
             
@@ -270,7 +270,7 @@
                                     lm._o.show(lm._o.get(layer['_msp'].mspID));
                                 }
                                 
-                                /*
+                            /*
                                  * If only one feature is present in the result,
                                  * then automatically select it
                                 
@@ -370,10 +370,9 @@
                     }
 
                     /*
-                     * Set URLTemplate and searchParams object
+                     * Set URLTemplate
                      */
                     d.URLTemplate = d.formats[type].URLTemplate;
-                    d.searchParams = d.formats[type].searchParams;
                     
                     /*
                      * Set type
@@ -440,7 +439,7 @@
          */
         this.search = function(service) {
 
-            var layer,layerDescription,url,self = this;
+            var info, layer, layerDescription, self = this;
             
             /*
              * If no input service is set, then ask user
@@ -453,7 +452,7 @@
              * Construct the url based on the searchParameters
              * If url is null then we try the special case
              */
-            url = self.getRequestUrl(service);
+            info = self.getUrlInfo(service);
             
             /*
              * Empty val, no search
@@ -470,7 +469,8 @@
              */
             layerDescription = {
                 type:service.type,
-                url:url,
+                url:info.url,
+                pagination:info.pagination,
                 title:self.$input.val(),
                 q:self.$input.val()
             };
@@ -505,94 +505,137 @@
         };
         
         /**
-         * Set the search parameters from input service
+         * Build request url from service template
          */
-        this.setSearchTerms = function(service) {
+        this.getUrlInfo = function(service) {
+          
+            var interval, j, k, key, parts, pagination = {}, url = service.URLTemplate, kvps = "", self = this;
+           
+            /*
+             * Split URLTemplate into base url and parameters
+             */
+            parts = url.split("?");
             
-            var e1,e2,bbox,interval,
-            self = this;
-            
+            /*
+             * url is the first part of the URLTemplate i.e. everything before '?'
+             */
+            url = parts[0]+"?";
+
+            /*
+             *  Parameters are all kvps after '?'
+             */
+            for (j = 1, k = parts.length; j < k; j++) {
+                kvps += "?"+parts[j];
+            }
+            kvps = msp.Util.extractKVP(kvps);
+
             /*
              * Avoid XSS vulnerability
              */
             self.$input.val(msp.Util.noScript($.trim(self.$input.val())));
-
+           
             /*
-             * Set special params
+             * Get time
              */
-            if(service.searchParams != null) {
+            if (msp.timeLine.enabled) {
+                interval =  msp.timeLine.getInterval();
+            }
+            
+            /*
+            * KVP analysis
+            * Non template parameters (i.e. parameter not containing a '{') are
+            * considered to be part of the base url (i.e. added to the base url) 
+            */
+            for (key in kvps) {
+
+                /* Non template parameter */
+                if (kvps[key].indexOf('{') === -1) {
+                    continue;
+                }
                 
                 /*
                  * Set searchTerms
                  */
-                if (service.searchParams.hasOwnProperty("searchTerms")) {
-                    service.searchParams["searchTerms"] = self.$input.val();
+                if (kvps[key].indexOf('searchTerms') === 1) {
+                    kvps[key] = self.$input.val();
                 }
                 
                 /*
                  * Set bbox
                  */
-                if (service.searchParams.hasOwnProperty("geo:box")) {
-                    // BBOX is the viewport (e1), but restricting also to map maxextent (e2)
-                    e1 = msp.Map.Util.p2d(msp.Map.map.getExtent().clone());
-                    e2 = msp.Map.Util.p2d(msp.Map.map.getMaxExtent().clone());
-                    bbox = new OpenLayers.Bounds(
-                        Math.max(e1.left, e2.left),
-                        Math.max(e1.bottom, e2.bottom),
-                        Math.min(e1.right, e2.right),
-                        Math.min(e1.top, e2.top)).toBBOX();
-                    service.searchParams["geo:box"] = bbox;
+                else if (kvps[key].indexOf('geo:box') === 1) {
+                    kvps[key] = msp.Map.Util.convert({
+                        input:msp.Map.Util.p2d(msp.Map.map.getExtent().clone()),
+                        format:"EXTENT",
+                        precision:6,
+                        limit:true
+                    });
                 }
                 
                 /*
                  * Set lang
                  */
-                if (service.searchParams.hasOwnProperty("lang") != null) {
-                    service.searchParams["lang"] = msp.Config.i18n.lang;
+                else if (kvps[key].indexOf('lang') === 1) {
+                    kvps[key] = msp.Config.i18n.lang;
                 }
                 
                 /*
                  * Set date
                  */
-                if (msp.timeLine.enabled) {
-                    interval =  msp.timeLine.getInterval();
-                    if (service.searchParams.hasOwnProperty("time:start")) {
-                        service.searchParams["time:start"] = interval[0];
-                    }
-                    if (service.searchParams.hasOwnProperty("time:end")) {
-                        service.searchParams["time:end"] = interval[1];
-                    }
+                else if (interval && kvps[key].indexOf('time:start') === 1) {
+                    kvps[key] = interval[0];
                 }
-            }
-            
-        };
-        
-        /**
-         * Build request url from service template
-         */
-        this.getRequestUrl = function(service) {
-            
-            var name,value,regex,
-            url = service.URLTemplate;
-            
-            /*
-             * Build url from URLTemplate and searchParams if both are defined
-             */
-            if (url) {
+                else if (interval && kvps[key].indexOf('time:stop') === 1) {
+                    kvps[key] = interval[1];
+                }
                 
                 /*
-                 * Set params
+                 * NextRecord = OpenSearch "startIndex"
                  */
-                this.setSearchTerms(service);
-                
-                for (name in service.searchParams){
-                    value = service.searchParams[name];
-                    regex = new RegExp("\\{"+name+"\\??\\}");
-                    url = url.replace(regex, value);
+                else if (kvps[key].indexOf('startIndex') === 1) {
+                    pagination["nextRecord"] = {
+                        name:key,
+                        value:0
+                    }
                 }
+                
+                /*
+                 * numRecordsPerPage = OpenSearch "count"
+                 */
+                else if (kvps[key].indexOf('count') === 1) {
+                    pagination["numRecordsPerPage"] = {
+                        name:key,
+                        value:msp.Config["general"].numRecordsPerPage
+                    }
+                }
+                
+                else {
+                    kvps[key] = "";
+                }
+                
             }
             
-            return url;
+            /*
+             * Rebuild URL excluding pagination info
+             */
+            for (key in kvps) {
+                
+                if (pagination["numRecordsPerPage"] && key === pagination["numRecordsPerPage"].name) {
+                    continue;
+                }
+                if (pagination["nextRecord"] && key === pagination["nextRecord"].name) {
+                    continue;
+                }
+                if (kvps[key] === "") {
+                    continue;
+                }
+                url += key + "=" + kvps[key] + '&';
+            }
+            
+            return {
+                url:url, 
+                pagination:pagination
+            };
         };
 
         /*
