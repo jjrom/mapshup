@@ -165,6 +165,11 @@
     c["general"].mbtilesServiceUrl = "/utilities/mbtsrv.php?zxy=${z}/${x}/${y}&t=";
 
     /**
+     * Maximum number of records returns per page in a search context
+     */
+    c["general"].numRecordsPerPage = 20;
+    
+    /**
      * Theme path
      * The path should be relative to the application rootUrl
      */
@@ -652,7 +657,6 @@
         name:"Catalog",
         options:{
             nextRecord:1,
-            numRecordsPerPage:20,
             connectors:[
             /**
                  * CSW ISO Catalog connector

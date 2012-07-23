@@ -74,7 +74,6 @@
              */
             $.extend(self.options, {
                 nextRecord:self.options.nextRecord || 1,
-                numRecordsPerPage:self.options.numRecordsPerPage || 20,
                 connectors:self.options.connectors || []
             });
 
@@ -356,7 +355,7 @@
                     autoSearch:false,
                     nextRecord:_msp.layerDescription.nextRecord || scope.options.nextRecord,
                     nextRecordAlias:connector.nextRecordAlias,
-                    numRecordsPerPage:_msp.layerDescription.numRecordsPerPage || scope.options.numRecordsPerPage, 
+                    numRecordsPerPage:_msp.layerDescription.numRecordsPerPage || msp.Config["general"].numRecordsPerPage, 
                     numRecordsPerPageAlias:connector.numRecordsPerPageAlias,
                     callback:_msp.layerDescription.hasOwnProperty("callback") ? _msp.layerDescription.callback : null, 
                     scope:scope
