@@ -549,7 +549,7 @@
                     newLayer["_msp"].group = layerGroup;
                     layerGroup.add(newLayer);
                 }
-
+                
                 /* 
                  * Trigger events layersend
                  */
@@ -566,7 +566,7 @@
                 }
 
             }
-
+            
             return newLayer;
         },
         
@@ -866,7 +866,7 @@
                      */
                     for (key in layer["_msp"].layerDescription) {
                         if (key !== "layer" && key !== "ol") {
-                           ld[key] = layer["_msp"].layerDescription[key];
+                            ld[key] = layer["_msp"].layerDescription[key];
                         }
                     }
                     

@@ -109,6 +109,14 @@
                 if (!self.load(layerDescription.data, layerDescription, newLayer)) {
                     msp.Map.removeLayer(newLayer, false);
                 }
+                else {
+
+                    /*
+                     * Tell user that layer is added
+                     */
+                    msp.Util.message(msp.Util._("Added")+ " : " + msp.Util._(newLayer.name));
+
+                }
             }
             /*
              * Otherwise, read data asynchronously from url
@@ -127,7 +135,7 @@
                  */
                 newLayer.events.register("featuresadded", newLayer, function() {
                     
-                   /*
+                    /*
                     * Tell mapshup that features were added
                     */
                     Map.events.trigger("layersend", {
@@ -143,17 +151,22 @@
                  */
                 url = urlModifier ? urlModifier + encodeURIComponent(layerDescription.url + msp.Util.abc) : layerDescription.url;
 
-                /**
-                 * Retrieve FeatureCollection from server
-                 */
                 $.ajax({
-                    url:msp.Util.proxify(msp.Util.getAbsoluteUrl(url)),
+                    url:msp.Util.proxify(msp.Util.paginate(url, newLayer["_msp"].pagination)),
                     layer:newLayer,
                     async:true,
                     dataType:"json",
                     success:function(data) {
                         if (!self.load(data, layerDescription, this.layer)) {
                             msp.Map.removeLayer(this.layer, false);
+                        }
+                        else {
+                            
+                            /*
+                             * Tell user that layer is added
+                             */
+                            msp.Util.message(msp.Util._("Added")+ " : " + msp.Util._(this.layer.name));
+
                         }
                     }
                 });
@@ -169,6 +182,8 @@
          */
         load: function(data, layerDescription, layer) {
             
+            var l,p;
+            
             /*
              * First check if there is no error
              * Otherwise, display results
@@ -179,25 +194,48 @@
             }
             else {
                 
+                l = data.features.length;
+                p = layer['_msp'].pagination;
+                
                 /*
                  * No features then remove layer
                  */
-                if (data.features.length === 0) {
+                if (l === 0) {
                     msp.Util.message(msp.Util._(layer.name)+ " : " + msp.Util._("No result"));
                     return false;
                 }
                 else {
                     
                     /*
-                     * Tell user that layer is added
-                     */
-                    msp.Util.message(msp.Util._("Added")+ " : " + msp.Util._(layer.name));
-
-                    /*
                      * Set layer isLoaded status to true
                      */
                     layer['_msp'].isLoaded = true;
+                    
+                    /*
+                     * Pagination
+                     */
+                    if (p) {
+                        
+                        /*
+                        * Avoid case where server don't take care of numRecordsPerPage value
+                        */
+                        if (l > p.numRecordsPerPage.value) {
+                            p.numRecordsPerPage.value = l;
+                        }
+                        
+                        /*
+                        * Set nextRecord new value
+                        */
+                        p.nextRecord.value = p.nextRecord.value + l;
 
+                        /*
+                        * Update the totalResults value
+                        * If data.totalResults is not set then set totalResults to the number of features
+                        */
+                        p.totalResults = data.hasOwnProperty("totalResults") ? data.totalResults : l;
+                        
+                    }
+                     
                     /*
                      * By default, GeoJSON stream is assume to be in EPSG:4326 projection
                      * unless srs is specified in EPSG:3857 or EPSG:900913
@@ -228,6 +266,50 @@
             
             return true;
 
+        },
+        
+        /*
+         * Load next page of features
+         */
+        next: function(layer) {
+            
+            var self = this,
+            p = layer["_msp"].pagination,
+            ld = layer["_msp"].layerDescription;
+            
+            /*
+             * Paranoid mode
+             */
+            if (!p) {
+                return false;
+            }
+            
+            /*
+             * We are already at the last page
+             * Do nothing and returns false
+             */
+            if (p.totalResults && (p.nextRecord.value > p.totalResults)) {
+                return false;
+            }
+
+           /*
+            * Retrieve FeatureCollection from server
+            */
+            msp.Util.ajax({
+                url:msp.Util.proxify(msp.Util.paginate(ld.url, p)),
+                layer:layer,
+                async:true,
+                dataType:"json",
+                success:function(data) {
+                    self.load(data, ld, this.layer);
+                }
+            },{
+                title:msp.Util._("Retrieve features"),
+                cancel:true 
+            });
+
+            return true;
+           
         }
         
     }

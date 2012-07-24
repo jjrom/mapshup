@@ -595,7 +595,7 @@
                 else if (kvps[key].indexOf('startIndex') === 1) {
                     pagination["nextRecord"] = {
                         name:key,
-                        value:0
+                        value:1
                     }
                 }
                 

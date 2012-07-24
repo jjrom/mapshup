@@ -1139,6 +1139,35 @@
         },
         
         /**
+         * Add pagination info to an input url
+         *
+         * @input {String} url : url to paginate
+         * @input {Object} pagination : pagination info
+         *                  {
+         *                      nextRecord:{
+         *                          name: // name of the nextRecord key
+         *                          value: // value of nextRecord
+         *                      },
+         *                      numRecordsPerPage:{
+         *                          name: // name of the numRecordsPerPage key
+         *                          value: // value of numRecordsPerPage
+         *                      }
+         *                  }
+         */
+        paginate: function(url, p) {
+            if (p) {
+                if (p.nextRecord) {
+                    url = this.repareUrl(url) + p.nextRecord.name + "=" + p.nextRecord.value;
+                }
+                if (p.numRecordsPerPage) {
+                    url = this.repareUrl(url) + p.numRecordsPerPage.name + "=" + p.numRecordsPerPage.value;
+                }
+            }
+            return url;
+        },
+        
+        
+        /**
          * Return a "proxified" version of input url
          *
          * @input {String} url : url to proxify

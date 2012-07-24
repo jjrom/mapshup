@@ -1135,7 +1135,7 @@
          */
         this.setFeatures = function(item, features, update) {
             
-            var i, start, max, f, icon, $m, size, id, $ul, self = this;
+            var p, i, start, max, f, icon, $m, size, id, $ul, self = this;
             
             /*
              * Paranoid mode
@@ -1156,9 +1156,10 @@
             
             /*
              * The total number of features is the size of the features array
-             * except for layers with paginated search (catalogs)
+             * except for layers with paginated search (catalogs or layer with pagination)
              */
-            max = item.layer["_msp"].searchContext ? item.layer["_msp"].searchContext.totalResults : size;
+            p = item.layer["_msp"].searchContext || item.layer["_msp"].pagination;
+            max = p ? p.totalResults : size;
             
             /*
              * Tell user that layer is empty 
@@ -1279,9 +1280,21 @@
                         
                     e.preventDefault();
                     e.stopPropagation();
-                        
-                    item.layer["_msp"].searchContext.next();
-                   
+                    
+                    /*
+                     * Two cases : catalogs (i.e. got a _msp.searchContext) and paginated layers
+                     * (i.e. got a _msp.pagination)
+                     */
+                    if (item.layer["_msp"].searchContext) {
+                        item.layer["_msp"].searchContext.next();
+                    }
+                    else if (item.layer["_msp"].pagination) {
+                        var layerType = msp.Map.layerTypes[item.layer["_msp"].layerDescription.type];
+                        if ($.isFunction(layerType.next)) {
+                            layerType.next(item.layer);
+                        }
+                    }
+                    
                     return false; 
                 });
             }
