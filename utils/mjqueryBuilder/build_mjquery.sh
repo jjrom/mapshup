@@ -52,7 +52,7 @@ fi
 echo "Building mjquery.js"
 cat $jquerydir/jquery-1.7.2.min.js > $mjquerydir/mjquery.js.tmp
 cat $jquerydir/jquery-ui-1.8.21.custom.min.js >> $mjquerydir/mjquery.js.tmp
-
+#cat $jquerydir/mousewheel/jquery.mousewheel.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/idTabs/jquery.idTabs.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/jqplot/jquery.jqplot.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/jqplot/plugins/jqplot.canvasTextRenderer.min.js >> $mjquerydir/mjquery.js.tmp
