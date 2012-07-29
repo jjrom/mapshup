@@ -46,7 +46,7 @@
 
             /* Add scaleBar within the inner bar */
             this.scaleBar = $("<div class='ui-rangeSlider-scaleBar' />");
-            this.innerBar.append(this.scaleBar);
+            this.innerBar.append(this.scaleBar);        
                         
             this.element.addClass("ui-dateRangeSlider");
         },
@@ -55,7 +55,7 @@
             this.element.removeClass("ui-dateRangeSlider");
             $.ui.rangeSlider.prototype.destroy.apply(this);
         },
-
+       
         _setOption: function(key, value){
             if ((key === "defaultValues" || key === "bounds") && typeof value !== "undefined" && value !== null && typeof value.min !== "undefined" && typeof value.max !== "undefined" && value.min instanceof Date && value.max instanceof Date){
                 $.ui.rangeSlider.prototype._setOption.apply(this, [key, {
