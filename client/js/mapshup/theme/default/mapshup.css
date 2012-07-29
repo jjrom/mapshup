@@ -886,6 +886,7 @@ a.tab img {
     width:auto;
     height:40px;
     right:30px;
+    z-index:100;
 }
 #timeLine .tools .item {
     text-align:center;
@@ -991,12 +992,12 @@ a.tab img {
 }
 
 .ui-rangeSlider-label{
-    top:-35px;
-    padding:10px;
+    top:15px;
+    padding:0px 10px;
     margin:0px 2px 2px;
-    color:#fff;
-    background-color:#000;/*rgba(243, 150, 28, 0.5);*/
     text-shadow: black 1px 1px 3px;
+    cursor:col-resize;
+    z-index:50;
 }
 
 /************************************
