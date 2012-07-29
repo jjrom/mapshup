@@ -195,7 +195,7 @@
             else {
                 
                 l = data.features.length;
-                p = layer['_msp'].pagination;
+                p = layer['_msp'].pagination || {};
                 
                 /*
                  * No features then remove layer
@@ -214,7 +214,7 @@
                     /*
                      * Pagination
                      */
-                    if (p) {
+                    if (p.numRecordsPerPage && p.nextRecord) {
                         
                         /*
                         * Avoid case where server don't take care of numRecordsPerPage value
