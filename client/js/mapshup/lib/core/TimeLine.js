@@ -213,7 +213,7 @@
             self.$timeLine.dateRangeSlider({
                 arrows:false,
                 wheelMode:"scroll",
-                valueLabels:"change",
+                valueLabels:"show",
                 bounds:options.bounds,
                 defaultValues:options.values
             });
