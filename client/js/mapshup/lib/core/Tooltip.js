@@ -161,6 +161,12 @@
                                 left: pos.left + pos.width + 10 + offset
                             });
                             break;
+                        case 'nw':
+                            self.$t.css({
+                                top: pos.top + pos.height + 5 + offset,
+                                left: pos.left
+                            });
+                            break;
                     }
 
                     self.$t.show();
