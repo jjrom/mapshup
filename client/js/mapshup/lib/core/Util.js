@@ -674,7 +674,9 @@
                      */
                     (function(d, a, c, v){
                         a.click(function(e){
-                            c(v);
+                            if ($.isFuntion(c)){
+                                c(v);
+                            }
                             d.remove();
                             return false;
                         });
