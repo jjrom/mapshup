@@ -613,7 +613,9 @@
                         
                         if (type === "date") {
                             if (self.isDateOrInterval(v) || self.isISO8601(v)) {
-                                callback(v);
+                                if ($.isFunction(callback)) {
+                                    callback(v);
+                                }
                                 popup.remove(); 
                             }
                             else {
@@ -622,7 +624,9 @@
                         }
                         else if (type === "bbox") {
                             if (self.isBBOX(v)) {
-                                callback(v);
+                                if ($.isFunction(callback)) {
+                                    callback(v);
+                                }
                                 popup.remove(); 
                             }
                             else {
@@ -630,7 +634,9 @@
                             }
                         }
                         else {
-                            callback(v);
+                            if ($.isFunction(callback)) {
+                                callback(v);
+                            }
                             popup.remove(); 
                         }
 
@@ -1226,10 +1232,10 @@
                 return str.replace(/{+([^}])+}/g, function(m) {
                     
                     var k,
-                        key = m.replace(/[{}]/g, ''),
-                        value = keys[key];
+                    key = m.replace(/[{}]/g, ''),
+                    value = keys[key];
                         
-                   /*
+                    /*
                     * Roll over the modifiers associative array.
                     * 
                     * Associative array entry is the key
