@@ -658,7 +658,7 @@
                 var el,
                 icon,
                 count = 0,
-                $p = popup.$b.append((description ? '<p class="center">'+description+'</p>' : '') + '<p class="center"></p>').children().last();
+                $p = popup.$b.append((description ? '<p class="center">'+description+'</p>' : ''));
                 
                 /*
                  * Roll over items
@@ -674,7 +674,7 @@
                      */
                     (function(d, a, c, v){
                         a.click(function(e){
-                            if ($.isFuntion(c)){
+                            if ($.isFunction(c)){
                                 c(v);
                             }
                             d.remove();
