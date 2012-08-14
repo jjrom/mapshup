@@ -453,7 +453,9 @@
             /*
              * Paranoid mode
              */
-            additional = additional || {};
+            additional = additional || {
+                params:""
+            };
             
             /*
              * Construct the url based on the searchParameters
@@ -464,7 +466,7 @@
             /*
              * Empty val, no search except if additional parameters are set
              */
-            if (self.$input.val() === "" && !additional.params) {
+            if (self.$input.val() === "" && additional.params === "") {
                 return false;
             }
             
