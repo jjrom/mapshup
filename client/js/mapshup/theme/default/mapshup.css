@@ -220,7 +220,7 @@ a.tab:hover
 .map {
     position:absolute;
     top:35px; /* Fullscreen map should be 0px */
-    left:0px;
+    left:250px;
     right:0px;
     bottom:0px;
     overflow:hidden;
@@ -1354,10 +1354,9 @@ div.olControlMousePosition {
     padding:2px;
     height:50px;
     width:50px;
-    -moz-opacity:.40; filter:alpha(opacity=40); opacity:.40;
 }
-.lm .thumbs ul li a:hover, .lm .thumbs ul li a.hilite {
-    -moz-opacity:1; filter:alpha(opacity=100); opacity:1;
+.lm .thumbs ul li a:hover img, .lm .thumbs ul li a.hilite img {
+    border:3px solid #f3961c;
 }
 
 .lm .images ul li a img{
