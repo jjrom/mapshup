@@ -615,9 +615,10 @@
             /*
              * Feature thumb pagination
              */
+            /* TODO ?
             for (i = 0, l = scope.items.length; i < l; i++) {
                  
-                }
+            }*/
            
             return;
         };
@@ -889,13 +890,14 @@
 
                 /* Bitwise operator is faster than Map.floor */
                 var left = parseInt($ul.css('left'),10),
-                moveleft = left - (((($(window).width() - 44) / self.tw)|0)*self.tw),
+                w = msp.$map.width(),
+                moveleft = left - ((((w - 44) / self.tw)|0)*self.tw),
                 ulWidth = msp.Util.getHashSize(item.features) * self.tw + self.tw;
 
                 /*
                  * Move only if we do not reach the last page
                  */
-                if(ulWidth - Math.abs(left) > $(window).width()){
+                if(ulWidth - Math.abs(left) > w){
                     if (!f) {
                         $ul.animate({
                             'left':moveleft+'px'
@@ -922,7 +924,8 @@
                 
                 /* Bitwise operator is faster than Map.floor */
                 var left = parseInt($ul.css('left'),10),
-                moveleft = left + (((($(window).width() - 44) / self.tw)|0)*self.tw);
+                w = msp.$map.width(),
+                moveleft = left + ((((w - 44) / self.tw)|0)*self.tw);
 
                 if(left >= 0){ 
                     e.preventDefault();
