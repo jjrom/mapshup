@@ -437,8 +437,9 @@
          * user is asked to choose a set service
          * 
          * @input service : service to search in
+         * @input additional : additional parameters to add to the search service (form "&key1=val1&key2=val2&...")
          */
-        this.search = function(service) {
+        this.search = function(service, additional) {
 
             var info, layer, layerDescription, self = this;
             
@@ -450,15 +451,20 @@
             }
             
             /*
+             * Paranoid mode
+             */
+            additional = additional || {};
+            
+            /*
              * Construct the url based on the searchParameters
              * If url is null then we try the special case
              */
             info = self.getUrlInfo(service);
             
             /*
-             * Empty val, no search
+             * Empty val, no search except if additional parameters are set
              */
-            if (self.$input.val() === "") {
+            if (self.$input.val() === "" && !additional.params) {
                 return false;
             }
             
@@ -470,9 +476,9 @@
              */
             layerDescription = {
                 type:service.type,
-                url:info.url,
+                url:info.url + additional.params, // concatenate url with additional parameters
                 pagination:info.pagination,
-                title:self.$input.val(),
+                title:self.$input.val() || additional.title, // if input value is not set
                 q:self.$input.val()
             };
             
