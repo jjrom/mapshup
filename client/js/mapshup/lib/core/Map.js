@@ -423,9 +423,11 @@
                 /*
                  * Tell user a non mapshup layer has been added (only if it has been loaded)
                  */
+                /* TODO : remove
                 if (!newLayer["_msp"].mspLayer && newLayer["_msp"].isLoaded) {
                     msp.Util.message(msp.Util._("Added")+ " : " + msp.Util._(newLayer.name));
                 }
+                */
 
                 /*
                  * If no "loadstart" has been defined

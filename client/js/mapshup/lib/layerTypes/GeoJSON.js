@@ -114,8 +114,9 @@
                     /*
                      * Tell user that layer is added
                      */
+                    /* TODO : remove
                     msp.Util.message(msp.Util._("Added")+ " : " + msp.Util._(newLayer.name));
-
+                    */
                 }
             }
             /*
@@ -165,8 +166,9 @@
                             /*
                              * Tell user that layer is added
                              */
+                            /* TODO : remove
                             msp.Util.message(msp.Util._("Added")+ " : " + msp.Util._(this.layer.name));
-
+                            */
                         }
                     }
                 });
