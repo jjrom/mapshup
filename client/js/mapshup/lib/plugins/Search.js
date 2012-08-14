@@ -324,6 +324,7 @@
              */
             $.ajax({
                 url:msp.Util.proxify(msp.Util.getAbsoluteUrl(url)),
+                origin:url,
                 async:true,
                 success:function(data) {
                     
@@ -383,7 +384,7 @@
                      * Set mandatory values for choose() function
                      */
                     d.title = d.name;
-                    d.value = d.URLTemplate;
+                    d.value = this.origin; // Value === origin
                     d.icon = d.icon ? msp.Util.getImgUrl(d.icon) : null;
                     d.shortcut = options.shortcut;
                     d.options = options.options;
@@ -391,7 +392,7 @@
                     /*
                      * Add new service
                      */
-                    self.services[d.URLTemplate] = msp.Util.clone(d);
+                    self.services[this.origin] = msp.Util.clone(d);
                     
                     /*
                      * Tell user that service is loaded
