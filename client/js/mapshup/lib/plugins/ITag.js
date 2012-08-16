@@ -130,6 +130,7 @@
                         max: bounds.max || self.options.bounds.max,
                         slide: function(event, ui) {
                             $("#"+id+"v").html(ui.value === 0 ? "not set" : "&gt; " + ui.value + "%");
+                            ui.value === 0 ? $("#"+id+"v").removeClass("hilited") : $("#"+id+"v").addClass("hilited");
                         },
                         stop: function(event, ui) {
                             
@@ -151,6 +152,7 @@
                      */
                     v = $("#"+id).slider("value");
                     $("#"+id+"v").html(v === 0 ? " not set" : " &gt; " + v + "%");
+                    v === 0 ? $("#"+id+"v").removeClass("hilited") : $("#"+id+"v").addClass("hilited");
                     if (v === 0) {
                         delete self.values[e.key];
                     }
