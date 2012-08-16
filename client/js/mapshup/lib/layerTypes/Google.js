@@ -71,13 +71,22 @@
             /**
              * TODO : Why ????
              * 
-             * Apparently there is a bug with Safari and Google maps
+             * Apparently there is a bug with Safari < 6 and Google maps
              * Google layer are not added in this case
              * 
              * Update : Chrome browser on Mac OS X tells also that it is Safari...
              */
             if (/Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)) {
-                return null;
+                
+                var idx;
+                
+                /* Safari < 6 is broken */
+                idx = navigator.userAgent.indexOf("Version");
+                if (idx !== -1) {
+                    if (parseFloat(navigator.userAgent.substring(idx + 8).split(' ')[0]) < 6) {
+                        return null;
+                    }
+                }
             }
             
             /**
