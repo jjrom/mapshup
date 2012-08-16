@@ -119,7 +119,7 @@
                      */
                     if (e.image) {
                         style = "background-image:url('"+e.image+"')";
-                        classes = 'class="image"';
+                        classes = 'class="backgrounded"';
                     }
                     
                     $d.append('<div style="'+style+'" ' + classes + '>' + e.title + ' <span id="'+id+'v"/></span></div><div id="'+id+'" class="element"></div>')
