@@ -122,17 +122,19 @@
                         classes = 'class="backgrounded"';
                     }
                     
-                    $d.append('<div style="'+style+'" ' + classes + '>' + e.title + ' <span id="'+id+'v"/></span></div><div id="'+id+'" class="element"></div>')
+                    $d.append('<div id="'+id+'r" jtitle="Click to deactivate" style="'+style+'" ' + classes + '>' + e.title + ' <span id="'+id+'v"/></span></div><div id="'+id+'" class="element"></div>')
                     $("#"+id).slider({
                         range: "min",
                         value: e.value || self.options.value,
                         min: bounds.min || self.options.bounds.min,
                         max: bounds.max || self.options.bounds.max,
                         slide: function(event, ui) {
-                            $("#"+id+"v").html(ui.value === 0 ? "not set" : "&gt; " + ui.value + "%");
+                            $("#"+id+"v").html("&gt; " + ui.value + "%");
                             ui.value === 0 ? $("#"+id+"v").removeClass("hilited") : $("#"+id+"v").addClass("hilited");
                         },
                         stop: function(event, ui) {
+                            
+                            $("#"+id+"r").removeClass("inactive");
                             
                             /*
                              * Store value 
@@ -144,14 +146,27 @@
                                 self.values[e.key] = ui.value;
                             }
                             self.search();
+                            
+                            return true;
                         }
                     });
-                
+                    
+                    /*
+                     * Deactivate class on click
+                     */
+                    $('#'+id+'r').click(function(){
+                        $(this).addClass("inactive");
+                        $("#"+id+"v").html("is null");
+                        self.values[e.key] = -1;
+                        self.search();
+                    });
+                    msp.tooltip.add($('#'+id+'r'), "w");
+                    
                     /*
                      * Set original value
                      */
                     v = $("#"+id).slider("value");
-                    $("#"+id+"v").html(v === 0 ? " not set" : " &gt; " + v + "%");
+                    $("#"+id+"v").html(" &gt; " + v + "%");
                     v === 0 ? $("#"+id+"v").removeClass("hilited") : $("#"+id+"v").addClass("hilited");
                     if (v === 0) {
                         delete self.values[e.key];
