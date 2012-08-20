@@ -150,7 +150,7 @@
                  * If urlModifier is set, add it before layerDescription.url
                  * (See Pleiades.js layerType to understand why)
                  */
-                url = urlModifier ? urlModifier + encodeURIComponent(layerDescription.url + msp.Util.abc) : layerDescription.url;
+                url = urlModifier ? msp.Util.getAbsoluteUrl(urlModifier + encodeURIComponent(layerDescription.url + msp.Util.abc)) : layerDescription.url;
 
                 $.ajax({
                     url:msp.Util.proxify(msp.Util.paginate(url, newLayer["_msp"].pagination)),
