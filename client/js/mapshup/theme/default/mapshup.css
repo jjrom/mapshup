@@ -1534,41 +1534,29 @@ div.olControlMousePosition {
 }
 
 /* iTag */
-/*#iTag {
-    position:absolute;
-    background-color:rgba(0,0,0,0.5);
-    color:#fff;
-    bottom:50px;
-    left:10px;
-    width:270px;
-    height:auto;
-    font-size:1.3em;
-    padding:5px;
-    z-index:20000;
-}*/
 #iTag {
     position:absolute;
     color:#000;
-    top:100px;
-    left:5px;
-    width:250px;
+    top:150px;
+    left:10px;
     height:auto;
     font-size:1.2em;
-    padding:5px;
+    z-index:20000;
 }
 
 #iTag .element {
     width: 200px;
-    margin:0px 0px 20px 0px;
+    margin:0px 0px 0px 0px;
 }
 
 #iTag .backgrounded {
+    text-align: center;
+    font-size:3em;
     width:200px;
-    height:50px;
-    line-height:50px;
+    height:75px;
+    line-height:75px;
     text-shadow: #000 1px 1px 1px;
     color:#fff;
-    font-weight: bold;
     cursor: pointer;
 }
 #iTag .hilited {
