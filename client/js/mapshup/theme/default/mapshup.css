@@ -1560,7 +1560,7 @@ div.olControlMousePosition {
     cursor: pointer;
 }
 #iTag .hilited {
-    background-color:red;
+    background-color:#f3961c;
 }
 
 .ui-slider-horizontal {
@@ -1568,7 +1568,7 @@ div.olControlMousePosition {
 }
 
 .ui-slider-range {
-    background: red !important;
+    background: #f3961c !important;
 }
 .ui-slider-range-min {
     -moz-border-radius-topleft: 4px;
