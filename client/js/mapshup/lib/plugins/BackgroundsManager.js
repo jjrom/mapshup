@@ -71,7 +71,7 @@
              * Create Toolbar
              */
             self.tb = new msp.Toolbar({
-                parent:$('.leftBar', msp.$header), 
+                parent:self.options.parent || $('.leftBar', msp.$header), 
                 classes:'bgm'
             });
             
