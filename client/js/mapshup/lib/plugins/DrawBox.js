@@ -111,6 +111,7 @@
                 unremovable:true,
                 mspLayer:true,
                 selectable:self.options.deleteOnClick ? true : false,
+                hilitable:false,
                 layer:self.layer
             });
 
