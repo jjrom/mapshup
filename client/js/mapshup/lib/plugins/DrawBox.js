@@ -64,6 +64,7 @@
             $.extend(self.options,{
                 title:options.title || "Draw box",
                 icon:options.icon || "drawbox.png",
+                deleteOnClick:msp.Util.getPropertyValue(self.options, "deleteOnClick", false), 
                 callback:options.callback
             });
             
@@ -83,7 +84,7 @@
                 ]);
             }
            
-            self.layer = new OpenLayers.Layer.Vector("__LAYER_DRAWINGBOX__", {
+            self.layer = new OpenLayers.Layer.Vector("__LAYER_DRAWBOX__", {
                 projection:msp.Map.pc,
                 displayInLayerSwitcher:false,
                 styleMap:new OpenLayers.StyleMap({
@@ -92,7 +93,11 @@
                         strokeColor:'white',
                         strokeWidth: 1,
                         fillColor:'black',
-                        fillOpacity: 0.3
+                        fillOpacity: 0.3,
+                        label:self.options.deleteOnClick ? "Click to delete" : null,
+                        fontColor: "#fff",
+                        fontSize: "14px",
+                        fontWeight: "bold"
                     }
                 })
             });
@@ -105,9 +110,20 @@
                 title:self.layer.name,
                 unremovable:true,
                 mspLayer:true,
+                selectable:self.options.deleteOnClick ? true : false,
                 layer:self.layer
             });
 
+            if (self.options.deleteOnClick) {
+                self.layer.events.on({
+                    "beforefeatureselected":function(event) {
+                        msp.Map.featureInfo.clear();
+                        self.layer.destroyFeatures();
+                        return false;
+                    }
+                });
+            }
+            
             /**
              * Event on sketchcomplete
              */
@@ -119,9 +135,23 @@
                     /*
                      * Return feature and BBOX in Lat/Lon
                      */
-                    if (event.feature && $.isFunction(self.options.callback)) {
+                    if (event.feature) {
+                        
                         g = event.feature.geometry.getBounds().clone();
-                        self.options.callback(event.feature, msp.Map.Util.p2d(g).toBBOX());
+                        
+                        /*
+                         * General callback
+                         */
+                        if ($.isFunction(self.options.callback)) {
+                            self.options.callback(event.feature, msp.Map.Util.p2d(g).toBBOX());
+                        }
+                        
+                        /*
+                         * On the fly callback
+                         */
+                        if ($.isFunction(self._callback)) {
+                            self._callback(event.feature, msp.Map.Util.p2d(g).toBBOX());
+                        }
                     }
                     
                     /*
@@ -165,10 +195,15 @@
         /**
          * Enter drawing mode
          */
-        this.draw = function() {
+        this.draw = function(_callback) {
 
             var self = this;
 
+            /*
+             * Set on the fly callback
+             */
+            self._callback = $.isFunction(_callback) ? _callback : null;
+            
             /*
             * Empty the drawing layer
             */
