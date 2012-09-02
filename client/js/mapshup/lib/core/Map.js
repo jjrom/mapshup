@@ -192,7 +192,55 @@
                     }
                 });
                 this.items.push(layer);
+                
+                /*
+                 * By default, selectable layer is hilitable
+                 * unless specified that it is not
+                 */
+                if (layer['_msp'].hilitable) {
+                    msp.Map.hilitableLayers.add(layer);
+                }
+                
                 msp.Map.resetControl();
+            },
+
+            /**
+             * Remove a layer from the selectable list
+             */
+            remove: function(layer) {
+                
+                for (var i = 0, l = this.items.length; i < l; i++) {
+                    if (this.items[i].id === layer.id) {
+                        this.items.splice(i,1);
+                        break;
+                    }
+                }
+                
+                /*
+                 * By default, selectable layer is hilitable
+                 * unless specified that it is not
+                 */
+                msp.Map.hilitableLayers.remove(layer);
+                 
+            }
+        },
+        
+        /**
+         * hilitableLayers object contains all the layers that can be hilited with
+         * the "__CONTROL_HILITE__" control tool
+         */
+        hilitableLayers: {
+
+            /**
+             * Array containing all selectable layers (i.e. not background layers, only vectors)
+             */
+            items: [],
+
+            /**
+             * Add a new layer to the selectable list
+             */
+            add: function(layer) {
+                this.items.push(layer);
             },
 
             /**
@@ -343,6 +391,9 @@
 
                 /** By default, a layer is not in a group */
                 group:null,
+
+                /** True : layer is selectable through click in the map (i.e. add to __CONTROL_SELECT__) */
+                hilitable:msp.Util.getPropertyValue(layerDescription, "hilitable", msp.Util.getPropertyValue(layerType, "hilitable", true)),
 
                 /** Icon */
                 icon:msp.Util.getPropertyValue(layerDescription, "icon", msp.Util.getImgUrl(msp.Util.getPropertyValue(layerType, "icon", null))),
@@ -1215,7 +1266,7 @@
              * Hilite feature Control
              */
             if (_config.general.featureHilite) {
-                controls.push(new OpenLayers.Control.SelectFeature(self.selectableLayers.items, {
+                controls.push(new OpenLayers.Control.SelectFeature(self.hilitableLayers.items, {
                     id: "__CONTROL_HIGHLITE__",
                     hover:true,
                     highlightOnly:true,
