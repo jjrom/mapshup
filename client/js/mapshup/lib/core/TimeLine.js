@@ -154,16 +154,18 @@
                 classes:'tools'
             });
             
-            self.tb.add({
-                id:msp.Util.getId(),
-                icon:msp.Util.getImgUrl("clock.png"),
-                tt:msp.Util._("Change time line bounds"),
-                activable:false,
-                switchable:false,
-                callback:function() {
-                    self.askConfig();
-                }
-            });
+            if (!self.absolutes.uneditable) {
+                self.tb.add({
+                    id:msp.Util.getId(),
+                    icon:msp.Util.getImgUrl("clock.png"),
+                    tt:msp.Util._("Change time line bounds"),
+                    activable:false,
+                    switchable:false,
+                    callback:function() {
+                        self.askConfig();
+                    }
+                });
+            }
             
             self.tb.add({
                 id:msp.Util.getId(),
@@ -299,7 +301,7 @@
          */
         this.askConfig = function() {
             
-            var i, p, fct,
+            var i, fct,
                 t = "",
                 id1 = msp.Util.getId(),
                 id2 = msp.Util.getId(),
