@@ -51,7 +51,7 @@ fi
 
 echo "Building mjquery.js"
 cat $jquerydir/jquery-1.7.2.min.js > $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jquery-ui-1.8.21.custom.min.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js >> $mjquerydir/mjquery.js.tmp
 #cat $jquerydir/mousewheel/jquery.mousewheel.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/idTabs/jquery.idTabs.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/jqplot/jquery.jqplot.min.js >> $mjquerydir/mjquery.js.tmp
@@ -71,6 +71,8 @@ cat $jquerydir/jQRangeSlider/mjQDateRangeSlider.js >> $mjquerydir/mjquery.js.tmp
 
 echo "Building mjquery.css"
 cat $jquerydir/jqplot/jquery.jqplot.min.css >> $mjquerydir/mjquery.css
+cat $jquerydir/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css >> $mjquerydir/mjquery.css
+cp -R $jquerydir/jquery-ui-1.8.23.custom/css/ui-lightness/images $mjquerydir/
 
 echo "Compress mjquery"
 java -jar ./yuicompressor-2.4.2.jar $mjquerydir/mjquery.js.tmp --type js > $mjquerydir/mjquery.js.tmp2
