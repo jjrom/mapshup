@@ -176,7 +176,7 @@
                 self._tw += 90;
             }
             
-            if (options.values.editable) {
+            if (!options.values.editable) {
                 self.tb.add({
                     id:msp.Util.getId(),
                     icon:msp.Util.getImgUrl("clock.png"),
@@ -412,7 +412,7 @@
          */
         this.changeValues = function() {
             
-            var id1 = msp.Util.getId(),
+            var d1, d2, id1 = msp.Util.getId(),
             id2 = msp.Util.getId(),
             self = this;
             
@@ -429,7 +429,12 @@
             }
             ], function(v){
                 if (v === "y") {
-                    self.$timeLine.dateRangeSlider('values', new Date($('#'+id1).val()), new Date($('#'+id2).val()));
+                    d1 = new Date($('#'+id1).val());
+                    d2 = new Date($('#'+id2).val());
+                    self.$timeLine.dateRangeSlider('values', d1, d2);
+                    self.min = d1;
+                    self.max = d2;
+                    self.setTime(self.getInterval());
                 }
             });
                     
