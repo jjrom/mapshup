@@ -192,9 +192,11 @@
      * 
      *      {
      *          enable://true to enable timeLine, false otherwise
+     *          disablable://true to allow user to disable timeline
      *          absolutes:{
      *              min:// TimeLine minimum bounds year
      *              max:// TimeLine maximum bounds year
+     *              editable:// True to allow user to modify values; false otherwise
      *          },
      *          bounds:{
      *              min:// TimeLine displayed start date
@@ -203,12 +205,14 @@
      *          values:{
      *              min:// Selected start date for interval
      *              max:// Selected end date for interval
+     *              editable:// True to allow user to modify values; false otherwise
      *          }
      *      }
      *      
      */
     c["general"].timeLine = {
         enable:true, //true to enable timeLine, false otherwise
+        disablable:true,
         absolutes:{
             min:1990,
             max:(new Date()).getFullYear() + 1

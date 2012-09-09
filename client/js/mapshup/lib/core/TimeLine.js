@@ -96,15 +96,22 @@
         this.autoRefresh = true;
         
         /*
+         * Initial width of toolbar
+         */
+        this._tw = 0;
+        
+        /*
          * Initialize TimeLine 
          * TimeLine is located immediatly below mapshup header
          * 
          * @input {Object} options : timeLine options
          *                   {
          *                      enable://true to enable timeLine, false otherwise
+         *                      disablable://true to allow user to disable timeline
          *                      absolutes:{
          *                          min:// TimeLine minimum year selectable
          *                          max:// TimeLine maximum year selectable
+         *                          editable:// True to allow user to modify values; false otherwise
          *                      },
          *                      bounds:{
          *                          min:// TimeLine displayed start date
@@ -113,6 +120,7 @@
          *                      values:{
          *                          min:// Selected start date for interval
          *                          max:// Selected end date for interval
+         *                          editable:// True to allow user to modify values; false otherwise
          *                      }
          *                   }
          */
@@ -154,29 +162,47 @@
                 classes:'tools'
             });
             
-            if (!self.absolutes.uneditable) {
+            if (self.absolutes.editable) {
                 self.tb.add({
                     id:msp.Util.getId(),
                     icon:msp.Util.getImgUrl("clock.png"),
-                    tt:msp.Util._("Change time line bounds"),
+                    tt:msp.Util._("Set time line bounds"),
                     activable:false,
                     switchable:false,
                     callback:function() {
-                        self.askConfig();
+                        self.changeBounds();
                     }
                 });
+                self._tw += 90;
             }
             
-            self.tb.add({
-                id:msp.Util.getId(),
-                icon:msp.Util.getImgUrl("disable.png"),
-                tt:msp.Util._("Disable date filter"),
-                activable:false,
-                switchable:false,
-                callback:function() {
-                    self.enable(false);
-                }
-            });
+            if (options.values.editable) {
+                self.tb.add({
+                    id:msp.Util.getId(),
+                    icon:msp.Util.getImgUrl("clock.png"),
+                    tt:msp.Util._("Set time interval bounds"),
+                    activable:false,
+                    switchable:false,
+                    callback:function() {
+                        self.changeValues();
+                    }
+                });
+                self._tw += 90;
+            }
+            
+            if (options.disablable) {
+                self.tb.add({
+                    id:msp.Util.getId(),
+                    icon:msp.Util.getImgUrl("disable.png"),
+                    tt:msp.Util._("Disable date filter"),
+                    activable:false,
+                    switchable:false,
+                    callback:function() {
+                        self.enable(false);
+                    }
+                });
+                self._tw += 90;
+            }
             
             /*
              * Set a trigger on visibility mask
@@ -299,13 +325,13 @@
         /*
          * Display popup to change bounds values
          */
-        this.askConfig = function() {
+        this.changeBounds = function() {
             
             var i, fct,
-                t = "",
-                id1 = msp.Util.getId(),
-                id2 = msp.Util.getId(),
-                self = this;
+            t = "",
+            id1 = msp.Util.getId(),
+            id2 = msp.Util.getId(),
+            self = this;
             
             /*
              * Be sure that popup is not already displayed
@@ -342,7 +368,7 @@
             fct = function(msg) {
                 
                 var v1 = $('#'+id1).attr('value'),
-                    v2 = $('#'+id2).attr('value');
+                v2 = $('#'+id2).attr('value');
                
                 /*
                  * lower bound is always lower than upper bound
@@ -370,12 +396,55 @@
                 }
             });
             $('#'+id2).change(function() {
-                 if (!fct("Error : upper bound should be upper than lower bound")) {
+                if (!fct("Error : upper bound should be upper than lower bound")) {
                     $('#'+id2+' option[value='+self.amax+']').attr("selected", "selected");
                 }
             });
             
             self._p.show();
+            
+            return true;
+            
+        };
+        
+        /*
+         * Display popup to change interval values
+         */
+        this.changeValues = function() {
+            
+            var id1 = msp.Util.getId(),
+            id2 = msp.Util.getId(),
+            self = this;
+            
+            /*
+             * Set search popup
+             */
+            self._p = msp.Util.askFor(msp.Util._("TimeLine"), '<form>Set time interval from <input id="'+id1+'" type="text" style="width:100px" value="'+self.toISO8601(self.min, true)+'"> to <input id="'+id2+'" type="text" style="width:100px" value="'+self.toISO8601(self.max, true)+'"></form>', "list", [{
+                title:msp.Util._("Ok"), 
+                value:"y"
+            },
+            {
+                title:msp.Util._("Cancel"), 
+                value:"n"
+            }
+            ], function(v){
+                if (v === "y") {
+                    self.$timeLine.dateRangeSlider('values', new Date($('#'+id1).val()), new Date($('#'+id2).val()));
+                }
+            });
+                    
+            
+            /*
+             * Ensure that selectable bounds are the same as the input bounds
+             */
+            $('#'+id1).datepicker({
+                dateFormat:"yy-mm-dd",
+                defaultDate:self.min
+            });
+            $('#'+id2).datepicker({
+                dateFormat:"yy-mm-dd",
+                defaultDate:self.max
+            });
             
             return true;
             
@@ -426,10 +495,11 @@
         
         /*
          * Recompute size when window is resized
+         * Note scope._tw is the width of the toolbar
          */
         this.resize = function(scope) {
             scope.$timeLine.css({
-                width:(100 - (180 * 80 / msp.$map.width()))+'%'
+                width:(100 - (scope._tw * 80 / msp.$map.width()))+'%'
             });
         };
         
@@ -461,10 +531,10 @@
         /*
          * Transform a date into an ISO8601 representation
          */
-        this.toISO8601 = function(date) {
+        this.toISO8601 = function(date, notime) {
             
             if (!date || !$.isFunction(date.getMonth)) {
-                return '1900-01-01T00:00:00';
+                return '1900-01-01' + (!notime ? 'T00:00:00' : '');
             }
             
             var m = "" + (date.getMonth() + 1),
@@ -479,7 +549,7 @@
             if (m.length === 1) {
                 m = "0" + m;
             }
-            return date.getFullYear() + "-" + m + "-" + d + "T00:00:00";
+            return date.getFullYear() + "-" + m + "-" + d + (!notime ? 'T00:00:00' : '');
             
         };
         
