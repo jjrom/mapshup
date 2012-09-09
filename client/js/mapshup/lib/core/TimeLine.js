@@ -176,7 +176,7 @@
                 self._tw += 90;
             }
             
-            if (!options.values.editable) {
+            if (options.values.editable) {
                 self.tb.add({
                     id:msp.Util.getId(),
                     icon:msp.Util.getImgUrl("clock.png"),
