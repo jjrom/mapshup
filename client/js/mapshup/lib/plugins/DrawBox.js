@@ -120,6 +120,14 @@
                     "beforefeatureselected":function(event) {
                         msp.Map.featureInfo.clear();
                         self.layer.destroyFeatures();
+                        
+                        /*
+                         * On the fly callback
+                         */
+                        if ($.isFunction(self._callback)) {
+                            self._callback(event.feature, null);
+                        }
+                        
                         return false;
                     }
                 });
