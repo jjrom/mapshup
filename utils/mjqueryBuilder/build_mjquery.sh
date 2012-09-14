@@ -70,9 +70,9 @@ cat $jquerydir/jQRangeSlider/jQDateRangeSliderHandle.js >> $mjquerydir/mjquery.j
 cat $jquerydir/jQRangeSlider/mjQDateRangeSlider.js >> $mjquerydir/mjquery.js.tmp
 
 echo "Building mjquery.css"
-cat $jquerydir/jqplot/jquery.jqplot.min.css >> $mjquerydir/mjquery.css
-cat $jquerydir/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css >> $mjquerydir/mjquery.css
-cp -R $jquerydir/jquery-ui-1.8.23.custom/css/ui-lightness/images $mjquerydir/
+cat $jquerydir/jqplot/jquery.jqplot.min.css > $mjquerydir/mjquery.css
+#cat $jquerydir/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css >> $mjquerydir/mjquery.css
+#cp -R $jquerydir/jquery-ui-1.8.23.custom/css/ui-lightness/images $mjquerydir/
 
 echo "Compress mjquery"
 java -jar ./yuicompressor-2.4.2.jar $mjquerydir/mjquery.js.tmp --type js > $mjquerydir/mjquery.js.tmp2
