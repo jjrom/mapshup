@@ -72,7 +72,7 @@
          */
         this.init = function (options) {
 
-            var element, self = this;
+            var $t, element, self = this;
             
             /*
              * init options
@@ -97,10 +97,39 @@
             }
             
             /*
-             * Add iTag panel
+             * Create #iTag element
+             * 
+             * <div id="iTag" class="shadow">
+             *      <div class="container">
+             *          <table>
+             *              <tr>
+             *                  <td class='title'>icon + title</td>
+             *                  <td>slider</td>
+             *                  <td class='value'>percentage</td>
+             *                  <td class='clear'></td>
+             *              </tr>
+             *          </table>
+             *      
+             *      </div>
+             * </div>
              */
-            //self.$d = msp.Util.$$('#iTag', msp.$mcontainer);
-            self.$d = msp.Util.$$('#iTag');
+            self.$d = msp.Util.$$('#iTag', $('#mwrapper')).addClass('shadow').html('<div class="container"><table><tr></tr></table></div>');
+            
+            /*
+             * Insert iTag panel between theBar and map
+             * and remove #theBar shadow
+             */
+            $('.map').css({
+               'top':$('.map').offset().top + self.$d.height()
+            });
+            
+            $t = $('#timeLine');
+            if ($t.length > 0) {
+                $t.css({
+                   'top':$t.offset().top + self.$d.height()
+                });
+            }
+            msp.$header.removeClass('shadow');
             
             /*
              * Roll over classes
@@ -111,30 +140,24 @@
                  * Add slider for element
                  */
                 (function(id, e, $d) {
-                    var v, style = "", classes = "", bounds;
-                    bounds = e.bounds || {};
                     
-                    /*
-                     * Set image as slider background
-                     */
-                    if (e.image) {
-                        style = "background-image:url('"+e.image+"')";
-                        classes = 'class="backgrounded"';
-                    }
+                    var v, bounds = e.bounds || {};
                     
-                    $d.append('<div id="'+id+'r" jtitle="Click to search product without '+e.title+'" style="'+style+'" ' + classes + '>' + (e.image ? '' : e.title + ' ') + '<span id="'+id+'v"/></span></div><div id="'+id+'" class="element"></div>')
+                    
+                    $('tr', $d).append('<td id="'+id+'r" class="title">'+(e.icon ? '<img class="icon" src="'+e.icon+'"/>&nbsp;' : '') + e.title + '<td><div id="'+id+'" class="element"></div></td><td id="'+id+'v" class="value" jtitle="Search without '+e.title+'"></td><td class="clear"></td>')
+                    
                     $("#"+id).slider({
                         range: "min",
                         value: e.value || self.options.value,
                         min: bounds.min || self.options.bounds.min,
                         max: bounds.max || self.options.bounds.max,
                         slide: function(event, ui) {
-                            $("#"+id+"v").html(ui.value + "%");
+                            $("#"+id+"v").html("&nbsp;" + ui.value + "%");
                             ui.value === 0 ? $("#"+id+"v").removeClass("hilited") : $("#"+id+"v").addClass("hilited");
                         },
                         stop: function(event, ui) {
                             
-                            $("#"+id+"r").removeClass("inactive");
+                            $("#"+id).removeClass("inactive");
                             
                             /*
                              * Store value 
@@ -154,19 +177,19 @@
                     /*
                      * Deactivate class on click
                      */
-                    $('#'+id+'r').click(function(){
-                        $(this).addClass("inactive");
-                        $("#"+id+"v").html("absent");
+                    $('#'+id+'v').click(function(){
+                        $("#"+id).addClass("inactive");
+                        $(this).html("&nbsp;---");
                         self.values[e.key] = -1;
                         self.search();
                     });
-                    msp.tooltip.add($('#'+id+'r'), "w");
+                    msp.tooltip.add($('#'+id+'v'), "n");
                     
                     /*
                      * Set original value
                      */
                     v = $("#"+id).slider("value");
-                    $("#"+id+"v").html(v + "%");
+                    $("#"+id+"v").html("&nbsp;" + v + "%");
                     v === 0 ? $("#"+id+"v").removeClass("hilited") : $("#"+id+"v").addClass("hilited");
                     if (v === 0) {
                         delete self.values[e.key];

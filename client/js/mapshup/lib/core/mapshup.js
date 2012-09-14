@@ -184,7 +184,7 @@
             /**
              * Create header structure
              * 
-             * <div id="theBar">
+             * <div id="theBar" class="shadow">
              *      <div class="container">
              *          <div class="logo hover"></div>
              *          <div class="searchBar"></div>
@@ -193,7 +193,7 @@
              *      </div>
              * </div>
              */
-            self.$header = self.Util.$$('#theBar', $('#mwrapper')).html('<div class="container"><div class="logo hover"><a href="http://www.mapshup.info" target="_blank">mapshup</a></div><div class="searchBar"></div><div class="leftBar"></div><div class="rightBar"></div></div>');
+            self.$header = self.Util.$$('#theBar', $('#mwrapper')).addClass('shadow').html('<div class="container"><div class="logo hover"><a href="http://www.mapshup.info" target="_blank">mapshup</a></div><div class="searchBar"></div><div class="leftBar"></div><div class="rightBar"></div></div>');
             
             /**
              * Initialize map container reference
