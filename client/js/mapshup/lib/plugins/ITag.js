@@ -105,7 +105,10 @@
              *              <tr>
              *                  <td class='title'>icon + title</td>
              *                  <td>slider</td>
-             *                  <td class='value'>percentage</td>
+             *                  <td class='clear'></td>
+             *              </tr>
+             *              <tr>
+             *                  <td class='title' colspan="2">title + percentage</td>
              *                  <td class='clear'></td>
              *              </tr>
              *          </table>
@@ -143,8 +146,8 @@
                     
                     var v, bounds = e.bounds || {};
                     
-                    
-                    $('tr', $d).append('<td id="'+id+'r" class="title">'+(e.icon ? '<img class="icon" src="'+e.icon+'"/>&nbsp;' : '') + e.title + '<td><div id="'+id+'" class="element"></div></td><td id="'+id+'v" class="value" jtitle="Search without '+e.title+'"></td><td class="clear"></td>')
+                    /* Set title and value */
+                    $('tr', $d).append('<td class="icon" style="background:url(\''+e.icon+'\') 0 0 no-repeat;"></td><td>&nbsp;</td><td><div id="'+id+'" class="element"></div><div class="title" id="'+id+'v" class="value" jtitle="Search without '+e.title+'"></div></td><td class="clear"></td>')
                     
                     $("#"+id).slider({
                         range: "min",
@@ -152,7 +155,7 @@
                         min: bounds.min || self.options.bounds.min,
                         max: bounds.max || self.options.bounds.max,
                         slide: function(event, ui) {
-                            $("#"+id+"v").html("&nbsp;" + ui.value + "%");
+                            $("#"+id+"v").html(e.title + "&nbsp;" + ui.value + "%");
                             ui.value === 0 ? $("#"+id+"v").removeClass("hilited") : $("#"+id+"v").addClass("hilited");
                         },
                         stop: function(event, ui) {
@@ -179,7 +182,7 @@
                      */
                     $('#'+id+'v').click(function(){
                         $("#"+id).addClass("inactive");
-                        $(this).html("&nbsp;---");
+                        $(this).html(e.title + "&nbsp;---");
                         self.values[e.key] = -1;
                         self.search();
                     });
@@ -189,7 +192,7 @@
                      * Set original value
                      */
                     v = $("#"+id).slider("value");
-                    $("#"+id+"v").html("&nbsp;" + v + "%");
+                    $("#"+id+"v").html(e.title + "&nbsp;" + v + "%");
                     v === 0 ? $("#"+id+"v").removeClass("hilited") : $("#"+id+"v").addClass("hilited");
                     if (v === 0) {
                         delete self.values[e.key];
