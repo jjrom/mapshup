@@ -76,12 +76,6 @@
             
             /*
              * Array containing handlers to be call after
-             * a change in layer indexing
-             */
-            indexchanged:[],
-            
-            /*
-             * Array containing handlers to be call after
              * a change in map.layers list i.e. after :
              *  - add
              *  - remove
@@ -194,7 +188,7 @@
                         /*
                          * Update layer index if needed
                          */
-                        if (extra.layer && extra.action === extra.action === "features") {
+                        if (extra.layer && extra.action === "features") {
                             msp.Map.Util.updateIndex(extra.layer);
                         }
                         

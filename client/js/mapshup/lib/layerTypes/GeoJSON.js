@@ -260,7 +260,7 @@
                     /*
                      * Reindex layer
                      */
-                    Map.Util.updateIndex(layer);
+                    //Map.Util.updateIndex(layer);
                     
                 }
                 

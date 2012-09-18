@@ -270,14 +270,14 @@
             }
             
             var id,
-                d,v,t,i,l,k,kk,kkk,ts,
-                $info,
-                $tabs,
-                $thumb,
-                layerType,
-                typeIsUnknown = true,
-                title = msp.Util.stripTags(Map.Util.Feature.getTitle(feature)),
-                thumb = feature.attributes['thumbnail'] || feature.attributes['quicklook'] || Map.Util.Feature.getIcon(feature) || msp.Util.getImgUrl('nodata.png'); // Thumbnail of quicklook attributes
+            d,v,t,i,l,k,kk,kkk,ts,
+            $info,
+            $tabs,
+            $thumb,
+            layerType,
+            typeIsUnknown = true,
+            title = msp.Util.stripTags(Map.Util.Feature.getTitle(feature)),
+            thumb = feature.attributes['thumbnail'] || feature.attributes['quicklook'] || Map.Util.Feature.getIcon(feature) || msp.Util.getImgUrl('nodata.png'); // Thumbnail of quicklook attributes
                 
 
             /*
@@ -1090,6 +1090,13 @@
         l = Map.map.layers.length;
 
         /*
+         * Do not process raster layers
+         */
+        if (!layer || !layer.features) {
+            return false;
+        }
+        
+        /*
          * Roll over layers list from the higher element
          * and retrieve it
          */
@@ -1105,23 +1112,9 @@
             }
 
             /*
-             * layer is a raster => get the index of the higher raster layer
-             */
-            if (!layer.features) {
-
-                /*
-                 * Get the index of the first raster tmpLayer found
-                 * then break
-                 */
-                if (!tmpLayer.features) {
-                    index = Map.map.getLayerIndex(tmpLayer);
-                    break;
-                }
-            }
-            /*
              * layer is a vector and have at least one feature with a non null geometry
              */
-            else if (layer.features[0] && layer.features[0].geometry) {
+            if (layer.features[0] && layer.features[0].geometry) {
 
                 /*
                  * We already reached a raster layer => break
@@ -1170,12 +1163,9 @@
              */
             Map.map.setLayerIndex(layer, index+1);
             
-            /*
-             * Trigger "indexchanged" event
-             */
-            Map.events.trigger("indexchanged", layer)
-            
         }
+       
+        return true;
        
     };
     

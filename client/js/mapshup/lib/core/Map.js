@@ -522,13 +522,6 @@
                         }
 
                         /*
-                         * Check the geometry type of layer
-                         * Point and Line geometries should be moved
-                         * on top of polygonals geometries
-                         */
-                        msp.Map.Util.updateIndex(this);
-
-                        /*
                          * Set a flag to indicate that this layer has been initialized
                          */
                         this._msp.initialized = true;
