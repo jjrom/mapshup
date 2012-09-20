@@ -135,7 +135,6 @@
          * Unregister event
          */
         this.unRegister = function(scope) {
-            
             var arr,
                 i,
                 key,
@@ -143,7 +142,7 @@
             for (key in this.events) {
                 arr = this.events[key];
                 for (i = 0, l = arr.length; i < l; i++) {
-                    if (arr.scope === scope) {
+                    if (arr[i].scope === scope) {
                         arr.splice(i,1);
                         break;
                     }
