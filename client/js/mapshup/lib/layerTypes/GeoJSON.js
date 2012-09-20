@@ -109,15 +109,6 @@
                 if (!self.load(layerDescription.data, layerDescription, newLayer)) {
                     msp.Map.removeLayer(newLayer, false);
                 }
-                else {
-
-                    /*
-                     * Tell user that layer is added
-                     */
-                    /* TODO : remove
-                    msp.Util.message(msp.Util._("Added")+ " : " + msp.Util._(newLayer.name));
-                    */
-                }
             }
             /*
              * Otherwise, read data asynchronously from url
@@ -259,11 +250,6 @@
                      * Zoom on layer
                      */
                     Map.Util.zoomOn(layer);
-
-                    /*
-                     * Reindex layer
-                     */
-                    //Map.Util.updateIndex(layer);
                     
                 }
                 
