@@ -101,47 +101,6 @@
                 return null;
             }
             
-            /*
-             * Event registration when layer end to load
-             * 
-             * If a layersend event occured on the self.layer layer,
-             * then the loading mask is cleared
-             */
-             msp.Map.events.register("layersend", self, function(action, layer, scope) {
-
-                /*
-                 * Process event only if current layer is defined
-                 */
-                if (self._layer) {
-                    
-                    /*
-                     * The event occurs on the current OpenSearch layer
-                     */
-                    if (layer.id === self._layer.id) {
-                       
-                        /*
-                         * The OpenSearch layer is loaded or is due to be destroyed
-                         */
-                        if (layer.hasOwnProperty('_msp') && (layer._msp.isLoaded || layer._tobedestroyed)) {
-                            
-                            /*
-                             * Hide the mask
-                             */
-                            msp.mask.hide();
-                            
-                            /*
-                             * No more OpenSearch layer
-                             */
-                            self._layer = null;
-                            
-                        }
-                    }
-                }
-                
-                return true;
-        
-            });
-            
             return self;
             
         };
@@ -160,30 +119,30 @@
                 callback:function() {
                     
                     /*
-                     * Tell user that flickr search is in progress
-                     */
-                    msp.mask.add({
-                        title:msp.Util._("Flickr")+' : '+msp.Util._("Searching"),
-                        cancel:true
-                    });
-                    
-                    /*
                      * Search within bbox
                      * If bbox is a point, then add 0.5 degree in all directions
                      */
                     var add = 0.5,
-                        bounds = msp.Map.Util.p2d(feature.geometry.getBounds().clone());
+                    bounds = msp.Map.Util.p2d(feature.geometry.getBounds().clone());
                         
                     if (bounds.top === bounds.bottom || bounds.right === bounds.left) {
                         bounds = new OpenLayers.Bounds(bounds.left - add, bounds.bottom - add, bounds.right + add, bounds.top + add)
                     }
                     
-                    scope._layer = msp.Map.addLayer({
-                        type:"Flickr",
-                        title:msp.Util.stripTags(msp.Map.Util.Feature.getTitle(feature)),
-                        bbox:bounds.toBBOX(),
-                        q:""
+                    /*
+                     * Tell user that flickr search is in progress
+                     */
+                    msp.mask.add({
+                        title:msp.Util._("Flickr")+' : '+msp.Util._("Searching"),
+                        layer:msp.Map.addLayer({
+                            type:"Flickr",
+                            title:msp.Util.stripTags(msp.Map.Util.Feature.getTitle(feature)),
+                            bbox:bounds.toBBOX(),
+                            q:""
+                        }),
+                        cancel:true
                     });
+                    
                     
                 }
             }
