@@ -297,13 +297,18 @@
              */
             url = urlModifier ? msp.Util.getAbsoluteUrl(urlModifier + encodeURIComponent(layerDescription.url + msp.Util.abc)) : layerDescription.url;
 
-                
             $.ajax({
                 url:msp.Util.proxify(msp.Util.paginate(url, layer["_msp"].pagination)),
                 layer:layer,
                 async:true,
                 dataType:"json",
                 success:function(data) {
+                    
+                    /*
+                     * First remove features
+                     */
+                    this.layer.destroyFeatures();
+                    
                     if (!self.load(data, layerDescription, this.layer)) {
                             
                         /*
