@@ -191,7 +191,10 @@
                             msp.Map.Util.updateIndex(extra.layer);
                         }
                         
-                        obj.handler(extra.action, extra.layer, obj.scope);
+                        if (obj) {
+                            obj.handler(extra.action, extra.layer, obj.scope);
+                        }
+                        
                     }
                     
                     /*
