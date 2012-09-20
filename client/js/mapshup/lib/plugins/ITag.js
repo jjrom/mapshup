@@ -214,7 +214,7 @@
          */
         this.search = function() {
         
-            var key, sp, service, params = "", self = this;
+            var sp, service, self = this;
             
             /*
              * No Search plugin, no iTag
@@ -240,23 +240,36 @@
             }
             
             /*
+             * Reset Search input value
+             */
+            sp.$input.val("");
+            
+            sp.search(service, self.getParams);
+            
+            return true;
+        };
+        
+        /*
+         * Get additional parameters
+         */
+        this.getParams = function() {
+        
+            var params = "", key, self = msp.Plugins.ITag._o;
+            
+            if (!self) {
+                return null;
+            }
+            /*
              * Set additional parameters
              */
             for (key in self.values) {
                 params += "&"+key+"="+self.values[key];
             };
             
-            /*
-             * Reset Search input value
-             */
-            sp.$input.val("");
-            
-            sp.search(service, {
+            return {
                 title:"iTag",
                 params:params || "&" // params should always differs from "" to launch search
-            });
-            
-            return true;
+            };
         };
         
         /*
