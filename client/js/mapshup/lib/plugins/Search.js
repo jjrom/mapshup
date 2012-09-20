@@ -370,11 +370,11 @@
          * user is asked to choose a set service
          * 
          * @input service : service to search in
-         * @input additional : additional parameters to add to the search service (form "&key1=val1&key2=val2&...")
+         * @input getParams : additional parameters to add to the search service (function returning "&key1=val1&key2=val2&...")
          */
-        this.search = function(service, additional) {
+        this.search = function(service, getParams) {
 
-            var lt, info, layer, layerDescription, self = this;
+            var a, lt, info, layer, layerDescription, self = this;
             
             /*
              * If no input service is set, then ask user
@@ -386,7 +386,7 @@
             /*
              * Paranoid mode
              */
-            additional = additional || {
+            a = $.isFunction(getParams) ? getParams() : {
                 params:""
             };
             
@@ -399,7 +399,7 @@
             /*
              * Empty val, no search except if additional parameters are set
              */
-            if (self.$input.val() === "" && additional.params === "") {
+            if (self.$input.val() === "" && a.params === "") {
                 return false;
             }
             
@@ -411,9 +411,9 @@
              */
             layerDescription = {
                 type:service.type,
-                url:info.url + additional.params, // concatenate url with additional parameters
+                url:info.url + a.params, // concatenate url with additional parameters
                 pagination:info.pagination,
-                title:additional.title || self.$input.val(), // if input value is not set
+                title:a.title || self.$input.val(), // if input value is not set
                 q:self.$input.val()
             };
             
@@ -452,7 +452,7 @@
                  */
                 if (service.options.changeOnTime) {
                     layer["_msp"].setTime = function(interval) {
-                        self.search(service, additional);
+                        self.search(service, getParams);
                     };
                     msp.timeLine.add(layer);
                 }
@@ -463,7 +463,7 @@
              * Tell user that search is in progress
              */
             msp.mask.add({
-                title:msp.Util._(service.name)+' : '+msp.Util._("Searching")+" "+ (additional.title || self.$input.val()),
+                title:msp.Util._(service.name)+' : '+msp.Util._("Searching")+" "+ (a.title || self.$input.val()),
                 layer:layer,
                 cancel:true
             });
