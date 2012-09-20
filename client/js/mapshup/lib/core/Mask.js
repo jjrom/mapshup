@@ -143,6 +143,7 @@
          * {
          *      title: (Line of text to be displayed on the Mask)
          *      cancel: (true => user can cancel the request / false => not possible) OPTIONAL
+         *      layer: (if set close the mask on layerend trigger)
          *      id: (unique identifier for this request) OPTIONAL
          *      request: (reference of the ajax request) OPTIONAL
          * }
@@ -158,6 +159,7 @@
             {
                 title:obj.title || "",
                 cancel:obj.cancel || false,
+                layer:obj.layer || null,
                 id:obj.id || msp.Util.getId(),
                 request:obj.request || null
             });
@@ -190,6 +192,34 @@
                 this.$l.append('<div id="'+obj.id+'">'+obj.title+'</div>');
             }
 
+            if (obj.layer) {
+                msp.Map.events.register("layersend", obj, function(action, layer, scope) {
+                    
+                    /*
+                     * Only process current layer
+                     */
+                    if ((action != "remove") && (layer.id === scope.layer.id)) {
+                       
+                       /*
+                        * Unregister event
+                        */
+                       msp.Map.events.unRegister(scope);
+                        
+                       /*
+                        * Show item on layer manager
+                        */
+                        var lm = msp.Plugins.LayersManager;
+                        if (!layer._tobedestroyed) {
+                           if (lm && lm._o) {
+                                lm._o.show(lm._o.get(layer['_msp'].mspID));
+                            }
+                        }
+                        
+                        self.abort(scope.id);
+                    }
+                });
+            }
+            
             /**
              * Show the Mask
              */
