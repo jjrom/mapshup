@@ -159,16 +159,19 @@
                     dataType:"json",
                     success:function(data) {
                         if (!self.load(data, layerDescription, this.layer)) {
-                            msp.Map.removeLayer(this.layer, false);
-                        }
-                        else {
                             
                             /*
-                             * Tell user that layer is added
+                             * Tell mapshup that layer is loaded
                              */
-                            /* TODO : remove
-                            msp.Util.message(msp.Util._("Added")+ " : " + msp.Util._(this.layer.name));
+                            this.layer["_msp"].isLoaded = true;
+                            
+                           /*
+                            * Tell mapshup that no features were added
                             */
+                            Map.events.trigger("layersend", {
+                                action:"features",
+                                layer:this.layer
+                            });
                         }
                     }
                 });
