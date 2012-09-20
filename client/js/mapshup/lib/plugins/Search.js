@@ -434,6 +434,11 @@
                 $.extend(layer["_msp"].layerDescription,layerDescription);
                 
                 /*
+                 * Refresh layer name
+                 */
+                layer.name = layerDescription.title;
+                
+                /*
                  * Refresh features
                  */
                 lt = msp.Map.layerTypes[layer["_msp"].layerDescription.type];
