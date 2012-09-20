@@ -307,7 +307,7 @@
             
             if ($.isFunction(layer['_msp'].setTime)) {
                 for (i = 0, l = self.items.length; i < l; i++) {
-                    if (self.items[i].id === layer.id) {
+                    if (self.items[i].layer.id === layer.id) {
                         return false;
                     }
                 }
