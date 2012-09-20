@@ -221,73 +221,6 @@
                 });
             }
 
-            /*
-             * Event registration when layer end to load
-             * 
-             * If a layersend event occured on the self._layer layer,
-             * then the loading mask is cleared
-             */
-            msp.Map.events.register("layersend", self, function(action, layer, scope) {
-
-                var lm = msp.Plugins.LayersManager;
-                
-                /*
-                 * Process event only if a non loaded OpenSearch layer is defined
-                 */
-                if (self._layer) {
-                    
-                    /*
-                     * The event occurs on the current OpenSearch layer
-                     */
-                    if (layer.id === self._layer.id) {
-                       
-                        /*
-                         * The OpenSearch layer is loaded or is due to be destroyed
-                         */
-                        if (layer.hasOwnProperty('_msp') && (layer._msp.isLoaded || layer._tobedestroyed)) {
-                            
-                            /*
-                             * Hide the mask
-                             */
-                            msp.mask.hide();
-                            
-                            /*
-                             * No more OpenSearch layer
-                             */
-                            self._layer = null;
-                            
-                            if (!layer._tobedestroyed) {
-                                
-                                /*
-                                 * Automatically zoom on result extent
-                                 */
-                                //msp.Map.zoomTo(layer.getDataExtent());
-                                
-                                /*
-                                 * Show item on layer manager
-                                 */
-                                if (lm && lm._o) {
-                                    lm._o.show(lm._o.get(layer['_msp'].mspID));
-                                }
-                                
-                            /*
-                                 * If only one feature is present in the result,
-                                 * then automatically select it
-                                
-                                if (layer.features.length === 1) {
-                                    msp.Map.featureInfo.select(layer.features[0], true);
-                                }
-                                */
-                            }
-                            
-                        }
-                    }
-                }
-                
-                return true;
-        
-            });
-            
             return this;
 
         };
@@ -441,7 +374,7 @@
          */
         this.search = function(service, additional) {
 
-            var info, layer, layerDescription, self = this;
+            var lt, info, layer, layerDescription, self = this;
             
             /*
              * If no input service is set, then ask user
@@ -480,7 +413,7 @@
                 type:service.type,
                 url:info.url + additional.params, // concatenate url with additional parameters
                 pagination:info.pagination,
-                title:self.$input.val() || additional.title, // if input value is not set
+                title:additional.title || self.$input.val(), // if input value is not set
                 q:self.$input.val()
             };
             
@@ -491,22 +424,47 @@
             layer = msp.Map.Util.getLayerByMspID((new msp.Map.LayerDescription(layerDescription, msp.Map)).getMspID());
             
             /*
-             * Layer already exist...remove it
+             * Layer already exist -> replace features
              */
             if (layer) {
-                msp.Map.removeLayer(layer);
+                
+                /*
+                 * Set new layerDescription
+                 */
+                $.extend(layer["_msp"].layerDescription,layerDescription);
+                
+                /*
+                 * Refresh features
+                 */
+                lt = msp.Map.layerTypes[layer["_msp"].layerDescription.type];
+                if ($.isFunction(lt.refresh)) {
+                    lt.refresh(layer);
+                }
+            }
+            else {
+                /*
+                 * Add layer and store it for post processing 
+                 */
+                layer = msp.Map.addLayer(layerDescription);
+
+                /*
+                 * Add a setTime Function
+                 */
+                if (service.options.changeOnTime) {
+                    layer["_msp"].setTime = function(interval) {
+                        self.search(service, additional);
+                    };
+                    msp.timeLine.add(layer);
+                }
             }
             
-            /*
-             * Add layer and store it for post processing 
-             */
-            self._layer = msp.Map.addLayer(layerDescription);
             
             /*
              * Tell user that search is in progress
              */
             msp.mask.add({
-                title:msp.Util._(service.name)+' : '+msp.Util._("Searching")+" "+ self.$input.val(),
+                title:msp.Util._(service.name)+' : '+msp.Util._("Searching")+" "+ (additional.title || self.$input.val()),
+                layer:layer,
                 cancel:true
             });
             
