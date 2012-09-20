@@ -82,7 +82,7 @@
          */
         add: function(layerDescription, options, urlModifier) {
 
-            var url,newLayer,self = this;
+            var newLayer,self = this;
             
             /*
              * Set title
@@ -137,35 +137,7 @@
                     
                 });
                 
-                /*
-                 * If urlModifier is set, add it before layerDescription.url
-                 * (See Pleiades.js layerType to understand why)
-                 */
-                url = urlModifier ? msp.Util.getAbsoluteUrl(urlModifier + encodeURIComponent(layerDescription.url + msp.Util.abc)) : layerDescription.url;
-
-                $.ajax({
-                    url:msp.Util.proxify(msp.Util.paginate(url, newLayer["_msp"].pagination)),
-                    layer:newLayer,
-                    async:true,
-                    dataType:"json",
-                    success:function(data) {
-                        if (!self.load(data, layerDescription, this.layer)) {
-                            
-                            /*
-                             * Tell mapshup that layer is loaded
-                             */
-                            this.layer["_msp"].isLoaded = true;
-                            
-                           /*
-                            * Tell mapshup that no features were added
-                            */
-                            Map.events.trigger("layersend", {
-                                action:"features",
-                                layer:this.layer
-                            });
-                        }
-                    }
-                });
+                self.refresh(newLayer, urlModifier);
                 
             }
             
@@ -283,7 +255,7 @@
                 return false;
             }
 
-           /*
+            /*
             * Retrieve FeatureCollection from server
             */
             msp.Util.ajax({
@@ -301,8 +273,56 @@
 
             return true;
            
+        },
+     
+        /*
+         * Refresh layer
+         */
+        refresh: function(layer, urlModifier) {
+            
+            var layerDescription, url, self = this;
+            
+            /*
+             * Paranoid mode
+             */
+            if (!layer || !layer["_msp"]) {
+                return false;
+            }
+            
+            layerDescription = layer["_msp"].layerDescription;
+            
+            /*
+             * If urlModifier is set, add it before layerDescription.url
+             * (See Pleiades.js layerType to understand why)
+             */
+            url = urlModifier ? msp.Util.getAbsoluteUrl(urlModifier + encodeURIComponent(layerDescription.url + msp.Util.abc)) : layerDescription.url;
+
+                
+            $.ajax({
+                url:msp.Util.proxify(msp.Util.paginate(url, layer["_msp"].pagination)),
+                layer:layer,
+                async:true,
+                dataType:"json",
+                success:function(data) {
+                    if (!self.load(data, layerDescription, this.layer)) {
+                            
+                        /*
+                        * Tell mapshup that layer is loaded
+                        */
+                        this.layer["_msp"].isLoaded = true;
+                            
+                        /*
+                        * Tell mapshup that no features were added
+                        */
+                        Map.events.trigger("layersend", {
+                            action:"features",
+                            layer:this.layer
+                        });
+                    }
+                }
+            });
         }
         
     }
-
+    
 })(window.msp, window.msp.Map);

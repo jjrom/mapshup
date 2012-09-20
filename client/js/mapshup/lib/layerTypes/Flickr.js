@@ -141,7 +141,27 @@
             return geojson.add(layerDescription, options);
 
         },
+        
+        /*
+         * Refresh
+         */
+        refresh: function(layer) {
+            
+            /*
+             * Flickr layer is a GeoJSON layer
+             */
+            var geojson = Map.layerTypes["GeoJSON"];
 
+            /*
+             * No url or no GeoJSON support => return null
+             */
+            if (!geojson) {
+                return null;
+            }
+            
+            return geojson.refresh(layer, null);
+        },
+        
         /*
          * Overide FeatureInfo setBody() function
          */
