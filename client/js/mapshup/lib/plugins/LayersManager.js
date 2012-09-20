@@ -450,6 +450,13 @@
                      */
                     if ((action ==="update" || action === "features") && !layer._tobedestroyed) {
                         scope.setFeatures(item, msp.Map.Util.getFeatures(layer, layer['_msp'].layerDescription.sort), false);
+                        
+                        /*
+                         * Refresh name if needed
+                         */
+                        item.title = layer.name;
+                        $('.lmt', item.$tab).html(layer.name);
+                        
                     }
 
                     /*
@@ -705,7 +712,7 @@
                 /*
                  * Append tab to panel
                  */
-                self.$d.append('<a id="'+tid+'" class="vtab tab">'+(content.icon ? '<img src="'+content.icon+'" width="16px">&nbsp;' : '')+msp.Util._(content.title)+'<span class="tools"></span><span class="loading"></span></a>');
+                self.$d.append('<a id="'+tid+'" class="vtab tab">'+(content.icon ? '<img src="'+content.icon+'" width="16px">&nbsp;' : '')+'<span class="lmt">'+msp.Util._(content.title)+'</span><span class="tools"></span><span class="loading"></span></a>');
                 
                 /*
                  * Set item
