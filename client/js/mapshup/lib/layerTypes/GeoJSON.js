@@ -280,7 +280,7 @@
          */
         refresh: function(layer, urlModifier) {
             
-            var layerDescription, url, self = this;
+            var p, layerDescription, url, self = this;
             
             /*
              * Paranoid mode
@@ -290,6 +290,14 @@
             }
             
             layerDescription = layer["_msp"].layerDescription;
+            
+            /*
+             * Refresh pagination
+             */
+            p = layer['_msp'].pagination || {};
+            if (p.nextRecord) {
+                p.nextRecord.value = 1;
+            }
             
             /*
              * If urlModifier is set, add it before layerDescription.url
