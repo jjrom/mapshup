@@ -66,6 +66,7 @@ lib/plugins/Geonames.js
 lib/plugins/GoogleEarth.js // NOTOUCH
 lib/plugins/Help.js
 #lib/plugins/LayerInfo.js
+lib/plugins/RastersManager.js
 lib/plugins/LayersManager.js
 #lib/plugins/LocateMe
 #lib/plugins/Logger.js

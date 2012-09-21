@@ -450,6 +450,19 @@
     });
     
     /**
+     *  !!! THIS PLUGIN MUST BE INITIALIZED BEFORE LayersManager PLUGIN !!!!
+     *  
+     *  Options :
+     *     
+     *     inLM: // true to display raster manager access through the "configure" button in
+     *              in the raster tab of the LayersManager plugin (default true)
+     */
+    c.add("plugins",
+    {
+        name:"RastersManager"
+    });
+    
+    /**
      *  Options :
      *     
      *     position: // LayersManager position, one of :
