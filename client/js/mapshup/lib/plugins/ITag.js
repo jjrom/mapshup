@@ -147,7 +147,7 @@
                     var v, bounds = e.bounds || {};
                     
                     /* Set title and value */
-                    $('tr', $d).append('<td class="icon" style="background:url(\''+e.icon+'\') 0 0 no-repeat;"></td><td>&nbsp;</td><td><div id="'+id+'" class="element"></div><div class="title" id="'+id+'v" class="value" jtitle="Search without '+e.title+'"></div></td><td class="clear"></td>')
+                    $('tr', $d).append('<td class="icon" style="background:url(\''+e.icon+'\') 0 0 no-repeat;"></td><td>&nbsp;</td><td><div id="'+id+'" class="element"></div><div class="title clickable value" id="'+id+'v" jtitle="Search without '+e.title+'"></div></td><td class="clear"></td>')
                     
                     $("#"+id).slider({
                         range: "min",
