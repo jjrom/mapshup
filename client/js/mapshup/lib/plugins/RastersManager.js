@@ -79,36 +79,39 @@
                 inLM:msp.Util.getPropertyValue(self.options, "inLM", true)
             });
             
+            /*
+             * Track layersend events
+             */
+            msp.Map.events.register("layersend", self, function(action, layer, scope) {
+                
+                if (!layer.isBaseLayer && msp.Map.Util.isRaster(layer)) {
+                    if (action === "add" || action === "remove") {
+                        self.refresh();
+                    }
+                }
+            
+            });
+           
             return self;
         };
         
+        
         /*
-        * Open popup configuration
-        */
+         * Open popup configuration
+         */
         this.show = function() {
 
-            var $tb, i, l, layer, id, layers = [], self = this;
-
+            var self = this;
+            
             /*
-            * Roll over layers
-            */
-            for (i = 0, l = msp.Map.map.layers.length; i < l; i++){
-                layer = msp.Map.map.layers[i];
-                if (!layer.isBaseLayer && msp.Map.Util.isRaster(layer)) {
-                    layers.push(layer);
-                }
-
-            }
-
-           /*
-           * Get info popup
-           */
+             * Get info popup
+             */
             if (!self.popup) {
 
                 /*
-               * Create info popup.
-               * popup reference is removed on popup close
-               */
+                 * Create info popup.
+                 * popup reference is removed on popup close
+                 */
                 self.popup = new msp.Popup({
                     modal:false,
                     onClose:function(scope){
@@ -117,80 +120,122 @@
                     header:'<p>'+msp.Util._("Configure raster layers")+'</p>',
                     scope:self
                 });
+                
+            }
+            
+            /*
+             * Refresh popup content
+             */
+            self.refresh();
+            
+            /*
+             * Show popup
+             */
+            self.popup.show();
 
-                /*
-               * Roll over layer descrpiption properties
-               */
-                self.popup.$b.append('<div class="hint">'+msp.Util._("Hint - drag&drop rows to reorder layer display")+'</div><table class="lmrcfg sortable"><thead><tr><th></th><th>'+msp.Util._("Name")+'</th><th>'+msp.Util._("Opacity")+'</th><th>'+msp.Util._("Visibility")+'</th></tr></thead><tbody></tbody></table>');
+        };
+        
+        /*
+         * Refresh popup content
+         */
+        this.refresh = function() {
+            
+            var $tb, i, l, layer, id, layers = [], self = this;
 
-                $tb = $('tbody', self.popup.$b).sortable({
-                    revert:true,
-                    revertDuration:10,
-                    stop:function(e,ui){
-
-                        /*
-                        * Reorder raster layer z-indexes
-                        * 
-                        * Get the layer just below the moved layer
-                        */
-                        var layer = msp.Map.Util.getLayerByMspID(ui.item.attr("mspid")),
-                        nLayer = msp.Map.Util.getLayerByMspID(ui.item.next().attr('mspid')),
-                        pLayer = msp.Map.Util.getLayerByMspID(ui.item.prev().attr('mspid'));
-
-                        /*
-                        * If no layer is below or over the moved layer then do nothing.
-                        * Otherwise, set the moved layer index to its new index
-                        */
-                        if (nLayer) {
-                            msp.Map.map.setLayerIndex(layer, msp.Map.map.getLayerIndex(nLayer) + 1);
-                        }
-                        else if (pLayer) {
-                            msp.Map.map.setLayerIndex(layer, msp.Map.map.getLayerIndex(pLayer) - 1);
-                        }
-
-                    }
-
-                });
-                for (i = 0, l = layers.length; i < l; i++) {
-                    layer = layers[i];
-                    id = layer['_msp'].mspID;
-                    $tb.append('<tr mspid="'+id+'"><td><img src="'+layer['_msp'].icon+'" class="middle"/></td><td class="title">'+msp.Util.shorten(layer.name,20)+'</td><td><div id="'+id+'op" class="element"></div></td><td class="clickable" id="'+id+'vy">'+ msp.Util._(layer.getVisibility() ? "Hide" : "Show") +'</td></tr>');
-
-                    (function(id, layer) {
-
-                        /*
-                        * Opacity
-                        */
-                        $("#"+id+"op").slider({
-                            value:layer.opacity * 100 || 100,
-                            range:"min",
-                            min:0,
-                            max:100,
-                            slide: function(event, ui) {
-                                if (layer) {
-                                    layer.setOpacity(ui.value / 100.0);
-                                }
-                            }
-                        });
-
-                        /*
-                        * Visibility
-                        */
-                        $("#"+id+"vy").click(function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            msp.Map.Util.setVisibility(layer, !layer.getVisibility());
-                            return false;
-                        });
-
-                    })(id, layer);
+            /*
+             * Roll over layers
+             */
+            for (i = 0, l = msp.Map.map.layers.length; i < l; i++){
+                layer = msp.Map.map.layers[i];
+                if (!layer.isBaseLayer && msp.Map.Util.isRaster(layer) && !layer._tobedestroyed) {
+                    layers.push(layer);
                 }
 
             }
 
-            self.popup.show();
+            
+            if (!self.popup) {
+                return false;
+            }
+           
+            /*
+             * Clear popup
+             */
+            self.popup.$b.empty();
+            
+            /*
+             * Roll over layer descrpiption properties
+             */
+            self.popup.$b.append('<div class="hint">'+msp.Util._("Hint - drag&drop rows to reorder layer display")+'</div><table class="lmrcfg sortable"><thead><tr><th></th><th>'+msp.Util._("Name")+'</th><th>'+msp.Util._("Opacity")+'</th><th>'+msp.Util._("Visibility")+'</th></tr></thead><tbody></tbody></table>');
 
+            $tb = $('tbody', self.popup.$b).sortable({
+                revert:true,
+                revertDuration:10,
+                stop:function(e,ui){
+
+                    /*
+                     * Reorder raster layer z-indexes
+                     * 
+                     * Get the layer just below the moved layer
+                     */
+                    var layer = msp.Map.Util.getLayerByMspID(ui.item.attr("mspid")),
+                    nLayer = msp.Map.Util.getLayerByMspID(ui.item.next().attr('mspid')),
+                    pLayer = msp.Map.Util.getLayerByMspID(ui.item.prev().attr('mspid'));
+
+                    /*
+                     * If no layer is below or over the moved layer then do nothing.
+                     * Otherwise, set the moved layer index to its new index
+                     */
+                    if (nLayer) {
+                        msp.Map.map.setLayerIndex(layer, msp.Map.map.getLayerIndex(nLayer) + 1);
+                    }
+                    else if (pLayer) {
+                        msp.Map.map.setLayerIndex(layer, msp.Map.map.getLayerIndex(pLayer) - 1);
+                    }
+
+                }
+
+            });
+            for (i = 0, l = layers.length; i < l; i++) {
+                layer = layers[i];
+                id = layer['_msp'].mspID;
+                $tb.append('<tr mspid="'+id+'"><td><img src="'+layer['_msp'].icon+'" class="middle"/></td><td class="title">'+msp.Util.shorten(layer.name,20)+'</td><td><div id="'+id+'op" class="element"></div></td><td class="clickable" id="'+id+'vy">'+ msp.Util._(layer.getVisibility() ? "Hide" : "Show") +'</td></tr>');
+
+                (function(id, layer) {
+
+                    /*
+                     * Opacity
+                     */
+                    $("#"+id+"op").slider({
+                        value:layer.opacity * 100 || 100,
+                        range:"min",
+                        min:0,
+                        max:100,
+                        slide: function(event, ui) {
+                            if (layer) {
+                                layer.setOpacity(ui.value / 100.0);
+                            }
+                        }
+                    });
+
+                    /*
+                     * Visibility
+                     */
+                    $("#"+id+"vy").click(function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        msp.Map.Util.setVisibility(layer, !layer.getVisibility());
+                        return false;
+                    });
+
+                })(id, layer);
+            }
+
+            
+            return true;
+            
         };
+        
         
         /*
          * Set unique instance
