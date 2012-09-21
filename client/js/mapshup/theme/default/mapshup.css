@@ -130,6 +130,13 @@ input:placeholder {
     color:#666;
 }
 
+table thead {
+    background-color:#ccc;
+    color:#666;
+    text-transform:uppercase;
+    height:20px;
+    line-height:20px;
+}
 /***********************************
  *
  * Common shared properties
@@ -1141,7 +1148,17 @@ a.tab img {
 .hidden {
     -moz-opacity:.40; filter:alpha(opacity=40); opacity:.40;
 }
-
+.clickable {
+    cursor: pointer;
+}
+.sortable {
+    cursor: move;
+}
+.hint {
+    text-align:center;
+    font-size:1.2em;
+    padding:5px;
+}
 
 /************************************
  *
@@ -1367,7 +1384,7 @@ div.olControlMousePosition {
     border:3px solid #f3961c;
 }
 
-.lm .images ul li a img{
+.lm .images ul li a img, .lmrcfg img {
     width:44px;
     height:44px;
     background-color:#000;
@@ -1410,6 +1427,17 @@ div.olControlMousePosition {
     line-height:24px;
     padding:6px 7px 5px 7px;
     height:24px;
+}
+
+.lmrcfg .element {
+    width:100px;
+}
+table.lmrcfg {
+    width:100%;
+    text-align:left;
+}
+table.lmrcfg tr:nth-child(even) {
+    background: rgb(244, 244, 244);
 }
 
 /* BackgroundsManager.js and Context.js */

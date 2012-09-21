@@ -278,21 +278,6 @@
                         return false;
                     });
                    
-                    
-                    /*
-                     * Add hide button
-                     * // TODO
-                    
-                    $('.rtools', $id).append('<span id="'+id+'vy" class="item" jtitle="'+msp.Util._("Hide this layer")+'"><img class="middle" src="'+msp.Util.getImgUrl("hide.png")+'"/></span>');
-                    $d = $('#'+id+'vy');
-                    msp.tooltip.add($d, 'w');
-                    $d.click(function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        msp.Map.Util.setVisibility(layer, false);
-                        return false;
-                    });
-                    */
                     /*
                      * Show rasterImage tab
                      */
@@ -346,7 +331,7 @@
                  */
                 self.configure = function() {
                     
-                    var i, l, layers = [];
+                    var $tb, i, l, layer, id, layers = [];
                     
                     /*
                      * Roll over layers
@@ -355,34 +340,95 @@
                         layers.push(msp.Map.Util.getLayerByMspID($(this).attr("id")));
                     });
                     
-                   /*
+                    /*
                     * Get info popup
                     */
-                   if (!self.popup) {
+                    if (!self.popup) {
 
-                       /*
+                        /*
                         * Create info popup.
                         * popup reference is removed on popup close
                         */
-                       self.popup = new msp.Popup({
-                           modal:false,
-                           onClose:function(scope){
-                               scope.popup = null;
-                           },
-                           header:'<p>'+msp.Util._("Configure raster layers")+'</p>',
-                           scope:self
-                       });
+                        self.popup = new msp.Popup({
+                            modal:false,
+                            onClose:function(scope){
+                                scope.popup = null;
+                            },
+                            header:'<p>'+msp.Util._("Configure raster layers")+'</p>',
+                            scope:self
+                        });
 
-                       /*
+                        /*
                         * Roll over layer descrpiption properties
                         */
-                       for (i = 0, l = layers.length; i < l; i++) {
-                            self.popup.$b.append('<div class="title">'+layers[i].name+'</div>');
-                       }
+                        self.popup.$b.append('<div class="hint">'+msp.Util._("Hint - drag&drop rows to reorder layer display")+'</div><table class="lmrcfg sortable"><thead><tr><th></th><th>'+msp.Util._("Name")+'</th><th>'+msp.Util._("Opacity")+'</th><th>'+msp.Util._("Visibility")+'</th></tr></thead><tbody></tbody></table>');
+                        
+                        $tb = $('tbody', self.popup.$b).sortable({
+                            revert:true,
+                            revertDuration:10,
+                            stop:function(e,ui){
+                                
+                                /*
+                                 * Reorder raster layer z-indexes
+                                 * 
+                                 * Get the layer just below the moved layer
+                                 */
+                                var layer = msp.Map.Util.getLayerByMspID(ui.item.attr("mspid")),
+                                    nLayer = msp.Map.Util.getLayerByMspID(ui.item.next().attr('mspid')),
+                                    pLayer = msp.Map.Util.getLayerByMspID(ui.item.prev().attr('mspid'));
+                                
+                                /*
+                                 * If no layer is below or over the moved layer then do nothing.
+                                 * Otherwise, set the moved layer index to its new index
+                                 */
+                                if (nLayer) {
+                                    msp.Map.map.setLayerIndex(layer, msp.Map.map.getLayerIndex(nLayer) + 1);
+                                }
+                                else if (pLayer) {
+                                    msp.Map.map.setLayerIndex(layer, msp.Map.map.getLayerIndex(pLayer) - 1);
+                                }
+                                
+                            }
+                          
+                        });
+                        for (i = 0, l = layers.length; i < l; i++) {
+                            layer = layers[i];
+                            id = layer['_msp'].mspID;
+                            $tb.append('<tr mspid="'+id+'"><td><img src="'+layer['_msp'].icon+'" class="middle"/></td><td class="title">'+msp.Util.shorten(layer.name,20)+'</td><td><div id="'+id+'op" class="element"></div></td><td class="clickable" id="'+id+'vy">'+ msp.Util._(layer.getVisibility() ? "Hide" : "Show") +'</td></tr>');
+                            
+                            (function(id, layer) {
+                                
+                                /*
+                                 * Opacity
+                                 */
+                                $("#"+id+"op").slider({
+                                    value:layer.opacity * 100 || 100,
+                                    range:"min",
+                                    min:0,
+                                    max:100,
+                                    slide: function(event, ui) {
+                                        if (layer) {
+                                            layer.setOpacity(ui.value / 100.0);
+                                        }
+                                    }
+                                });
+                                
+                                /*
+                                 * Visibility
+                                 */
+                                $("#"+id+"vy").click(function(e) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    msp.Map.Util.setVisibility(layer, !layer.getVisibility());
+                                    return false;
+                                });
+                                
+                            })(id, layer);
+                        }
+                       
+                    }
 
-                   }
-
-                   self.popup.show();
+                    self.popup.show();
                     
                 };
                 
@@ -945,7 +991,7 @@
                         },100,function(){
                             
                             self.scrollTo(f);
-                           /*
+                            /*
                             * Update pagination display
                             */
                             self.updatePaginate(item);
@@ -979,7 +1025,7 @@
                     },100,function(){
                         self.scrollTo(f);
                         
-                       /*
+                        /*
                         * Update pagination display
                         */
                         self.updatePaginate(item);
@@ -1092,7 +1138,7 @@
                 $('#'+item.id+'n').trigger('click', f);
             }
             
-           /*
+            /*
             * Update pagination display
             */
             self.updatePaginate(item);
@@ -1374,17 +1420,26 @@
             }
             
             /*
-             * Set mask information and hide action visible or hidden
+             * Raster and non raster are treated differently
              */
-            $a = $('#'+layer['_msp'].mspID+'vy');
-            $m = $('#'+layer['_msp'].mspID+'m');
-            if (layer.getVisibility()) {
-                $m.hide();
-                $a.show();
+            if (msp.Map.Util.isRaster(layer)) {
+                $('#'+layer['_msp'].mspID+'vy').html(msp.Util._(layer.getVisibility() ? "Hide" : "Show"));
             }
             else {
-                $m.show();
-                $a.hide();
+                
+                /*
+                 * Set mask information and hide action visible or hidden
+                 */
+                $a = $('#'+layer['_msp'].mspID+'vy');
+                $m = $('#'+layer['_msp'].mspID+'m');
+                if (layer.getVisibility()) {
+                    $m.hide();
+                    $a.show();
+                }
+                else {
+                    $m.show();
+                    $a.hide();
+                }
             }
             
             return true;
