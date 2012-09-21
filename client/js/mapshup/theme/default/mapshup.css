@@ -1432,6 +1432,9 @@ div.olControlMousePosition {
 .lmrcfg .element {
     width:100px;
 }
+.lmrcfg .remove {
+    font-size:1.5em;
+}
 table.lmrcfg {
     width:100%;
     text-align:left;

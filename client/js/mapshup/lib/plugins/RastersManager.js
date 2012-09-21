@@ -166,7 +166,7 @@
             /*
              * Roll over layer descrpiption properties
              */
-            self.popup.$b.append('<div class="hint">'+msp.Util._("Hint - drag&drop rows to reorder layer display")+'</div><table class="lmrcfg sortable"><thead><tr><th></th><th>'+msp.Util._("Name")+'</th><th>'+msp.Util._("Opacity")+'</th><th>'+msp.Util._("Visibility")+'</th></tr></thead><tbody></tbody></table>');
+            self.popup.$b.append('<div class="hint">'+msp.Util._("Hint - drag&drop rows to reorder layer display")+'</div><table class="lmrcfg sortable"><thead><tr><th></th><th>'+msp.Util._("Name")+'</th><th>'+msp.Util._("Opacity")+'</th><th>'+msp.Util._("Visibility")+'</th><th></th></tr></thead><tbody></tbody></table>');
 
             $tb = $('tbody', self.popup.$b).sortable({
                 revert:true,
@@ -199,10 +199,20 @@
             for (i = 0, l = layers.length; i < l; i++) {
                 layer = layers[i];
                 id = layer['_msp'].mspID;
-                $tb.append('<tr mspid="'+id+'"><td><img src="'+layer['_msp'].icon+'" class="middle"/></td><td class="title">'+msp.Util.shorten(layer.name,20)+'</td><td><div id="'+id+'op" class="element"></div></td><td class="clickable" id="'+id+'vy">'+ msp.Util._(layer.getVisibility() ? "Hide" : "Show") +'</td></tr>');
+                $tb.append('<tr mspid="'+id+'"><td><img src="'+layer['_msp'].icon+'" class="middle"/></td><td class="title clickable" id="'+id+'ce">'+msp.Util.shorten(layer.name,20)+'</td><td><div id="'+id+'op" class="element"></div></td><td class="clickable" id="'+id+'vy">'+ msp.Util._(layer.getVisibility() ? "Hide" : "Show") +'</td><td class="clickable remove" id="'+id+'rm">&times;</td></tr>');
 
                 (function(id, layer) {
 
+                    /*
+                     * Center
+                     */
+                    $("#"+id+"ce").click(function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        msp.Map.zoomTo(layer.getDataExtent() || layer["_msp"].bounds);
+                        return false;
+                    });
+                    
                     /*
                      * Opacity
                      */
@@ -225,6 +235,16 @@
                         e.preventDefault();
                         e.stopPropagation();
                         msp.Map.Util.setVisibility(layer, !layer.getVisibility());
+                        return false;
+                    });
+                    
+                    /*
+                     * Remove
+                     */
+                    $("#"+id+"rm").click(function(e){
+                        e.preventDefault();
+                        e.stopPropagation();
+                        msp.Map.removeLayer(layer, true);
                         return false;
                     });
 
