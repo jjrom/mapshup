@@ -432,9 +432,10 @@
                         /*
                          * Refresh name if needed
                          */
-                        item.title = layer.name;
-                        $('.lmt', item.$tab).html(layer.name);
-                        
+                        if (item) {
+                            item.title = layer.name;
+                            $('.lmt', item.$tab).html(layer.name);
+                        }
                     }
 
                     /*
