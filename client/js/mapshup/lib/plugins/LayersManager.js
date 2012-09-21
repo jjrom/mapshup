@@ -157,12 +157,25 @@
                 /*
                  * Add raster tab
                  */
-                var self = this,
+                var $pt,self = this,
                 id = msp.Util.getId(),
                 tid = msp.Util.getId();
                 
-                lm.$d.append('<a id="'+tid+'" class="tab rastertab"><img src="'+msp.Util.getImgUrl("image.png")+'">&nbsp;'+msp.Util._("Images")+'</a>');
+                lm.$d.append('<a id="'+tid+'" class="tab rastertab"><img src="'+msp.Util.getImgUrl("image.png")+'">&nbsp;'+msp.Util._("Images")+'<span class="tools"></span></a>');
                 
+                /*
+                 * Add parameters tool
+                 */
+                $('.tools',$('#'+tid)).append('<span id="'+tid+'p" class="item" jtitle="'+msp.Util._("Parameters")+'"><img class="middle" src="'+msp.Util.getImgUrl("configure.png")+'"/></span>');
+                $pt = $('#'+tid+'p');
+                msp.tooltip.add($pt, 'n', 10);
+                $pt.click(function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    self.configure();
+                    return false;
+                });
+                    
                 self.item = {
                     id:id,
                     type:'r',
@@ -254,30 +267,6 @@
 
                         return false; 
                     });
-
-                    
-
-                    /*
-                     * TODO
-                     *
-                     *
-                   if (self.options.onTheFly) {
-                        $id.mouseover(function(e){
-                            var left = $div.offset().left + ($div.width() - self.target.pn.$d.width()) / 2;
-                            left = Math.max(0, left);
-                            left = Math.min(left,msp.$container.width() - self.target.pn.$d.width());
-                            self.target.pn.$d.css({
-                                'left':left
-                            });
-                            msp.Map.featureInfo.setInfo(f, self.target);
-                            msp.Map.featureInfo.show(self.target);
-
-                        }).mouseout(function(e){
-                            self.target.pn.hide();
-                        });
-                    }
-                     */
-                   
                      
                     /*
                      * Add close button
@@ -350,6 +339,51 @@
                     }
                     
                     return true;
+                };
+                
+                /*
+                 * Open popup configuration
+                 */
+                self.configure = function() {
+                    
+                    var i, l, layers = [];
+                    
+                    /*
+                     * Roll over layers
+                     */
+                    $('ul a', self.item.$d).each(function(index){
+                        layers.push(msp.Map.Util.getLayerByMspID($(this).attr("id")));
+                    });
+                    
+                   /*
+                    * Get info popup
+                    */
+                   if (!self.popup) {
+
+                       /*
+                        * Create info popup.
+                        * popup reference is removed on popup close
+                        */
+                       self.popup = new msp.Popup({
+                           modal:false,
+                           onClose:function(scope){
+                               scope.popup = null;
+                           },
+                           header:'<p>'+msp.Util._("Configure raster layers")+'</p>',
+                           scope:self
+                       });
+
+                       /*
+                        * Roll over layer descrpiption properties
+                        */
+                       for (i = 0, l = layers.length; i < l; i++) {
+                            self.popup.$b.append('<div class="title">'+layers[i].name+'</div>');
+                       }
+
+                   }
+
+                   self.popup.show();
+                    
                 };
                 
                 return self;
