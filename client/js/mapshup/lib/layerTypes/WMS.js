@@ -77,8 +77,8 @@
          *
          *  Note: "time" property is an object with two parameters
          *  time: {
-         *      value: // mandatory default value
-         *      list:[] // optional, array of possible values
+         *      default: // mandatory default value
+         *      values:[] // optional, array of possible values
          *                  e.g. ["1995-01-01/2011-12-31/PT5M"]
          *                  (see WMS specification OGC 06-042)
          *  }
@@ -186,8 +186,8 @@
             /*
              * Time component
              */
-            if (layerDescription.time && layerDescription.time["value"]) {
-                options.time = layerDescription.time["value"];
+            if (layerDescription.time && layerDescription.time.hasOwnProperty("default")) {
+                options.time = layerDescription.time["default"];
             }
 
             /*
@@ -212,7 +212,7 @@
             /*
              * Add a setTime function
              */
-            if (options.time) {
+            if (layerDescription.hasOwnProperty("time")) {
                 
                 newLayer["_msp"].setTime = function(interval) {
                     
@@ -220,7 +220,14 @@
                      * Currently only the first value of the interval is 
                      * sent to the WMS server
                      */
-                    var self = this, time = interval[0]; // + (interval[1] !== '' ? '/' + interval[1] : '');
+                    var time, self = this;
+                    
+                    if ($.isArray(interval)) {
+                        time = interval[0] + (interval[1] !== '' ? '/' + interval[1] : '');
+                    }
+                    else {
+                        time = '';
+                    }
                     if (self.layerDescription.time) {
                         self.layerDescription.time = self.layerDescription.time || {};
                         self.layerDescription.time["value"] = time;
@@ -228,6 +235,7 @@
                             'time':time
                         });
                     }
+                        
                 };
                 
             }
@@ -425,7 +433,7 @@
                 for (var i = 0, l = capabilities.capability.layers.length; i < l; i++) {
 
                     layer = capabilities.capability.layers[i];
-
+                    
                     /*
                      * Initialize new object
                      */
@@ -465,8 +473,8 @@
                      */
                     if (layer.dimensions && layer.dimensions.time) {
                         d.time = {
-                            value:layer.dimensions.time["default"],
-                            list:layer.dimensions.time["values"] || []
+                            "default":layer.dimensions.time["default"],
+                            values:layer.dimensions.time["values"] || []
                         }
                     }
 
