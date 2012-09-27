@@ -1246,10 +1246,12 @@
                                 'left':left
                             });
                             msp.Map.Util.Feature.toHTML(f, $('.main', self.$onTheFly));
+                            msp.Map.featureInfo.hilite(f);
                             self.$onTheFly.show();
                             
                         },function(e){
                             self.$onTheFly.hide();
+                            msp.Map.featureInfo.unhilite(f);
                         });
                     }
                 })(f,$('#'+id));

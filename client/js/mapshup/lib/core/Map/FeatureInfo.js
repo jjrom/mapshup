@@ -56,6 +56,11 @@
         this.selected = null;
         
         /**
+         * Current hilited feature
+         */
+        this.hilited = null;
+        
+        /**
          * Feature info popup dimension
          */
         this.dimension = {
@@ -811,8 +816,63 @@
             if (msp.Map.featureInfo.selected && msp.Map.featureInfo.selected.geometry) {
                 msp.Map.zoomTo(msp.Map.featureInfo.selected.geometry.getBounds());
             }
-        }
-     
+        };
+        
+        /*
+         * Hilite feature
+         */
+        this.hilite = function(f) {
+            
+            var self = this,
+                c = msp.Map.Util.getControlById("__CONTROL_HIGHLITE__");
+                
+            if (c && f) {
+                try {
+                    
+                    /*
+                     * First unhighlight all feature
+                     */
+                    var i, l, fs = msp.Map.Util.getFeatures(f.layer);
+                    
+                    for (i = 0, l = fs.length; i < l; i++) {
+                        c.unhighlight(fs[i]);
+                    }
+                    
+                    /*
+                     * Highlite input feature
+                     */
+                    self.hilited = f;
+                    c.highlight(f);
+                    
+                }
+                catch(e) {}
+            }
+            
+        };
+        
+        /*
+         * Hilite feature
+         */
+        this.unhilite = function(f) {
+            
+            var self = this,
+                c = msp.Map.Util.getControlById("__CONTROL_HIGHLITE__");
+                
+            if (c && f) {
+                try {
+                    
+                    /*
+                     * Unhighlite input feature
+                     */
+                    self.hilited = null;
+                    c.unhighlight(f);
+                    
+                }
+                catch(e) {}
+            }
+            
+        };
+        
         /*
          * Create unique object instance
          */

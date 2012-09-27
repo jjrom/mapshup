@@ -227,7 +227,7 @@
         
         /**
          * hilitableLayers object contains all the layers that can be hilited with
-         * the "__CONTROL_HILITE__" control tool
+         * the "__CONTROL_HIGHLITE__" control tool
          */
         hilitableLayers: {
 
@@ -1267,20 +1267,25 @@
                         beforefeaturehighlighted:function(e){
 
                             /*
-                             * If jMenu is visible do not hilite feature
+                             * If menu is visible do not hilite feature
                              * to avoid 'post modern art flickering' effect
                              */
                             if (msp.menu && msp.menu.$m.is(':visible')) {
                                 return false;
                             }
+                            
                             /*
                              * Paranoid mode
                              */
                             if (e.feature) {
 
                                 /*
-                                 * Never hilite an already selected feature
+                                 * Never hilite an already selected or hilited feature
                                  */
+                                if (msp.Map.featureInfo.hilited) {
+                                    self.$featureHilite.empty().hide();
+                                    return true;
+                                }
                                 if (msp.Map.featureInfo.selected) {
                                     if (msp.Map.featureInfo.selected.id === e.feature.id) {
                                         self.$featureHilite.empty().hide();
