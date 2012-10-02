@@ -977,11 +977,12 @@
      *     - SHP
      *     - TMS
      *     - WMS
+     *     - WMTS
      *     - XYZ
      */
     Map.Util.isRaster = function(layer) {
         
-        var i,l,b = false, rasters = ["Image","MBT","SHP","TMS","WMS","XYZ"];
+        var i,l,b = false, rasters = ["Image","MBT","SHP","TMS","WMS","WMTS","XYZ"];
       
         if (!layer || !layer['_msp']) {
             return b;
