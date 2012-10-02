@@ -419,14 +419,14 @@
                         else if (t === "object") {
 
                             /*
-                             * Special case for _mapshup property
-                             * _mapshup defines specific actions and should contains optional properties
+                             * Special case for services property
+                             * services defines specific actions and should contains optional properties
                              *      - download : to add a download action
-                             *      - add : to add a layer
+                             *      - browse : to add a layer
                              * These actions are displayed within the actions list - see this.setFooter(feature) function
                              *
                              */
-                            if (k === "_mapshup") {
+                            if (k === "services") {
                                 continue;
                             }
 
