@@ -211,27 +211,6 @@
         },
 
         /**
-         * Return WFS GetCapabilities
-         */
-        getCapabilities: function(XMLHttpRequestObj) {
-
-            var capability = null;
-
-            if (XMLHttpRequestObj.status !== 200) {
-                return null
-            }
-
-            try {
-                capability = (new OpenLayers.Format.WFSCapabilities()).read(XMLHttpRequestObj.responseXML);
-            }
-            catch(e) {
-                msp.Util.message(msp.Util._("Error reading Capabilities file"));
-            }
-
-            return capability;
-        },
-
-        /**
          * Return WFS DescribeFeatureType
          */
         describeFeatureType: function(XMLHttpRequestObj) {
@@ -306,7 +285,7 @@
                 async:true,
                 obj:layerDescription,
                 success:function(data, textStatus, XMLHttpRequest) {
-                    this.obj.capabilities = self.getCapabilities(XMLHttpRequest);
+                    this.obj.capabilities = self.getCapabilities(XMLHttpRequest, new OpenLayers.Format.WFSCapabilities());
                     if (this.obj.capabilities) {
                         msp.Util.ajax({
                             url:msp.Util.proxify(layerDescription.url+"request=DescribeFeatureType&service=WFS", "XML"),

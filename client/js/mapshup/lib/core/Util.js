@@ -263,6 +263,33 @@
         },
         
         /**
+         * Return GetCapabilities from an OGC service
+         * 
+         * @input XMLHttRequestObj : the XMLHttpRequest object
+         * @input format : format of the GetCapabilities file.
+         *                 can be one of :
+         *                      new OpenLayers.Format.WFSCapabilities()
+         *                      new OpenLayers.Format.WMSCapabilities()
+         *                      new OpenLayers.Format.WMTSCapabilities()
+         */
+        getCapabilities: function(XMLHttpRequestObj, format) {
+
+            var capability = null;
+
+            if (XMLHttpRequestObj.status !== 200 || !format) {
+                return null
+            }
+            try {
+                capability = format.read(XMLHttpRequestObj.responseXML);
+            }
+            catch(e) {
+                msp.Util.message(msp.Util._("Error reading Capabilities file"));
+            }
+
+            return capability;
+        },
+        
+        /**
          * Return the length of an associative array
          * 
          * @input h : associative array

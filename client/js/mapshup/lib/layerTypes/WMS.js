@@ -244,27 +244,6 @@
 
         },
 
-        /**
-         * Return WMS GetCapabilities
-         */
-        getCapabilities: function(XMLHttpRequestObj) {
-
-            var capability = null;
-
-            if (XMLHttpRequestObj.status !== 200) {
-                return null
-            }
-            try {
-                var format = new OpenLayers.Format.WMSCapabilities();
-                capability = format.read(XMLHttpRequestObj.responseXML);
-            }
-            catch(e) {
-                msp.Util.message(msp.Util._("Error reading Capabilities file"));
-            }
-
-            return capability;
-        },
-
         /*
          * Launch an ajax call to WMS getCapabilities service
          * based on input layerDescription
@@ -319,7 +298,7 @@
                     /*
                      * Append capabilities to layerDescription
                      */
-                    layerDescription.capabilities = self.getCapabilities(XMLHttpRequest);
+                    layerDescription.capabilities = self.getCapabilities(XMLHttpRequest, new OpenLayers.Format.WMSCapabilities());
 
                     /*
                      * Set the layerDescription title if not already set
