@@ -212,18 +212,18 @@
             });
             
             /*
-             * _mapshup defines specific actions and should contains optional properties
+             * services defines specific actions and should contains optional properties
              *      - download : to add a download action
-             *      - add : to add a layer
+             *      - browse : to add a layer
              * These actions are displayed within the actions list
              *
              */
-            if (feature.attributes.hasOwnProperty("_mapshup")) {
+            if (feature.attributes.hasOwnProperty("services")) {
                 
                 /*
                  * Download feature
                  */
-                if(feature.attributes["_mapshup"]["download"]) {
+                if(feature.attributes["services"]["download"]) {
                     actions.push({
                         id:msp.Util.getId(),
                         icon:"download.png",
@@ -232,18 +232,18 @@
                         sla:function(a,f) {
                             if (f && f["attributes"]) {
                                 
-                                var d = f.attributes["_mapshup"]["download"];
+                                var d = f.attributes["services"]["download"];
                                 
                                 /*
                                  * Structure of d is :
                                  * {
                                  *      url: // url to download
-                                 *      isFile: // boolean - if true url is a file. Otherwise it's a service
+                                 *      mimeType: // if "text/html" open a new window. Otherwise set url
                                  * }
                                  */
                                 a.attr("href", d.url);
                                 
-                                if (!d.isFile) {
+                                if (d.mimeType && d.mimeType.toLowerCase() === "text/html") {
                                     a.attr("target", "_blank");
                                 }
                                 
@@ -254,7 +254,7 @@
                         }
                     });
                 }
-                _a = feature.attributes["_mapshup"]["add"];
+                _a = feature.attributes["services"]["browse"];
                 
                 /*
                  * Add layer action
@@ -270,7 +270,7 @@
                             /*
                              * Add layer obj
                              */
-                            var l = msp.Map.addLayer(f.attributes["_mapshup"]["add"]["layer"]);
+                            var l = msp.Map.addLayer(f.attributes["services"]["browse"]["layer"]);
                             
                             /*
                              * Force zoom on added layer
