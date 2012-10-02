@@ -202,7 +202,7 @@
              */
             var newLayer = new OpenLayers.Layer.WMS(layerDescription.title, msp.Util.getPropertyValue(layerDescription, "projectedUrl", layerDescription.url), {
                 layers:layerDescription.layers,
-                format:"image/jpeg",
+                format:"image/png",
                 transitionEffect: "resize",
                 transparent:'true',
                 SLD:layerDescription.SLD,
