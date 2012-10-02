@@ -285,7 +285,7 @@
                 async:true,
                 obj:layerDescription,
                 success:function(data, textStatus, XMLHttpRequest) {
-                    this.obj.capabilities = self.getCapabilities(XMLHttpRequest, new OpenLayers.Format.WFSCapabilities());
+                    this.obj.capabilities = msp.Util.getCapabilities(XMLHttpRequest, new OpenLayers.Format.WFSCapabilities());
                     if (this.obj.capabilities) {
                         msp.Util.ajax({
                             url:msp.Util.proxify(layerDescription.url+"request=DescribeFeatureType&service=WFS", "XML"),

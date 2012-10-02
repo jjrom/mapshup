@@ -298,7 +298,7 @@
                     /*
                      * Append capabilities to layerDescription
                      */
-                    layerDescription.capabilities = self.getCapabilities(XMLHttpRequest, new OpenLayers.Format.WMSCapabilities());
+                    layerDescription.capabilities = msp.Util.getCapabilities(XMLHttpRequest, new OpenLayers.Format.WMSCapabilities());
 
                     /*
                      * Set the layerDescription title if not already set
