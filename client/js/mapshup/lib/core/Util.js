@@ -280,7 +280,7 @@
                 return null
             }
             try {
-                capability = format.read(XMLHttpRequestObj.responseXML);
+                capability = format.read(msp.Util.textToXML(XMLHttpRequestObj.responseText));
             }
             catch(e) {
                 msp.Util.message(msp.Util._("Error reading Capabilities file"));
@@ -1395,7 +1395,42 @@
                     return 0
                 });
             }   
+        },
+        
+        /*
+         * Convert an XML text to XML object
+         */
+        textToXML: function(text) {
+            try {
+                var parser, found, xml = null;
+
+                if ( window.DOMParser ) {
+
+                    parser = new DOMParser();
+                    xml = parser.parseFromString( text, "text/xml" );
+
+                    found = xml.getElementsByTagName( "parsererror" );
+
+                    if ( !found || !found.length || !found[ 0 ].childNodes.length ) {
+                        return xml;
+                    }
+
+                    return null;
+                }
+                else {
+
+                    xml = new ActiveXObject( "Microsoft.XMLDOM" );
+
+                    xml.async = false;
+                    xml.loadXML( text );
+
+                    return xml;
+                }
+            } catch (e) {
+                return null;
+            }
         }
+        
         
     };
 
