@@ -785,21 +785,31 @@
          */
         this.setTime = function(interval) {
             
-            var s, self = this;
+            var startDate, completionDate, self = this;
             
-            s = self.connector.startDateAlias ? self.connector.startDateAlias : 'startDate';
+            /*
+             * Set startDate and completionDate
+             */
+            startDate = self.connector.startDateAlias ? self.connector.startDateAlias : 'startDate';
+            completionDate = self.connector.completionDateAlias ? self.connector.completionDateAlias : 'completionDate';
             
             /**
              * startDate is null => remove startDate item from the SearchContext
              */
             if (!interval) {
-                self.remove(s, null);
+                self.remove(startDate, null);
+                self.remove(completionDate, null);
             }
             else {
                 this.add({
-                    id:s,
+                    id:startDate,
                     title:msp.Util._("Date"),
-                    value:interval[0] + (interval[1] !== "" ? '/' + interval[1] : "")
+                    value:interval[0]
+                });
+                this.add({
+                    id:completionDate,
+                    title:msp.Util._("Date"),
+                    value:interval[1]
                 });
             }
         };
