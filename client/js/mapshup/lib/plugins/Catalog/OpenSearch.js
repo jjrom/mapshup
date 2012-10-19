@@ -38,6 +38,11 @@
 /*********************************************
  *
  * Connector for OpenSearch catalogs
+ * 
+ * 
+ * NOTE : This connector is compliant with the CNES
+ * document PSC-IF-40-0037-CN v1.0 which is available
+ * here [TODO : set url for document PSC-IF-40-0037-CN v1.0]
  *
  *********************************************/
 (function (msp){
@@ -118,7 +123,7 @@
                         * 
                         *   - the keys from the URLTemplate
                         *   - the url without the KVP (i.e. everything before the '?' character)
-                        *   - (optionaly) the url to the json description of the parameters 
+                        *   - (optionaly) the url to the json description of the parameters
                         */
                         var format = new OpenLayers.Format.OpenSearchDescription(),
                             description = format.read(data);
@@ -158,7 +163,15 @@
                                 }
                                 
                                 /*
-                                 * If value = {time:start} add a date filter 
+                                 * The "modified" parameter is a reserved keyword
+                                 * (see PSC-IF-40-0037-CN v1.0)
+                                 */
+                                if (key === "modified") {
+                                    continue;
+                                }
+                                
+                                /*
+                                 * If value = {time:start} add a date filter
                                  */
                                 if (kvps[key].indexOf('time:start') === 1) {
                                     self.startDateAlias = key;
