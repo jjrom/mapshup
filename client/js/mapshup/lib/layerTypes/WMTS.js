@@ -64,7 +64,8 @@
          *       title:,
          *       url:,
          *       layer:,
-         *       matrixSet:
+         *       matrixSet:,
+         *       format: // default is image/png
          *  };
          *
          */
