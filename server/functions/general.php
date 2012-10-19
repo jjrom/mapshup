@@ -224,10 +224,10 @@ function ISO8601($date) {
 
 /**
  * Return true if input date string is ISO 8601 formatted
- * i.e. in the form YYYY-MM-DDTHH:MM:SS(.MS)
+ * i.e. in the form YYYY-MM-DDTHH:MM:SS
  */
 function isISO8601($dateStr) {
-    return preg_match( '/\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\+\d{2}\:\d{2}/i', $dateStr );
+    return preg_match( '/\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\/i', $dateStr );
 }
 
 /**
