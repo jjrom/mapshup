@@ -95,7 +95,7 @@
                 layer:layerDescription.layer,
                 matrixSet:layerDescription.matrixSet,
                 matrixIds:matrixIds,
-                format:"image/png",
+                format:layerDescription.format || "image/png",
                 style: "_null",
                 transitionEffect: "resize",
                 version:"1.0.0",
