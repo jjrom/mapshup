@@ -66,6 +66,8 @@
          *       layer:,
          *       matrixSet:,
          *       format: // default is image/png
+         *       prefixMatrix : // true to generate matrixIds array ["proj:0", "proj:1", etc.]
+         *                         otherwise array is ["0", "1", etc.]
          *  };
          *
          */
@@ -84,10 +86,10 @@
             projCode = msp.Map.map.projection.projCode === "EPSG:4326" ? "EPSG:4326": "EPSG:900913";
             
             /*
-             * Set tiles matrix
+             * Generate tileMatrix
              */
             for (i = 0; i < l; ++i) {
-                matrixIds[i] = projCode + ":" + i;
+                matrixIds[i] = (layerDescription.prefixMatrix ? projCode + ":" : "") + i;
             }
             
             $.extend(options, {
@@ -97,7 +99,7 @@
                 matrixSet:layerDescription.matrixSet,
                 matrixIds:matrixIds,
                 format:layerDescription.format || "image/png",
-                style: "_null",
+                style: "normal",
                 transitionEffect: "resize",
                 version:"1.0.0",
                 wrapDateLine:true,
