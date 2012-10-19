@@ -181,7 +181,7 @@
                                  * If value = {time:end} add a date filter 
                                  */
                                 if (kvps[key].indexOf('time:end') === 1) {
-                                    self.endDateAlias = key;
+                                    self.completionDateAlias = key;
                                 }
                                 
                                 /*
