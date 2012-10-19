@@ -221,6 +221,15 @@ function ISO8601($date) {
     return null;
 }
 
+
+/**
+ * Return true if input date string is ISO 8601 formatted
+ * i.e. in the form YYYY-MM-DDTHH:MM:SS(.MS)
+ */
+function isISO8601($dateStr) {
+    return preg_match( '/\d{4}-\d{2}-\d{2}T\d{2}\:\d{2}\:\d{2}\+\d{2}\:\d{2}/i', $dateStr );
+}
+
 /**
  * Return an OWS Exception to JSON format
  */
