@@ -94,6 +94,7 @@
                 layer:layerDescription.layer,
                 matrixSet:layerDescription.matrixSet,
                 matrixIds:matrixIds,
+                maxZoomLevel:l,
                 format:layerDescription.format || "image/png",
                 style: "normal",
                 transitionEffect: "resize",
