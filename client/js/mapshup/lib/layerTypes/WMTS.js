@@ -66,14 +66,15 @@
          *       layer:,
          *       matrixSet:,
          *       format: // default is image/png
-         *       prefixMatrix : // true to generate matrixIds array ["proj:0", "proj:1", etc.]
-         *                         otherwise array is ["0", "1", etc.]
+         *       prefixMatrix : // prefix to generate matrixIds array (i.e. "EPSG:4326:" will generate
+         *                         ["EPSG:4326:0", "EPSG:4326:1", etc.]
+         *       matrixLength: // size of the matrix (22 by default)
          *  };
          *
          */
         add: function(layerDescription, options) {
 
-            var i, projCode, l = 26, matrixIds = new Array(l);
+            var i, l = layerDescription.matrixLength || 22, matrixIds = new Array(l);
             
             /*
              * Repare URL if it is not well formed
@@ -81,15 +82,10 @@
             layerDescription.url = msp.Util.repareUrl(layerDescription.url);
             
             /*
-             * Get the projCode for tiles matrix
-             */
-            projCode = msp.Map.map.projection.projCode === "EPSG:4326" ? "EPSG:4326": "EPSG:900913";
-            
-            /*
              * Generate tileMatrix
              */
-            for (i = 0; i < l; ++i) {
-                matrixIds[i] = (layerDescription.prefixMatrix ? projCode + ":" : "") + i;
+            for (i = 0; i <= l; ++i) {
+                matrixIds[i] = (layerDescription.prefixMatrix ? layerDescription.prefixMatrix : "") + i;
             }
             
             $.extend(options, {
