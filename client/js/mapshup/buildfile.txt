@@ -82,4 +82,4 @@ lib/plugins/UTFGrid.js
 #lib/plugins/Welcome.js
 lib/plugins/Wikipedia.js
 lib/plugins/WorldGrid.js
-lib/plugins/ITag.js
+lib/plugins/Slacker.js
