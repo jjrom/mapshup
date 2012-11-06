@@ -105,7 +105,7 @@
                 wrapDateLine:true,
                 /* WMTS can be set as background (isBaseLayer:true) or as overlay */
                 isBaseLayer:msp.Util.getPropertyValue(layerDescription, "isBaseLayer", false),
-                attribution:layerDescription.attribution || null
+                attribution:layerDescription.attribution || null
             });
             
             return new OpenLayers.Layer.WMTS(options);
