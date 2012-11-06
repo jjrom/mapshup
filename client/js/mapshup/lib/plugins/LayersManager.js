@@ -112,7 +112,8 @@
              */
             $.extend(self.options, {
                 position:msp.Util.getPropertyValue(self.options, "position", "n"),
-                onTheFly:msp.Util.getPropertyValue(options, "onTheFly", true)
+                onTheFly:msp.Util.getPropertyValue(options, "onTheFly", true),
+                closeOnRaster:msp.Util.getPropertyValue(options, "closeOnRaster", false)
             });
             
             /*
@@ -275,12 +276,14 @@
                     /*
                      * Add close button
                      */
-                    msp.Util.addClose($id, function(e){
-                        e.preventDefault();
-                        e.stopPropagation();
-                        msp.Map.removeLayer(layer, true);
-                        return false;
-                    });
+                    if (lm.options.closeOnRaster) {
+                        msp.Util.addClose($id, function(e){
+                            e.preventDefault();
+                            e.stopPropagation();
+                            msp.Map.removeLayer(layer, true);
+                            return false;
+                        });
+                    }
                    
                     /*
                      * Show rasterImage tab

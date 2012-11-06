@@ -473,6 +473,9 @@
      *     
      *     onTheFly: // If true, featureInfo panel is displayed on the
      *                  fly. Only work for non-touch device (default true)
+     *                  
+     *     closeOnRaster: // If true, a close button is added to each raster thumbnails
+     *                       default is false
      */
     c.add("plugins",
     {
