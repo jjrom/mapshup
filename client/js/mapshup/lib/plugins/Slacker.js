@@ -36,11 +36,11 @@
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
 /*********************************************
- * Plugin iTag
+ * Plugin slacker
  *
  * Image tagging search
  * 
- * iTag classification from glc2000
+ * slacker classification from glc2000
  *   100=>Artificial (22)
  *   200=>Cultivated (15 + 16 + 17 + 18)
  *   310=>Forests (1 + 2 + 3 + 4 + 5 + 6)
@@ -53,13 +53,13 @@
  *********************************************/
 (function(msp) {
     
-    msp.Plugins.ITag = function() {
+    msp.Plugins.Slacker = function() {
         
         /*
-         * Only one ITag object instance is created
+         * Only one Slacker object instance is created
          */
-        if (msp.Plugins.ITag._o) {
-            return msp.Plugins.ITag._o;
+        if (msp.Plugins.Slacker._o) {
+            return msp.Plugins.Slacker._o;
         }
         
         /*
@@ -97,9 +97,9 @@
             }
             
             /*
-             * Create #iTag element
+             * Create #slacker element
              * 
-             * <div id="iTag" class="shadow">
+             * <div id="slacker" class="shadow">
              *      <div class="container">
              *          <table>
              *              <tr>
@@ -116,10 +116,10 @@
              *      </div>
              * </div>
              */
-            self.$d = msp.Util.$$('#iTag', $('#mwrapper')).addClass('shadow').html('<div class="container"><table><tr></tr></table></div>');
+            self.$d = msp.Util.$$('#slacker', $('#mwrapper')).addClass('shadow').html('<div class="container"><table><tr></tr></table></div>');
             
             /*
-             * Insert iTag panel between theBar and map
+             * Insert slacker panel between theBar and map
              * and remove #theBar shadow
              */
             $('.map').css({
@@ -217,7 +217,7 @@
             var sp, service, self = this;
             
             /*
-             * No Search plugin, no iTag
+             * No Search plugin, no slacker
              */
             if (!msp.Plugins.Search) {
                 return false;
@@ -254,20 +254,21 @@
          */
         this.getParams = function() {
         
-            var params = "", key, self = msp.Plugins.ITag._o;
+            var params = "", key, self = msp.Plugins.Slacker._o;
             
             if (!self) {
                 return null;
             }
+            
             /*
              * Set additional parameters
              */
             for (key in self.values) {
                 params += "&"+key+"="+self.values[key];
-            };
+            }
             
             return {
-                title:"iTag",
+                title:"slacker",
                 params:params || "&" // params should always differs from "" to launch search
             };
         };
@@ -275,7 +276,7 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.ITag._o = this;
+        msp.Plugins.Slacker._o = this;
         
         return this;
     };
