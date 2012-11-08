@@ -125,6 +125,27 @@ function addTimeToDate($date) {
     return $date;
 }
 
+
+/*
+ * Get gravatar icon url
+ * 
+ * See http://en.gravata.com
+ * 
+ * @param $email : valid email adress
+ * @param $size : size of the returned icon (in milimeters - default 20) 
+ */
+function getGravatar($email, $size) {
+    
+    if (!$size || !is_numeric($size)) {
+        $size = 20;
+    } 
+    
+    // If email is not specified, return the mistery man
+    return $email ? "http://www.gravatar.com/avatar/" . md5($email) . "?s=20&d=mm" : "http://www.gravatar.com/avatar?s=20&d=mm";
+   
+}
+
+
 /**
  * Return a valid db connection if :
  *   - general parameters are set
