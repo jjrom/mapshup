@@ -96,7 +96,7 @@
                  * a WMS url for this layer
                  */
                 msp.Util.ajax({
-                    url:msp.Util.getAbsoluteUrl(msp.Config["general"].shpToWMSServiceUrl)+msp.abc+"&title="+encodeURIComponent(layerDescription.title)+"&shp="+encodeURIComponent(layerDescription.file),
+                    url:msp.Util.getAbsoluteUrl(msp.Config["general"].shpToWMSServiceUrl)+msp.Util.abc+"&title="+encodeURIComponent(layerDescription.title)+"&shp="+encodeURIComponent(layerDescription.file),
                     async:true,
                     dataType:"json",
                     success:function(result){
