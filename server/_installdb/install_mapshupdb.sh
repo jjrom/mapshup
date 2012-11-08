@@ -12,10 +12,10 @@ CREATE USER $user WITH PASSWORD '$password' NOCREATEDB;
 EOF
 
 # POSTGIS path
-postgis=/usr/share/postgresql/8.4/contrib/postgis-1.5/postgis.sql
+postgis=/usr/local/pgsql-9.0/share/contrib/postgis-1.5/postgis.sql
 
 # Projections path
-projections=/usr/share/postgresql/8.4/contrib/postgis-1.5/spatial_ref_sys.sql
+projections=/usr/local/pgsql-9.0/share/contrib/postgis-1.5/spatial_ref_sys.sql
 
 # Make db POSTGIS compliant
 createdb $db -U $superuser --o $user

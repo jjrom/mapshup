@@ -49,11 +49,11 @@
 -- ==================
 CREATE TABLE users (
     userid              SERIAL PRIMARY KEY,
-    username            VARCHAR(32) UNIQUE NOT NULL,
+    email               VARCHAR(255) UNIQUE NOT NULL,
+    username            VARCHAR(32) NOT NULL,
     password            VARCHAR(32) NOT NULL,
-    email               VARCHAR(255) NOT NULL,
-    lastcontextid       VARCHAR(255),
-    registrationdate    TIMESTAMP NOT NULL
+    registrationdate    TIMESTAMP NOT NULL,
+    lastcontextid       VARCHAR(255)
 );
 
 
