@@ -126,12 +126,12 @@
              * Create an hidden link to store the export url
              */
             var hidden = msp.Util.$$('#'+msp.Util.getId()).html('<a href="#" style="diplay:none;"></a>'),
-                umgmt = msp.Plugins.LayersManager,
+                umgmt = msp.Plugins.UserManagement,
                 userid = -1,
                 scope = this;
             
             /*
-             * UserInfo is set within the LayersManager plugin
+             * UserInfo is set within the UserManagement plugin
              */
             if (umgmt && umgmt._o) {
                 if (umgmt._o.userInfo) {
