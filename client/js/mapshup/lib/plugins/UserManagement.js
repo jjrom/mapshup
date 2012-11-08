@@ -55,10 +55,20 @@
         }
         
         /**
-         * True if user is connected (i.e. authenticated)
-         * False in other cases
+         * If set then user is connectec, otherwise not
+         * 
+         * Structure of userInfo is :
+         * 
+         *  {
+         *      'userid': // Unique user id
+         *      'username': // User name
+         *      'email': // Unique user email
+         *      'icon': // Url to the user icon gravatar
+         *      'password': // User password encryptes in MD5
+         *  };
+         * 
          */
-        this.isConnected = false;
+        this.userInfo = null;
 
         /**
          * Userbar items array
@@ -77,7 +87,7 @@
                 icon:msp.Util.getImgUrl("disconnect.png"),
                 title:"Disconnect",
                 callback:function(scope) {
-                    if (scope.isConnected) {
+                    if (scope.userInfo) {
                         msp.Util.askFor(msp.Util._("Sign out"), msp.Util._("Do you really want to sign out ?"), "list", [{
                             title:msp.Util._("Yes"), 
                             value:"y"
@@ -133,9 +143,9 @@
             /**
              * Check for a connection cookie
              */
-            userInfo = msp.Util.getUserInfo();
-            
-            if (userInfo.userid !== -1) {
+            userInfo = JSON.parse(msp.Util.Cookie.get("userInfo"));
+        
+            if (userInfo) {
                 self.signIn(userInfo.email, userInfo.password, true);
             }
             else {
@@ -193,15 +203,14 @@
          */
         this.storeContext = function() {
             
-            var userInfo = msp.Util.getUserInfo();
+            var self = this;
             
-            if (userInfo.userid !== -1) {
-                
+            if (self.userInfo) {    
                 msp.Util.ajax({
                     dataType:"json",
                     type:"POST",
-                    url:msp.Util.getAbsoluteUrl(this.options.saveContextUrl),
-                    data:msp.Util.abc+"&email=" + userInfo.email + "&password=" + userInfo.password + "&context=" + encodeURIComponent(JSON.stringify(msp.Map.getContext())),
+                    url:msp.Util.getAbsoluteUrl(self.options.saveContextUrl),
+                    data:msp.Util.abc+"&email=" + self.userInfo.email + "&password=" + self.userInfo.password + "&context=" + encodeURIComponent(JSON.stringify(msp.Map.getContext())),
                     success: function(data){
                         msp.Util.message(msp.Util._("Context succesfully stored"));
                     },
@@ -236,7 +245,7 @@
             /*
              * Tell UserManagement that user is disconnected
              */
-            self.isConnected = false;
+            self.userInfo = null;
             
             /*
              * Display the Sign in / Sign up bar
@@ -270,8 +279,7 @@
             }
 
             /**
-             * If checkCookie is true, the password is already
-             * encrypted
+             * Register user
              */
             msp.Util.ajax({
                 dataType:"json",
@@ -300,13 +308,12 @@
         /**
          * Sign in action
          */
-        this.signIn = function(email,password,checkCookie) {
+        this.signIn = function(email, password, checkCookie) {
 
             var self = this,
             
             /*
-             * If checkCookie is true, the password is already
-             * encrypted
+             * If checkCookie is true, the password is already encrypted
              */
             encrypted = checkCookie ? "&encrypted=true" : "";
 
@@ -320,26 +327,19 @@
                 data:msp.Util.abc+"&email=" + email + "&password=" + password + encrypted,
                 success: function(data){
                     
-                    var userInfo;
-                    
                     if (data.username) {
 
                         /*
-                         * Tell user that he is connected
-                         */
-                        self.isConnected = true;
-                        
-                        /*
                          * Set userInfo
                          */
-                        userInfo = {
+                        self.userInfo = {
                             'userid':data.userid,
                             'username':data.username,
                             'email':data.email,
                             'icon':data.icon,
                             'password':data.password
                         };
-                        
+                            
                         /*
                          * Load the user last context
                          */
@@ -366,7 +366,7 @@
                          * a cookie for one year
                          */
                         if (checkCookie || $('#rememberMe').is(':checked')) {
-                            msp.Util.Cookie.set("userInfo", JSON.stringify(userInfo), 365);
+                            msp.Util.Cookie.set("userInfo", JSON.stringify(self.userInfo), 365);
                         }
 
                         /*
@@ -374,7 +374,7 @@
                          * (valid until you close the navigator)
                          */
                         else {
-                            msp.Util.Cookie.set("userInfo", JSON.stringify(userInfo));
+                            msp.Util.Cookie.set("userInfo", JSON.stringify(self.userInfo));
                         }
 
                         /*
@@ -430,13 +430,11 @@
          */
         this.displayUserBar = function() {
             
-            var i, userInfo, self = this;
+            var i, self = this;
             
-            if (!self.isConnected) {
+            if (!self.userInfo) {
                 return false;
             }
-            
-            userInfo = msp.Util.getUserInfo();
             
             /*
              * Create Toolbar
@@ -452,12 +450,12 @@
              */
             self.tb.add({
                 id:msp.Util.getId(),
-                icon:userInfo.icon,
+                icon:self.userInfo.icon,
                 tt:"Open profile",
                 activable:false,
                 switchable:false,
                 callback:function() {
-                    alert("TODO : profile manager for " + userInfo.username);
+                    alert("TODO : profile manager for " + self.userInfo.username);
                 }
             });
             
