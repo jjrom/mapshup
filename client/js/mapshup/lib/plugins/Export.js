@@ -127,7 +127,7 @@
              */
             var hidden = msp.Util.$$('#'+msp.Util.getId()).html('<a href="#" style="diplay:none;"></a>'),
                 scope = this,
-                userid = msp.Util.Cookie.get("userid") || -1;
+                userInfo = msp.Util.getUserInfo();
 
             /*
              * Add action on click
@@ -160,7 +160,7 @@
                 type:"POST",
                 target:hidden,
                 data:{
-                    userid:userid,
+                    userid:userInfo.userid,
                     format:format,
                     name:name,
                     json:JSON.stringify({

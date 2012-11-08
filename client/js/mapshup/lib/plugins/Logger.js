@@ -114,8 +114,7 @@
          */
         this.log = function(obj) {
 
-            var key,
-            query = "";
+            var key, query = "";
                 
             /*
              * Check for mandatory bbox information
@@ -137,10 +136,8 @@
                 query += "&realtime=true";
             }
 
-            if (msp.Util.Cookie.get("userid")) {
-                query += "&userid="+msp.Util.Cookie.get("userid");
-            }
-
+            query += "&userid="+msp.Util.getUserInfo().userid;
+            
             /**
              * Send log data to mapshup database
              * For database structure, see :

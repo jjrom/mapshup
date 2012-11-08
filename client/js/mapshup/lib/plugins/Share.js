@@ -105,8 +105,7 @@
             /*
              * Get map extent
              */
-            var p,data,
-            context = JSON.stringify(msp.Map.getContext()); // Get serialized context
+            var p, data, context = JSON.stringify(msp.Map.getContext()); // Get serialized context
             
             /*
              * Save context unless it was already saved
@@ -119,7 +118,7 @@
                 p = msp.Map.Util.p2d(msp.Map.map.getExtent().clone());
                 
                 data = {
-                    userid:msp.Util.Cookie.get("userid") || -1, // Get userid
+                    userid:msp.Util.getUserInfo().userid, // Get userid
                     context:context,
                     bbox:p.left+","+p.bottom+","+p.right+","+p.top
                 }
@@ -181,13 +180,11 @@
          */
         this.load = function(scope) {
 
-            var userid = msp.Util.Cookie.get("userid") || -1;
-
             /*
              * Retrieve contexts
              */
             msp.Util.ajax({
-                url:msp.Util.proxify(msp.Util.getAbsoluteUrl(scope.options.getContextsServiceUrl)+"userid="+userid),
+                url:msp.Util.proxify(msp.Util.getAbsoluteUrl(scope.options.getContextsServiceUrl)+"userid="+msp.Util.getUserInfo().userid),
                 async:true,
                 dataType:"json",
                 success: function(data) {
