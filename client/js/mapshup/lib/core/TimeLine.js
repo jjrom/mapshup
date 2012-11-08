@@ -504,7 +504,7 @@
          */
         this.resize = function(scope) {
             scope.$timeLine.css({
-                width:(100 - (scope._tw * 80 / msp.$map.width()))+'%'
+                'right':scope._tw + 'px'
             });
         };
         

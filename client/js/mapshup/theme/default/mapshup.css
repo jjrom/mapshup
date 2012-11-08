@@ -889,7 +889,7 @@ a.tab img {
     display:inline;
     width:auto;
     height:40px;
-    right:0px;
+    right:35px;
     z-index:100;
 }
 #timeLine .tools .item {
@@ -904,7 +904,7 @@ a.tab img {
 .timeLine {
     position:absolute;
     top:0px;
-    left:0px;
+    left:35px;
     height:100%;
 }
 
