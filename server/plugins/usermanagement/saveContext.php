@@ -1,5 +1,4 @@
 <?php
-
 /*
  * mapshup - Webmapping made easy
  * http://mapshup.info
@@ -38,6 +37,10 @@
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
 
+/*
+ * Save user context within mapshup database
+ */
+
 include_once '../../config.php';
 include_once '../../functions/general.php';
 
@@ -53,64 +56,46 @@ header("Content-type: application/json; charset=utf-8");
 /**
  * Database connection
  */
-$dbh = getVerifiedConnection($_REQUEST, array($_POST['email'], $_POST['password']), false) or die('{"error":{"message":"Problem on database connection"}}');
+$dbh = getVerifiedConnection($_REQUEST, array($_POST['email'], $_POST['password'], $_POST['context']), false) or die('{"error":{"message":"Problem on database connection"}}');
 
 /**
  * Prepare query
  */
-$query = "SELECT userid, username, password, email FROM users WHERE email='" . pg_escape_string(strtolower($_POST['email'])) . "'";
+$query = "SELECT userid, password FROM users WHERE email='" . pg_escape_string(strtolower($_POST['email'])) . "'";
 $result = pg_query($dbh, $query) or die('{"error":{"message":"Error"}}');
+
 $userid = -1;
-$username = "";
-$email = "";
 $password = "";
 
 while ($user = pg_fetch_row($result)) {
     $userid = $user[0];
-    $username = $user[1];
-    $password = $user[2];
-    $email = $user[3];
+    $password = $user[1];
 }
 
 /**
  * username does not exist
  */
 if ($userid == -1) {
-    die('{"error":{"message":"email does not exists"}}');
+    pg_close($dbh);
+    die('{"error":{"message":"Invalid email"}}');
 }
 
-/*
- * Get last saved context
+/**
+ * Check password validity
  */
-$query = "SELECT context FROM contexts WHERE userid='" . $userid . "'";
-$result = pg_query($dbh, $query);
-$context = null;
+if ($_POST['password'] === $password) {
+    
+    /*
+     * Store new context
+     */
+    $context = urldecode($_POST['context']);
 
-if ($result) {
-    while ($contexts = pg_fetch_row($result)) {
-        $context = $contexts[0];
-    }
+    $query = "INSERT INTO contexts (userid, location, context, uid) VALUES (" . $userid . ",'Somewhere','" . pg_escape_string($dbh, $context) . "', '" . md5($context) . "')";
+    $result = pg_query($dbh, $query) or die('{"error":{"message":"Error : registering is currently unavailable"}}');
 }
+
+echo '{"success":true}';
 
 pg_close($dbh);
 
-/**
- * Check login/password validity
- * If "encrypted" is set to true,
- * then the password is not "md5ized"
- * since it's allready encrypted
- * (cookie check case)
- */
-if ((strtolower($_POST['email']) == $email) && (isset($_POST['encrypted']) ? $_POST['password'] : md5($_POST['password']) == $password)) {
-    echo json_encode(array(
-        'userid' => $userid,
-        'username' => $username,
-        'email' => $email,
-        'icon' => getGravatar($email),
-        'password' => $password,
-        'context' => json_decode($context))
-    );
-} else {
-    die('{"error":{"message":"Invalid password"}}');
-}
 ?>

@@ -52,7 +52,7 @@ header("Content-type: application/json; charset=utf-8");
 /**
  * Database connection
  */
-$dbh = getVerifiedConnection($_REQUEST, array($_POST['email']), false) or die('{"error":{"message":"Error : registering is currently unavailable"}}');
+$dbh = getVerifiedConnection($_REQUEST, array($_POST['email'], $_POST['username']), false) or die('{"error":{"message":"Error : registering is currently unavailable"}}');
 
 /**
  * First check if user exist
@@ -74,8 +74,9 @@ if ($userid == -1) {
      */
     $password = createPassword(6);
     $email = pg_escape_string($dbh, strtolower($_POST['email']));
+    $username = pg_escape_string($dbh, strtolower($_POST['username']));
 
-    $query = "INSERT INTO users (username,password,email,registrationdate) VALUES ('" . $email . "','" . md5($password) . "','" . $email . "', now())";
+    $query = "INSERT INTO users (username,password,email,registrationdate) VALUES ('" . $username . "','" . md5($password) . "','" . $email . "', now())";
     $result = pg_query($dbh, $query) or die('{"error":{"message":"Error : registering is currently unavailable"}}');
 }
 /*
