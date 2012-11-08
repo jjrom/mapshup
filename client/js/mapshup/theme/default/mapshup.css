@@ -277,15 +277,11 @@ a.tab:hover
     position:absolute;
 }
 
-/* Login class */
-#theBar .login {
+#theBar .userBar {
     position:absolute;
     right:0px;
-    top:0px;
-    height:100%;
-    width:auto;
-    text-align:right;
 }
+
 #theBar h1 {
     text-align:right;
     padding-right:5px;
@@ -1008,6 +1004,11 @@ a.tab img {
     z-index:50;
 }
 
+.userBar img {
+    vertical-align: middle;
+    max-height: 24px;
+}
+
 /************************************
  *
  * Generic classes
@@ -1084,6 +1085,18 @@ a.tab img {
 }
 .button.email {
     background:#939CA3;
+}
+.button.signin {
+    background:#3B5998;
+}
+.button.signin:hover {
+    background:#666;
+}
+.button.signup {
+    background:#4099FF;
+}
+.button.signup:hover {
+    background:#666;
 }
 
 /* Pure CSS close button */
@@ -1443,15 +1456,22 @@ table.lmrcfg tr:nth-child(even) {
     background: rgb(244, 244, 244);
 }
 
-/* BackgroundsManager.js and Context.js */
-.bgm, .shr {
+/* BackgroundsManager.js, Context.js and UserManagement.js */
+.bgm, .shr, .umgmt {
     display:inline;
     width:auto;
     height:35px;
 }
-.bgm .item, .shr .item {
+.bgm .item, .shr .item, .umgmt .item {
     width:25px;
     height:100%;
+    display:inline-block;
+}
+
+.umgmt .item {
+    width:35px;
+    height:100%;
+    margin:0px 3px;
     display:inline-block;
 }
 

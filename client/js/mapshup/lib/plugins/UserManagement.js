@@ -61,16 +61,57 @@
         this.isConnected = false;
 
         /**
+         * Userbar items array
+         * 
+         * Item structure :
+         * {
+         *      id: // identifier
+         *      icon: // icon url,
+         *      title: // Displayed title on mouse over
+         *      callback: // function to execute on click
+         * }
+         */
+        this.items = [
+            {
+                id:msp.Util.getId(),
+                icon:msp.Util.getImgUrl("disconnect.png"),
+                title:"Disconnect",
+                callback:function(scope) {
+                    if (scope.isConnected) {
+                        msp.Util.askFor(msp.Util._("Sign out"), msp.Util._("Do you really want to sign out ?"), "list", [{
+                            title:msp.Util._("Yes"), 
+                            value:"y"
+                        },
+                        {
+                            title:msp.Util._("No"), 
+                            value:"n"
+                        }
+                        ], function(v){
+                            if (v === "y") {
+                                scope.disconnect();
+                            }
+                        });
+                    }
+                }
+            },
+            {
+                id:msp.Util.getId(),
+                icon:msp.Util.getImgUrl("save.png"),
+                title:"Save context",
+                callback:function(scope) {
+                    scope.storeContext();
+                }
+            }
+        ];
+        
+        /**
          * Initialize plugin
          *
          * This is MANDATORY
          */
         this.init = function(options) {
 
-            var id = msp.Util.getId(),
-            rid = msp.Util.getId(),
-            sid = msp.Util.getId(),
-            self = this;
+            var userInfo, self = this;
             
             /**
              * Best practice : init options
@@ -79,100 +120,99 @@
 
             $.extend(self.options,{
                 loginUrl:self.options.loginUrl || "/plugins/usermanagement/login.php",
-                registerUrl:self.options.registerUrl || "/plugins/usermanagement/register.php"
+                registerUrl:self.options.registerUrl || "/plugins/usermanagement/register.php",
+                saveContextUrl:self.options.saveContextUrl || "/plugins/usermanagement/saveContext.php"
             });
             
             /*
-             * Set login and logout text
+             * The Sign In / Sign Up buttons and the user toolbar are stored within
+             * the header bar under the 'userBar' CSS class
              */
-            self.t = {
-                signin:msp.Util._("Sign in"),
-                signout:msp.Util._("Sign out"),
-                notlogged:msp.Util._("You are not logged in")
-            };
-            
-            msp.$header.append('<div class="login"><span class="ht">'+self.t["notlogged"]+'</span> <a href="#" class="button inline colored" id="'+id+'"><span class="hb">'+self.t["signin"]+'</span></a></div>');
-            $('#'+id).click(function(){
-                
-                /*
-                 * User is connected ? Ask for disconnection
-                 */
-                if (self.isConnected) {
-                    msp.Util.askFor(self.t["signout"], msp.Util._("Do you really want to sign out ?"), "list", [{
-                        title:msp.Util._("Yes"), 
-                        value:"y"
-                    },
-                    {
-                        title:msp.Util._("No"), 
-                        value:"n"
-                    }
-                    ], function(v){
-                        if (v === "y") {
-                            self.disconnect();
-                        }
-                    });
-                }
-                /*
-                 * Show connection popup
-                 */
-                else {
-                    self.popup.show();
-                    $('#userName').focus();
-                }
-            });
-            
-            /*
-             * Create login popup
-             */
-            self.popup = new msp.Popup({
-                modal:true,
-                noHeader:true,
-                hideOnClose:true,
-                header:'<p>' + self.t["signin"] + '</p>',
-                body:'<form action="#" method="post" class="loginPanel" id="'+id+'"></form>'
-            });
-            
-            /*
-             * Set popup content
-             */
-            $('form', self.popup.$b).html('<label>'+msp.Util._("Enter your email")+'<br/><input id="userName" type="text"/></label><br/><label>'+msp.Util._("Enter your password")+'<br/><input id="userPassword" type="password"/></label><div class="signin"><a href="#" class="button inline colored" id="'+sid+'">'+msp.Util._("Sign in")+'</a> <input name="rememberme" id="rememberMe" type="checkbox" checked="checked"/>&nbsp;'+msp.Util._("Remember me")+'</div><div class="register">'+msp.Util._("No account yet ?")+'&nbsp;<a href="#" id="'+rid+'">'+msp.Util._("Register")+'</a></div>');
-            
-            /*
-             * Login button
-             */
-            $('#'+sid).click(function(){
-                self.signIn($('#userName').val(), $('#userPassword').val(), false);
-                return false;
-            });
-
-            /**
-             * Register button
-             */
-            $('#'+rid).click(function(){
-                self.register($('#userName').val());
-                return false;
-            });
+            self.$d = $('.userBar', msp.$header);
             
             /**
              * Check for a connection cookie
              */
-            self.signIn(msp.Util.Cookie.get("username"),msp.Util.Cookie.get("password"),true);
-
-            /*
-             * Store context when user close mapshup
-             */
-            window.onbeforeunload = self.storeContext;
+            userInfo = msp.Util.getUserInfo();
+            
+            if (userInfo.userid !== -1) {
+                self.signIn(userInfo.email, userInfo.password, true);
+            }
+            else {
+                self.displaySignInButton();
+            }
             
             return this;
         };
+        
+        /*
+         * Add action items to the userBar
+         * 
+         * This function should be called by plugins
+         * that require additionnal item userBar
+         * 
+         * @input items : array of menu items
+         * 
+         * Item structure :
+         * {
+         *      id: // identifier
+         *      icon: // icon url,
+         *      title: // Displayed title on mouse over
+         *      callback: // function to execute on click
+         * }
+         */
+        this.addToUserBar = function(items) {
+            
+            if ($.isArray(items)) {
+                
+                /*
+                 * Add new item
+                 */
+                for (var i = 0, l = items.length;i<l;i++) {
+                    this.items.push(items[i]);
+                }
+
+                /*
+                 * Recompute items position within the menu
+                 */
+                this.displayUserBar();
+            }
+            
+            return true;
+            
+        };
+        
 
         /*
          * Store context within cookie
+         * 
+         * Note that a SYNCHRONOUS ajax call is sent to the server
+         * to ensure that the browser or the window does not close
+         * before the context is stored within the database
+         * 
          */
         this.storeContext = function() {
-            var userid = msp.Util.Cookie.get("userid");
-            if (userid && userid !== -1) {
-                msp.Util.Cookie.set("context", JSON.stringify(msp.Map.getContext()), 365);
+            
+            var userInfo = msp.Util.getUserInfo();
+            
+            if (userInfo.userid !== -1) {
+                
+                msp.Util.ajax({
+                    dataType:"json",
+                    type:"POST",
+                    url:msp.Util.getAbsoluteUrl(this.options.saveContextUrl),
+                    data:msp.Util.abc+"&email=" + userInfo.email + "&password=" + userInfo.password + "&context=" + encodeURIComponent(JSON.stringify(msp.Map.getContext())),
+                    success: function(data){
+                        msp.Util.message(msp.Util._("Context succesfully stored"));
+                    },
+                    error: function(msg) {
+                        msp.Util.message(msp.Util._("Error : context cannot be stored"));
+                    }
+                },{
+                    title:msp.Util._("Store context"),
+                    cancel:true
+                });
+                
             }
         };
         
@@ -189,19 +229,20 @@
             self.storeContext();
             
             /*
-             * Remove connection cookies
+             * Remove userInfo cookie
              */
-            msp.Util.Cookie.remove("username");
-            msp.Util.Cookie.remove("password");
-            msp.Util.Cookie.remove("userid");
+            msp.Util.Cookie.remove("userInfo");
             
             /*
-             * Tell user that he is disconnected
+             * Tell UserManagement that user is disconnected
              */
-            $('.ht', msp.$header).html(self.t["notlogged"]);
-            $('.hb', msp.$header).html(self.t["signin"]);
-             
             self.isConnected = false;
+            
+            /*
+             * Display the Sign in / Sign up bar
+             */
+            self.displaySignInButton();
+            
                         
         };
 
@@ -210,13 +251,21 @@
          *
          * If register is successfull an email is sent to the given email adress
          */
-        this.register = function(email) {
+        this.register = function(email, username) {
 
             /*
-             * First check if email is valid
+             * Check if email is valid
              */
             if (!msp.Util.isEmailAdress(email)) {
                 msp.Util.message(msp.Util._("Please enter a valid email adress"));
+                return false;
+            }
+
+            /*
+             * Check if username is set
+             */
+            if (!username) {
+                msp.Util.message(msp.Util._("Please enter a valid username"));
                 return false;
             }
 
@@ -228,7 +277,7 @@
                 dataType:"json",
                 type:"POST",
                 url:msp.Util.getAbsoluteUrl(this.options.registerUrl),
-                data:msp.abc+"&email=" + email,
+                data:msp.Util.abc+"&email=" + email + "&username=" + username,
                 success: function(data){
                     if (data.error) {
                         msp.Util.message(data.error["message"]);
@@ -251,7 +300,7 @@
         /**
          * Sign in action
          */
-        this.signIn = function(username,password,checkCookie) {
+        this.signIn = function(email,password,checkCookie) {
 
             var self = this,
             
@@ -268,8 +317,10 @@
                 dataType:"json",
                 type:"POST",
                 url:msp.Util.getAbsoluteUrl(self.options.loginUrl),
-                data:msp.abc+"&username=" + username + "&password=" + password + encrypted,
+                data:msp.Util.abc+"&email=" + email + "&password=" + password + encrypted,
                 success: function(data){
+                    
+                    var userInfo;
                     
                     if (data.username) {
 
@@ -277,38 +328,22 @@
                          * Tell user that he is connected
                          */
                         self.isConnected = true;
-                        $('.ht', msp.$header).html(data.username);
-                        $('.hb', msp.$header).html(self.t["signout"]);
                         
                         /*
-                         * If checkCookie or rememberMe is true, respawn
-                         * a cookie for one year
+                         * Set userInfo
                          */
-                        if (checkCookie || $('#rememberMe').is(':checked')) {
-                            msp.Util.Cookie.set("username",data.username,365);
-                            msp.Util.Cookie.set("password",data.password,365);
-                            msp.Util.Cookie.set("userid",data.userid,365);
-                        }
-
-                        /*
-                         * Create a cookie for the remaining of the session
-                         * (valid until you close the navigator)
-                         */
-                        else {
-                            msp.Util.Cookie.set("username",data.username);
-                            msp.Util.Cookie.set("password",data.password);
-                            msp.Util.Cookie.set("userid",data.userid);
-                        }
-
-                        /*
-                         * Hide login popup
-                         */
-                        self.popup.hide();
+                        userInfo = {
+                            'userid':data.userid,
+                            'username':data.username,
+                            'email':data.email,
+                            'icon':data.icon,
+                            'password':data.password
+                        };
                         
                         /*
                          * Load the user last context
                          */
-                        if (msp.Util.Cookie.get("context")) {
+                        if (data.context) {
                             msp.Util.askFor(msp.Util._("Hello") + " " + data.username, msp.Util._("Do you want to restore your map context ?"), "list", [{
                                 title:msp.Util._("Yes"), 
                                 value:"y"
@@ -319,10 +354,41 @@
                             }
                             ], function(v){
                                 if (v === "y") {
-                                    msp.Map.loadContext(JSON.parse(msp.Util.Cookie.get("context")));
+                                    if (msp.Util.Cookie.get("context")) {
+                                        msp.Map.loadContext(data.context);
+                                    }
                                 }
                             });
                         }
+                        
+                        /*
+                         * If checkCookie or rememberMe is true, respawn
+                         * a cookie for one year
+                         */
+                        if (checkCookie || $('#rememberMe').is(':checked')) {
+                            msp.Util.Cookie.set("userInfo", JSON.stringify(userInfo), 365);
+                        }
+
+                        /*
+                         * Create a cookie for the remaining of the session
+                         * (valid until you close the navigator)
+                         */
+                        else {
+                            msp.Util.Cookie.set("userInfo", JSON.stringify(userInfo));
+                        }
+
+                        /*
+                         * Remove login popup
+                         */
+                        if (self._p) {
+                            self._p.remove();
+                        }
+                        
+                        /*
+                         * Display user bar
+                         */
+                        self.displayUserBar();
+                        
                     }
                     else {
 
@@ -332,6 +398,12 @@
                         else {
                             self.disconnect();
                         }
+                        
+                        /*
+                         * Display Sign in / Sign up button
+                         */
+                        self.displaySignInButton();
+                        
                     }
                 },
                 error: function(msg) {
@@ -341,12 +413,175 @@
                     else {
                         self.disconnect();
                     }
+                    
+                    /*
+                     * Display Sign in / Sign up button
+                     */
+                    self.displaySignInButton();
+                        
                 }
             }, !checkCookie ? {
                 title:msp.Util._("Login")
             } : null);
         };
 
+        /*
+         * Display user toolbar
+         */
+        this.displayUserBar = function() {
+            
+            var i, userInfo, self = this;
+            
+            if (!self.isConnected) {
+                return false;
+            }
+            
+            userInfo = msp.Util.getUserInfo();
+            
+            /*
+             * Create Toolbar
+             */
+            self.$d.empty();
+            self.tb = new msp.Toolbar({
+                parent:self.$d, 
+                classes:'umgmt'
+            });
+            
+            /*
+             * Profile
+             */
+            self.tb.add({
+                id:msp.Util.getId(),
+                icon:userInfo.icon,
+                tt:"Open profile",
+                activable:false,
+                switchable:false,
+                callback:function() {
+                    alert("TODO : profile manager for " + userInfo.username);
+                }
+            });
+            
+            /*
+             * Items are displayed from right to left regarding the store order
+             * (i.e. first item is displayed on the right, then next item is displayed
+             *  at the left of the previous one, and so on)
+             */
+            for (i = self.items.length; i--;) {
+                (function(item, scope) {
+                                
+                    if ($.isFunction(item.callback)) {
+                        
+                        scope.tb.add({
+                            id:item.id,
+                            icon:item.icon,
+                            tt:item.title,
+                            activable:false,
+                            switchable:false,
+                            callback:function() {
+                                item.callback(scope);
+                            }
+                        });
+                        
+                    }
+
+                })(self.items[i], self);
+            }
+            
+            return true;
+            
+        };
+        
+        /*
+         * Display user toolbar
+         */
+        this.displaySignInButton = function() {
+            
+            var self = this,
+            sinid = msp.Util.getId(),
+            supid = msp.Util.getId();
+            
+            /*
+             * Add Sign in and Sign up button
+             */
+            self.$d.html('<a href="#" class="button inline signin" id="'+sinid+'">'+msp.Util._("Sign in")+'</a> &nbsp; <a href="#" class="button inline signup" id="'+supid+'">'+msp.Util._("Sign up")+'</a></div>');
+            
+            /*
+             * Sign In popup
+             */
+            $('#'+sinid).click(function(){
+                
+                var id = msp.Util.getId();
+                
+                if (self._p) {
+                    self._p.remove();
+                }
+                
+                /*
+                 * Create the Sign In popup
+                 */
+                self._p = new msp.Popup({
+                    modal:true,
+                    noHeader:true,
+                    onClose:function(){
+                        self._p = null;
+                    },
+                    header:'<p>' + msp.Util._["Sign in"] + '</p>',
+                    body:'<form action="#" method="post" class="loginPanel"><input id="userEmail" type="text" placeholder="'+msp.Util._("Email")+'"/><br/><input id="userPassword" type="password" placeholder="'+msp.Util._("Password")+'"/><div class="signin"><a href="#" class="button inline colored" id="'+id+'">'+msp.Util._("Sign in")+'</a> <input name="rememberme" id="rememberMe" type="checkbox" checked="checked"/>&nbsp;'+msp.Util._("Remember me")+'</div></form>'
+                });
+                
+                /*
+                 * Login button
+                 */
+                $('#'+id).click(function(){
+                    self.signIn($('#userEmail').val(), $('#userPassword').val(), false);
+                    return false;
+                });
+
+                self._p.show();
+                
+            });
+            
+            
+            /*
+             * Sign Up popup
+             */
+            $('#'+supid).click(function(){
+                
+                var id = msp.Util.getId();
+                
+                if (self._p) {
+                    self._p.remove();
+                }
+                
+                /*
+                 * Create the Sign Up popup
+                 */
+                self._p = new msp.Popup({
+                    modal:true,
+                    noHeader:true,
+                    onClose:function(){
+                        self._p = null;
+                    },
+                    header:'<p>' + msp.Util._["Sign up"] + '</p>',
+                    body:'<form action="#" method="post" class="loginPanel"><input id="userEmail" type="text" placeholder="'+msp.Util._("Email")+'"/><br/><input id="userName" type="text" placeholder="'+msp.Util._("Username")+'"/><div class="signin"><a href="#" class="button inline colored" id="'+id+'">'+msp.Util._("Sign up")+'</a></div></form>'
+                });
+                
+                /** 
+                 * Register button
+                 */
+                $('#'+id).click(function(){
+                    self.register($('#userEmail').val(), $('#userName').val());
+                    return false;
+                });
+            
+                self._p.show();
+            });
+            
+            
+            return true;
+            
+        };
+        
         /**
          * Open authentication popup window
          * TODO

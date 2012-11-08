@@ -50,8 +50,6 @@ Elevation (m)
 Email
 Embed code in your website
 Enter an url
-Enter your email
-Enter your password
 Entering 2D mode
 Entering 3D mode
 entities
@@ -142,7 +140,6 @@ Preview
 Previous view
 Quicklooks
 Quit
-Register
 Relief
 Remember me
 Reset filters
@@ -168,6 +165,7 @@ Show quicklook
 Show thematic metadata
 Sign in
 Sign out
+Sign up
 Size
 Somewhere
 Status

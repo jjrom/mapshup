@@ -49,11 +49,9 @@
     i["Drop a file here"]="Déposer un fichier ici";
     i["Drop files or url on the map"]="Déposer des fichiers ou une url sur la carte";
     i["Elevation (m)"]="Altitude (m)";
-    i["Email"]="Email";
+    i["Email"]="E-mail";
     i["Embed code in your website"]="Intégrer le code dans votre site web";
     i["Enter an url"]="Entrer une URL";
-    i["Enter your email"]="Entrer votre email";
-    i["Enter your password"]="Entrer votre mot de passe";
     i["Entering 2D mode"]="Vous entrez en mode 2D";
     i["Entering 3D mode"]="Vous entrez en mode 3D";
     i["entities"]="entités";
@@ -145,7 +143,6 @@
     i["Polygon"]="Polygone";
     i["Quicklooks"]="Images";
     i["Quit"]="Quitter";
-    i["Register"]="Enregistrez-vous";
     i["Relief"]="Relief";
     i["Remember me"]="Se souvenir de moi";
     i["Reset filters"]="Effacer les filtres de recherche";
@@ -170,8 +167,9 @@
     i["Show"]="Afficher";
     i["Show quicklook"]="Afficher l'image";
     i["Show thematic metadata"]="Afficher les informations thématiques";
-    i["Sign in"]="Connectez-vous";
-    i["Sign out"]="Déconnecter";
+    i["Sign in"]="Connection";
+    i["Sign out"]="Déconnection";
+    i["Sign up"]="Inscription";
     i["Size"]="Taille";
     i["Somewhere"]="Quelque part";
     i["Status"]="Status";
@@ -193,7 +191,7 @@
     i["Type"]="Type";
     i["Upload file"]="Téléchargement du fichier";
     i["unknown"]="inconnu";
-    i["Username"]="Utilisateur";
+    i["Username"]="Nom d'utilisateur";
     i["Validate"]="Valider";
     i["Videos"]="Vidéos";
     i["Visits per country"]="Visites par pays";
