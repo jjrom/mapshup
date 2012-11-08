@@ -212,7 +212,7 @@
      */
     c["general"].timeLine = {
         enable:true, //true to enable timeLine, false otherwise
-        disablable:true,
+        disablable:false,
         absolutes:{
             min:1990,
             max:(new Date()).getFullYear() + 1
