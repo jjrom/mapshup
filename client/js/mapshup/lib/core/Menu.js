@@ -96,7 +96,7 @@
              * menu is already initialized ? => do nothing
              */
             if (self.isLoaded) {
-                return scope;
+                return self;
             }
 
             /*
