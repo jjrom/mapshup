@@ -126,9 +126,18 @@
              * Create an hidden link to store the export url
              */
             var hidden = msp.Util.$$('#'+msp.Util.getId()).html('<a href="#" style="diplay:none;"></a>'),
-                scope = this,
-                userInfo = msp.Util.getUserInfo();
-
+                umgmt = msp.Plugins.LayersManager,
+                userid = -1,
+                scope = this;
+            
+            /*
+             * UserInfo is set within the LayersManager plugin
+             */
+            if (umgmt && umgmt._o) {
+                if (umgmt._o.userInfo) {
+                    userid = umgmt._o.userInfo.userid;
+                }
+            }
             /*
              * Add action on click
              */
@@ -160,7 +169,7 @@
                 type:"POST",
                 target:hidden,
                 data:{
-                    userid:userInfo.userid,
+                    userid:userid,
                     format:format,
                     name:name,
                     json:JSON.stringify({
