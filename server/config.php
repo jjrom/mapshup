@@ -3,7 +3,7 @@
  * mapshup - Webmapping made easy
  * http://mapshup.info
  *
- * Copyright Jérôme Gasperi, 2011.12.08
+ * Copyright J√©r√¥me Gasperi, 2011.12.08
  *
  * jerome[dot]gasperi[at]gmail[dot]com
  *
@@ -41,7 +41,7 @@
  * mapshup Server Domain name
  * (Usually = localhost)
  */
-define("MSP_DOMAIN","127.0.0.1");
+define("MSP_DOMAIN","localhost");
 
 /**
  * Set debug mode - If true, all requests/responses are logged
