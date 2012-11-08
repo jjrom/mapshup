@@ -41,7 +41,7 @@
  * mapshup Server Domain name
  * (Usually = localhost)
  */
-define("MSP_DOMAIN","localhost");
+define("MSP_DOMAIN","127.0.0.1");
 
 /**
  * Set debug mode - If true, all requests/responses are logged

@@ -49,12 +49,12 @@
      * to serverRootUrl. Thus mapshup assume that the absolute url is the concatenation
      * of serverRootUrl + url
      */
-    c["general"].serverRootUrl = 'http://localhost/mspsrv';
+    c["general"].serverRootUrl = 'http://127.0.0.1/mspsrv';
 
     /**
      * Application root url
      */
-    c["general"].rootUrl = 'http://localhost/msp';
+    c["general"].rootUrl = 'http://127.0.0.1/msp';
 
     /**
      * Application index path
