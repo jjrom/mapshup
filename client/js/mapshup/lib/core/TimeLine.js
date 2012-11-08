@@ -503,9 +503,11 @@
          * Note scope._tw is the width of the toolbar
          */
         this.resize = function(scope) {
-            scope.$timeLine.css({
-                'right':scope._tw + 'px'
-            });
+            if (scope._tw !== 0) {
+                scope.$timeLine.css({
+                    'right':scope._tw + 'px'
+                });
+            }
         };
         
         /*
