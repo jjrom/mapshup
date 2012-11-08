@@ -135,13 +135,9 @@ function addTimeToDate($date) {
  * @param $size : size of the returned icon (in milimeters - default 20) 
  */
 function getGravatar($email, $size) {
-    
-    if (!$size || !is_numeric($size)) {
-        $size = 20;
-    } 
-    
+   
     // If email is not specified, return the mistery man
-    return $email ? "http://www.gravatar.com/avatar/" . md5($email) . "?s=20&d=mm" : "http://www.gravatar.com/avatar?s=20&d=mm";
+    return "http://www.gravatar.com/avatar/" . ($email ? md5($email) : "") . "?d=mm" . (!$size || !is_numeric($size) ? "" : "&s=" . $size);
    
 }
 
