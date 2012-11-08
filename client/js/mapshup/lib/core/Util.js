@@ -312,15 +312,6 @@
             return layerDescription.title ? layerDescription.title : (layerDescription.type || "Unknown") + "#" + this.sequence++;
         },
         
-        /*
-         * Return user info stored within cookie
-         */
-        getUserInfo: function() {
-            return JSON.parse(msp.Util.Cookie.get("userInfo")) || {
-                userid:-1
-            };
-        },
-        
         /**
          * Avoid code injection
          */
