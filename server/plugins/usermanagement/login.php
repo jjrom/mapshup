@@ -97,7 +97,7 @@ if ($userid == -1) {
 /*
  * Get last saved context
  */
-$query = "SELECT context FROM contexts WHERE userid='" . $userid . "'";
+$query = "SELECT context FROM contexts WHERE userid='" . $userid . "' ORDER BY utc DESC LIMIT 1";
 $result = pg_query($dbh, $query);
 $context = null;
 

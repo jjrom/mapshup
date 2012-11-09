@@ -61,7 +61,7 @@ $dbh = getVerifiedConnection($_REQUEST, array($_POST['email'], $_POST['sessionid
 /**
  * Prepare query
  */
-$query = "SELECT userid, sessionid FROM users WHERE email='" . pg_escape_string(strtolower($_POST['email'])) . "'";
+$query = "SELECT userid, lastsessionid FROM users WHERE email='" . pg_escape_string(strtolower($_POST['email'])) . "'";
 $result = pg_query($dbh, $query) or die('{"error":{"message":"Error"}}');
 
 $userid = -1;
@@ -83,7 +83,7 @@ if ($userid == -1) {
 /**
  * Check $sessionid validity
  */
-if ($sessionid && ($_POST['$sessionid'] === $sessionid)) {
+if ($sessionid && ($_POST['sessionid'] === $sessionid)) {
     
     /*
      * Store new context
