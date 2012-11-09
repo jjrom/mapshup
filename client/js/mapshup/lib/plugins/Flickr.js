@@ -85,14 +85,14 @@
                          */
                         msp.mask.add({
                             title:msp.Util._("Flickr")+' : '+msp.Util._("Searching")+" "+ toponym.name,
-                            cancel:true
+                            cancel:true,
+                            layer:msp.Map.addLayer({
+                                type:"Flickr",
+                                title:toponym.name+", "+toponym.countryName,
+                                q:msp.Util.encode(toponym.name)
+                            })
                         });
                         
-                        self._layer = msp.Map.addLayer({
-                            type:"Flickr",
-                            title:toponym.name+", "+toponym.countryName,
-                            q:msp.Util.encode(toponym.name)
-                        });
                     }
                 }]);
                 
@@ -109,8 +109,6 @@
          * This method is called by FeatureInfo actions popup
          */
         this.getFeatureActions = function(feature) {
-
-            var scope = this;
 
             return {
                 id:msp.Util.getId(),
