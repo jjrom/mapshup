@@ -111,6 +111,15 @@ function getDatesFromInterval($interval) {
     
 }
 
+/**
+ *
+ * Return a random session id
+ *
+ */
+function getSessionId() {
+    return md5(createPassword(5) . date("Y-m-d H:i:s"));
+}
+
 /*
  * Add T00:00:00 to  date if not already specified
  */

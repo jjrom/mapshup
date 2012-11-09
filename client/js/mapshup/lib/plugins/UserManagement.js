@@ -64,7 +64,7 @@
          *      'username': // User name
          *      'email': // Unique user email
          *      'icon': // Url to the user icon gravatar
-         *      'password': // User password encryptes in MD5
+         *      'sessionid': // Unique user current sessionid
          *  };
          * 
          */
@@ -82,36 +82,36 @@
          * }
          */
         this.items = [
-            {
-                id:msp.Util.getId(),
-                icon:msp.Util.getImgUrl("disconnect.png"),
-                title:"Disconnect",
-                callback:function(scope) {
-                    if (scope.userInfo) {
-                        msp.Util.askFor(msp.Util._("Sign out"), msp.Util._("Do you really want to sign out ?"), "list", [{
-                            title:msp.Util._("Yes"), 
-                            value:"y"
-                        },
-                        {
-                            title:msp.Util._("No"), 
-                            value:"n"
-                        }
-                        ], function(v){
-                            if (v === "y") {
-                                scope.disconnect();
-                            }
-                        });
+        {
+            id:msp.Util.getId(),
+            icon:msp.Util.getImgUrl("disconnect.png"),
+            title:"Disconnect",
+            callback:function(scope) {
+                if (scope.userInfo) {
+                    msp.Util.askFor(msp.Util._("Sign out"), msp.Util._("Do you really want to sign out ?"), "list", [{
+                        title:msp.Util._("Yes"), 
+                        value:"y"
+                    },
+                    {
+                        title:msp.Util._("No"), 
+                        value:"n"
                     }
-                }
-            },
-            {
-                id:msp.Util.getId(),
-                icon:msp.Util.getImgUrl("save.png"),
-                title:"Save context",
-                callback:function(scope) {
-                    scope.storeContext();
+                    ], function(v){
+                        if (v === "y") {
+                            scope.disconnect();
+                        }
+                    });
                 }
             }
+        },
+        {
+            id:msp.Util.getId(),
+            icon:msp.Util.getImgUrl("save.png"),
+            title:"Save context",
+            callback:function(scope) {
+                scope.storeContext();
+            }
+        }
         ];
         
         /**
@@ -146,7 +146,10 @@
             userInfo = JSON.parse(msp.Util.Cookie.get("userInfo"));
         
             if (userInfo) {
-                self.signIn(userInfo.email, userInfo.password, true);
+                self.signIn({
+                    email:userInfo.email, 
+                    sessionid:userInfo.sessionid
+                });
             }
             else {
                 self.displaySignInButton();
@@ -210,7 +213,7 @@
                     dataType:"json",
                     type:"POST",
                     url:msp.Util.getAbsoluteUrl(self.options.saveContextUrl),
-                    data:msp.Util.abc+"&email=" + self.userInfo.email + "&password=" + self.userInfo.password + "&context=" + encodeURIComponent(JSON.stringify(msp.Map.getContext())),
+                    data:msp.Util.abc+"&email=" + self.userInfo.email + "&sessionid=" + self.userInfo.sessionid + "&context=" + encodeURIComponent(JSON.stringify(msp.Map.getContext())),
                     success: function(data){
                         msp.Util.message(msp.Util._("Context succesfully stored"));
                     },
@@ -307,16 +310,29 @@
 
         /**
          * Sign in action
+         * 
+         * @param info : info structure
+         *      {
+         *          email: // mandatory
+         *          password: // password (not encrypted !) - only mandatory if sessionid is not set
+         *          sessionid: // user current sessionid - only mandatory if password is not set
+         *      }
+         *      
+         * Note : if both password and sessionid are given, the password is used
          */
-        this.signIn = function(email, password, checkCookie) {
+        this.signIn = function(info) {
 
-            var self = this,
+            var self = this;
             
             /*
-             * If checkCookie is true, the password is already encrypted
+             * Paranoid mode
              */
-            encrypted = checkCookie ? "&encrypted=true" : "";
-
+            info = info || {};
+            
+            if (!info.email || (!info.sessionid && !info.password)) {
+                return false;
+            }
+            
             /*
              * Send an ajax login request
              */
@@ -324,7 +340,7 @@
                 dataType:"json",
                 type:"POST",
                 url:msp.Util.getAbsoluteUrl(self.options.loginUrl),
-                data:msp.Util.abc+"&email=" + email + "&password=" + password + encrypted,
+                data:msp.Util.abc+"&email=" + info.email + (info.password ? "&password=" + info.password : "&sessionid=" + info.sessionid),
                 success: function(data){
                     
                     if (data.username) {
@@ -337,7 +353,7 @@
                             'username':data.username,
                             'email':data.email,
                             'icon':data.icon,
-                            'password':data.password
+                            'sessionid':data.sessionid
                         };
                             
                         /*
@@ -365,7 +381,7 @@
                          * If checkCookie or rememberMe is true, respawn
                          * a cookie for one year
                          */
-                        if (checkCookie || $('#rememberMe').is(':checked')) {
+                        if ($('#rememberMe').is(':checked')) {
                             msp.Util.Cookie.set("userInfo", JSON.stringify(self.userInfo), 365);
                         }
 
@@ -391,12 +407,9 @@
                         
                     }
                     else {
-
-                        if (!checkCookie) {
+                        
+                        if (!info.sessionid) {
                             msp.Util.message(msp.Util._("Wrong login/password - Connection refused"));
-                        }
-                        else {
-                            self.disconnect();
                         }
                         
                         /*
@@ -407,11 +420,9 @@
                     }
                 },
                 error: function(msg) {
-                    if (!checkCookie) {
+                    
+                    if (!info.sessionid) {
                         msp.Util.message(msp.Util._("Wrong login/password - Connection refused"));
-                    }
-                    else {
-                        self.disconnect();
                     }
                     
                     /*
@@ -420,7 +431,7 @@
                     self.displaySignInButton();
                         
                 }
-            }, !checkCookie ? {
+            }, !info.sessionid ? {
                 title:msp.Util._("Login")
             } : null);
         };
@@ -531,7 +542,11 @@
                  * Login button
                  */
                 $('#'+id).click(function(){
-                    self.signIn($('#userEmail').val(), $('#userPassword').val(), false);
+                    self.signIn({
+                        email:$('#userEmail').val(), 
+                        password:$('#userPassword').val()
+                    });
+                    
                     return false;
                 });
 

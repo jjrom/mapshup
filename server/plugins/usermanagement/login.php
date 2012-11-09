@@ -53,12 +53,26 @@ header("Content-type: application/json; charset=utf-8");
 /**
  * Database connection
  */
-$dbh = getVerifiedConnection($_REQUEST, array($_POST['email'], $_POST['password']), false) or die('{"error":{"message":"Problem on database connection"}}');
+$dbh = getVerifiedConnection($_REQUEST, array($_POST['email']), false) or die('{"error":{"message":"Problem on database connection"}}');
+
+/**
+ * Authentication can be done with sessionid or password
+ * Password authentication as preseance if both variables are set
+ */
+if (isset($_POST['password'])) {
+    $authFromPassword = true;
+}
+else if (isset($_POST['sessionid'])) {
+    $authFromPassword = false;
+}
+else {
+    die('{"error":{"message":"Problem on database connection"}}');
+}
 
 /**
  * Prepare query
  */
-$query = "SELECT userid, username, password, email FROM users WHERE email='" . pg_escape_string(strtolower($_POST['email'])) . "'";
+$query = "SELECT userid, username, password, email, lastsessionid FROM users WHERE email='" . pg_escape_string(strtolower($_POST['email'])) . "'";
 $result = pg_query($dbh, $query) or die('{"error":{"message":"Error"}}');
 $userid = -1;
 $username = "";
@@ -70,6 +84,7 @@ while ($user = pg_fetch_row($result)) {
     $username = $user[1];
     $password = $user[2];
     $email = $user[3];
+    $sessionid = $user[4];
 }
 
 /**
@@ -92,22 +107,38 @@ if ($result) {
     }
 }
 
-pg_close($dbh);
-
 /**
  * Check login/password validity
- * If "encrypted" is set to true,
- * then the password is not "md5ized"
- * since it's allready encrypted
- * (cookie check case)
  */
-if ((strtolower($_POST['email']) == $email) && (isset($_POST['encrypted']) ? $_POST['password'] : md5($_POST['password']) == $password)) {
+$logged = false;
+
+if ($authFromPassword) {
+    $logged = $password && (md5($_POST['password']) == $password);
+    
+    /*
+     * Store a sessionid for the user
+     */
+    if ($logged) {
+        $sessionid = getSessionId();
+    }
+    
+    $query = "UPDATE users SET lastsessionid='" . $sessionid . "' WHERE userid=" . $userid;
+    $result = pg_query($dbh, $query);
+    
+}
+else {
+    $logged = $sessionid && ($_POST['sessionid'] == $sessionid);
+}
+
+pg_close($dbh);
+
+if ($logged) {
     echo json_encode(array(
         'userid' => $userid,
         'username' => $username,
         'email' => $email,
         'icon' => getGravatar($email),
-        'password' => $password,
+        'sessionid' => $sessionid,
         'context' => json_decode($context))
     );
 } else {

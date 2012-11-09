@@ -56,20 +56,20 @@ header("Content-type: application/json; charset=utf-8");
 /**
  * Database connection
  */
-$dbh = getVerifiedConnection($_REQUEST, array($_POST['email'], $_POST['password'], $_POST['context']), false) or die('{"error":{"message":"Problem on database connection"}}');
+$dbh = getVerifiedConnection($_REQUEST, array($_POST['email'], $_POST['sessionid'], $_POST['context']), false) or die('{"error":{"message":"Problem on database connection"}}');
 
 /**
  * Prepare query
  */
-$query = "SELECT userid, password FROM users WHERE email='" . pg_escape_string(strtolower($_POST['email'])) . "'";
+$query = "SELECT userid, sessionid FROM users WHERE email='" . pg_escape_string(strtolower($_POST['email'])) . "'";
 $result = pg_query($dbh, $query) or die('{"error":{"message":"Error"}}');
 
 $userid = -1;
-$password = "";
+$sessionid = "";
 
 while ($user = pg_fetch_row($result)) {
     $userid = $user[0];
-    $password = $user[1];
+    $sessionid = $user[1];
 }
 
 /**
@@ -81,9 +81,9 @@ if ($userid == -1) {
 }
 
 /**
- * Check password validity
+ * Check $sessionid validity
  */
-if ($_POST['password'] === $password) {
+if ($sessionid && ($_POST['$sessionid'] === $sessionid)) {
     
     /*
      * Store new context
