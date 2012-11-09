@@ -53,7 +53,7 @@ CREATE TABLE users (
     username            VARCHAR(32) NOT NULL,
     password            VARCHAR(32) NOT NULL,
     registrationdate    TIMESTAMP NOT NULL,
-    lastcontextid       VARCHAR(255)
+    lastsessionid       VARCHAR(255)
 );
 
 
