@@ -63,7 +63,7 @@
         /**
          * WPS Abstract - read from GetCapabilities document
          */
-        this.description = null;
+        this["abstract"] = null;
         
         /**
          * WPS Service Provider information - read from GetCapabilities document
@@ -139,16 +139,10 @@
                 if (msp.Util.stripNS(this.nodeName) === 'ServiceIdentification') {
                     
                     $(this).find('*').filter(function() {
-                    
-                        switch (msp.Util.stripNS(this.nodeName)) {
-                            case 'Title':
-                                self.title = $(this).text();
-                                break;
-                            case 'Abstract':
-                                self.description = $(this).text();
-                                break;
+                        var nn = msp.Util.stripNS(this.nodeName);
+                        if (nn === 'Title' || nn === 'Abstract') {
+                            self[msp.Util.lowerFirstLetter(nn)] = $(this).text();
                         }
-                        
                     });
                 }
                 
@@ -199,7 +193,7 @@
                  */
                 else if (msp.Util.stripNS(this.nodeName) === 'ServiceProvider') {
                     
-                    var contact = {}, address = {};
+                    var contact = {}, address = {}, phone = {};
                     
                     /*
                      * Initialize serviceProvider
@@ -209,22 +203,10 @@
                     $(this).find('*').filter(function() {
                         
                         switch (msp.Util.stripNS(this.nodeName)) {
-                            case 'ProviderName':
-                                self.serviceProvider.providerName = $(this).text();
-                                break;
-                            case 'ProviderSite':
-                                self.serviceProvider.providerSite = $(this).text();
-                                break;
                             /* ServiceContact*/
                             case 'ServiceContact':
                                 $(this).children().each(function() {
                                     switch(msp.Util.stripNS(this.nodeName)) {
-                                        case 'IndividualName':
-                                            contact.name = $(this).text();
-                                            break;
-                                        case 'PositionName':
-                                            contact.position = $(this).text();
-                                            break;
                                         /* ContactInfo*/
                                         case 'ContactInfo':
                                             $(this).children().each(function() {
@@ -232,50 +214,35 @@
                                                     /* Phone */
                                                     case 'Phone':
                                                         $(this).children().each(function() {
-                                                            switch(msp.Util.stripNS(this.nodeName)) {
-                                                                case 'Voice':
-                                                                    contact.phone = $(this).text();
-                                                                    break;
-                                                            }
+                                                            phone[msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName))] = $(this).text();
                                                         });                                                        
                                                         break;
                                                     /* Address */
                                                     case 'Address':
                                                         $(this).children().each(function() {
-                                                            switch(msp.Util.stripNS(this.nodeName)) {
-                                                                case 'DeliveryPoint':
-                                                                    address.deliveryPoint = $(this).text();
-                                                                    break;
-                                                                case 'City':
-                                                                    address.city = $(this).text();
-                                                                    break;
-                                                                case 'AdministrativeArea':
-                                                                    address.administrativeArea = $(this).text();
-                                                                    break;
-                                                                case 'PostalCode':
-                                                                    address.postalCode = $(this).text();
-                                                                    break;
-                                                                case 'Country':
-                                                                    address.country = $(this).text();
-                                                                    break;
-                                                                case 'ElectronicMailAddress':
-                                                                    address.email = $(this).text();
-                                                                    break;
-                                                            }
+                                                            address[msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName))] = $(this).text();
                                                         });
                                                         break;
                                                 }
                                             });
                                             break;
+                                        default:
+                                            contact[msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName))] = $(this).text();
+                                            break;
                                     }
                                 });
+                                break;
+                            default:
+                                self.serviceProvider[msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName))] = $(this).text();
                                 break;
                         }
                         
                     });
                     
                     self.serviceProvider.contact = contact || {};
+                    self.serviceProvider.contact["phone"] = phone;
                     self.serviceProvider.contact["address"] = address;
+                    
                 }
                 
                 /*
@@ -295,29 +262,13 @@
                  */
                 else if (msp.Util.stripNS(this.nodeName) === 'Process') {
                     
-                    var identifier, title, description;
+                    var options = {};
                     
                     $(this).find('*').filter(function() {
-                        
-                        switch (msp.Util.stripNS(this.nodeName)) {
-                            case 'Identifier':
-                                identifier = $(this).text();
-                                break;
-                            case 'Title':
-                                title = $(this).text();
-                                break;
-                            case 'Abstract':
-                                description = $(this).text();
-                                break;
-                        }
-                        
+                        options[msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName))] = $(this).text();
                     });
                     
-                    self.addProcess(new msp.WPS.Process({
-                        "identifier":identifier,
-                        "title":title,
-                        "description":description
-                    }));
+                    self.addProcess(new msp.WPS.Process(options));
                     
                 }
                 
@@ -403,7 +354,7 @@
         /*
          * Process abstract
          */
-        this.description = null;
+        this["abstract"] = null;
         
         
         this.init = function(options) {
