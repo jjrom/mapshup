@@ -1023,7 +1023,12 @@
          */
         this.scrollTo = function(f) {
             
-            if (!f) {
+            /*
+             * Check that thumbsWrapper exist to
+             * avoid error when 'displayInLayerSwitcher' is set
+             * to false
+             */
+            if (!f || $('#'+msp.Util.encode(f.id)).length === 0) {
                 return false;
             }
             
