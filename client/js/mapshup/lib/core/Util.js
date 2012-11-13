@@ -313,6 +313,41 @@
         },
         
         /**
+        * Extend URL parameters with newParams object
+        *
+        * @input {String} url : url
+        * @input {Object} newParams : 
+        *
+        * @return {String} new URL
+        */
+        extendUrl: function(url, newParams) {
+            
+            var key, value, i, l, sourceParamsList, sourceParams = {}, newParamsString = "", sourceBase = url.split("?")[0];
+            
+            try {
+                sourceParamsList = url.split("?")[1].split("&");
+            }
+            catch (e) {
+                sourceParamsList = [];
+            }
+            for (i = 0, l = sourceParamsList.length; i < l; i++) {
+                key = sourceParamsList[i].split('=')[0];
+                value = sourceParamsList[i].split('=')[1];
+                if (key && value) {
+                    sourceParams[key] = value;
+                }
+            }
+            
+            newParams = $.extend(newParams, sourceParams);
+
+            for (key in newParams) {
+                newParamsString += key+"="+newParams[key]+"&";
+            }
+            return sourceBase+"?"+newParamsString;
+            
+        },
+        
+        /**
          * Avoid code injection
          */
         noScript: function(str) {
