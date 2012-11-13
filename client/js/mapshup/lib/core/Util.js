@@ -520,6 +520,19 @@
             return true;
         },
         
+        /*
+         * Return nodeName without namespace
+         * 
+         * @input nodeName : a nodeName (e.g. "toto", "ns:toto", etc.)
+         */
+        stripNS:function(nodeName) {
+            if (!nodeName) {
+                return null;
+            }
+            var s = nodeName.split(':');
+            return s.length === 2 ? s[1] : s[0];
+        },
+        
         /**
          * Strip HTML tags from input string
          *
