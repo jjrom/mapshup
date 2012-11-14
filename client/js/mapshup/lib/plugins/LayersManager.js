@@ -338,18 +338,6 @@
             }(self, self.tw);
             
             /*
-             * Create feature info over panel
-             */
-            if (self.options.onTheFly) {
-                
-                /*
-                 * Set div references
-                 */
-                self.$onTheFly = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('fi napo').css('top', '100px').html('<div class="main"></div>');
-                
-            }
-            
-            /*
              * Track layersend events
              */
             msp.Map.events.register("layersend", self, function(action, layer, scope) {
@@ -1224,7 +1212,7 @@
                  *     then force text span display
                  */
                 icon = msp.Map.Util.Feature.getIcon(f);
-                $ul.append('<li><a href="" id="'+id+'">'+(icon ? '' : '<span class="title">'+$('<div>'+msp.Map.Util.Feature.getTitle(f)+'</div>').text()+'</span>')+'<img src="'+(icon ? icon : msp.Util.getImgUrl('nodata.png'))+'"></a></li>');
+                $ul.append('<li><a href="" jtitle="'+msp.Map.Util.Feature.getTitle(f)+'" id="'+id+'">'+(icon ? '' : '<span class="title">'+$('<div>'+msp.Map.Util.Feature.getTitle(f)+'</div>').text()+'</span>')+'<img src="'+(icon ? icon : msp.Util.getImgUrl('nodata.png'))+'"></a></li>');
                 (function(f,$div){
                     $div.click(function(e){
                         
@@ -1241,26 +1229,7 @@
                         return false; 
                     });
                     if (self.options.onTheFly) {
-                        $div.hover(function(e){
-                            
-                            /*
-                             * Constrain the over popup position
-                             * to be totally included within the map
-                             */
-                            var left = $div.offset().left + ($div.width() - self.$onTheFly.width()) / 2;
-                            left = Math.max(0, left);
-                            left = Math.min(left,msp.$container.width() - self.$onTheFly.width());
-                            self.$onTheFly.css({
-                                'left':left
-                            });
-                            msp.Map.Util.Feature.toHTML(f, $('.main', self.$onTheFly));
-                            //msp.Map.featureInfo.hilite(f);
-                            self.$onTheFly.show();
-                            
-                        },function(e){
-                            self.$onTheFly.hide();
-                            //msp.Map.featureInfo.unhilite(f);
-                        });
+                        msp.tooltip.add($div, 'n', 10);
                     }
                 })(f,$('#'+id));
             }
