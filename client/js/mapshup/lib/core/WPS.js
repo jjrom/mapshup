@@ -53,7 +53,18 @@
     /*
      * Initialize msp.WPS
      */
-    msp.WPS = function() {
+    msp.WPS = function(url) {
+        
+        
+        /**
+         * WPS Events manager reference
+         */
+        this.events = new msp.WPS.Events();
+        
+        /**
+         * WPS base url
+         */
+        this.url = url;
         
         /**
          * WPS Title - read from GetCapabilities document
@@ -66,15 +77,131 @@
         this["abstract"] = null;
         
         /**
+         * WPS Service version
+         */
+        this.version = "1.0.0";
+        
+        /**
          * WPS Service Provider information - read from GetCapabilities document
          */
         this.serviceProvider = {};
         
         /**
-         * List of msp.WPS.Process objects
-         * for the current WPS instance
+         * Hashtag of msp.WPS.Process objects stored by unique identifier
          */
         this.processes = [];
+        
+        /**
+         * Initialize WPS class
+         */
+        this.init = function(url) {
+            this.url = url;
+        };
+        
+        /**
+         * Call GetCapabilities throught ajax request
+         * and parse result
+         */
+        this.getCapabilities = function() {
+            
+            var url, self = this;
+            
+            /*
+             * getcapabilities has been already called
+             *  => no need to call it again !
+             */
+            if (self.title) {
+                self.events.trigger("getcapabilities");
+            }
+            /*
+             * Call GetCapabilities through ajax
+             */
+            else {
+                
+                /*
+                 * Set GetCapabilities url
+                 */
+                url = msp.Util.extendUrl(this.url, {
+                    service:'WPS',
+                    version:self.version,
+                    request:'GetCapabilities'
+                });
+
+                /*
+                 * Retrieve and parse GetCapabilities file
+                 */
+                msp.Util.ajax({
+                    url:msp.Util.proxify(msp.Util.repareUrl(url), "XML"),
+                    async:true,
+                    dataType:'xml',
+                    success:function(xml) {
+                        self.parseCapabilities(xml);
+                        self.events.trigger("getcapabilities", self);
+                    },
+                    error:function(e) {
+                        msp.Util.message(msp.Util._("Error reading Capabilities file"));
+                    }
+                }, {
+                    title:msp.Util._("WPS") + " : " + msp.Util._("Get capabilities"),
+                    cancel:true
+                });
+            }
+            
+        };
+        
+        /**
+         * Call DescribeProcess throught ajax request
+         * and parse result
+         * 
+         * @input {Array} identifiers : array of Process unique identifiers
+         * 
+         */
+        this.describeProcess = function(identifiers) {
+           
+            var url, self = this;
+            
+            /*
+             * Convert input to array if needed
+             */
+            if (!$.isArray(identifiers)) {
+                identifiers = [identifiers];
+            }
+            
+            /*
+             * Call DescribeProcess through ajax
+             */
+            url = msp.Util.extendUrl("http://localhost/mspsrv/plugins/wps/describeProcess_urn-ogc-cstl-wps-jts-buffer.xml", {
+                service:'WPS',
+                version:self.version,
+                request:'DescribeProcess',
+                identifier:identifiers.join(',')
+            });
+
+            /*
+             * Retrieve and parse DescribeProcess file
+             */
+            msp.Util.ajax({
+                url:msp.Util.proxify(msp.Util.repareUrl(url), "XML"),
+                async:true,
+                dataType:'xml',
+                success:function(xml) {
+                    var i, l, processDescriptions = self.parseDescribeProcess(xml), processes = [];
+                    for (i = 0, l = processDescriptions.length; i < l; i++) {
+                        self.processes[processDescriptions[i].identifier] = new msp.WPS.Process(processDescriptions[i]);
+                        processes.push(self.processes[processDescriptions[i].identifier]);
+                    }
+                    self.events.trigger("describeprocess", processes);
+                },
+                error:function(e) {
+                    msp.Util.message(msp.Util._("Error reading DescribeProcess file"));
+                }
+            }, {
+                title:identifiers.join(',') + " : " + msp.Util._("Get DescribeProcess"),
+                cancel:true
+            });
+           
+            
+        };
         
         /**
          * Get an xml GetCapabilities object and return
@@ -104,7 +231,7 @@
          */
         this.parseCapabilities = function(xml) {
             
-            var self = this, capabilities = {};
+            var self = this;
             
             /*
              * jquery 1.7+ query selector using find('*') and filter()
@@ -138,7 +265,7 @@
                  */
                 if (msp.Util.stripNS(this.nodeName) === 'ServiceIdentification') {
                     
-                    $(this).find('*').filter(function() {
+                    $(this).children().filter(function() {
                         var nn = msp.Util.stripNS(this.nodeName);
                         if (nn === 'Title' || nn === 'Abstract') {
                             self[msp.Util.lowerFirstLetter(nn)] = $(this).text();
@@ -200,7 +327,7 @@
                      */
                     self.serviceProvider = {};
                     
-                    $(this).find('*').filter(function() {
+                    $(this).children().filter(function() {
                         
                         switch (msp.Util.stripNS(this.nodeName)) {
                             /* ServiceContact*/
@@ -213,15 +340,11 @@
                                                 switch(msp.Util.stripNS(this.nodeName)) {
                                                     /* Phone */
                                                     case 'Phone':
-                                                        $(this).children().each(function() {
-                                                            phone[msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName))] = $(this).text();
-                                                        });                                                        
+                                                        phone = self.parseLeaf($(this));                      
                                                         break;
                                                     /* Address */
                                                     case 'Address':
-                                                        $(this).children().each(function() {
-                                                            address[msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName))] = $(this).text();
-                                                        });
+                                                        address = self.parseLeaf($(this));
                                                         break;
                                                 }
                                             });
@@ -261,23 +384,301 @@
                  * 
                  */
                 else if (msp.Util.stripNS(this.nodeName) === 'Process') {
-                    
-                    var options = {};
-                    
-                    $(this).find('*').filter(function() {
-                        options[msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName))] = $(this).text();
-                    });
-                    
-                    self.addProcess(new msp.WPS.Process(options));
-                    
+                    self.addProcess(new msp.WPS.Process(self.parseLeaf($(this))));
                 }
                 
             });
             
-            return capabilities
+            return true;
+            
         };
         
         /**
+         * Get an xml DescribeProcess object and return a javascript object
+         * 
+         * DescribeProcess structure is :
+         * 
+         * <wps:ProcessDescriptions xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" service="WPS" version="1.0.0" xml:lang="en-EN">
+         *      <ProcessDescription storeSupported="true" statusSupported="true" wps:processVersion="1.0.0">
+         *          <ows:Identifier>urn:ogc:cstl:wps:jts:buffer</ows:Identifier>
+         *          <ows:Title>Jts : Buffer</ows:Title>
+         *          <ows:Abstract>Apply JTS buffer to a geometry.</ows:Abstract>
+         *          <DataInputs>
+         *              [...See DataInputs below...]
+         *          </DataInputs>
+         *          <ProcessOutputs>
+         *              [...See DataOutputs below...]
+         *          </ProcessOutputs>
+         *      </ProcessDescription>
+         *      [...]
+         *  </wps:Capabilities>
+         * 
+         */
+        this.parseDescribeProcess = function(xml) {
+            
+            var self = this;
+            
+            /*
+             * Initialize an empty process description
+             */
+            var processDescriptions = [];
+            
+            /*
+             * jquery 1.7+ query selector using find('*') and filter()
+             * See http://www.steveworkman.com/html5-2/javascript/2011/improving-javascript-xml-node-finding-performance-by-2000/
+             */
+            $(xml).find('*').filter(function(){
+                
+                /*
+                 * Service identification
+                 * 
+                 * ProcessDescription structure
+                 * 
+                 * <ProcessDescription>
+                 *      <ows:Identifier>urn:ogc:cstl:wps:jts:buffer</ows:Identifier>
+                 *      <ows:Title>Jts : Buffer</ows:Title>
+                 *      <ows:Abstract>Apply JTS buffer to a geometry.</ows:Abstract>
+                 *      <DataInputs>
+                 *          [...See DataInputs below...]
+                 *      </DataInputs>
+                 *      <ProcessOutputs>
+                 *          [...See DataOutputs below...]
+                 *      </ProcessOutputs>
+                 * </ProcessDescription>
+                 *      
+                 */
+                if (msp.Util.stripNS(this.nodeName) === 'ProcessDescription') {
+                    
+                    
+                    var nn, p = {};
+                    
+                    /* Retrieve ProcessDescription attributes */
+                    $.extend(p, msp.Util.getAttributes($(this)));
+                    
+                    $(this).children().filter(function() {
+                        nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+                        /* Process Inputs and Outupts*/
+                        if (nn === 'dataInputs' || nn === 'processOutputs') {
+                            p[nn] = self.parseDescribePuts($(this).children());
+                        }
+                        else if (nn === 'title' || nn === 'identifier' || nn === 'abstract') {
+                            p[nn] = $(this).text();
+                        }
+                        
+                    });
+                    
+                    processDescriptions.push(p);
+                }
+                
+            });
+            
+            return processDescriptions;
+            
+        };
+        
+        
+       /**
+        * Parse DataInputs (or ProcessOutputs) of the DescribeProcess elements
+        * 
+        * @input {Object} $obj : jQuery object reference to list of 'Input' (or 'Output') elements
+        */
+        this.parseDescribePuts = function($obj) {
+            
+            var nn, self = this, puts = [];
+            
+            /*
+             * Parse each 'Input' (or 'Output') elements
+             */
+            $obj.each(function(){
+                
+                var p = {};
+                
+                /* Get attributes - i.e. minOccurs and maxOccurs for Input */ 
+                $.extend(p, msp.Util.getAttributes($(this)));
+                
+                /*
+                 * Parse each element from current element
+                 */
+                $(this).children().filter(function() {
+                    
+                    nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+
+                    if (nn === 'complexData' || nn === 'complexOutput') {
+                        p[nn] = self.parseDescribeComplexPut($(this));
+                    }
+                    else if (nn === 'literalData' || nn === 'literalOutput') {
+                        p[nn] = self.parseDescribeLiteralPut($(this));
+                    }
+                    else if (nn === 'boundingBoxData' || nn === 'boundingBoxOutput') {
+                        p[nn] = self.parseDescribeBoundingBoxPut($(this));
+                    }
+                    else if (nn === 'title' || nn === 'identifier' || nn === 'abstract') {
+                        p[nn] = $(this).text();
+                    }
+
+                });
+                
+                puts.push(p);
+            });
+            
+            return puts;
+        };
+
+       /**
+        * Parse ComplexData (or ComplexOutput) of the DescribeProcess elements
+        * 
+        * Structure :
+        * 
+        *   <ComplexData maximumMegabytes="100">
+        *           <Default>
+        *                <Format>
+        *                    <MimeType>application/gml+xml</MimeType>
+        *                    <Encoding>utf-8</Encoding>
+        *                    <Schema>http://schemas.opengis.net/gml/3.1.1/base/gml.xsd</Schema>
+        *                </Format>
+        *            </Default>
+        *            <Supported>
+        *                <Format>
+        *                    <MimeType>text/xml</MimeType>
+        *                    <Encoding>utf-8</Encoding>
+        *                    <Schema>http://schemas.opengis.net/gml/3.1.1/base/gml.xsd</Schema>
+        *                </format>
+        *                [...]
+        *            </Supported>
+        *   </ComplexData>
+        * 
+        * @input {Object} $obj : jQuery object reference to a ComplexData (or a ComplexOutput) element
+        */
+        this.parseDescribeComplexPut = function($obj) {
+            
+            var nn, self = this, p = {};
+            
+            /* Get attributes - i.e. minOccurs and maxOccurs for Input */ 
+            $.extend(p, msp.Util.getAttributes($obj));
+                
+            /*
+             * Parse each ComplexData (or ComplexOutput) element
+             */
+            $obj.children().filter(function() {
+
+                nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+
+                if (nn === 'default') {
+                    p[nn] = self.parseLeaf($(this).children());
+                }
+                else if (nn === 'supported') {
+                    p[nn] = [];
+                    $(this).children().filter(function() {
+                        p[nn].push(self.parseLeaf($(this)));
+                    });
+                }
+
+            });
+            
+            return p;
+            
+        };
+        
+       /**
+        * Parse LiteralData (or LiteralOutput) of the DescribeProcess elements
+        * 
+        * 
+        * 
+        * 
+        * @input {Object} $obj : jQuery object reference to a LiteralData (or a LiteralOutput) element
+        */
+        this.parseDescribeLiteralPut = function($obj) {
+            
+            var nn, self = this, p = {};
+            
+            /* Get attributes - i.e. minOccurs and maxOccurs for Input */ 
+            $.extend(p, msp.Util.getAttributes($obj));
+                
+            /*
+             * Parse each ComplexData (or ComplexOutput) element
+             */
+            $obj.children().filter(function() {
+
+                nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+
+                if (nn === 'default') {
+                    p[nn] = self.parseLeaf($(this).children());
+                }
+                else if (nn === 'supported') {
+                    p[nn] = [];
+                    $(this).children().filter(function() {
+                        p[nn].push(self.parseLeaf($(this)));
+                    });
+                }
+
+            });
+            
+            return p;
+            
+        };
+
+       /**
+        * Parse BoundingBoxData (or BoundingBoxOutput) of the DescribeProcess elements
+        * 
+        *   <BoundingBoxData>
+        *       <Default>
+        *           <CRS>urn:ogc:def:crs:EPSG:6.6:4326</CRS>
+        *       </Default>
+        *       <Supported>
+        *           <CRSsType>
+        *               <CRS>urn:ogc:def:crs:EPSG:6.6:4326</CRS>
+        *               <CRS>urn:ogc:def:crs:EPSG:6.6:4979</CRS>
+        *           </CRSsType>
+        *       </Supported>
+        *   </BoundingBoxData>
+        * 
+        * @input {Object} $obj : jQuery object reference to a BoundingBoxData (or a BoundingBoxOutput) element
+        */
+        this.parseDescribeBoundingBoxPut = function($obj) {
+            
+            var nn, self = this, p = {};
+            
+            /*
+             * Parse each ComplexData (or ComplexOutput) element
+             */
+            $obj.children().filter(function() {
+
+                nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+
+                if (nn === 'default') {
+                    p[nn] = $(this).children().text();
+                }
+                else if (nn === 'supported') {
+                    p[nn] = [];
+                    $(this).children().filter(function() {
+                        p[nn].push($(this).text());
+                    });
+                }
+
+            });
+            
+            return p;
+            
+        };
+
+       /**
+        * Retrun a json representation of a Leaf jQuery element
+        * 
+        * @input {Object} $obj : jQuery object reference to a Format element
+        * @input {boolean} nolower : if true the javascript is not camel-cased
+        */
+        this.parseLeaf = function($obj, nolower) {
+            
+            var p = {};
+            
+            $obj.children().each(function() {
+                p[nolower ? msp.Util.stripNS(this.nodeName) : msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName))] = $(this).text();
+            });           
+            
+            return p;
+        };
+
+       /**
         * Add process to this.processes list
         *
         * @param {Object} process : msp.WPS.Process object
@@ -292,20 +693,13 @@
             }
             
             /*
-             * Do not add an existing process twice
-             */
-            if (this.getProcess(process.identifier)) {
-                return true;
-            }
-            
-            /*
              * Effectively add a new process
              */
             $.extend(process,{
                 wps:this
             });
             
-            this.processes.push(process);
+            this.processes[process.identifier] = process;
             
             return true;
             
@@ -317,46 +711,64 @@
         * @param {String} identifier : msp.WPS.Process object identifier
         */
         this.getProcess = function(identifier) {
-            
-            var i, process = null;
-            
-            for (i = this.processes.length; i--;) {
-                if (this.processes[i].identifier === identifier) {
-                    return this.processes[i];
-                }
+            if (!identifier) {
+                return null;
             }
-            
-            return process;
+            return this.processes[identifier];
         };
+        
+        this.init(url);
+        
+        return this;
         
     };
     
     /*
      * WPS Process
+     * 
+     * @input {Object} options : WPS process initialization options
+     * 
+     *      {
+     *          identifier: // process unique identifier
+     *          title: // process title
+     *          abstract: // process description
+     *          wps: // reference to the msp.WPS parent
+     *      }
      */
     msp.WPS.Process = function(options) {
         
-        /*
+        /**
          * msp.WPS object reference
          */
         this.wps = null;
         
-        /*
+        /**
          * Process unique identifier 
          */
         this.identifier = null;
         
-        /*
+        /**
          * Process title
          */
         this.title = null;
         
-        /*
+        /**
          * Process abstract
          */
         this["abstract"] = null;
         
-        
+        /*
+         * Process initialization
+         * options structure :
+         * 
+         *      {
+         *          identifier: // process unique identifier
+         *          title: // process title
+         *          abstract: // process description
+         *          wps: // reference to the msp.WPS parent
+         *      }
+         * 
+         */
         this.init = function(options) {
             $.extend(this, options);
         };
@@ -365,5 +777,90 @@
         
         return this;
     };
+    
+    /*
+     * WPS events
+     */
+    msp.WPS.Events = function() {
+
+        /*
+         * Set events hashtable
+         */
+        this.events = {
+            
+            /*
+             * Array containing handlers to be call after
+             * a successfull GetCapabilities
+             */
+            getcapabilities:[],
+            
+            
+            /*
+             * Array containing handlers to be call after
+             * a successfull DescribeProcess
+             */
+            describeprocess:[]
+            
+        };
+        
+        /*
+         * Register an event for WPS
+         *
+         * @input <String> eventname : Event name => 'getcapabilities'
+         * @input <function> handler : handler attached to this event
+         */
+        this.register = function(eventname , scope, handler) {
+            
+            if (this.events[eventname]) {
+                this.events[eventname].push({
+                    scope:scope,
+                    handler:handler
+                });
+            }
+            
+        };
+
+        /*
+         * Unregister event
+         */
+        this.unRegister = function(scope) {
+            
+            var a, i, key, l;
+                
+            for (key in this.events) {
+                a = this.events[key];
+                for (i = 0, l = a.length; i < l; i++) {
+                    if (a[i].scope === scope) {
+                        a.splice(i,1);
+                        break;
+                    }
+                }
+            }
+        };
+        
+        /*
+         * Trigger handlers related to an event
+         *
+         * @input <String> eventname : Event name => 'getcapabilities'
+         * @input <Object> extra : object (e.g. a msp.WPS.Process for a 'describeprocess' event name)
+         *                         this is optional
+         */
+        this.trigger = function(eventname, obj) {
+            
+            var i, a = this.events[eventname];
+            
+            /*
+             * Trigger event to each handlers
+             */
+            if (a) {
+                for (i = a.length; i--;) {
+                    a[i].handler(a[i].scope, obj);
+                }
+            }
+        }
+        
+        return this;
+
+    }
     
 })(window.msp);
