@@ -556,6 +556,33 @@
         },
         
         /*
+         * Convert an input string into the right type
+         * (for example "1" will be converted to an integer "true" to a boolean...etc)
+         * 
+         * @input {String} string : string to convert
+         */
+        stringToRealType:function(string) {
+            
+            if (!string) {
+                return string
+            }
+            
+            if ($.isNumeric(string)) {
+                return parseFloat(string);
+            }
+            
+            if (string.toLowerCase() === 'true') {
+                return true;
+            }
+            
+            if (string.toLowerCase() === 'false') {
+                return false;
+            }
+            
+            return string;
+        },
+        
+        /*
          * Return all node attributes without namespaces
          * 
          * @input obj : a jquery element
@@ -567,7 +594,7 @@
             if (obj && obj.length) {
                 a = obj[0].attributes;
                 for (i = 0, l = a.length; i < l; i++) {
-                    attributes[msp.Util.stripNS(a[i].nodeName)] = a[i].nodeValue;
+                    attributes[msp.Util.stripNS(a[i].nodeName)] = msp.Util.stringToRealType(a[i].nodeValue);
                 }
             }
             
