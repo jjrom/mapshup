@@ -137,7 +137,7 @@
             if (self.position) {
                 self.$d.css({
                     'position':'absolute',
-                    'z-index':'20250'
+                    'z-index':'19500'
                 });
             }
             
