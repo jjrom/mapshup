@@ -556,6 +556,25 @@
         },
         
         /*
+         * Return all node attributes without namespaces
+         * 
+         * @input obj : a jquery element
+         */
+        getAttributes:function(obj) {
+            
+            var a, i, l, attributes = {};
+            
+            if (obj && obj.length) {
+                a = obj[0].attributes;
+                for (i = 0, l = a.length; i < l; i++) {
+                    attributes[msp.Util.stripNS(a[i].nodeName)] = a[i].nodeValue;
+                }
+            }
+            
+            return attributes;
+        },
+        
+        /*
          * Return nodeName without namespace
          * 
          * @input nodeName : a nodeName (e.g. "toto", "ns:toto", etc.)
