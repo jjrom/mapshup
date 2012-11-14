@@ -194,7 +194,7 @@
                  * and can be displayed at the same time of the 3D map
                  * Otherwise it is displayed above the 2D map
                  */
-                embeded:msp.Util.getPropertyValue(self.options, "embeded", true)
+                embeded:msp.Util.getPropertyValue(self.options, "embeded", false)
                 
             });
             
