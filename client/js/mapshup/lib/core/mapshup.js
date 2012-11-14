@@ -119,7 +119,8 @@
  *      jUserManagementPanelTab     :   11000   (plugins/UserManagement.js)
  *      jCatalogConfiguration       :   11000   (plugins/Catalog.js)
  *      welcome                     :   12000   (plugins/Welcome.js)
- *      .pn                         :   20000   (core/Panel.js)
+ *      Toolbar                     :   19500   (core/Toolbar.js)
+ *      .pn                         :   20000   (core/SouthPanel.js)
  *      ddzone                      :   34000   (plugins/AddLayer.js)
  *      wheader                     :   34500
  *      mask                        :   35000
