@@ -252,7 +252,7 @@
                     position:self.options.position, 
                     orientation:self.options.orientation
                     })).add({
-                    icon:"earth.png",
+                    title:"3D",
                     tt:"Toggle 2D/3D",
                     activable:true,
                     callback:function() {
