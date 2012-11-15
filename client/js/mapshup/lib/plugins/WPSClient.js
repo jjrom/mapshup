@@ -130,7 +130,7 @@
                             icon:msp.Util.getImgUrl('configure.png'),
                             title:wps.title,
                             classes:"wpsclient",
-                            html:'<div class="info"></div><div class="processes"></div><div class="describe"></div>'
+                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes"></div></div><div style="float:right;width:60%;"><div class="describe"></div></div>'
                         });
 
                         /*
@@ -155,7 +155,9 @@
                 });
                 
                 wps.events.register("describeprocess", this, function(scope, processes) {
-                    scope.updateDescribeProcessContent(processes);
+                    if ($.isArray(processes) && processes[0]) {
+                        scope.updateDescribeProcessContent(processes[0]);
+                    }
                 });
             
                 /*
@@ -171,19 +173,22 @@
          * 
          * Container structure 
          * 
-         *      <div id="" class="pnsi wpsclient">
-         *          <div class="info">
-         *              <div class="title"></div>
-         *              <div class="description"></div>
-         *          </div>
-         *          <div class="processes">
+         *      <div class="pnsi wpsclient">
+         *          <div style='float:left'>
+         *              <div class="info">
+         *                  <div class="title"></div>
+         *                  <div class="description"></div>
+         *              </div>
+         *              <div class="processes">
          *              // Contains Processes list
+         *              </div>
          *          </div>
-         *          <div class="describe">
+         *          <div style='float:right'>
+         *              <div class="describe">
          *              // Contains description of selected process
+         *              </div>
+         *              </div>
          *          </div>
-         *      </div>
-         * 
          */
         this.updateCapabilitiesContent = function(item) {
             
@@ -200,19 +205,31 @@
                 id = msp.Util.getId();
                 process = item.wps.processes[identifier];
                 $list.append('<a href="#" jtitle="'+process['abstract']+'" id="'+id+'" class="button inline">'+process.title+'</a> ');
-                (function(process,$id) {
+                (function(process,$id, item) {
                     $id.click(function() {
                         $('a', $(this).parent()).removeClass('active');
                         $(this).addClass('active');
-                        alert('TODO');
+                        item.wps.describeProcess(process.identifier);
                         return false;
                     });
                     msp.tooltip.add($id, 'w', 10);
-                })(process,$('#'+id));
+                })(process,$('#'+id), item);
             }
             
-            console.log("TODO animate");
-            //$list.mCustomScrollbar();
+            $list.mCustomScrollbar();
+            
+        };
+        
+        /*
+         * Update '.describe' content
+         */
+        this.updateDescribeProcessContent = function(process) {
+            
+            /*
+             * Set info
+             */
+            $('.describe', process.$d).html('<h1 title="'+process.identifier+'">'+process.title+'</h1><p>'+process["abstract"]+'</p><br/>');
+            
         };
         
         /*

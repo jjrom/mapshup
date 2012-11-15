@@ -428,14 +428,14 @@
             /*
              * Item does not exist - create it
              * 
-             * Important : $d object is created with a 'pnsi' class (see setActive(item) function)
+             * Important : $d object is created with a 'pnsi' or 'pnist' class (see setActive(item) function)
              */
             if (!item) {
                 
                 item = {
                     id:content.id,
                     pn:self,
-                    $d:msp.Util.$$('#'+content.id, self.$d).addClass('pnsi').css({
+                    $d:msp.Util.$$('#'+content.id, self.$d).addClass('pnsi'+(self.over ? 't' : '')).css({
                         'margin':self.padding.top+'px '+ (self.over ? self.padding.right : 0) + 'px '+self.padding.bottom+'px 0px'
                     })
                 }
@@ -757,7 +757,7 @@
             /*
              * Hide all 'pnsi' divs
              */
-            $('.pnsi',self.$d).each(function(index) {
+            $('.pnsi,.pnsit',self.$d).each(function(index) {
                 
                 /*
                  * This is bit tricky.
