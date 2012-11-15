@@ -130,7 +130,7 @@
                             icon:msp.Util.getImgUrl('configure.png'),
                             title:wps.title,
                             classes:"wpsclient",
-                            html:'<div class="list"></div><div class="describe"></div>'
+                            html:'<div class="info"></div><div class="processes"></div><div class="describe"></div>'
                         });
 
                         /*
@@ -142,6 +142,12 @@
                             panel:panel,
                             wps:wps
                         };
+                    
+                    /*
+                     * Tell user that a new WPS panel is created
+                     */
+                     msp.Util.message(msp.Util._("WPS server successfully added"));
+                     
                     }   
                     
                     scope.updateCapabilitiesContent(scope.items[url]);
@@ -162,17 +168,38 @@
         
         /*
          * Add an item to South Panel
+         * 
+         * Container structure 
+         * 
+         *      <div id="" class="pnsi wpsclient">
+         *          <div class="info">
+         *              <div class="title"></div>
+         *              <div class="description"></div>
+         *          </div>
+         *          <div class="processes">
+         *              // Contains Processes list
+         *          </div>
+         *          <div class="describe">
+         *              // Contains description of selected process
+         *          </div>
+         *      </div>
+         * 
          */
         this.updateCapabilitiesContent = function(item) {
             
             var id, process, identifier, $list;
             
-            $list = $('.list', item.$d);
+            /*
+             * Set info
+             */
+            $('.info', item.$d).html('<h1><a href="'+item.wps.url+'" title="'+item.wps.url+'" target="_blank">'+item.wps.title+'</a></h1><p>'+item.wps["abstract"]+'</p><br/><h1>'+msp.Util._('Processes')+'</h1>');
+            
+            $list = $('.processes', item.$d);
             
             for (identifier in item.wps.processes) {
                 id = msp.Util.getId();
                 process = item.wps.processes[identifier];
-                $list.append(' <a href="#" jtitle="'+process['abstract']+'" id="'+id+'">'+process.title+'</a> ');
+                $list.append('<a href="#" jtitle="'+process['abstract']+'" id="'+id+'" class="button inline">'+process.title+'</a> ');
                 (function(process,$id) {
                     $id.click(function() {
                         $('a', $(this).parent()).removeClass('active');
@@ -183,6 +210,9 @@
                     msp.tooltip.add($id, 'w', 10);
                 })(process,$('#'+id));
             }
+            
+            console.log("TODO animate");
+            //$list.mCustomScrollbar();
         };
         
         /*

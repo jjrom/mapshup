@@ -161,7 +161,6 @@ a.tab,
 .mask .loading a,
 .help span.close,
 .help h1,
-.help span.hilite,
 .tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
 .hover:hover,
 .featureHilite,
@@ -169,7 +168,8 @@ a.tab,
 .lm,
 .lm .thumbs .mask,
 .lm .thumbs ul li a,
-a.fi .actions a
+a.fi .actions a,
+span.hilite
 {
     color:#fff;
 }
@@ -1154,6 +1154,10 @@ a.tab img {
     font-size:1.5em;
 }
 
+.small {
+   font-size:0.8em;
+}
+
 .padded {
     padding:10px;
 }
@@ -1665,11 +1669,31 @@ td.clear {
 /* WPSClient */
 .wpsclient {
     height:auto;
+    padding:20px;
+    font-size:1.1em;
+    line-height:16px;
 }
-.wpsclient .list {
+.wpsclient a {
+    color:#fff;
+    padding:0px;
+}
+.wpsclient h1 {
+    color:#fff;
+    font-size:1.2em;
+    text-transform: uppercase;
+}
+.wpsclient p {
+    padding-top:10px;
+}
+.wpsclient .processes {
     padding:10px;
-    width:350px;
-    line-height:20px;
+    height:100px;
+    max-width:50%;
+    line-height:25px;
+    overflow:auto;
+}
+.wpsclient .processes a {
+    padding:3px;
 }
 .wpsclient .list a:hover{
     border-bottom:1px solid #c76400;

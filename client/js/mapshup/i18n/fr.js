@@ -202,6 +202,7 @@
     i["Wikipedia"]="Wikipedia";
     i["Wrong login/password - Connection refused"]="Identifiant/Mot de passe incorrect - Connection refusée";
     i["WMS"]="WMS";
+    i["WPS server successfully added"]="Le serveur WPS a été ajouté avec succès";
     i["Yahoo! Streets"]="Yahoo! : rues";
     i["Yes"]="Oui";
     i["You are in drawing mode"]="Vous êtes en mode dessin";

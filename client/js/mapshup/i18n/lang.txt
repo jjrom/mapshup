@@ -198,6 +198,7 @@ Where am I ?
 Wikipedia
 Wrong login/password - Connection refused
 WMS
+WPS server successfully added
 Yahoo! Streets
 Yes
 You are in drawing mode
