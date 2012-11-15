@@ -63,6 +63,14 @@
          */
         this.w = msp.Util.getPropertyValue(options, "w", '60%');
         
+        /**
+         * Current tabs page number
+         * Pages go from 0 to Math.ceil((items.length - 1) / perPage)
+         * 
+         * (Note : perPage value is computed from the panel width)
+         */
+        this.page = 0;
+        
         /*
          * List of panel items
          * Structure 
@@ -95,7 +103,7 @@
          */
         this.init = function() {
         
-            var self = this;
+            var idp = msp.Util.getId(), idn = msp.Util.getId(), self = this;
             
             /*
              * mapshup can have one and only one SouthPanel
@@ -129,19 +137,52 @@
             });
             
             /*
+             * Add tab paginator
+             */
+            self.$d.append('<a id="'+idp+'" class="tab ptab">&laquo;</a>');
+            self.$d.append('<a id="'+idn+'" class="tab ptab">&raquo;</a>');
+            self.$prev = $('#'+idp).click(function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                self.goTo(self.page - 1);
+            }).css({
+                left:35+'px'
+            });
+            self.$next = $('#'+idn).click(function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                self.goTo(self.page + 1);
+            }).css({
+                left:self.$prev.offset().left + self.$prev.outerWidth()
+            });
+                
+            
+            /*
              * Panel width follow the width of the map except for "over" panel
              */
-            msp.Map.events.register("resizeend", self, function(){
-                if (!self.over) {
-                    self.$d.width(msp.$container.width());
+            msp.Map.events.register("resizeend", self, function(scope){
+                
+                if (!scope.over) {
+                    scope.$d.width(msp.$container.width());
                 }
+                
             });
             
             /*
-             * Recompute tab position on window resize
+             * Panel width follow the width of the map except for "over" panel
              */
-            msp.Map.events.register("resizeend", self, function(scope) {
-                scope.updateTabs(scope);
+            msp.Map.events.register("resizeend", self, function(scope){
+                
+                scope.refreshTabs(scope);
+                
+               /*
+                * Reinitialize ul positions and update pagination
+                */
+                for (var i = 0, l = scope.items.length; i < l; i++) {
+                    $('ul',scope.items[i].$d).css('left', 0);
+                    scope.updatePaginate(scope.items[i]);
+                }
+                
             });
             
             /*
@@ -153,6 +194,168 @@
             
         };
 
+        /**
+         * Return number of tab page
+         */
+        this.nbOfPages = function() {
+            return Math.ceil((this.items.length) / this.nbOfTabsPerPage()) - 1;
+        };
+        
+        /**
+         * Return number of tabs per page
+         */
+        this.nbOfTabsPerPage = function() {
+            return Math.round((2 * this.$d.width() / 3) / 200);
+        };
+        
+        /**
+         * Update tabs position and ul left position
+         * 
+         * @input scope : reference to this object
+         */
+        this.refreshTabs = function(scope) {
+            
+            var first,last,perPage,nbPage,i,$t;
+            
+            /*
+             * Hide all tabs
+             */
+            $('.tab', scope.$d).hide();
+            
+            /*
+             * Maximum number of tabs per page
+             */
+            perPage = scope.nbOfTabsPerPage();
+            
+            /*
+             * Check that page is not greater that number of page
+             * (cf. needed if resizing window when not on page 0)
+             */
+            nbPage = scope.nbOfPages();
+            if (scope.page > nbPage) {
+                scope.page = nbPage;
+            }
+            
+            /*
+             * A negative page means no more items
+             */
+            if (scope.page < 0) {
+                scope.page = 0;
+                $('.ptab', scope.$d).hide();
+                return;
+            }
+            
+            /*
+             * hide paginator if not needed
+             */
+            if (nbPage === 0) {
+                $('.ptab', scope.$d).hide();
+            }
+            else {
+                $('.ptab', scope.$d).show();
+            }
+            
+            /*
+             * Get the first tab in the current page
+             */
+            first = perPage * scope.page;
+            
+            /*
+             * Get the last tab in the current page
+             */
+            last = Math.min(first + perPage, scope.items.length);
+            
+            /*
+             * Set first item position right to the paginator
+             */
+            if (scope.items[first]) {
+                scope.items[first].$tab.css({
+                    left:scope.$next.is(':visible') ? scope.$next.position().left + scope.$next.outerWidth() : 35
+                }).show();
+            }
+            
+            /*
+             * Tab position is computed from the first to the last index in the page
+             */
+            for (i = first + 1; i < last; i++) {
+                $t = scope.items[i-1].$tab;
+                scope.items[i].$tab.css({
+                    left:$t.position().left + $t.outerWidth() + 10
+                }).show();
+            }
+           
+            return;
+        };
+        
+        /*
+         * Return the page number where an item is
+         */
+        this.getPageIdx = function(item) {
+            
+            var i, l;
+            
+            for (i = 0, l = this.items.length; i < l; i++) {
+                if (this.items[i].id === item.id) {
+                    /* Bitwise operator is faster than Map.floor */
+                    return (i / this.nbOfTabsPerPage())|0;
+                }
+                
+            }
+            
+            return -1;
+        };
+        
+        /**
+         * Display the tabs page with a cycling strategy
+         * 
+         * If page is greater than the maximum of page, then the first page is displayed
+         * If page is lower than 0, then the last page is displayed
+         */
+        this.goTo = function(page) {
+          
+            var nbPage,self = this;
+            
+            nbPage = self.nbOfPages();
+            
+            if (page < 0) {
+                self.page = nbPage;
+            }
+            else if (page > nbPage) {
+                self.page = 0;
+            }
+            else {
+                self.page = page;
+            }
+            
+            self.refreshTabs(self);
+          
+        };
+        
+        /*
+         * Update pagination visibility
+         */
+        this.updatePaginate = function(item) {
+            
+            var $ul = $('ul', item.$d),
+            $p = $('#'+item.id+'p'),
+            $n = $('#'+item.id+'n');
+            
+            if ($('li', $ul).size() > 0) {
+            
+                /*
+                 * Display previous 
+                 */
+                $('li a', $ul).first().offset().left < 0 ? $p.show() : $p.hide();
+
+                /*
+                 * Display next
+                 */
+                $('li a', $ul).last().offset().left > $('.thumbsWrapper',item.$d).width() ? $n.show() : $n.hide();
+            
+            }
+            
+        };
+        
         /**
          * Update tabs position
          * 
@@ -241,7 +444,7 @@
                  * Append tab to panel
                  */
                 tid = msp.Util.getId();
-                self.$d.append('<a id="'+tid+'t" class="tab">'+(content.icon ? '<img src="'+content.icon+'">&nbsp;' : '')+msp.Util._(content.title)+'</a>');
+                self.$d.append('<a id="'+tid+'t" class="tab vtab">'+(content.icon ? '<img src="'+content.icon+'">&nbsp;' : '')+msp.Util._(content.title)+'</a>');
                 
                 /*
                  * Set a trigger on tab
@@ -291,7 +494,7 @@
             /*
              * Update tabs position
              */
-            self.updateTabs(self);
+            self.refreshTabs(self);
             
             /*
              * Return the newly created item
@@ -342,7 +545,7 @@
                     /*
                      * Update tabs position
                      */
-                    self.updateTabs(self);
+                    self.refreshTabs(self);
                     
                     return true;
                 }
