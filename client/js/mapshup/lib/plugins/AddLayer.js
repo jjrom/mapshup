@@ -464,6 +464,14 @@
             }
             
             /*
+             * Special case for WPS services
+             */
+            if (p.type === "WPS" && (msp.Plugins.WPSClient && msp.Plugins.WPSClient._o)) {
+                msp.Plugins.WPSClient._o.add(p.url);
+                return true
+            }
+            
+            /*
              * Special case for Search service
              */
             if (p.type === "OpenSearch" && (msp.Plugins.Search && msp.Plugins.Search._o)) {
