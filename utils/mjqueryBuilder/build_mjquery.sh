@@ -50,10 +50,11 @@ then
 fi
 
 echo "Building mjquery.js"
-cat $jquerydir/jquery-1.7.2.min.js > $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js >> $mjquerydir/mjquery.js.tmp
-#cat $jquerydir/mousewheel/jquery.mousewheel.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jquery-1.8.2.min.js > $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.min.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/mousewheel/jquery.mousewheel.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/idTabs/jquery.idTabs.min.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/mscrollbar/jquery.mCustomScrollbar.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/jqplot/jquery.jqplot.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/jqplot/plugins/jqplot.canvasTextRenderer.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js >> $mjquerydir/mjquery.js.tmp
@@ -71,12 +72,14 @@ cat $jquerydir/jQRangeSlider/mjQDateRangeSlider.js >> $mjquerydir/mjquery.js.tmp
 
 echo "Building mjquery.css"
 cat $jquerydir/jqplot/jquery.jqplot.min.css > $mjquerydir/mjquery.css
-#cat $jquerydir/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css >> $mjquerydir/mjquery.css
-#cp -R $jquerydir/jquery-ui-1.8.23.custom/css/ui-lightness/images $mjquerydir/
+cat $jquerydir/mscrollbar/jquery.mCustomScrollbar.css >> $mjquerydir/mjquery.css
 
 echo "Compress mjquery"
 java -jar ./yuicompressor-2.4.2.jar $mjquerydir/mjquery.js.tmp --type js > $mjquerydir/mjquery.js.tmp2
 cat ./license.txt $mjquerydir/mjquery.js.tmp2 > $mjquerydir/mjquery.js
 /bin/rm $mjquerydir/mjquery.js.tmp*
+
+echo "Copy images in mjquery directory"
+cp $jquerydir/mscrollbar/mCSB_buttons.png $mjquerydir/
 echo "Done !"
 
