@@ -1100,7 +1100,7 @@ a.tab img {
     background:#666;
 }
 .button.signup {
-    background:#4099FF;
+    background:#000;
 }
 .button.signup:hover {
     background:#666;
@@ -1703,7 +1703,8 @@ td.clear {
 }
 .wpsclient .describe {
     background:#eee;
-    padding-left:5px;
+    padding:5px;
+    margin-bottom:10px;
 }
 .wpsclient .describe h1 {
     color:#f00;

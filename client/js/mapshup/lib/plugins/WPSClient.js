@@ -112,7 +112,7 @@
                  */
                 wps = new msp.WPS(url);
                 
-               /*
+                /*
                 * Register WPS events
                 */
                 wps.events.register("getcapabilities", this, function(scope, wps) {
@@ -130,7 +130,7 @@
                             icon:msp.Util.getImgUrl('configure.png'),
                             title:wps.title,
                             classes:"wpsclient",
-                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes"></div></div><div style="float:right;width:60%;"><div class="describe"></div></div>'
+                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes"></div></div><div style="float:right;width:60%;"><div class="describe"></div><div class="inputs"></div><div class="outputs"></div></div>'
                         });
 
                         /*
@@ -143,10 +143,10 @@
                             wps:wps
                         };
                     
-                    /*
+                        /*
                      * Tell user that a new WPS panel is created
                      */
-                     msp.Util.message(msp.Util._("WPS server successfully added"));
+                        msp.Util.message(msp.Util._("WPS server successfully added"));
                      
                     }   
                     
@@ -192,19 +192,23 @@
          */
         this.updateCapabilitiesContent = function(item) {
             
-            var id, process, identifier, $list;
+            var id = msp.Util.getId(), process, identifier, $processes;
             
             /*
              * Set info
              */
-            $('.info', item.$d).html('<h1><a href="'+item.wps.url+'" title="'+item.wps.url+'" target="_blank">'+item.wps.title+'</a></h1><p>'+item.wps["abstract"]+'</p><br/><h1>'+msp.Util._('Processes')+'</h1>');
+            $('.info', item.$d).html('<h1><a href="'+item.wps.url+'" title="'+item.wps.url+'" target="_blank">'+item.wps.title+'</a></h1><p>'+item.wps["abstract"]+' <a href="#" id="'+id+'" class="button inline">&nbsp;+&nbsp;</a></p><br/><h1>'+msp.Util._('Processes')+'</h1>');
+            $('#'+id).click(function(){
+                msp.Util.message(item.wps.url);
+                return false;
+            });
             
-            $list = $('.processes', item.$d);
+            $processes = $('.processes', item.$d);
             
             for (identifier in item.wps.processes) {
                 id = msp.Util.getId();
                 process = item.wps.processes[identifier];
-                $list.append('<a href="#" jtitle="'+process['abstract']+'" id="'+id+'" class="button inline">'+process.title+'</a> ');
+                $processes.append('<a href="#" jtitle="'+process['abstract']+'" id="'+id+'" class="button inline">'+process.title+'</a> ');
                 (function(process,$id, item) {
                     $id.click(function() {
                         $('a', $(this).parent()).removeClass('active');
@@ -216,7 +220,7 @@
                 })(process,$('#'+id), item);
             }
             
-            $list.mCustomScrollbar();
+            $processes.mCustomScrollbar();
             
         };
         
@@ -225,11 +229,32 @@
          */
         this.updateDescribeProcessContent = function(process) {
             
+            var id = msp.Util.getId(), item = this.items[process.wps.url];
+            
             /*
              * Set info
              */
-            $('.describe', process.$d).html('<h1 title="'+process.identifier+'">'+process.title+'</h1><p>'+process["abstract"]+'</p><br/>');
+            $('.describe', item.$d).html('<h1 title="'+process.identifier+'">'+process.title+'</h1><p>'+process["abstract"]+'</p>');
             
+            $('.inputs', item.$d).html('<h1>'+msp.Util._('Inputs')+'</h1><br/>');
+            
+            /*
+             * Roll over dataInputs
+             */
+            for (var i = 0, l = process.dataInputs.length; i < l; i++) {
+                
+                
+                }
+            
+        /*
+             * Launch process button
+             *
+            $('.inputs', item.$d).append('<a href="#" id="'+id+'" class="button inline"><img src="'+msp.Util.getImgUrl('configure.png')+'"/>&nbsp;'+msp.Util._('Execute')+'</a>');
+            $('#'+id).click(function(){
+                msp.Util.message(item.wps.url);
+                return false;
+            });
+            */
         };
         
         /*
