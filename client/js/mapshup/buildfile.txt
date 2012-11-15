@@ -78,10 +78,12 @@ lib/plugins/Routing.js
 lib/plugins/Search.js
 lib/plugins/Share.js
 lib/plugins/Streetview.js // NOTOUCH 
-lib/plugins/UserManagement.js
 lib/plugins/UTFGrid.js
+lib/plugins/UserManagement.js
+lib/plugins/WPSClient.js
 #lib/plugins/Welcome.js
 lib/plugins/Wikipedia.js
 lib/plugins/WorldGrid.js
+#lib/plugins/WPSClient.js
 lib/plugins/Slacker.js
-lib/plugins/ACAcIA.js
+#lib/plugins/ACAcIA.js

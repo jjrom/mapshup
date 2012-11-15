@@ -250,8 +250,8 @@
      */
     c["panel"] = {
         s:{
-            over:false, // Push the map
-            h:300
+            over:true, // false to push the map
+            h:250
         }
     };
     
@@ -794,6 +794,14 @@
     c.add("plugins",
     {
         name:"UTFGrid"
+    });
+    
+    /**
+     * WPSClient plugin
+     */
+    c.add("plugins",
+    {
+        name:"WPSClient"
     });
     
 })(window.msp.Config);
