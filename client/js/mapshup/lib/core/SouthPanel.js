@@ -80,8 +80,8 @@
          * Item container padding
          */
         this.padding = {
-            top:5,
-            bottom:5
+            top:2,
+            bottom:0
         };
         
         /**
@@ -223,7 +223,7 @@
                     id:content.id,
                     pn:self,
                     $d:msp.Util.$$('#'+content.id, self.$d).addClass('pnsi').css({
-                        'padding':self.padding.top+'px 0px '+self.padding.bottom+'px 0px'
+                        'margin':self.padding.top+'px 0px '+self.padding.bottom+'px 0px'
                     })
                 }
                 
