@@ -229,6 +229,13 @@ function getLayerType($doc) {
     }
 
     /*
+     * WPS 1.0.0 => root element = Capabilities
+     *
+     */ else if ($rootName === "capabilities") {
+        return "WPS";
+    }
+    
+    /*
      * Pleiades
      */ else if (getPHRType($doc) !== null) {
         return "Pleiades";
