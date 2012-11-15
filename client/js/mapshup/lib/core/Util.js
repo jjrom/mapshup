@@ -312,6 +312,24 @@
             return layerDescription.title ? layerDescription.title : (layerDescription.type || "Unknown") + "#" + this.sequence++;
         },
         
+        /*
+         * Returns UserInfo from LayersManager plugin
+         * If not specified return an object with userid set to -1
+         */
+        getUserInfo: function() {
+            
+            var lm = msp.Plugins["LayersManager"];
+            
+            if (lm && lm._o && lm._o.userInfo) {
+                return lm._o.userInfo;
+            }
+            
+            return {
+                userid:-1
+            };
+            
+        },
+        
         /**
         * Extend URL parameters with newParams object
         *
