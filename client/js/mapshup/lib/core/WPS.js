@@ -185,10 +185,11 @@
                 async:true,
                 dataType:'xml',
                 success:function(xml) {
-                    var i, l, processDescriptions = self.parseDescribeProcess(xml), processes = [];
+                    var i, l, p, processDescriptions = self.parseDescribeProcess(xml), processes = [];
                     for (i = 0, l = processDescriptions.length; i < l; i++) {
-                        self.processes[processDescriptions[i].identifier] = new msp.WPS.Process(processDescriptions[i]);
-                        processes.push(self.processes[processDescriptions[i].identifier]);
+                        p = new msp.WPS.Process(processDescriptions[i]);
+                        self.addProcess(p);
+                        processes.push(p);
                     }
                     self.events.trigger("describeprocess", processes);
                 },
