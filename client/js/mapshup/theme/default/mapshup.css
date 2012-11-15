@@ -1091,7 +1091,7 @@ a.tab img {
     background:#939CA3;
 }
 .button.signin {
-    background:#3B5998;
+    background:#f00;
 }
 .button.signin:hover {
     background:#666;
@@ -1667,6 +1667,18 @@ td.clear {
     z-index:4;
 }
 /* WPSClient */
+
+#main {
+    float:left;
+    width:500px;
+    background:#9c9;
+}
+    #sidebar {
+    float:right;
+    width:250px;
+    background:#c9c;
+    }
+
 .wpsclient {
     height:auto;
     padding:20px;
@@ -1688,13 +1700,20 @@ td.clear {
 .wpsclient .processes {
     padding:10px;
     height:100px;
-    max-width:50%;
+    width:auto;
     line-height:25px;
     overflow:auto;
 }
 .wpsclient .processes a {
     padding:3px;
 }
-.wpsclient .list a:hover{
-    border-bottom:1px solid #c76400;
+.wpsclient .processes a.active {
+    background-color:#f00;
+}
+.wpsclient .describe {
+    background:#eee;
+    padding-left:5px;
+}
+.wpsclient .describe h1 {
+    color:#f00;
 }
