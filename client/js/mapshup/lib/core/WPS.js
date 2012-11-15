@@ -170,7 +170,7 @@
             /*
              * Call DescribeProcess through ajax
              */
-            url = msp.Util.extendUrl("http://localhost/mspsrv/plugins/wps/describeProcess_urn-ogc-cstl-wps-jts-buffer.xml", {
+            url = msp.Util.extendUrl(self.url, {
                 service:'WPS',
                 version:self.version,
                 request:'DescribeProcess',
