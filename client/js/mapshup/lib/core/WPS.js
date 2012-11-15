@@ -472,7 +472,7 @@
                 }
                 
             });
-            
+            console.log(processDescriptions[0]);
             return processDescriptions;
             
         };
@@ -590,28 +590,21 @@
         */
         this.parseDescribeLiteralPut = function($obj) {
             
-            var nn, self = this, p = {};
+            var nn, p = {};
             
             /* Get attributes - i.e. minOccurs and maxOccurs for Input */ 
             $.extend(p, msp.Util.getAttributes($obj));
                 
             /*
-             * Parse each ComplexData (or ComplexOutput) element
+             * Parse each LiteralData (or LiteralOutput) element
              */
             $obj.children().filter(function() {
-
                 nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
-
-                if (nn === 'default') {
-                    p[nn] = self.parseLeaf($(this).children());
+                p[nn] = $(this).text();
+                /* Get DataType ows:reference */
+                if (nn === 'dataType') {
+                    $.extend(p, msp.Util.getAttributes($(this)));
                 }
-                else if (nn === 'supported') {
-                    p[nn] = [];
-                    $(this).children().filter(function() {
-                        p[nn].push(self.parseLeaf($(this)));
-                    });
-                }
-
             });
             
             return p;
