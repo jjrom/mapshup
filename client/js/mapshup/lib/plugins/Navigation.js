@@ -74,7 +74,7 @@
                 }),
                 zoomin:msp.Util.getPropertyValue(self.options, "zoomin", true),
                 zoomout:msp.Util.getPropertyValue(self.options, "zoomout", true),
-                history:msp.Util.getPropertyValue(self.options, "history", true),
+                history:msp.Util.getPropertyValue(self.options, "history", false),
                 limit:msp.Util.getPropertyValue(self.options, "limit", 10),
                 position:msp.Util.getPropertyValue(self.options, "position", 'nw'),
                 orientation:msp.Util.getPropertyValue(self.options, "orientation", 'v')
