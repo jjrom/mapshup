@@ -146,7 +146,7 @@
                 e.stopPropagation();
                 self.goTo(self.page - 1);
             }).css({
-                left:35+'px'
+                left:'0px'
             });
             self.$next = $('#'+idn).click(function(e){
                 e.preventDefault();
@@ -270,7 +270,7 @@
              */
             if (scope.items[first]) {
                 scope.items[first].$tab.css({
-                    left:scope.$next.is(':visible') ? scope.$next.position().left + scope.$next.outerWidth() : 35
+                    left:scope.$next.is(':visible') ? scope.$next.position().left + scope.$next.outerWidth() : 0
                 }).show();
             }
             
