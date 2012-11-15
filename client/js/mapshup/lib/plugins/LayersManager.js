@@ -1120,7 +1120,7 @@
          */
         this.setFeatures = function(item, features, update) {
             
-            var p, i, start, max, f, icon, $m, size, id, $ul, self = this;
+            var title, p, i, start, max, f, icon, $m, size, id, $ul, self = this;
             
             /*
              * Paranoid mode
@@ -1212,7 +1212,8 @@
                  *     then force text span display
                  */
                 icon = msp.Map.Util.Feature.getIcon(f);
-                $ul.append('<li><a href="" jtitle="'+msp.Map.Util.Feature.getTitle(f)+'" id="'+id+'">'+(icon ? '' : '<span class="title">'+$('<div>'+msp.Map.Util.Feature.getTitle(f)+'</div>').text()+'</span>')+'<img src="'+(icon ? icon : msp.Util.getImgUrl('nodata.png'))+'"></a></li>');
+                title = msp.Util.stripTags(msp.Map.Util.Feature.getTitle(f));
+                $ul.append('<li><a href="" jtitle="'+title+'" id="'+id+'">'+(icon ? '' : '<span class="title">'+title+'</span>')+'<img src="'+(icon ? icon : msp.Util.getImgUrl('nodata.png'))+'"></a></li>');
                 (function(f,$div){
                     $div.click(function(e){
                         
