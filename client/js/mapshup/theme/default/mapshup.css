@@ -179,7 +179,7 @@ span.hilite
 #slacker,
 .tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
 .featureHilite,
-.pns,
+.pnsi,
 .sp a.active,
 a.tab.active,
 a.tab:hover
@@ -489,7 +489,10 @@ a.tab:hover
     left:0px;
     z-index:20000;
 }
-.pnsi {
+.pnsit {
+    background-color:rgba(243,150,28,0.9);
+}
+.pnsi,.pnsit {
     border-top: 2px dashed #fff;
     border-right: 2px dashed #fff;
 }
@@ -1667,18 +1670,6 @@ td.clear {
     z-index:4;
 }
 /* WPSClient */
-
-#main {
-    float:left;
-    width:500px;
-    background:#9c9;
-}
-    #sidebar {
-    float:right;
-    width:250px;
-    background:#c9c;
-    }
-
 .wpsclient {
     height:auto;
     padding:20px;
