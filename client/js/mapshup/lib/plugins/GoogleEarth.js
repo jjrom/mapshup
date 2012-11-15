@@ -375,7 +375,7 @@
             }
 
             scope.__lastFromGE = false;
-
+            
         };
 
         /**
@@ -904,80 +904,6 @@
              */
             return 4;
         };
-        
-        
-        this.TODO = function() {
-            /*
-             * iframe z-index problem...
-             */
-            var problem = false;
-
-            /*
-             * iframe shim nightmare.
-             * Currently it seems that only MacOS is ok with overlapping divs...
-             */
-            if (navigator.appVersion.indexOf("Mac") === -1) {
-                problem = true;
-            }
-
-            /*
-             * Firefox < 4 don't care of z-index...
-             * In 3D mode every other div are masked by Map3D
-             * We create an exit link within an iframe to go
-             * back to 2D mode
-             */
-            if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)){
-
-                var ffversion=new Number(RegExp.$1);
-                if (ffversion < 4) {
-                    problem = true;
-                }
-            }
-
-            if (problem) {
-                /*
-                 * Create an exit link over an iframe
-                 */
-                $('body').append('<iframe id="jGEExitFrame" class="tb"></iframe><a href="#" id="jGEExitLink">'+msp.Util._("Exit 3D mode")+'</a>');
-
-                /*
-                 * Define frame attributes and css
-                 */
-                $('#jGEExitFrame').attr({
-                    'frameBorder':0,
-                    'scrolling':'no',
-                    'src':(navigator.userAgent.indexOf('MSIE 6') >= 0) ? '' : 'javascript:void(0);'
-                }).css({
-                    'position':'absolute',
-                    'top':'5px',
-                    'left':'50%',
-                    'width':'150px',
-                    'height':'20px',
-                    'overflow':'hidden',
-                    'display':'none',
-                    'z-index':100000
-                });
-
-                /*
-                 * Define link attributes and css
-                 */
-                $('#jGEExitLink').css({
-                    'position':'absolute',
-                    'top':'5px',
-                    'left':'50%',
-                    'text-align':'center',
-                    'width':'150px',
-                    'height':'20px',
-                    'display':'none',
-                    'z-index':100001
-                }).click(function(){
-                    msp.plugins["Toolbar_GoogleEarth"].showHide();
-                    return false;
-                });
-            }
-        };
-
-        
         
         /*
          * Set unique instance
