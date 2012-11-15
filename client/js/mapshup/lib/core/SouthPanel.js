@@ -59,6 +59,11 @@
         this.h = msp.Util.getPropertyValue(options, "h", 300);
         
         /*
+         * Panel width
+         */
+        this.w = msp.Util.getPropertyValue(options, "w", '70%');
+        
+        /*
          * List of panel items
          * Structure 
          * {
@@ -74,14 +79,15 @@
          * If true, the panel is display over the map
          * If false, the panel "push" the map
          */
-        this.over = msp.Util.getPropertyValue(options, "over", false);
+        this.over = msp.Util.getPropertyValue(options, "over", true);
         
         /*
          * Item container padding
          */
         this.padding = {
             top:2,
-            bottom:0
+            bottom:0,
+            right:2
         };
         
         /**
@@ -115,16 +121,20 @@
              * 
              * <div id="..." class="pns"></div>
              */
-            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('pns ').css({
+            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('pns').css({
                 'bottom':-self.h,
-                'height':self.h
+                'height':self.h,
+                /* Force width to 100% if panel "push" the map (i.e. over is false) */
+                'width':self.over ? self.w : '100%'
             });
             
             /*
-             * !! Panel widths and height follow the width of the map 
+             * Panel width follow the width of the map except for "over" panel
              */
             msp.Map.events.register("resizeend", self, function(){
-                self.$d.width(msp.$container.width());
+                if (!self.over) {
+                    self.$d.width(msp.$container.width());
+                }
             });
             
             /*
@@ -223,7 +233,7 @@
                     id:content.id,
                     pn:self,
                     $d:msp.Util.$$('#'+content.id, self.$d).addClass('pnsi').css({
-                        'margin':self.padding.top+'px 0px '+self.padding.bottom+'px 0px'
+                        'margin':self.padding.top+'px '+ (self.over ? self.padding.right : 0) + 'px '+self.padding.bottom+'px 0px'
                     })
                 }
                 
