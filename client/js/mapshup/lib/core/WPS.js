@@ -711,6 +711,50 @@
             return this.processes[identifier];
         };
         
+        /**
+         * Return WPS server info as an HTML string
+         * 
+         *      <div>
+         *          <h1>wps.title</h1>
+         *          <p>wps.abstract</p>
+         *          <p>Version wps.version</p>
+         *          <h2>Provided by <a href="wps.serviceProvider.providerSite" target="_blank">wps.serviceProvider.providerName</a></h2>
+         *          <h2>Contact</h2>
+         *          <p>
+         *              wps.serviceProvider.contact.individualName
+         *              wps.serviceProvider.contact.phone.voice
+         *          </p>
+         *      </div>
+         * 
+         */
+        this.toHTML = function() {
+            
+            var html, self = this;
+            
+            /*
+             * Only process WPS when getCapabilities is read
+             */
+            if (!self.title) {
+                return "";
+            }
+            html = [
+                '<div><h1>',
+                self.title,
+                '</h1><p>',
+                self["abstract"],
+                '</p><p>Version ',
+                self.version,
+                '<h2>Provided by <a href="',
+                self.serviceProvider.providerSite,
+                '" target="_blank">',
+                self.serviceProvider.providerName,
+                '</a></h2>'
+            ];
+
+            return html.join("");
+            
+        };
+        
         this.init(url);
         
         return this;
