@@ -472,7 +472,7 @@
                 }
                 
             });
-            console.log(processDescriptions[0]);
+            
             return processDescriptions;
             
         };
