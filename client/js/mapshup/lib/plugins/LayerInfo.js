@@ -127,7 +127,7 @@
 
             }
 
-            html +="</table";
+            html +="</table>";
 
             /*
              * Display layer information within jMessage
