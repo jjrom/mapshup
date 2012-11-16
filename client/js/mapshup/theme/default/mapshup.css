@@ -1165,6 +1165,14 @@ a.tab img {
     padding:10px;
 }
 
+.paddedleft {
+    padding-left:10px;
+}
+
+.paddedright {
+    padding-right:10px;
+}
+
 .marged {
     margin:10px;
 }
@@ -1708,4 +1716,14 @@ td.clear {
 }
 .wpsclient .describe h1 {
     color:#f00;
+}
+.wpsclient .list {
+    padding:5px 5px 5px 15px;
+    height:100px;
+    line-height:25px;
+    overflow:auto;
+}
+.wpsclient .hilite {
+    background-color:olivedrab;
+    padding:4px;
 }

@@ -57,7 +57,7 @@
          * 
          * Structure of an item 
          *      {
-         *          panel: // reference to panel
+         *          panelItem: // reference to panelItem
          *          $d: // reference to the panel jquery container
          *          wps: // reference to a WPS object
          *      }
@@ -125,12 +125,12 @@
                         /*
                          * Create a panel for this WPS
                          */
-                        var panel = msp.sp.add({
+                        var panelItem = msp.sp.add({
                             id:msp.Util.getId(),
                             icon:msp.Util.getImgUrl('configure.png'),
                             title:wps.title,
                             classes:"wpsclient",
-                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes"></div></div><div style="float:right;width:60%;"><div class="describe"></div><div class="inputs"></div><div class="outputs"></div></div>'
+                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes"></div></div><div style="float:right;width:60%;"><div class="describe"></div><form method="POST" action="#"><div class="inputs"></div></form><div class="outputs"></div></div>'
                         });
 
                         /*
@@ -138,15 +138,16 @@
                          * with input url as the hash key
                          */
                         scope.items[url] = {
-                            $d:panel.$content,
-                            panel:panel,
+                            $d:panelItem.$content,
+                            panelItem:panelItem,
                             wps:wps
                         };
                     
                         /*
-                     * Tell user that a new WPS panel is created
-                     */
+                        * Tell user that a new WPS panel is created
+                        */
                         msp.Util.message(msp.Util._("WPS server successfully added"));
+                        msp.sp.show(panelItem);
                      
                     }   
                     
@@ -180,14 +181,18 @@
          *                  <div class="description"></div>
          *              </div>
          *              <div class="processes">
-         *              // Contains Processes list
+         *                  // Contains Processes list
          *              </div>
          *          </div>
          *          <div style='float:right'>
          *              <div class="describe">
-         *              // Contains description of selected process
+         *                  // Contains description of selected process
          *              </div>
-         *              </div>
+         *              <form>
+         *                  <div class="inputs">
+         *                      // Display interactive InputsData
+         *                  </div>
+         *              </form>
          *          </div>
          */
         this.updateCapabilitiesContent = function(item) {
@@ -195,16 +200,27 @@
             var id = msp.Util.getId(), process, identifier, $processes;
             
             /*
-             * Set info
+             * Set '.info' div
+             * 
+             * Display WPS server title and abstract.
+             * Add a clickable action to display full GetCapabilities contact info within
+             * a mapshup message popup
+             * 
              */
             $('.info', item.$d).html('<h1><a href="'+item.wps.url+'" title="'+item.wps.url+'" target="_blank">'+item.wps.title+'</a></h1><p>'+item.wps["abstract"]+' <a href="#" id="'+id+'" class="button inline">&nbsp;+&nbsp;</a></p><br/><h1>'+msp.Util._('Processes')+'</h1>');
             $('#'+id).click(function(){
-                msp.Util.message(item.wps.url);
+                msp.Util.message(item.wps.toHTML(), -1);
                 return false;
             });
             
+            /*
+             * Set '.processes' div
+             * 
+             * Add a clickable button for each process within the GetCapabilities description
+             * A click on a button launch the corresponding DescribeProcess and display it
+             * 
+             */
             $processes = $('.processes', item.$d);
-            
             for (identifier in item.wps.processes) {
                 id = msp.Util.getId();
                 process = item.wps.processes[identifier];
@@ -216,10 +232,13 @@
                         item.wps.describeProcess(process.identifier);
                         return false;
                     });
-                    msp.tooltip.add($id, 'w', 10);
+                    msp.tooltip.add($id, 'w');
                 })(process,$('#'+id), item);
             }
             
+            /*
+             * Add a nice scrollbar :)
+             */
             $processes.mCustomScrollbar();
             
         };
@@ -229,22 +248,79 @@
          */
         this.updateDescribeProcessContent = function(process) {
             
-            var id = msp.Util.getId(), item = this.items[process.wps.url];
+            var i, l, id, $id, $inputsList, input, self = this, item = this.items[process.wps.url];
+            
+            //console.log(process.dataInputs);
             
             /*
-             * Set info
+             * Set '.info' div
+             * 
+             * Display Process title and abstract.
              */
             $('.describe', item.$d).html('<h1 title="'+process.identifier+'">'+process.title+'</h1><p>'+process["abstract"]+'</p>');
             
-            $('.inputs', item.$d).html('<h1>'+msp.Util._('Inputs')+'</h1><br/>');
+            /*
+             * Set '.inputs' div
+             * 
+             * Entering the awfully complicated part of the code :D
+             * 
+             * Three types of InputsData exist :
+             *  
+             *      - complexData : basically something to upload to the WPS server
+             *      
+             *      - boundingBoxData : an input bbox (i.e. a geometry)
+             *      
+             *      - literalData : basically an input text form containing one of
+             *                      the supported dataType
+             * 
+             * 
+             * HTML structure :
+             *      <div class="inputs">
+             *          <div class="list">
+             *              <p id="...">
+             *                  <span class="title">Title</span>
+             *              </p>
+             *          </div>
+             *      </div>
+             * 
+             */
+            $('.inputs', item.$d).html('<h1>'+msp.Util._('Inputs')+'</h1><div class="list"></div>');
+            $inputsList = $('.list', $('.inputs', item.$d));
             
             /*
              * Roll over dataInputs
              */
-            for (var i = 0, l = process.dataInputs.length; i < l; i++) {
+            for (i = 0, l = process.dataInputs.length; i < l; i++) {
                 
+                input = process.dataInputs[i];
+                id = msp.Util.getId();
                 
+                /*
+                 * Set title (and abstract as a tooltip)
+                 */
+                $inputsList.append('<div id="'+id+'"><span class="title paddedright" jtitle="'+input['abstract']+'">'+input['title']+'</span></div>');
+                $id = $("#"+id);
+                msp.tooltip.add($(".title", $id), 'w');
+                
+                /*
+                 * The hard part...
+                 */
+                if (input.literalData) {
+                    self.displayLiteralData(input.literalData, $id);
                 }
+                else if (input.complexData) {
+                    $id.append("// TODO");
+                }
+                else if (input.boundingBoxData) {
+                    $id.append("// TODO");
+                }
+            }
+            
+            /*
+             * Add a nice scrollbar :)
+             */
+            $inputsList.mCustomScrollbar();
+            
             
         /*
              * Launch process button
@@ -255,6 +331,99 @@
                 return false;
             });
             */
+        };
+        
+        
+        /*
+         * Append form for LiteralData within $div container 
+         * 
+         *  Structure of LiteralData
+         * 
+         *      {
+         *          anyValue: // ???
+         *          dataType: // dataType (mandatory)
+	 *          defaultValue: // default value set in the input text box
+         *          reference: // reference url for the dataType (display as link for dataType)
+         *          UOMs:{
+         *              default: // default Unit of Measure
+         *              supported:[] // array of supported Units of Measure
+         *      }
+         *      
+         */
+        this.displayLiteralData = function(literalData, $div) {
+            
+            var type = "text", id = msp.Util.getId(), $title, $clear, $id;
+            
+            /*
+            * Set content i.e. add a 'Set value' action
+            */
+            $div.append('<span id="'+id+'t">'+(literalData.defaultValue || "")+'</span><span class="paddedleft">[<a href="#" id="'+id+'">'+(literalData.defaultValue ? msp.Util._("Change") : msp.Util._("Set"))+'</a><span id="'+id+'c"> | <a href="#">'+msp.Util._("Clear")+'</a></span>]</span>');
+            
+            $title = $('#'+id+'t');
+            $clear = $('#'+id+'c');
+            $id = $('#'+id);
+            
+           /*
+            * Hide 'clear' action if value is not set
+            */
+            if (!literalData.defaultValue) {
+                $clear.hide();
+                $title.removeClass('hilite');
+            }
+            else {
+                $title.addClass('hilite');
+            }
+
+            /*
+            * Add a 'clear' action
+            */
+            $('a', $clear).click(function(e) {
+
+               /*
+                * Update link content text with
+                * the new set value
+                */
+                $title.html("").removeClass('hilite');
+
+               /*
+                * Hide the 'clear' action
+                */
+                $clear.hide();
+                $id.html(msp.Util._("Set"));
+
+                return false;
+            });
+            
+            /*
+             * Ask for value on click
+             */
+            $id.click(function(e) {
+
+                msp.Util.askFor(msp.Util._(literalData.dataType), null, type, $title.text(), function(v){
+
+                   /*
+                    * Value is set
+                    */
+                    if (v) {
+                        
+                       /*
+                        * Update link content text with
+                        * the new set value
+                        */
+                        $title.html(v).addClass('hilite');
+
+                       /*
+                        * Show the 'Clear' action
+                        */
+                        $clear.show();
+                        $id.html(msp.Util._("Change"));
+
+                    }
+
+                });
+                return false;
+            });
+            
         };
         
         /*
