@@ -557,7 +557,7 @@
         /*
          * Show the panel
          * 
-         * @input id : jquery object id to display within this panel
+         * @input item : jquery object id to display within this panel
          */
         this.show = function(item) {
             
