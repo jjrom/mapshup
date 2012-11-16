@@ -600,11 +600,51 @@
              */
             $obj.children().filter(function() {
                 nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
-                p[nn] = $(this).text();
+                
                 /* Get DataType ows:reference */
                 if (nn === 'dataType') {
                     $.extend(p, msp.Util.getAttributes($(this)));
                 }
+                
+                /*
+                 * Unit Of Measure case
+                 * 
+                 *      <UOMs>
+                 *          <Default>
+                 *              <ows:UOM>m</ows:UOM>
+                 *          </Default>
+                 *          <Supported>
+                 *              <ows:UOM>m</ows:UOM>
+                 *              <ows:UOM>Ao</ows:UOM>
+                 *              <ows:UOM>[mi_i]</ows:UOM>
+                 *          </Supported>
+                 *      </UOMs>
+                 * 
+                 * 
+                 */
+                if (nn === 'uOMs') {
+                    
+                    p['UOMs'] = {};
+                    
+                    $(this).children().filter(function() {
+                        
+                        nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+
+                        if (nn === 'default') {
+                            p['UOMs']['default'] = $(this).children().text();
+                        }
+                        else if (nn === 'supported') {
+                            p['UOMs']['supported'] = [];
+                            $(this).children().filter(function() {
+                                p['UOMs']['supported'].push($(this).text());
+                            });
+                        }
+                    });
+                }
+                else {
+                    p[nn] = $(this).text();
+                }
+                
             });
             
             return p;
@@ -630,7 +670,7 @@
         */
         this.parseDescribeBoundingBoxPut = function($obj) {
             
-            var nn, self = this, p = {};
+            var nn, p = {};
             
             /*
              * Parse each ComplexData (or ComplexOutput) element
