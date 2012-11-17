@@ -1173,6 +1173,11 @@ a.tab img {
     padding-right:10px;
 }
 
+.warning {
+    background-color:#f00;
+    padding:4px;
+}
+
 .marged {
     margin:10px;
 }
