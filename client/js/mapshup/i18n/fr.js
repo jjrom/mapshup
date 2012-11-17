@@ -21,6 +21,8 @@
     i["Center"]="Centrer";
     i["Center view on layer"]="Centrer la vue sur la couche";
     i["Center map on one of the following countries"]="Centrer la carte sur un des pays suivants";
+    i["Change"]="Changer";
+    i["Change value"]="Changer la valeur";
     i["Checking"]="Vérification";
     i["Choose a search service"]="Choisir un service de recherche";
     i["Choose export format"]="Choisir le format d'export";

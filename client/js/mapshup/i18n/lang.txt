@@ -20,6 +20,8 @@ Catalogs
 Center
 Center view on layer
 Center map on one of the following countries
+Change
+Change value
 Choose a search service
 Choose export format
 Choose the catalog type
