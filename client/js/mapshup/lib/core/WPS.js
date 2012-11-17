@@ -153,7 +153,7 @@
          * Call DescribeProcess throught ajax request
          * and parse result
          * 
-         * @input {Array} identifiers : array of Process unique identifiers
+         * @param {Array} identifiers : array of Process unique identifiers
          * 
          */
         this.describeProcess = function(identifiers) {
@@ -460,7 +460,7 @@
                         nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
                         /* Process Inputs and Outupts*/
                         if (nn === 'dataInputs' || nn === 'processOutputs') {
-                            p[nn] = self.parseDescribePuts($(this).children());
+                            p[nn+'Description'] = self.parseDescribePuts($(this).children());
                         }
                         else if (nn === 'title' || nn === 'identifier' || nn === 'abstract') {
                             p[nn] = $(this).text();
@@ -478,10 +478,10 @@
         };
         
         
-       /**
+        /**
         * Parse DataInputs (or ProcessOutputs) of the DescribeProcess elements
         * 
-        * @input {Object} $obj : jQuery object reference to list of 'Input' (or 'Output') elements
+        * @param {Object} $obj : jQuery object reference to list of 'Input' (or 'Output') elements
         */
         this.parseDescribePuts = function($obj) {
             
@@ -525,7 +525,7 @@
             return puts;
         };
 
-       /**
+        /**
         * Parse ComplexData (or ComplexOutput) of the DescribeProcess elements
         * 
         * Structure :
@@ -548,7 +548,7 @@
         *            </Supported>
         *   </ComplexData>
         * 
-        * @input {Object} $obj : jQuery object reference to a ComplexData (or a ComplexOutput) element
+        * @param {Object} $obj : jQuery object reference to a ComplexData (or a ComplexOutput) element
         */
         this.parseDescribeComplexPut = function($obj) {
             
@@ -580,13 +580,12 @@
             
         };
         
-       /**
+        /**
         * Parse LiteralData (or LiteralOutput) of the DescribeProcess elements
         * 
+        * TODO : anyValue with Range (= allowedValues)
         * 
-        * 
-        * 
-        * @input {Object} $obj : jQuery object reference to a LiteralData (or a LiteralOutput) element
+        * @param {Object} $obj : jQuery object reference to a LiteralData (or a LiteralOutput) element
         */
         this.parseDescribeLiteralPut = function($obj) {
             
@@ -651,7 +650,7 @@
             
         };
 
-       /**
+        /**
         * Parse BoundingBoxData (or BoundingBoxOutput) of the DescribeProcess elements
         * 
         *   <BoundingBoxData>
@@ -666,7 +665,7 @@
         *       </Supported>
         *   </BoundingBoxData>
         * 
-        * @input {Object} $obj : jQuery object reference to a BoundingBoxData (or a BoundingBoxOutput) element
+        * @param {Object} $obj : jQuery object reference to a BoundingBoxData (or a BoundingBoxOutput) element
         */
         this.parseDescribeBoundingBoxPut = function($obj) {
             
@@ -695,11 +694,11 @@
             
         };
 
-       /**
+        /**
         * Retrun a json representation of a Leaf jQuery element
         * 
-        * @input {Object} $obj : jQuery object reference to a Format element
-        * @input {boolean} nolower : if true the javascript is not camel-cased
+        * @param {Object} $obj : jQuery object reference to a Format element
+        * @param {boolean} nolower : if true the javascript is not camel-cased
         */
         this.parseLeaf = function($obj, nolower) {
             
@@ -712,7 +711,47 @@
             return p;
         };
 
-       /**
+
+        /**
+         * Request 'execute' service on process identified by identifier
+         * 
+         * @param {String} identifier : msp.WPS.Process object identifier
+         */
+        this.execute = function(identifier) {
+            
+            var self = this, process = self.getProcess(identifier);
+            
+            /*
+             * Paranoid mode
+             */
+            if (!process) {
+                return false;
+            }
+            
+            /*
+            * Execute process
+            */
+            msp.Util.ajax({
+                url:msp.Util.proxify(msp.Util.repareUrl(url), "XML"),
+                async:true,
+                dataType:'xml',
+                success:function(xml) {
+                    self.parseCapabilities(xml);
+                    self.events.trigger("getcapabilities", self);
+                },
+                error:function(e) {
+                    msp.Util.message(msp.Util._("Error reading Capabilities file"));
+                }
+            }, {
+                title:msp.Util._("WPS") + " : " + msp.Util._("Get capabilities"),
+                cancel:true
+            });
+
+            return true;
+            
+        };
+        
+        /**
         * Add process to this.processes list
         *
         * @param {Object} process : msp.WPS.Process object
@@ -769,29 +808,20 @@
          */
         this.toHTML = function() {
             
-            var html, self = this;
-            
             /*
              * Only process WPS when getCapabilities is read
              */
-            if (!self.title) {
+            if (!this.title) {
                 return "";
             }
-            html = [
-                '<div><h1>',
-                self.title,
-                '</h1><p>',
-                self["abstract"],
-                '</p><p>Version ',
-                self.version,
-                '<h2>Provided by <a href="',
-                self.serviceProvider.providerSite,
-                '" target="_blank">',
-                self.serviceProvider.providerName,
-                '</a></h2>'
-            ];
-
-            return html.join("");
+            
+            return msp.Util.parseTemplate(msp.WPS.infoTemplate, {
+                "title":this.title,
+                "abstract":this["abstract"],
+                "version":this.version,
+                "providerSite":this.serviceProvider.providerSite,
+                "providerName":this.serviceProvider.providerName
+            });
             
         };
         
@@ -804,7 +834,7 @@
     /*
      * WPS Process
      * 
-     * @input {Object} options : WPS process initialization options
+     * @param {Object} options : WPS process initialization options
      * 
      *      {
      *          identifier: // process unique identifier
@@ -835,6 +865,26 @@
          */
         this["abstract"] = null;
         
+        /**
+         * InputsData description read from describeDescription
+         */
+        this.inputsDataDescription = null;
+        
+        /**
+         * OutputsProcess description read from describeDescription
+         */
+        this.outputsProcessDescription = null;
+        
+        /**
+         * List of inputs (Set by msp.Plugins.WPSClient for example)
+         */
+        this.inputs = [];
+        
+        /**
+         * List of outputs (Set by msp.Plugins.WPSClient for example)
+         */
+        this.outputs = [];
+        
         /*
          * Process initialization
          * options structure :
@@ -849,6 +899,22 @@
          */
         this.init = function(options) {
             $.extend(this, options);
+        };
+        
+        /**
+         * Add an input
+         * 
+         * @param {}
+         */
+        this.addInput = function(input) {
+            this.inputs.push(input);
+        };
+        
+        /**
+         * Add an output
+         */
+        this.addOutput = function(output) {
+            this.outputs.push(output);
         };
         
         this.init(options);
@@ -884,8 +950,8 @@
         /*
          * Register an event for WPS
          *
-         * @input <String> eventname : Event name => 'getcapabilities'
-         * @input <function> handler : handler attached to this event
+         * @param <String> eventname : Event name => 'getcapabilities'
+         * @param <function> handler : handler attached to this event
          */
         this.register = function(eventname , scope, handler) {
             
@@ -919,8 +985,8 @@
         /*
          * Trigger handlers related to an event
          *
-         * @input <String> eventname : Event name => 'getcapabilities'
-         * @input <Object> extra : object (e.g. a msp.WPS.Process for a 'describeprocess' event name)
+         * @param <String> eventname : Event name => 'getcapabilities'
+         * @param <Object> extra : object (e.g. a msp.WPS.Process for a 'describeprocess' event name)
          *                         this is optional
          */
         this.trigger = function(eventname, obj) {
@@ -939,6 +1005,149 @@
         
         return this;
 
-    }
+    };
+    
+    /**
+     * 
+     * HTML template to display WPS server information
+     * Used by toHTML() function
+     *      <div>
+     *          <h1>title</h1>
+     *          <p>abstract</p>
+     *          <p>Version version</p>
+     *          <h2>Provided by <a href="providerSite" target="_blank">providerName</a></h2>
+     *      </div>
+     */
+    msp.WPS.infoTemplate = '<div>'+
+        '<h1>{title}</h1>'+
+        '<p>{abstract}</p>'+
+        '<p>Version {version}</p>'+
+        '<h2>Provided by <a href="{providerSite}" target="_blank">{providerName}</a></h2>'+
+        '</div>';
+
+    /**
+     * XML POST template for WPS execute request
+     * 
+     *  Template keys :
+     *      {identifier} : process identifier
+     *      {dataInputs} : data inputs (see *PutsTemplate)
+     *      {dataOutputs} : data outputs (see *PutsTemplate)
+     *      {status} : status ??
+     * 
+     */
+    msp.WPS.executeRequestTemplate = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+        '<wps:Execute service="WPS" version="1.0.0" '+
+            'xmlns:wps="http://www.opengis.net/wps/1.0.0" '+
+            'xmlns:ows="http://www.opengis.net/ows/1.1" '+
+            'xmlns:xlink="http://www.w3.org/1999/xlink" '+
+            'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '+
+            'xsi:schemaLocation="http://www.opengis.net/wps/1.0.0/wpsExecute_request.xsd">'+
+                '<ows:Identifier>{identifier}</ows:Identifier>'+
+                '<wps:DataInputs>{dataInputs}</wps:DataInputs>'+
+                '<wps:ResponseForm>'+
+                    '<wps:ResponseDocument wps:lineage="false" '+
+                        'storeExecuteResponse="true" '+
+                         'status="{status}">{dataOutputs}</wps:ResponseDocument>'+
+                '</wps:ResponseForm>'+
+            '</wps:Execute>';
+        
+    /**
+     * LiteralDataInput template
+     *   
+     *   Template keys :
+     *      {identifier} : Input identifier
+     *      {data} : ???
+     *    
+     */
+    msp.WPS.literalDataInputTemplate = '<wps:Input>'+
+            '<ows:Identifier>{identifier}</ows:Identifier>'+
+            '<wps:Data>'+
+                '<wps:LiteralData uom="{uom}">{data}</wps:LiteralData>'+
+            '</wps:Data>'+
+        '</wps:Input>';
+
+    /**
+     * ComplexDataInput reference template
+     *   
+     *   Template keys :
+     *      {identifier} : Input identifier
+     *      {reference} : url reference to get input data
+     *      {format} : Input data format
+     *      
+     */
+    msp.WPS.complexDataInputReferenceTemplate = '<wps:Input>'+
+            '<ows:Identifier>{identifier}</ows:Identifier>'+
+            '<wps:Data>'+
+                '<wps:Reference xlink:href="{reference}" {format}/>'+
+            '</wps:Data>'+
+        '</wps:Input>';
+                            
+    /**
+     * ComplexDataInput data template
+     *   
+     *   Template keys :
+     *      {identifier} : Input identifier
+     *      {format} : Input data format
+     *      {data} : ???
+     *      
+     */
+    msp.WPS.complexDataInputDataTemplate = '<wps:Input>'+
+            '<ows:Identifier>{identifier}</ows:Identifier>'+
+            '<wps:Data>'+
+                '<wps:ComplexData {format}>{data}</wps:ComplexData>'+
+            '</wps:Data>'+
+        '</wps:Input>';
+                            
+                            
+    /**
+     * BoundingBoxDataInput template
+     *   
+     *   Template keys :
+     *      {identifier} : Input identifier
+     *      {dimension} : dimension of the BoundingBox (generally ???)
+     *      {crs} : CRS (Coordinates Reference System) for the bounding box 
+     *      {minx} {miny} {maxx} {maxy} : Bounding Box coordinates expressed in {crs} coordinates
+     *      
+     *
+     */
+    msp.WPS.boundingBoxDataInputTemplate = '<wps:Input>'+
+            '<ows:Identifier>{identifier}</ows:Identifier>'+
+            '<wps:Data>'+
+                '<wps:BoundingBoxData ows:dimensions="{dimension}" ows:crs="{crs}">'+
+                    '<ows:LowerCorner>{minx} {miny}</ows:LowerCorner>'+
+                    '<ows:UpperCorner>{maxx} {maxy}</ows:UpperCorner>'+
+                '</wps:BoundingBoxData>'+
+            '</wps:Data>'+
+        '</wps:Input>';
+                            
+    /**
+     * ComplexOutput template
+     * 
+     *   Template keys :
+     *      {asReference} : ???
+     *      {identifier} : Output identifier
+     *  
+     */
+    msp.WPS.complexOutputTemplate = '<wps:Output asReference="{asReference}" {format}>'+
+            '<ows:Identifier>{identifier}</ows:Identifier>'+
+        '</wps:Output>';
+                            
+
+    /**
+     * LiteralOutput template
+     * 
+     *   Template keys :
+     *      {identifier} : Output identifier
+     * 
+     */
+    msp.WPS.literalOutputTemplate = '<wps:Output asReference="false">'+
+            '<ows:Identifier>{identifier}</ows:Identifier>'+
+        '</wps:Output>';
+
+    /**
+     * BoundingBoxOutpput template
+     */
+    msp.WPS.boundingBoxOutputTemplate = msp.WPS.literalOutputTemplate;
+
     
 })(window.msp);
