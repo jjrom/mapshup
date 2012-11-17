@@ -1351,11 +1351,11 @@
          *
          *      will return "Hello my name is Jerome Gasperi"
          *
-         * @input {String} str : string with keys to process
-         * @input {Object} keys : object containing the property keys
+         * @input {String} template : template with keys to process
+         * @input {Object} keys : object containing the property keys/values
          * @input {Object} modifiers : object containing the property keys
          */
-        replaceKeys: function (str, keys, modifiers) {
+        parseTemplate: function (template, keys, modifiers) {
 
             /*
              * Paranoid mode
@@ -1365,12 +1365,12 @@
             /*
              * Be sure that str is a string
              */
-            if (typeof str === "string") {
+            if (typeof template === "string") {
 
                 /*
                  * Replace all {key} within string by obj[key] value
                  */
-                return str.replace(/{+([^}])+}/g, function(m) {
+                return template.replace(/{+([^}])+}/g, function(m) {
                     
                     var k,
                     key = m.replace(/[{}]/g, ''),
@@ -1383,7 +1383,7 @@
                     * 
                     * This array contains a list of objects
                     * {
-                    *      transform: // function to apply to value before instead of directly displayed it
+                    *      transform: // function to apply to value before replace it
                     *            this function should returns a string
                     * }
                     */
@@ -1413,7 +1413,7 @@
                 
             }
 
-            return str;
+            return template;
 
         },
         

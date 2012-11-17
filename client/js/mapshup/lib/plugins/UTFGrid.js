@@ -297,7 +297,7 @@
                     }
                     
                     if (o.modifiers.title) {
-                        c = msp.Util.replaceKeys(o.modifiers.title, keys, o.modifiers.keys);
+                        c = msp.Util.parseTemplate(o.modifiers.title, keys, o.modifiers.keys);
                     }
                     else {
 
