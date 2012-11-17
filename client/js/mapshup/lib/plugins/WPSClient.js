@@ -250,7 +250,7 @@
             
             var i, l, id, $id, $inputsList, input, self = this, item = this.items[process.wps.url];
             
-            console.log(process.dataInputs);
+            //console.log(process.dataInputsDescription);
             
             /*
              * Set '.info' div
@@ -278,7 +278,7 @@
              *      <div class="inputs">
              *          <div class="list">
              *              <div id="id">
-             *                  <span class="title paddedright">Title</span>
+             *                  <span class="title paddedright">Title (or identifier if title is null)</span>
              *              </p>
              *          </div>
              *      </div>
@@ -290,15 +290,15 @@
             /*
              * Roll over dataInputs
              */
-            for (i = 0, l = process.dataInputs.length; i < l; i++) {
+            for (i = 0, l = process.dataInputsDescription.length; i < l; i++) {
                 
-                input = process.dataInputs[i];
+                input = process.dataInputsDescription[i];
                 id = msp.Util.getId();
                 
                 /*
                  * Set title (and abstract as a tooltip)
                  */
-                $inputsList.append('<div id="'+id+'"><span class="title paddedright" jtitle="'+input['abstract']+'">'+input['title']+'</span></div>');
+                $inputsList.append('<div id="'+id+'" class="input"><span class="title paddedright" jtitle="'+input['abstract']+'">'+(input['title'] || input['identifier'])+' :</span></div>');
                 $id = $("#"+id);
                 msp.tooltip.add($(".title", $id), 'w');
                 
@@ -335,7 +335,7 @@
         
         
         /*
-         * Append form for LiteralData within $div container 
+         * Append form for LiteralData within $parent container 
          * 
          *  Structure of LiteralData
          * 
@@ -349,19 +349,26 @@
          *              supported:[] // array of supported Units of Measure
          *      }
          *      
-         *   Append the following structure to $div
+         *   Append the following structure to $parent
          *   
          *      <span id="idt" class="hilite">literalData.defaultValue</span>
          *      
+         *   
+         *   IMPORTANT : jQuery .data() is used to store addtionnal information on value
+         *   (for example UOM if specified)
+         *      
+         *   @param {Object} literalData
+         *   @param {Object} $parent
+         *      
          */
-        this.displayLiteralData = function(literalData, $div) {
+        this.displayLiteralData = function(literalData, $parent) {
             
-            var type = "text", id = msp.Util.getId(), $id;
+            var type = "text", id = msp.Util.getId(), $id, $uom;
             
            /*
             * Set content i.e. add a 'Set value' action
             */
-            $div.append('<span id="'+id+'" class="hover" title="'+msp.Util._("Change value")+'">'+(literalData.defaultValue || msp.Util._("Not set"))+'</span>');
+            $parent.append('<span id="'+id+'" class="hover" title="'+msp.Util._("Change value")+'">'+(literalData.defaultValue || msp.Util._("Not set"))+'</span>');
             $id = $('#'+id);
             
             /*
@@ -372,7 +379,15 @@
                 /*
                  * Create a <select> form
                  */
-                $div.append('<span class="paddedleft"><select id="'+id+'uom"></select></span>');
+                $parent.append('<span class="paddedleft"><select id="'+id+'uom"></select></span>');
+                
+               /*
+                * Store UOM value for parent $parent on change selection within .data() store
+                */
+                $uom = $('#'+id+'uom').change(function(){
+                    $parent.data('uom', $(this).val());
+                });
+                     
                 for (var i = 0, l = literalData.UOMs.supported.length; i< l; i++) {
                     (function($uom, v, d) {
                         
@@ -382,13 +397,13 @@
                         $uom.append('<option value="'+v+'">'+v+'</option>');
                         
                         /*
-                         * The default UOM is selected within the list
+                         * The default UOM is selected within the list of possible UOMs
                          */
                         if (v === d) {
-                            $('option:last-child', $uom).attr("selected", "selected");
+                            $('option:last-child', $uom).attr("selected", "selected").change();
                         }
                         
-                    })($('#'+id+'uom'), literalData.UOMs.supported[i], literalData.UOMs["default"]);
+                    })($uom, literalData.UOMs.supported[i], literalData.UOMs["default"]);
                 }
                 
             }
@@ -402,6 +417,7 @@
             }
             else {
                 $id.addClass('hilite').removeClass('warning');
+                $parent.data('data', literalData.defaultValue);
             }
 
             /*
@@ -421,13 +437,27 @@
                         * the new set value
                         */
                         $id.html(v).addClass('hilite').removeClass('warning');
-
+                        
+                        /*
+                         * Store new value
+                         */
+                        $parent.data('data', v);
                     }
 
                 });
                 return false;
             });
             
+        };
+        
+        this.execute = function() {
+            for (var item in this.items) {
+                this.items[item].wps.getProcess('urn:ogc:cstl:wps:vector:buffer');
+                $('.input', this.items[item].$d).each(function(){
+                    //console.log($(this).data());
+                });
+            
+            }
         };
         
         /*
