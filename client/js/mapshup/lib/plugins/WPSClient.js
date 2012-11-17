@@ -250,7 +250,7 @@
             
             var i, l, id, $id, $inputsList, input, self = this, item = this.items[process.wps.url];
             
-            //console.log(process.dataInputs);
+            console.log(process.dataInputs);
             
             /*
              * Set '.info' div
@@ -277,8 +277,8 @@
              * HTML structure :
              *      <div class="inputs">
              *          <div class="list">
-             *              <p id="...">
-             *                  <span class="title">Title</span>
+             *              <div id="id">
+             *                  <span class="title paddedright">Title</span>
              *              </p>
              *          </div>
              *      </div>
@@ -349,57 +349,67 @@
          *              supported:[] // array of supported Units of Measure
          *      }
          *      
+         *   Append the following structure to $div
+         *   
+         *      <span id="idt" class="hilite">literalData.defaultValue</span>
+         *      
          */
         this.displayLiteralData = function(literalData, $div) {
             
-            var type = "text", id = msp.Util.getId(), $title, $clear, $id;
-            
-            /*
-            * Set content i.e. add a 'Set value' action
-            */
-            $div.append('<span id="'+id+'t">'+(literalData.defaultValue || "")+'</span><span class="paddedleft">[<a href="#" id="'+id+'">'+(literalData.defaultValue ? msp.Util._("Change") : msp.Util._("Set"))+'</a><span id="'+id+'c"> | <a href="#">'+msp.Util._("Clear")+'</a></span>]</span>');
-            
-            $title = $('#'+id+'t');
-            $clear = $('#'+id+'c');
-            $id = $('#'+id);
+            var type = "text", id = msp.Util.getId(), $id;
             
            /*
-            * Hide 'clear' action if value is not set
+            * Set content i.e. add a 'Set value' action
+            */
+            $div.append('<span id="'+id+'" class="hover" title="'+msp.Util._("Change value")+'">'+(literalData.defaultValue || msp.Util._("Not set"))+'</span>');
+            $id = $('#'+id);
+            
+            /*
+             * Set the Units of Measure if specified
+             */
+            if (literalData.UOMs) {
+                
+                /*
+                 * Create a <select> form
+                 */
+                $div.append('<span class="paddedleft"><select id="'+id+'uom"></select></span>');
+                for (var i = 0, l = literalData.UOMs.supported.length; i< l; i++) {
+                    (function($uom, v, d) {
+                        
+                        /*
+                         * Add a new option in the select form
+                         */
+                        $uom.append('<option value="'+v+'">'+v+'</option>');
+                        
+                        /*
+                         * The default UOM is selected within the list
+                         */
+                        if (v === d) {
+                            $('option:last-child', $uom).attr("selected", "selected");
+                        }
+                        
+                    })($('#'+id+'uom'), literalData.UOMs.supported[i], literalData.UOMs["default"]);
+                }
+                
+            }
+            
+           /*
+            * Switch between hilite and warning classes depending
+            * if input literealData has a default value or not
             */
             if (!literalData.defaultValue) {
-                $clear.hide();
-                $title.removeClass('hilite');
+                $id.removeClass('hilite').addClass('warning');
             }
             else {
-                $title.addClass('hilite');
+                $id.addClass('hilite').removeClass('warning');
             }
 
-            /*
-            * Add a 'clear' action
-            */
-            $('a', $clear).click(function(e) {
-
-               /*
-                * Update link content text with
-                * the new set value
-                */
-                $title.html("").removeClass('hilite');
-
-               /*
-                * Hide the 'clear' action
-                */
-                $clear.hide();
-                $id.html(msp.Util._("Set"));
-
-                return false;
-            });
-            
             /*
              * Ask for value on click
              */
             $id.click(function(e) {
 
-                msp.Util.askFor(msp.Util._(literalData.dataType), null, type, $title.text(), function(v){
+                msp.Util.askFor(msp.Util._(literalData.dataType), null, type, $id.text(), function(v){
 
                    /*
                     * Value is set
@@ -410,13 +420,7 @@
                         * Update link content text with
                         * the new set value
                         */
-                        $title.html(v).addClass('hilite');
-
-                       /*
-                        * Show the 'Clear' action
-                        */
-                        $clear.show();
-                        $id.html(msp.Util._("Change"));
+                        $id.html(v).addClass('hilite').removeClass('warning');
 
                     }
 
