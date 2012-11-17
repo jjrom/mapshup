@@ -1361,7 +1361,8 @@
              * Paranoid mode
              */
             keys = keys || {};
-
+            modifiers = modifiers || {};
+            
             /*
              * Be sure that str is a string
              */
