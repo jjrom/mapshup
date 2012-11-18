@@ -714,7 +714,7 @@
                 modal:true,
                 autoSize:true,
                 header:'<p>'+options.title+'</p>',
-                body:options.content ? '<p class="center">'+options.content+'</p>' : ''
+                body:options.content ? options.content : ''
                 
             });
             
@@ -789,7 +789,9 @@
                 /*
                  * Add action on input text box (see fct above)
                  */
-                input.keypress(function(e){
+                input.focus(function(){
+                    this.select();
+                }).keypress(function(e){
                     
                     /*
                      * Input value is encoded to avoid javascript code injection
