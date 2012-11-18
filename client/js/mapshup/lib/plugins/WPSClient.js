@@ -170,8 +170,8 @@
         };
         
         /*
-         * Add an item to South Panel
-         * 
+         * Update content of input item.panelItem with GetCapabilities information 
+         *           
          * Container structure 
          * 
          *      <div class="pnsi wpsclient">
@@ -194,6 +194,8 @@
          *                  </div>
          *              </form>
          *          </div>
+         *          
+         *  @param {Object} item
          */
         this.updateCapabilitiesContent = function(item) {
             
@@ -244,11 +246,14 @@
         };
         
         /*
-         * Update '.describe' content
+         * Update content of process description panel contained
+         * within 'describe' CSS class
+         * 
+         *  @param {Object} process : msp.WPS.Process 
          */
         this.updateDescribeProcessContent = function(process) {
             
-            var i, l, id, $id, $inputsList, input, self = this, item = this.items[process.wps.url];
+            var i, l, id, $id, $inputsList, input, item = this.items[process.wps.url];
             
             //console.log(process.dataInputsDescription);
             
@@ -296,17 +301,31 @@
                 id = msp.Util.getId();
                 
                 /*
-                 * Set title (and abstract as a tooltip)
+                 * Create Input div with a CSS 'input' class.
+                 * The 'input' class is necessary since the pre-execute function
+                 * will roll over each div with class 'input' to construct the
+                 * execute query.
+                 * 
                  */
                 $inputsList.append('<div id="'+id+'" class="input"><span class="title paddedright" jtitle="'+input['abstract']+'">'+(input['title'] || input['identifier'])+' :</span></div>');
-                $id = $("#"+id);
+                
+                /*
+                 * Attach Input identifier to the 'input' div
+                 * This is done by using the jQuery .data() function
+                 */
+                $id = $("#"+id).data('identifier', input['identifier']);
+                
+                /*
+                 * Add a tooltip on the input title
+                 * This tooltip contains input abstract
+                 */
                 msp.tooltip.add($(".title", $id), 'w');
                 
                 /*
                  * The hard part...
                  */
                 if (input.literalData) {
-                    self.displayLiteralData(input.literalData, $id);
+                    this.displayLiteralData(process, input.literalData, $id);
                 }
                 else if (input.complexData) {
                     $id.append("// TODO");
@@ -356,14 +375,15 @@
          *   
          *   IMPORTANT : jQuery .data() is used to store addtionnal information on value
          *   (for example UOM if specified)
-         *      
+         *   
+         *   @param {Object} process : msp.WPS.Process
          *   @param {Object} literalData
          *   @param {Object} $parent
          *      
          */
-        this.displayLiteralData = function(literalData, $parent) {
+        this.displayLiteralData = function(process, literalData, $parent) {
             
-            var type = "text", id = msp.Util.getId(), $id, $uom;
+            var type = "text", id = msp.Util.getId(), $id, $uom, self = this;
             
            /*
             * Set content i.e. add a 'Set value' action
@@ -386,6 +406,7 @@
                 */
                 $uom = $('#'+id+'uom').change(function(){
                     $parent.data('uom', $(this).val());
+                    self.setInputs(process);
                 });
                      
                 for (var i = 0, l = literalData.UOMs.supported.length; i< l; i++) {
@@ -418,6 +439,7 @@
             else {
                 $id.addClass('hilite').removeClass('warning');
                 $parent.data('data', literalData.defaultValue);
+                self.setInputs(process);
             }
 
             /*
@@ -439,9 +461,10 @@
                         $id.html(v).addClass('hilite').removeClass('warning');
                         
                         /*
-                         * Store new value
+                         * Store new value and update process accordingly
                          */
                         $parent.data('data', v);
+                        self.setInputs(process);
                     }
 
                 });
@@ -450,14 +473,28 @@
             
         };
         
-        this.execute = function() {
-            for (var item in this.items) {
-                this.items[item].wps.getProcess('urn:ogc:cstl:wps:vector:buffer');
-                $('.input', this.items[item].$d).each(function(){
-                    //console.log($(this).data());
-                });
+        /**
+         * Update inputs list for process
+         * 
+         * @param {Object} process
+         *
+         */
+        this.setInputs = function(process) {
             
-            }
+            /*
+             * Clear process inputs list
+             */
+            process.clearInputs();
+            
+            /*
+             * Populate process inputs list with
+             * the .data() content of each process Input
+             * identified by 'input' CSS class
+             */
+            $('.input', this.items[process.wps.url].$d).each(function(){
+                process.addInput($(this).data());
+            });
+            
         };
         
         /*
