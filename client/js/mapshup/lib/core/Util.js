@@ -796,44 +796,57 @@
                     /*
                      * Input value is encoded to avoid javascript code injection
                      */   
-                    var v = self.noScript($(this).val());
+                    var isValid = false, v = self.noScript($(this).val());
+                    
+                    /*
+                     * Close on ESC key
+                     */
+                    if (e.keyCode === 27) {
+                        popup.remove(); 
+                    }
                     
                     /*
                      * Return or tab keys
                      */
                     if (e.keyCode === 13 || e.keyCode === 9) {
                         
-                        if (options.dataType === "date") {
-                            if (self.isDateOrInterval(v) || self.isISO8601(v)) {
-                                if ($.isFunction(options.callback)) {
-                                    options.callback(v);
-                                }
-                                popup.remove(); 
-                            }
-                            else {
-                                self.message(self._("Expected format is YYYY-MM-DD for a single date or YYYY-MM-DD/YYYY-MM-DD for a date interval"));
-                            }
+                        switch(options.dataType.toLowerCase()) {
+                            case"date":
+                                self.isDateOrInterval(v) || self.isISO8601(v) ? isValid = true : self.message(self._("Expected format is YYYY-MM-DD for a single date or YYYY-MM-DD/YYYY-MM-DD for a date interval"));
+                                break;
+                            case "bbox":
+                                self.isBBOX(v) ? isValid = true : self.message(self._("Expected format is lonmin,latmin,lonmax,latmax"));
+                                break;
+                            case "integer":
+                                self.isInt(v) ?  isValid = true : self.message(self._("Error : not a valid Integer"));
+                                break;
+                            case "float":
+                                self.isFloat(v) ?  isValid = true : self.message(self._("Error : not a valid Float"));
+                                break;     
+                            case "double":
+                                self.isFloat(v) ?  isValid = true : self.message(self._("Error : not a valid Double"));
+                                break;
+                            case "boolean":
+                                self.isBoolean(v) ?  isValid = true : self.message(self._("Error : not a valid Boolean"));
+                                break;
+                            default:
+                                isValid = true;
                         }
-                        else if (options.dataType === "bbox") {
-                            if (self.isBBOX(v)) {
-                                if ($.isFunction(options.callback)) {
-                                    options.callback(v);
-                                }
-                                popup.remove(); 
-                            }
-                            else {
-                                self.message(self._("Expected format is lonmin,latmin,lonmax,latmax"));
-                            }
-                        }
-                        else {
+                        
+                        /*
+                         * Send back value to callback function and close popup
+                         */
+                        if (isValid) {
                             if ($.isFunction(options.callback)) {
                                 options.callback(v);
                             }
                             popup.remove(); 
                         }
-
+                        
                         return false;
+                        
                     }
+                    
                 });
                 
             }
@@ -1046,6 +1059,45 @@
             return value;
         },
         
+        /**
+         * Return true if input value is a boolean
+         * i.e. an integer number with value
+         * between -9007199254740990 to 9007199254740990
+         * 
+         *  @param {String} n
+         */
+        isBoolean: function(n) {
+            if (typeof n === "boolean") {
+                return true;
+            }
+            return n === "true" || n === "false" ? true : false;
+        },
+        
+        
+        /**
+         * Return true if input value is an integer
+         * i.e. an integer number with value
+         * between -9007199254740990 to 9007199254740990
+         * 
+         *  @param {String} n
+         */
+        isInt: function(n) {
+            if (!$.isNumeric(n)) {
+                return false;
+            }
+            return !(parseFloat(n) % 1);
+        },
+         
+        /**
+         * Return true if input value is a float
+         * i.e. a real number including Infinity and -Infinity but not NaN
+         * 
+         *  @param {String} n
+         */
+        isFloat: function(n) {
+            return $.isNumeric(n);
+        },
+         
         /**
          * Check if a string is a valid BBOX
          * A valid BBOX is :
