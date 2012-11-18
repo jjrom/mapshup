@@ -145,7 +145,7 @@
                      * Show drawingDesc
                      */
                     popup.moveTo(msp.Map.mousePosition);
-                    popup.show();
+                    popup.show(true);
                     
                     $('#featureDescV').click(function() {
                         var f = event.feature;
@@ -256,7 +256,7 @@
              * Show popup to the right position
              */
             self.askPopup.moveTo(msp.Map.mousePosition);
-            self.askPopup.show();
+            self.askPopup.show(true);
             
         };
         
