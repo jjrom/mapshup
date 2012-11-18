@@ -1464,9 +1464,9 @@
                     }
 
                     /*
-                    * In any case returns input value
+                    * Return value or unmodified key if value is null
                     */
-                    return value;
+                    return value != null ? value : "{"+key+"}";
                     
                 });
                 
