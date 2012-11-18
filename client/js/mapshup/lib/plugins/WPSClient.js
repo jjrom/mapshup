@@ -385,7 +385,12 @@
             
             var literalData = input.literalData, id = msp.Util.getId(), $id, $uom, self = this;
             
-           /*
+            /*
+             * Store Input type within $parent.data()
+             */
+            $parent.data('type', 'LiteralData');
+            
+            /*
             * Set content i.e. add a 'Set value' action
             */
             $parent.append('<span id="'+id+'" class="hover" title="'+msp.Util._("Change value")+'">'+(literalData.defaultValue || msp.Util._("Not set"))+'</span>');
