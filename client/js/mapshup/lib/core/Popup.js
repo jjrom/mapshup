@@ -366,10 +366,15 @@
         
         /**
          * Show popup
+         * 
+         * @param {boolean} noUpdate : if set to true, popup is not centered on show
          */
-        this.show = function(a) {
+        this.show = function(noUpdate) {
             this.$d.show();
             this.$m.show();
+            if (!noUpdate) {
+                this.updatePosition(this);
+            }
         };
 
         /*
