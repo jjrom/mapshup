@@ -325,7 +325,7 @@
                  * The hard part...
                  */
                 if (input.literalData) {
-                    this.displayLiteralData(process, input.literalData, $id);
+                    this.displayLiteralData(process, input, $id);
                 }
                 else if (input.complexData) {
                     $id.append("// TODO");
@@ -377,13 +377,13 @@
          *   (for example UOM if specified)
          *   
          *   @param {Object} process : msp.WPS.Process
-         *   @param {Object} literalData
+         *   @param {Object} input : Input object containing LiteralData
          *   @param {Object} $parent
          *      
          */
-        this.displayLiteralData = function(process, literalData, $parent) {
+        this.displayLiteralData = function(process, input, $parent) {
             
-            var type = "text", id = msp.Util.getId(), $id, $uom, self = this;
+            var literalData = input.literalData, id = msp.Util.getId(), $id, $uom, self = this;
             
            /*
             * Set content i.e. add a 'Set value' action
@@ -448,8 +448,11 @@
             $id.click(function(e) {
 
                 msp.Util.askFor({
-                    title:msp.Util._(literalData.dataType),
-                    dataType:type,
+                    title:input.title,
+                    content:msp.Util._("Enter a valid")+' <a href="'+literalData.reference+'" target="_blank">'+literalData.dataType+'</a>',
+                    dataType:literalData.dataType,
+                    /* TODO */
+                    bounds:literalData.bounds,
                     value:$id.text(),
                     callback:function(v){
                     

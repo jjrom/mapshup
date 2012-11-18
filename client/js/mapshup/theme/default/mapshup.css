@@ -549,10 +549,10 @@ a.tab:hover
 .po .description {
     padding:5px 0px 5px 10px;
 }
-.po input[type="text"],.po input[type="password"],.po textarea  {
+/*.po input[type="text"],.po input[type="password"],.po textarea  {
     width:95%;
     font-size:1em;
-}
+}*/
 
 .po .body {
     background-color:#fff;
@@ -570,7 +570,8 @@ a.tab:hover
     width:100%;
 }
 .po .header p {
-    padding:5px 25px;
+    text-align:center;
+    padding:0px 25px;
 }
 /* For share popup */
 .po .share {
