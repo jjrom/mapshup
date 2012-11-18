@@ -569,7 +569,9 @@ a.tab:hover
     line-height:40px;
     width:100%;
 }
-
+.po .header p {
+    padding:5px 25px;
+}
 /* For share popup */
 .po .share {
     text-align:center;

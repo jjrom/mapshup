@@ -713,16 +713,53 @@
             popup = new msp.Popup({
                 modal:true,
                 autoSize:true,
-                header:'<p>'+options.title+'</p>'
+                header:'<p>'+options.title+'</p>',
+                body:options.content ? '<p class="center">'+options.content+'</p>' : ''
+                
             });
             
             /*
-             * Switch type. Can be one of :
-             *  - date
-             *  - text
-             *  - list
+             * dataType='list' special case
+             * 
+             * options.value should be an array of object
+             *      {
+             *          title: Display item title
+             *          value: Value returned on click
+             *          icon: // optional
+             *      }
              */
-            if (options.dataType === "date" || options.dataType === "text" || options.dataType === "bbox") {
+            if (options.dataType === "list") {
+                
+                var el,icon,count = 0,$p = popup.$b;
+                
+                /*
+                 * Roll over items
+                 */
+                for (var i in options.value) {
+                    id = this.getId();
+                    el = options.value[i];
+                    icon = el.icon ? '<img class="middle" src="'+el.icon+'"/>&nbsp;' : '';
+                    $p.append('<a href="#" class="button marged" id="'+id+'">'+icon+el.title+'</a>');
+                    
+                    /*
+                     * Return item value to callback on click
+                     */
+                    (function(d, a, c, v){
+                        a.click(function(e){
+                            if ($.isFunction(c)){
+                                c(v);
+                            }
+                            d.remove();
+                            return false;
+                        });
+                    })(popup, $('#'+id), options.callback, el.value);
+                
+                    count++;
+                }
+                
+            }
+            
+            else {
                 
                 /*
                  * Get unique ids
@@ -796,49 +833,6 @@
                         return false;
                     }
                 });
-                
-            }
-            /*
-             * dataType 'list' case
-             * 
-             * options.value should be an array of object
-             *      {
-             *          title: Display item title
-             *          value: Value returned on click
-             *          icon: // optional
-             *      }
-             */
-            else if (options.dataType === "list") {
-                
-                var el,
-                icon,
-                count = 0,
-                $p = popup.$b.append((options.content ? '<p class="center">'+options.content+'</p>' : ''));
-                
-                /*
-                 * Roll over items
-                 */
-                for (var i in options.value) {
-                    id = this.getId();
-                    el = options.value[i];
-                    icon = el.icon ? '<img class="middle" src="'+el.icon+'"/>&nbsp;' : '';
-                    $p.append('<a href="#" class="button marged" id="'+id+'">'+icon+el.title+'</a>');
-                    
-                    /*
-                     * Return item value to callback on click
-                     */
-                    (function(d, a, c, v){
-                        a.click(function(e){
-                            if ($.isFunction(c)){
-                                c(v);
-                            }
-                            d.remove();
-                            return false;
-                        });
-                    })(popup, $('#'+id), options.callback, el.value);
-                
-                    count++;
-                }
                 
             }
             
