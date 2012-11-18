@@ -366,13 +366,6 @@
         },
         
         /**
-         * Avoid code injection
-         */
-        noScript: function(str) {
-            return $('<div>'+str+'</div>').html();
-        },
-        
-        /**
          * Add a "display image" action to the given jquery 'a'
          * A click on 'a' will open the image within a fullscreen popup
          */
@@ -699,6 +692,7 @@
          *      content: // html content appended within Popup <div class='description'></div> DOM element
          *      hint: // hint to displayed within input box
          *      dataType: // dataType
+         *      size: // Input box size
          *      value: // default value to be displayed (or enumeration in case of dataType="list")
          *      callback: // callback function on value change
          */
@@ -769,7 +763,7 @@
                 /*
                  * Append input text box to body
                  */
-                popup.$b.append('<input id="'+id+'" type="text"/>');
+                popup.$b.append('<input id="'+id+'" type="text" size="'+(options.size || 10)+'"/>');
                 
                 /*
                  * Set default value if defined
@@ -777,7 +771,7 @@
                  */
                 input = $('#'+id);
                 if (options.value) {
-                    input.val(this.noScript(options.value));
+                    input.val(this.stripTags(options.value));
                 }
                 /*
                  * Or set input text box placeholder
@@ -796,7 +790,7 @@
                     /*
                      * Input value is encoded to avoid javascript code injection
                      */   
-                    var isValid = false, v = self.noScript($(this).val());
+                    var isValid = false, v = self.stripTags($(this).val());
                     
                     /*
                      * Close on ESC key
