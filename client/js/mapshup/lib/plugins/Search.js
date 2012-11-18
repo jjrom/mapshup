@@ -508,7 +508,7 @@
             /*
              * Avoid XSS vulnerability
              */
-            self.$input.val(msp.Util.noScript($.trim(self.$input.val())));
+            self.$input.val(msp.Util.stripTags($.trim(self.$input.val())));
            
             /*
              * Get time
