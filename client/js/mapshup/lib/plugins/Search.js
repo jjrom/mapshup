@@ -350,15 +350,19 @@
             
             var self = this;
             
-            msp.Util.askFor(msp.Util._("Choose a search service"), null, "list", self.services, function(v){
+            msp.Util.askFor({
+                title:msp.Util._("Choose a search service"),
+                dataType:"list",
+                value:self.services,
+                callback:function(v){
                 
-                /*
-                 * If input text box is not empty, launch search
-                 */
-                if(self.$input.val().length > 1) {
-                    self.search(self.services[v]);
-                }
-                
+                    /*
+                     * If input text box is not empty, launch search
+                     */
+                    if(self.$input.val().length > 1) {
+                        self.search(self.services[v]);
+                    }
+                }  
             });
             
             return false;

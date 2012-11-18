@@ -88,17 +88,22 @@
             title:"Disconnect",
             callback:function(scope) {
                 if (scope.userInfo) {
-                    msp.Util.askFor(msp.Util._("Sign out"), msp.Util._("Do you really want to sign out ?"), "list", [{
-                        title:msp.Util._("Yes"), 
-                        value:"y"
-                    },
-                    {
-                        title:msp.Util._("No"), 
-                        value:"n"
-                    }
-                    ], function(v){
-                        if (v === "y") {
-                            scope.disconnect();
+                    msp.Util.askFor({
+                        title:msp.Util._("Sign out"),
+                        content:msp.Util._("Do you really want to sign out ?"),
+                        dataType:"list", value:[{
+                            title:msp.Util._("Yes"), 
+                            value:"y"
+                        },
+                        {
+                            title:msp.Util._("No"), 
+                            value:"n"
+                        }
+                        ],
+                        callback:function(v){
+                            if (v === "y") {
+                                scope.disconnect();
+                            }
                         }
                     });
                 }
@@ -360,18 +365,24 @@
                          * Load the user last context
                          */
                         if (data.context) {
-                            msp.Util.askFor(msp.Util._("Hello") + " " + data.username, msp.Util._("Do you want to restore your map context ?"), "list", [{
-                                title:msp.Util._("Yes"), 
-                                value:"y"
-                            },
-                            {
-                                title:msp.Util._("No"), 
-                                value:"n"
-                            }
-                            ], function(v){
-                                if (v === "y") {
-                                    if (msp.Util.Cookie.get("context")) {
-                                        msp.Map.loadContext(data.context);
+                            msp.Util.askFor({
+                                title:msp.Util._("Hello") + " " + data.username,
+                                content:msp.Util._("Do you want to restore your map context ?"),
+                                dataType:"list",
+                                value:[{
+                                    title:msp.Util._("Yes"), 
+                                    value:"y"
+                                },
+                                {
+                                    title:msp.Util._("No"), 
+                                    value:"n"
+                                }
+                                ],
+                                callback:function(v){
+                                    if (v === "y") {
+                                        if (msp.Util.Cookie.get("context")) {
+                                            msp.Map.loadContext(data.context);
+                                        }
                                     }
                                 }
                             });

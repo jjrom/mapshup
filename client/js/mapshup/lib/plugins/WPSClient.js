@@ -130,7 +130,7 @@
                             icon:msp.Util.getImgUrl('configure.png'),
                             title:wps.title,
                             classes:"wpsclient",
-                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes"></div></div><div style="float:right;width:60%;"><div class="describe"></div><form method="POST" action="#"><div class="inputs"></div></form><div class="outputs"></div></div>'
+                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes"></div></div><div style="float:right;width:60%;"><div class="describe">'+msp.Util._("No process selected")+'</div><form method="POST" action="#"><div class="inputs"></div></form><div class="outputs"></div></div>'
                         });
 
                         /*
@@ -447,27 +447,32 @@
              */
             $id.click(function(e) {
 
-                msp.Util.askFor(msp.Util._(literalData.dataType), null, type, $id.text(), function(v){
-
-                   /*
-                    * Value is set
-                    */
-                    if (v) {
-                        
-                       /*
-                        * Update link content text with
-                        * the new set value
-                        */
-                        $id.html(v).addClass('hilite').removeClass('warning');
-                        
+                msp.Util.askFor({
+                    title:msp.Util._(literalData.dataType),
+                    dataType:type,
+                    value:$id.text(),
+                    callback:function(v){
+                    
                         /*
-                         * Store new value and update process accordingly
+                         * Value is set
                          */
-                        $parent.data('data', v);
-                        self.setInputs(process);
-                    }
+                         if (v) {
 
+                            /*
+                             * Update link content text with
+                             * the new set value
+                             */
+                             $id.html(v).addClass('hilite').removeClass('warning');
+
+                             /*
+                              * Store new value and update process accordingly
+                              */
+                             $parent.data('data', v);
+                             self.setInputs(process);
+                         }
+                    }
                 });
+                
                 return false;
             });
             

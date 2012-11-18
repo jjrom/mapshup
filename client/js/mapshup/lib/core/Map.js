@@ -327,18 +327,24 @@
                  */
                 if (!noDeletionCheck && msp.Config["general"].confirmDeletion) {
 
-                    msp.Util.askFor(msp.Util._("Delete layer"), msp.Util._("Do you really want to remove layer")+" "+newLayer.name, "list", [{
-                        title:msp.Util._("Yes"), 
-                        value:"y"
-                    },
-                    {
-                        title:msp.Util._("No"), 
-                        value:"n"
-                    }
-                    ], function(v){
-                        if (v === "y") {
-                            msp.Map.removeLayer(newLayer);
-                            msp.Map.addLayer(_layerDescription);
+                    msp.Util.askFor({
+                        title:msp.Util._("Delete layer"),
+                        content:msp.Util._("Do you really want to remove layer")+" "+newLayer.name,
+                        dataType:"list",
+                        value:[{
+                                title:msp.Util._("Yes"), 
+                                value:"y"
+                            },
+                            {
+                                title:msp.Util._("No"), 
+                                value:"n"
+                            }
+                            ],
+                       callback:function(v){
+                            if (v === "y") {
+                                msp.Map.removeLayer(newLayer);
+                                msp.Map.addLayer(_layerDescription);
+                            }
                         }
                     });
                     return null;
@@ -1440,20 +1446,27 @@
              */
             if (confirm && msp.Config["general"].confirmDeletion) {
 
-                msp.Util.askFor(msp.Util._("Delete layer"), msp.Util._("Do you really want to remove layer")+" "+layer.name, "list", [{
-                    title:msp.Util._("Yes"), 
-                    value:"y"
-                },
-                {
-                    title:msp.Util._("No"), 
-                    value:"n"
-                }
-                ], function(v){
-                    if (v === "y") {
-                        msp.Map.removeLayer(layer);
-                    }
-                });
 
+                msp.Util.askFor({
+                        title:msp.Util._("Delete layer"),
+                        content:msp.Util._("Do you really want to remove layer")+" "+layer.name,
+                        dataType:"list",
+                        value:[{
+                                title:msp.Util._("Yes"), 
+                                value:"y"
+                            },
+                            {
+                                title:msp.Util._("No"), 
+                                value:"n"
+                            }
+                            ],
+                       callback:function(v){
+                            if (v === "y") {
+                                msp.Map.removeLayer(layer);
+                            }
+                        }
+                    });
+              
                 return false;
             }
 

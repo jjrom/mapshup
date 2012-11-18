@@ -419,22 +419,27 @@
             /*
              * Set search popup
              */
-            self._p = msp.Util.askFor(msp.Util._("TimeLine"), '<form>Set time interval from <input id="'+id1+'" type="text" style="width:100px" value="'+self.toISO8601(self.min, true)+'"> to <input id="'+id2+'" type="text" style="width:100px" value="'+self.toISO8601(self.max, true)+'"></form>', "list", [{
-                title:msp.Util._("Ok"), 
-                value:"y"
-            },
-            {
-                title:msp.Util._("Cancel"), 
-                value:"n"
-            }
-            ], function(v){
-                if (v === "y") {
-                    d1 = new Date($('#'+id1).val());
-                    d2 = new Date($('#'+id2).val());
-                    self.$timeLine.dateRangeSlider('values', d1, d2);
-                    self.min = d1;
-                    self.max = d2;
-                    self.setTime(self.getInterval());
+            self._p = msp.Util.askFor({
+                title:msp.Util._("TimeLine"),
+                content:'<form>Set time interval from <input id="'+id1+'" type="text" style="width:100px" value="'+self.toISO8601(self.min, true)+'"> to <input id="'+id2+'" type="text" style="width:100px" value="'+self.toISO8601(self.max, true)+'"></form>',
+                dataType:"list",
+                value:[{
+                        title:msp.Util._("Ok"), 
+                        value:"y"
+                    },
+                    {
+                        title:msp.Util._("Cancel"), 
+                        value:"n"
+                    }],
+                callback:function(v){
+                    if (v === "y") {
+                        d1 = new Date($('#'+id1).val());
+                        d2 = new Date($('#'+id2).val());
+                        self.$timeLine.dateRangeSlider('values', d1, d2);
+                        self.min = d1;
+                        self.max = d2;
+                        self.setTime(self.getInterval());
+                    }
                 }
             });
                     

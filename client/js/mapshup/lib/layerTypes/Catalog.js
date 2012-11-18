@@ -195,12 +195,18 @@
                 });
             }
 
-            msp.Util.askFor(msp.Util._("Catalog") + ' : ' + layerDescription.title, msp.Util._("What is the format for this catalog ?"), "list", list, function(v){
-                layerDescription["connectorName"] = v;
-                layerDescription["groupName"] = "Catalogs";
-                callback(layerDescription);
-            });  
-
+            msp.Util.askFor({
+                title:msp.Util._("Catalog") + ' : ' + layerDescription.title,
+                content:msp.Util._("What is the format for this catalog ?"),
+                dataType:"list",
+                value:list,
+                callback:function(v){
+                    layerDescription["connectorName"] = v;
+                    layerDescription["groupName"] = "Catalogs";
+                    callback(layerDescription);
+                }
+            });
+            
             return true;
 
         },

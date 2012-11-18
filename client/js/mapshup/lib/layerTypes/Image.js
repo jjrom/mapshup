@@ -170,10 +170,15 @@
          */
         update:function(layerDescription, callback) {
 
-            msp.Util.askFor(msp.Util._("Image") + ' : ' + layerDescription.title, msp.Util._("Enter Image BBOX"), 'bbox', null, function(v){
-                layerDescription["bbox"] = v;
-                layerDescription.srs = "EPSG:4326";
-                callback(layerDescription);
+            msp.Util.askFor({
+                title:msp.Util._("Image") + ' : ' + layerDescription.title,
+                content:msp.Util._("Enter Image BBOX"),
+                dataType:'bbox',
+                callback:function(v){
+                    layerDescription["bbox"] = v;
+                    layerDescription.srs = "EPSG:4326";
+                    callback(layerDescription);
+                }
             });  
 
             return true;

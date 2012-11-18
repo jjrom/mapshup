@@ -691,17 +691,30 @@
         /**
          * Display a modal popup to ask user for
          * a particular value
+         * 
+         * @param {Object} options : constructor options
+         * 
+         *   option structure {
+         *      title: // popup title
+         *      content: // html content appended within Popup <div class='description'></div> DOM element
+         *      hint: // hint to displayed within input box
+         *      dataType: // dataType
+         *      value: // default value to be displayed (or enumeration in case of dataType="list")
+         *      callback: // callback function on value change
          */
-        askFor:function(title, description, type, value, callback) {
-          
+        askFor:function(options) {
+            
+            options = options || {};
+            
             var id,
             self = this,
             input = [],
+            /* Create popup */
             popup = new msp.Popup({
                 modal:true,
                 autoSize:true,
-                header:'<p>'+title+'</p>'
-            }); // Create popup
+                header:'<p>'+options.title+'</p>'
+            });
             
             /*
              * Switch type. Can be one of :
@@ -709,7 +722,7 @@
              *  - text
              *  - list
              */
-            if (type === "date" || type === "text" || type === "bbox") {
+            if (options.dataType === "date" || options.dataType === "text" || options.dataType === "bbox") {
                 
                 /*
                  * Get unique ids
@@ -726,14 +739,14 @@
                  * Input value is encoded to avoid javascript code injection
                  */
                 input = $('#'+id);
-                if (value) {
-                    input.val(this.noScript(value));
+                if (options.value) {
+                    input.val(this.noScript(options.value));
                 }
                 /*
                  * Or set input text box placeholder
                  */
-                else if (description) {
-                    input.attr('placeholder', description);
+                else if (options.hint) {
+                    input.attr('placeholder', options.hint);
                 }
                 
                 /*
@@ -751,10 +764,10 @@
                      */
                     if (e.keyCode === 13 || e.keyCode === 9) {
                         
-                        if (type === "date") {
+                        if (options.dataType === "date") {
                             if (self.isDateOrInterval(v) || self.isISO8601(v)) {
-                                if ($.isFunction(callback)) {
-                                    callback(v);
+                                if ($.isFunction(options.callback)) {
+                                    options.callback(v);
                                 }
                                 popup.remove(); 
                             }
@@ -762,10 +775,10 @@
                                 self.message(self._("Expected format is YYYY-MM-DD for a single date or YYYY-MM-DD/YYYY-MM-DD for a date interval"));
                             }
                         }
-                        else if (type === "bbox") {
+                        else if (options.dataType === "bbox") {
                             if (self.isBBOX(v)) {
-                                if ($.isFunction(callback)) {
-                                    callback(v);
+                                if ($.isFunction(options.callback)) {
+                                    options.callback(v);
                                 }
                                 popup.remove(); 
                             }
@@ -774,8 +787,8 @@
                             }
                         }
                         else {
-                            if ($.isFunction(callback)) {
-                                callback(v);
+                            if ($.isFunction(options.callback)) {
+                                options.callback(v);
                             }
                             popup.remove(); 
                         }
@@ -786,26 +799,28 @@
                 
             }
             /*
-             * Cas list - value should be an array of object
-             * {
-             *      title: Display item title
-             *      value: Value returned on click
-             *      icon: // optional
-             * }
+             * dataType 'list' case
+             * 
+             * options.value should be an array of object
+             *      {
+             *          title: Display item title
+             *          value: Value returned on click
+             *          icon: // optional
+             *      }
              */
-            else if (type === "list") {
+            else if (options.dataType === "list") {
                 
                 var el,
                 icon,
                 count = 0,
-                $p = popup.$b.append((description ? '<p class="center">'+description+'</p>' : ''));
+                $p = popup.$b.append((options.content ? '<p class="center">'+options.content+'</p>' : ''));
                 
                 /*
                  * Roll over items
                  */
-                for (i in value) {
+                for (var i in options.value) {
                     id = this.getId();
-                    el = value[i];
+                    el = options.value[i];
                     icon = el.icon ? '<img class="middle" src="'+el.icon+'"/>&nbsp;' : '';
                     $p.append('<a href="#" class="button marged" id="'+id+'">'+icon+el.title+'</a>');
                     
@@ -820,7 +835,7 @@
                             d.remove();
                             return false;
                         });
-                    })(popup, $('#'+id), callback, el.value);
+                    })(popup, $('#'+id), options.callback, el.value);
                 
                     count++;
                 }

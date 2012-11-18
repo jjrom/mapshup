@@ -259,9 +259,15 @@
                     value:t
                 })
             }
-            msp.Util.askFor(msp.Util._("Add layer"), msp.Util._("What is the type for this layer ?"), "list", list, function(v){
-                p["type"] = v;
-                self.add(p, self);
+            msp.Util.askFor({
+                title:msp.Util._("Add layer"),
+                content:msp.Util._("What is the type for this layer ?"),
+                dataType:"list",
+                value:list,
+                callback:function(v){
+                    p["type"] = v;
+                    self.add(p, self);
+                }
             });
             
         };

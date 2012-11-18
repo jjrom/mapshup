@@ -883,38 +883,43 @@
                         (function(id, item, sc, type) {
                             $('#'+id).click(function(e) {
 
-                                msp.Util.askFor(msp.Util._(item.title), null, type, sc.getValue(item.id), function(v){
-
-                                    /*
-                                     * Value is set -> add newItem to searchContext
-                                     * Otherwise, remove it
-                                     */
-                                    if (v) {
-
+                                msp.Util.askFor({
+                                    title:msp.Util._(item.title),
+                                    dataType:type,
+                                    value:sc.getValue(item.id),
+                                    callback:function(v){
+                                    
                                         /*
-                                         * Add newItem to layer searchContext
+                                         * Value is set -> add newItem to searchContext
+                                         * Otherwise, remove it
                                          */
-                                        sc.add({
-                                            id:item.id,
-                                            title:item.title,
-                                            value:v
-                                        });
+                                        if (v) {
 
-                                        /*
-                                         * Update link content text with
-                                         * the new set value
-                                         */
-                                        $('#'+id+'t').html(v);
+                                            /*
+                                             * Add newItem to layer searchContext
+                                             */
+                                            sc.add({
+                                                id:item.id,
+                                                title:item.title,
+                                                value:v
+                                            });
 
-                                        /*
-                                         * Show the 'Clear' action
-                                         */
-                                        $('#'+id+'c').show();
+                                            /*
+                                             * Update link content text with
+                                             * the new set value
+                                             */
+                                            $('#'+id+'t').html(v);
 
-                                        $('#'+id).html(msp.Util._("Change"));
+                                            /*
+                                             * Show the 'Clear' action
+                                             */
+                                            $('#'+id+'c').show();
+
+                                            $('#'+id).html(msp.Util._("Change"));
+
+                                        }
 
                                     }
-
                                 });
                                 return false;
                             });

@@ -95,16 +95,21 @@
                             msp.Util.message("The layer is empty and cannot be exported");
                         }
                         else {
-                            msp.Util.askFor(msp.Util._("Export")+ ' : '+layer.name, msp.Util._("Choose export format"), "list", [
-                            {
-                                title:"CSV", 
-                                value:"csv"
-                            },
-                            {
-                                title:"KML", 
-                                value:"kml"
-                            }], function(v){
-                                scope.download(scope.getFeatures(layer), layer.name, v);
+                            msp.Util.askFor({
+                                title:msp.Util._("Export")+ ' : '+layer.name,
+                                content:msp.Util._("Choose export format"),
+                                dataType:"list",
+                                value:[{
+                                    title:"CSV", 
+                                    value:"csv"
+                                },
+                                {
+                                    title:"KML", 
+                                    value:"kml"
+                                }],
+                                callback:function(v){
+                                    scope.download(scope.getFeatures(layer), layer.name, v);
+                                }
                             });
                         }
                         return false;
