@@ -549,10 +549,6 @@ a.tab:hover
 .po .description {
     padding:5px 0px 5px 10px;
 }
-/*.po input[type="text"],.po input[type="password"],.po textarea  {
-    width:95%;
-    font-size:1em;
-}*/
 
 .po .body {
     background-color:#fff;

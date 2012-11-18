@@ -453,6 +453,7 @@
                     dataType:literalData.dataType,
                     /* TODO */
                     bounds:literalData.bounds,
+                    size:5,
                     value:$id.text(),
                     callback:function(v){
                     
