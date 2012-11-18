@@ -846,6 +846,11 @@
     msp.WPS.Process = function(options) {
         
         /**
+         * Execute process in asynchronous mode
+         */
+        this.async = false;
+        
+        /**
          * msp.WPS object reference
          */
         this.wps = null;
@@ -877,6 +882,16 @@
         
         /**
          * List of inputs (Set by msp.Plugins.WPSClient for example)
+         * 
+         * Input stucture 
+         *      {
+         *          type: // 'LiteralData', 'ComplexData' or 'BoundingBoxData'  - MANDATORY
+         *          identifier: // Unique Input identifier - MANDATORY
+         *          data: // Data (e.g. value for LiteralData) - MANDATORY ?
+         *          uom: // Unit Of Measure, for LiteralData only - OPTIONAL 
+         *          format: // ??? - OPTIONAL
+         *      }
+         * 
          */
         this.inputs = [];
         
@@ -937,6 +952,140 @@
          */
         this.addOutput = function(output) {
             this.outputs.push(output);
+        };
+        
+        /**
+         * Launch WPS execute request
+         */
+        this.execute = function() {
+        
+            var data, template, formatStr, input, inputs = "", url = this.wps.url;
+            
+            data = msp.Util.parseTemplate(msp.WPS.executeRequestTemplate,{
+                identifier:this.identifier, 
+                status:this.async
+            });
+            
+            /*
+             * Process Inputs
+             */
+            for (var i  = 0, l = this.inputs.length; i < l; i++ ) {
+                input = this.inputs[i];
+                template = "";
+                formatStr ="";
+                
+                /*
+                 * LiteralData
+                 */
+                if (input.type === "LiteralData") {
+                    template = msp.Util.parseTemplate(msp.WPS.literalDataInputTemplate,{
+                        identifier:input.identifier,
+                        data:input.data,
+                        uom:input.uom || ""
+                    });
+                }
+                /*
+                else if (input.CLASS_NAME.search("Complex")>-1) {
+                    if (input.asReference) {
+                        tmpl = OpenLayers.WPS.complexInputReferenceTemplate.replace("$REFERENCE$",escape(input.getValue()));
+                    }
+                    else {
+                        tmpl = OpenLayers.WPS.complexInputDataTemplate.replace("$DATA$",input.getValue());
+                    }
+                    if (format) {
+                        if (format.mimeType) {
+                            formatStr += " mimeType=\""+format.mimeType+"\"";
+                        }
+                        if (format.schema) {
+                            formatStr += " schema=\""+format.schema+"\"";
+                        }
+                        if (format.encoding) {
+                            formatStr += " encoding=\""+format.encoding+"\"";
+                        }
+                    }
+                    tmpl = tmpl.replace("$FORMAT$",formatStr);
+                }       
+                else if (input.CLASS_NAME.search("BoundingBox") > -1) {
+                    tmpl = OpenLayers.WPS.boundingBoxInputTemplate.replace("$DIMENSIONS$",input.dimensions);
+                    tmpl = tmpl.replace("$CRS$",input.crs);
+                    tmpl = tmpl.replace("$MINX$",input.value.minx);
+                    tmpl = tmpl.replace("$MINY$",input.value.miny);
+                    tmpl = tmpl.replace("$MAXX$",input.value.maxx);
+                    tmpl = tmpl.replace("$MAXY$",input.value.maxy);
+                }
+                */
+                inputs += template;
+            }
+
+            // outputs
+            /*
+            var outputs = "";
+            for (var i = 0; i < process.outputs.length; i++) {
+                var output = process.outputs[i];
+                var tmpl = "";
+                if (output.CLASS_NAME.search("Complex")>-1) {
+                    tmpl = OpenLayers.WPS.complexOutputTemplate.replace("$AS_REFERENCE$",output.asReference);
+                    var format = (output.format ? output.format : output.formats[0]);
+                    var formatStr ="";
+                    if (format) {
+                        if (format.mimeType) {
+                            formatStr += " mimeType=\""+format.mimeType+"\"";
+                        }
+                        if (format.schema) {
+                            formatStr += " schema=\""+format.schema+"\"";
+                        }
+                        if (format.encoding) {
+                            formatStr += " encoding=\""+format.encoding+"\"";
+                        }
+                    }
+                    tmpl = tmpl.replace("$FORMAT$",formatStr);
+                }
+                else if (output.CLASS_NAME.search("Literal") > -1) {
+                    tmpl = OpenLayers.WPS.literalOutputTemplate;
+                }
+                else if (output.CLASS_NAME.search("BoundingBox") > -1) {
+                    tmpl = OpenLayers.WPS.boundingBoxOutputTemplate;
+                }
+                tmpl = tmpl.replace("$IDENTIFIER$",output.identifier); 
+                outputs += tmpl;
+            }
+            */
+            
+            /*
+             * Set Inputs and Outputs
+             */
+            data = msp.Util.parseTemplate(data,{
+                dataInputs:inputs/*,
+                dataOutputs:outputs*/
+            });
+            
+            /*
+             * Launch execute request
+             */
+            msp.Util.ajax({
+                url:msp.Util.proxify(msp.Util.repareUrl(url), "XML"),
+                async:true,
+                type:"POST",
+                dataType:"xml",
+                contentType:"text/xml",
+                data:data,
+                success:function(xml) {
+                    
+                    // TODO
+                },
+                error:function(e) {
+                    msp.Util.message(e);
+                }
+            }, {
+                title:this.title + " : " + msp.Util._("Execute"),
+                cancel:true
+            });
+           
+            //data = data.replace("$OUTPUT_DEFINITIONS$",outputs);
+            
+            //console.log(data);
+            //this.requestText = data;
+            
         };
         
         this.init(options);
@@ -1078,7 +1227,8 @@
      *   
      *   Template keys :
      *      {identifier} : Input identifier
-     *      {data} : ???
+     *      {uom}: unit of measure
+     *      {data} : value
      *    
      */
     msp.WPS.literalDataInputTemplate = '<wps:Input>'+
