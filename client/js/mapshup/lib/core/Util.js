@@ -699,6 +699,7 @@
             input = [],
             popup = new msp.Popup({
                 modal:true,
+                autoSize:true,
                 header:'<p>'+title+'</p>'
             }); // Create popup
             
