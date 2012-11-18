@@ -902,6 +902,28 @@
         };
         
         /**
+         * Clear inputs and outputs list
+         */
+        this.clear = function() {
+            this.clearInputs();
+            this.clearOutputs();
+        };
+        
+        /**
+         * Clear inputs list
+         */
+        this.clearInputs = function() {
+            this.inputs = [];
+        };
+        
+        /**
+         * Clear outputs list
+         */
+        this.clearOutputs = function() {
+            this.outputs = [];
+        };
+        
+        /**
          * Add an input
          * 
          * @param {}
