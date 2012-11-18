@@ -528,6 +528,7 @@ a.tab:hover
 /* Popup auto size */
 .poa {
     width:auto;
+    max-width:500px;
     height:auto;
 }
 
