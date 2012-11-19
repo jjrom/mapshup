@@ -525,7 +525,7 @@
             return puts;
         };
 
-        /**
+       /**
         * Parse ComplexData (or ComplexOutput) of the DescribeProcess elements
         * 
         * Structure :
@@ -719,7 +719,7 @@
          */
         this.execute = function(identifier) {
             
-            var self = this, process = self.getProcess(identifier);
+            var process = this.getProcess(identifier);
             
             /*
              * Paranoid mode
@@ -728,26 +728,7 @@
                 return false;
             }
             
-            /*
-            * Execute process
-            */
-            msp.Util.ajax({
-                url:msp.Util.proxify(msp.Util.repareUrl(url), "XML"),
-                async:true,
-                dataType:'xml',
-                success:function(xml) {
-                    self.parseCapabilities(xml);
-                    self.events.trigger("getcapabilities", self);
-                },
-                error:function(e) {
-                    msp.Util.message(msp.Util._("Error reading Capabilities file"));
-                }
-            }, {
-                title:msp.Util._("WPS") + " : " + msp.Util._("Get capabilities"),
-                cancel:true
-            });
-
-            return true;
+            return process.execute();
             
         };
         
@@ -900,6 +881,40 @@
          */
         this.outputs = [];
         
+        /**
+         * Process statusLocation (set during execute)
+         */
+        this.statusLocation = null,
+        
+        /**
+         * Process status. Could be one of the following :
+         *      ProcessAccepted
+         *      ProcessStarted
+         *      ProcessPaused
+         *      ProcessSucceeded
+         *      ProcessFailed
+         * 
+         */
+        this.status = null;
+        
+        /**
+         * Result object read from executeResponse
+         * 
+         * Structure 
+         *      [
+         *          {
+         *              identifier://
+         *              data:{
+         *                  value://
+         *              }
+         *          }
+         *          ,
+         *          ...
+         *      ]
+         * 
+         */
+        this.result = null;
+        
         /*
          * Process initialization
          * options structure :
@@ -959,7 +974,7 @@
          */
         this.execute = function() {
         
-            var data, template, formatStr, input, inputs = "", url = this.wps.url;
+            var i, l, data, template, formatStr, put, outputs = "", inputs = "", self = this;
             
             data = msp.Util.parseTemplate(msp.WPS.executeRequestTemplate,{
                 identifier:this.identifier, 
@@ -969,19 +984,19 @@
             /*
              * Process Inputs
              */
-            for (var i  = 0, l = this.inputs.length; i < l; i++ ) {
-                input = this.inputs[i];
+            for (i  = 0, l = this.inputs.length; i < l; i++ ) {
+                put = this.inputs[i];
                 template = "";
                 formatStr ="";
                 
                 /*
                  * LiteralData
                  */
-                if (input.type === "LiteralData") {
+                if (put.type === "LiteralData") {
                     template = msp.Util.parseTemplate(msp.WPS.literalDataInputTemplate,{
-                        identifier:input.identifier,
-                        data:input.data,
-                        uom:input.uom || ""
+                        identifier:put.identifier,
+                        data:put.data,
+                        uom:put.uom || ""
                     });
                 }
                 /*
@@ -1017,6 +1032,25 @@
                 inputs += template;
             }
 
+            /*
+             * Process Outputs
+             */
+            for (i  = 0, l = this.outputs.length; i < l; i++ ) {
+                put = this.outputs[i];
+                template = "";
+                formatStr ="";
+                
+                /*
+                 * LiteralOutput
+                 */
+                if (put.type === "LiteralOutput") {
+                    template = msp.Util.parseTemplate(msp.WPS.literalOutputTemplate,{
+                        identifier:put.identifier
+                    });
+                }
+                outputs += template;
+            }
+            
             // outputs
             /*
             var outputs = "";
@@ -1055,23 +1089,25 @@
              * Set Inputs and Outputs
              */
             data = msp.Util.parseTemplate(data,{
-                dataInputs:inputs/*,
-                dataOutputs:outputs*/
+                dataInputs:inputs,
+                dataOutputs:outputs
             });
             
             /*
              * Launch execute request
              */
             msp.Util.ajax({
-                url:msp.Util.proxify(msp.Util.repareUrl(url), "XML"),
+                url:msp.Util.proxify(msp.Util.repareUrl(self.wps.url), "XML"),
                 async:true,
                 type:"POST",
                 dataType:"xml",
                 contentType:"text/xml",
                 data:data,
                 success:function(xml) {
-                    
-                    // TODO
+                    self.result = self.parseExecute(xml);
+                    if (self.result) {
+                        self.wps.events.trigger("execute", self);
+                    }
                 },
                 error:function(e) {
                     msp.Util.message(e);
@@ -1080,13 +1116,126 @@
                 title:this.title + " : " + msp.Util._("Execute"),
                 cancel:true
             });
-           
-            //data = data.replace("$OUTPUT_DEFINITIONS$",outputs);
             
-            //console.log(data);
-            //this.requestText = data;
+            return true;
             
         };
+        
+        /**
+         * Get an xml executeResponse object and return a javascript object
+         * 
+         * executeResponse structure is :
+         * 
+         *      <wps:ExecuteResponse xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" serviceInstance="http://mywpsserver/?SERVICE=WPS&amp;REQUEST=GetCapabilities" statusLocation="http://mywpsserver/wps/output/d409fb4a-5131-4041-989e-c4de171d2881" service="WPS" version="1.0.0" xml:lang="en-EN">
+         *          <wps:Process wps:processVersion="1.0.0">
+         *              <ows:Identifier>urn:ogc:cstl:wps:math:add</ows:Identifier>
+         *              <ows:Title>Add</ows:Title>
+         *              <ows:Abstract>Adds two double.</ows:Abstract>
+         *          </wps:Process>
+         *          <wps:ProcessOutputs>
+         *              <wps:Output>
+         *                  <ows:Identifier>urn:ogc:cstl:wps:math:add:output:result</ows:Identifier>
+         *                  <ows:Title>Result</ows:Title>
+         *                  <ows:Abstract>Addition result</ows:Abstract>
+         *                  <wps:Data>
+         *                      <wps:LiteralData dataType="http://www.w3.org/TR/xmlschema-2/#double">46.0</wps:LiteralData>
+         *                  </wps:Data>
+         *              </wps:Output>
+         *          </wps:ProcessOutputs>
+         *      </wps:ExecuteResponse>
+         * 
+         */
+        this.parseExecute = function(xml) {
+            
+            var p, nn, result = [], $obj = $(xml);
+            
+            /*
+             * Trap Exception
+             */
+            if (msp.Util.stripNS($obj.children()[0].nodeName) === 'ExceptionReport') {
+                this.parseException(xml);
+                return null;
+            }
+            
+            /*
+             * Retrieve ExecuteResponse statusLocation attribute
+             */
+            this.statusLocation = msp.Util.getAttributes($obj.children())["statusLocation"];
+            
+            /*
+             * Process <wps:ProcessOutputs> element
+             */
+            $obj.children().children().filter(function(){
+               
+                if (msp.Util.stripNS(this.nodeName) === 'ProcessOutputs') {
+                   
+                   /*
+                    * Process Output i.e. all <wps:Output> elements
+                    */
+                    $(this).children().each(function() {
+                        
+                        p = {};
+                        
+                        $(this).children().each(function() {
+
+                            nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+
+                           /*
+                            * Store identifier and data bloc
+                            */
+                            if (nn === 'identifier') {
+                                p[nn] = $(this).text();
+                            }
+                            else if (nn === 'data') {
+
+                                p['data'] = {};
+
+                                /*
+                                * Parse result within <wps:Data> element
+                                */
+                                $(this).children().filter(function() {
+
+                                    nn = msp.Util.stripNS(this.nodeName);
+
+                                    if (nn === 'LiteralData') {
+                                        p['data']['value'] = $(this).text();
+                                    }
+                                    else if (nn === 'ComplexData') {
+                                    // TODO
+                                    }
+                                    else if (nn === 'BoundingBox') {
+                                    // TODO    
+                                    }
+                                    else if (nn === 'Reference') {
+                                    // TODO    
+                                    }
+
+                                });
+
+                            }
+
+                        });
+                        
+                        result.push(p);
+
+                    }); // End of process <wps:Output>
+                
+                } // End if (msp.Util.stripNS(this.nodeName) === 'ProcessOutputs')
+               
+            });
+            
+            return result;
+            
+        };
+        
+        /**
+         * Return a json representation of a WPS ows:ExceptionReport
+         *
+         * @param {Object} xml
+         */
+        this.parseException = function(xml) {
+            msp.Util.message("TODO - parse Exception");
+        }
         
         this.init(options);
         
@@ -1109,12 +1258,17 @@
              */
             getcapabilities:[],
             
-            
             /*
              * Array containing handlers to be call after
              * a successfull DescribeProcess
              */
-            describeprocess:[]
+            describeprocess:[],
+            
+            /*
+             * Array containing handlers to be call after
+             * a successfull execute process
+             */
+            execute:[]
             
         };
         
@@ -1157,8 +1311,11 @@
          * Trigger handlers related to an event
          *
          * @param <String> eventname : Event name => 'getcapabilities'
-         * @param <Object> extra : object (e.g. a msp.WPS.Process for a 'describeprocess' event name)
-         *                         this is optional
+         * @param <Object> extra : object i.e.
+         *                              - msp.WPS for a 'getcapabilities' event name
+         *                              - msp.WPS.Process for a 'describeprocess' event name
+         *                              - msp.WPS.Process for an 'execute' event name
+         *                              
          */
         this.trigger = function(eventname, obj) {
             
