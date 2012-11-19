@@ -539,7 +539,7 @@
             $id.click(function(e) {
 
                 msp.Util.askFor({
-                    title:put.title,
+                    title:put.title + ": " + put["abstract"],
                     content:msp.Util._("Enter a valid")+' <a href="'+data.reference+'" target="_blank">'+data.dataType+'</a>',
                     dataType:data.dataType,
                     /* TODO */
@@ -717,7 +717,7 @@
             $id.click(function(e) {
 
                 msp.Util.askFor({
-                    title:put.title,
+                    title:put.title + ": " + put["abstract"],
                     dataType:"complexData",
                     defaultFormat:data["default"],
                     maximumMegabytes:data.maximumMegabytes,
