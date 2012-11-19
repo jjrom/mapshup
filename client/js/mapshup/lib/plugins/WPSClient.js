@@ -426,7 +426,7 @@
                     this.displayLiteralOutput(process, put, $id);
                 }
                 else if (put.complexData) {
-                    $id.append("// TODO");
+                    this.displayComplexData(process, put, $id);
                 }
                 else if (put.boundingBoxData) {
                     $id.append("// TODO");
@@ -440,9 +440,9 @@
         
         
         /**
-         * Append form for LiteralData within $parent container 
+         * Append form for LiteralData within $parent container
          * 
-         *  Structure of LiteralData
+         * Structure of LiteralData
          * 
          *      {
          *          anyValue: // ???
@@ -463,7 +463,7 @@
          *   (for example UOM if specified)
          *   
          *   @param {Object} process : msp.WPS.Process
-         *   @param {Object} put : Input or Output object containing LiteralData
+         *   @param {Object} put : Input object containing LiteralData
          *   @param {Object} $parent
          *      
          */
@@ -659,6 +659,94 @@
                 
             }
 
+        };
+        
+        /**
+         * Append form for ComplexData within $parent container 
+         * 
+         *  Structure of ComplexData 
+         * 
+         *      {
+         *          maximumMegabytes: // ???
+         *          default:{
+         *              mimeType: //
+         *              encoding: //
+         *              schema: //
+         *          },
+         *          supported[
+         *              {
+         *                  mimeType: //
+         *                  encoding: //
+         *                  schema: //
+         *              },
+         *              ...
+         *          ]
+         *      }
+         *  
+         *   Append the following structure to $parent
+         *   
+         *      <span id="id" class="hilite">Not set</span>
+         *      
+         *   
+         *   IMPORTANT : jQuery .data() is used to store addtionnal information on value
+         *   (for example UOM if specified)
+         *   
+         *   @param {Object} process : msp.WPS.Process
+         *   @param {Object} put : Input object containing ComplexData
+         *   @param {Object} $parent
+         *      
+         */
+        this.displayComplexData = function(process, put, $parent) {
+            
+            var type = 'input', data = put.complexData, id = msp.Util.getId(), $id, self = this;
+            
+            /*
+             * Store Input type within $parent.data()
+             */
+            $parent.data('type', 'ComplexData');
+            
+           /*
+            * Set content i.e. add a 'Set value' action
+            */
+            $parent.append('<span id="'+id+'" class="hover" title="'+msp.Util._("Change value")+'">'+msp.Util._("Not set")+'</span>');
+            $id = $('#'+id).removeClass('hilite').addClass('warning');
+            
+            /*
+             * Ask for value on click
+             */
+            $id.click(function(e) {
+
+                msp.Util.askFor({
+                    title:put.title,
+                    dataType:"complexData",
+                    defaultFormat:data["default"],
+                    maximumMegabytes:data.maximumMegabytes,
+                    supportedFormats:data.supported,
+                    callback:function(v){
+                    
+                        /*
+                         * Value is set
+                         */
+                         if (v) {
+
+                            /*
+                             * Update link content text with
+                             * the new set value
+                             */
+                             $id.html(v).addClass('hilite').removeClass('warning');
+
+                             /*
+                              * Store new value and update process accordingly
+                              */
+                             $parent.data('data', v);
+                             self.setPuts(process, type);
+                         }
+                    }
+                });
+                
+                return false;
+            });
+            
         };
         
         /**

@@ -472,7 +472,6 @@
                 }
                 
             });
-            
             return processDescriptions;
             
         };

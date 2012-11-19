@@ -687,6 +687,9 @@
          * 
          * @param {Object} options : constructor options
          * 
+         * 
+         * Warning : mandatory options depend on dataType - see comments in the function
+         * 
          *   option structure {
          *      title: // popup title
          *      content: // html content appended within Popup <div class='description'></div> DOM element
@@ -724,7 +727,7 @@
              */
             if (options.dataType === "list") {
                 
-                var el,icon,count = 0,$p = popup.$b;
+                var el,icon,count = 0;
                 
                 /*
                  * Roll over items
@@ -733,7 +736,7 @@
                     id = this.getId();
                     el = options.value[i];
                     icon = el.icon ? '<img class="middle" src="'+el.icon+'"/>&nbsp;' : '';
-                    $p.append('<a href="#" class="button marged" id="'+id+'">'+icon+el.title+'</a>');
+                    popup.$b.append('<a href="#" class="button marged" id="'+id+'">'+icon+el.title+'</a>');
                     
                     /*
                      * Return item value to callback on click
@@ -752,7 +755,45 @@
                 }
                 
             }
-            
+            /*
+             * dataType='complexData' special case
+             * 
+             * Mandatory options are 
+             *      
+             *      defaultFormat:
+             *      supportedFormat:
+             *      maximumMegaBytes:
+             *      
+             * Structure of defaultFormat is
+             *      {
+             *          mimeType://
+             *          encoding://
+             *          schema://
+             *      }
+             * 
+             * Structure of supportedFormat is
+             * 
+             *      [
+             *          {
+             *              mimeType://
+             *              encoding://
+             *              schema://
+             *          },
+             *          ...
+             *      ]
+             * 
+             * 
+             */
+            else if (options.dataType === "complexData") {
+                new msp.DDZone({
+                    parent:popup.$b,
+                    maximumMegaBytes:options.maximumMegaBytes,
+                    supportedFormats:options.supportedFormats,
+                    success:function(data) {
+                        popup.center();
+                    }
+                });
+            }
             else {
                 
                 /*
