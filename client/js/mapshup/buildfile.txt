@@ -11,6 +11,7 @@ lib/core/Tooltip.js
 lib/core/Menu.js
 lib/core/SouthPanel.js
 lib/core/Popup.js
+lib/core/DDZone.js
 lib/core/WPS.js
 lib/core/Map.js
 lib/core/Map/Util.js
