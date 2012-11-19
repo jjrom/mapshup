@@ -239,6 +239,11 @@
                 'max-height':Math.round( (3 * ($c.height() - scope.$h.height())) / 4)
             });
             
+            /*
+             * Center popup
+             */
+            scope.center(scope);
+            
         };
         
         /**
