@@ -223,6 +223,8 @@
             
             var $c = msp.$container;
             
+            scope = scope || this;
+            
             /*
              * If window is not resizable, do nothing
              */
@@ -237,16 +239,24 @@
                 'max-height':Math.round( (3 * ($c.height() - scope.$h.height())) / 4)
             });
             
-           
+        };
+        
+        /**
+         * Recenter popup
+         */
+        this.center = function(scope) {
+            
+            scope = scope || this;
+            
             /*
              * Center the popup over its container 
              */
             scope.$d.css({
-                'left': (($c.width() - scope.$d.width()) / 2 )
+                'left': ((msp.$container.width() - scope.$d.width()) / 2 )
             });
-
-        };
             
+        };
+        
         /**
          * Hide popup
          */
