@@ -112,8 +112,8 @@
                  */
                 wps = new msp.WPS(url);
                 
-                /*
-                * Register WPS events
+               /*
+                * Register GetCapabilites event
                 */
                 wps.events.register("getcapabilities", this, function(scope, wps) {
                     
@@ -155,12 +155,22 @@
                     
                 });
                 
+               /*
+                * Register DescribeProcess event
+                */
                 wps.events.register("describeprocess", this, function(scope, processes) {
                     if ($.isArray(processes) && processes[0]) {
                         scope.updateDescribeProcessContent(processes[0]);
                     }
                 });
             
+               /*
+                * Register Execute event
+                */
+                wps.events.register("execute", this, function(scope, process) {
+                    scope.updateOutputContent(process);
+                });
+                
                 /*
                  * Retrieve capabilities
                  */
@@ -187,10 +197,16 @@
          *          <div style='float:right'>
          *              <div class="describe">
          *                  // Contains description of selected process
+         *                  <div class="execute">
+         *                      // Execute process button
+         *                  </div>
          *              </div>
          *              <form>
          *                  <div class="inputs">
          *                      // Display interactive InputsData
+         *                  </div>
+         *                  <div class="outputs">
+         *                      // Display interactive OutputsData
          *                  </div>
          *              </form>
          *          </div>
@@ -253,33 +269,40 @@
          */
         this.updateDescribeProcessContent = function(process) {
             
-            var i, l, id, $id, $inputsList, input, item = this.items[process.wps.url];
-            
-            //console.log(process.dataInputsDescription);
+            var executeId = msp.Util.getId(), $inputsList, $outputsList, item = this.items[process.wps.url];
             
             /*
              * Set '.info' div
              * 
              * Display Process title and abstract.
              */
-            $('.describe', item.$d).html('<h1 title="'+process.identifier+'">'+process.title+'</h1><p>'+process["abstract"]+'</p>');
+            $('.describe', item.$d).html('<h1 title="'+process.identifier+'">'+process.title+'</h1><p>'+process["abstract"]+'</p><div class="execute"><a href="#" id="'+executeId+'" class="button inline" jtitle="'+msp.Util._("Execute process")+'">&nbsp;'+msp.Util._('Execute')+'</a></div>');
             
             /*
-             * Set '.inputs' div
+             * Action on execute button
+             */
+            $('#'+executeId).click(function(){
+                process.execute();
+                return false;
+            });
+            msp.tooltip.add($('#'+executeId), 'n', 20);
+            
+            /*
+             * Set '.inputs' and '.outputs' div
              * 
              * Entering the awfully complicated part of the code :D
              * 
-             * Three types of InputsData exist :
+             * Three types of InputsData (OutputsData) exist :
              *  
-             *      - complexData : basically something to upload to the WPS server
+             *      - complexData (complexOuput) : basically something to upload to the WPS server
              *      
-             *      - boundingBoxData : an input bbox (i.e. a geometry)
+             *      - boundingBoxData (boundingBoxOutput) : an input bbox (i.e. a geometry)
              *      
-             *      - literalData : basically an input text form containing one of
-             *                      the supported dataType
+             *      - literalData (literalOutput) : basically an input text form containing one of
+             *                         the supported dataType
              * 
              * 
-             * HTML structure :
+             * HTML structures :
              *      <div class="inputs">
              *          <div class="list">
              *              <div id="id">
@@ -287,33 +310,105 @@
              *              </p>
              *          </div>
              *      </div>
+             *      
+             *      <div class="outputs">
+             *          <div class="list">
+             *              <div id="id">
+             *                  <span class="title paddedright">Title (or identifier if title is null)</span>
+             *              </p>
+             *          </div>
+             *      </div>      
              * 
              */
-            $('.inputs', item.$d).html('<h1>'+msp.Util._('Inputs')+'</h1><div class="list"></div>');
+            $('.inputs', item.$d).html('<h1>'+msp.Util._('Set inputs')+'</h1><div class="list"></div>');
+            $('.outputs', item.$d).html('<h1>'+msp.Util._('Result')+'</h1><div class="list"></div>');
+            
             $inputsList = $('.list', $('.inputs', item.$d));
+            $outputsList = $('.list', $('.outputs', item.$d));
+            
+            this.displayPuts(process, process.dataInputsDescription, 'input', $inputsList);
+            this.displayPuts(process, process.processOutputsDescription, 'output', $outputsList);
+            
+            /*
+             * Add nice scrollbars :)
+             */
+            $inputsList.mCustomScrollbar();
+            $outputsList.mCustomScrollbar();
+        
+        };
+        
+        /**
+         * Update Output content
+         */
+        this.updateOutputContent = function(process) {
+            
+            var result, item = this.items[process.wps.url], $outputsList = $('.output', $('.outputs', item.$d));
+            
+            if (!$.isArray(process.result)) {
+                return false;
+            }
+            
+            /*
+             * Update each Output DOM element that are identified in the process.result array
+             */
+            for (var i = 0, l = process.result.length; i < l; i++) {
+                
+                result = process.result[i];
+                
+               /*
+                * Searh within jQuery data('identifier')
+                */
+                $outputsList.each(function(){
+                    if ($(this).data('identifier') === result.identifier) {
+                        $('#'+$(this).attr('id')+'v').html(result.data.value);
+                    }
+                });
+                
+            }
+            
+            return true;
+            
+        };
+        
+        /**
+         * Display Inputs and Outputs
+         * 
+         * @param {Object} process
+         * @param {Object} putsDescription : process.dataInputsDescription or process.processOutuptsDescription
+         * @param {String} type: 'input' or 'output'
+         * @param {Object} $list : jQuery DOM element referencing $('.list', '.inputs') or $('.list', '.outputs')
+         * 
+         */
+        this.displayPuts = function(process, putsDescription, type, $list) {
+            
+            var id, $id, put;
+            
+            if (!putsDescription) {
+                return;
+            }
             
             /*
              * Roll over dataInputs
              */
-            for (i = 0, l = process.dataInputsDescription.length; i < l; i++) {
+            for (var i = 0, l = putsDescription.length; i < l; i++) {
                 
-                input = process.dataInputsDescription[i];
+                put = putsDescription[i];
                 id = msp.Util.getId();
                 
                 /*
-                 * Create Input div with a CSS 'input' class.
-                 * The 'input' class is necessary since the pre-execute function
-                 * will roll over each div with class 'input' to construct the
+                 * Create Input or Output div with a CSS 'input' class.
+                 * The 'input' (or 'output') class is necessary since the pre-execute function
+                 * will roll over each div with class 'input' (or 'output') to construct the
                  * execute query.
                  * 
                  */
-                $inputsList.append('<div id="'+id+'" class="input"><span class="title paddedright" jtitle="'+input['abstract']+'">'+(input['title'] || input['identifier'])+' :</span></div>');
+                $list.append('<div id="'+id+'" class="'+type+'"><span class="title paddedright" jtitle="'+put['abstract']+'">'+(put['title'] || put['identifier'])+' :</span></div>');
                 
                 /*
                  * Attach Input identifier to the 'input' div
                  * This is done by using the jQuery .data() function
                  */
-                $id = $("#"+id).data('identifier', input['identifier']);
+                $id = $("#"+id).data('identifier', put['identifier']);
                 
                 /*
                  * Add a tooltip on the input title
@@ -324,39 +419,165 @@
                 /*
                  * The hard part...
                  */
-                if (input.literalData) {
-                    this.displayLiteralData(process, input, $id);
+                if (put.literalData) {
+                    this.displayLiteralData(process, put, $id);
                 }
-                else if (input.complexData) {
+                else if (put.literalOutput) {
+                    this.displayLiteralOutput(process, put, $id);
+                }
+                else if (put.complexData) {
                     $id.append("// TODO");
                 }
-                else if (input.boundingBoxData) {
+                else if (put.boundingBoxData) {
                     $id.append("// TODO");
                 }
+                
             }
             
-            /*
-             * Add a nice scrollbar :)
-             */
-            $inputsList.mCustomScrollbar();
+            return;
             
-            
-        /*
-             * Launch process button
-             *
-            $('.inputs', item.$d).append('<a href="#" id="'+id+'" class="button inline"><img src="'+msp.Util.getImgUrl('configure.png')+'"/>&nbsp;'+msp.Util._('Execute')+'</a>');
-            $('#'+id).click(function(){
-                msp.Util.message(item.wps.url);
-                return false;
-            });
-            */
         };
         
         
-        /*
+        /**
          * Append form for LiteralData within $parent container 
          * 
          *  Structure of LiteralData
+         * 
+         *      {
+         *          anyValue: // ???
+         *          dataType: // dataType (mandatory)
+	 *          defaultValue: // default value set in the input text box
+         *          reference: // reference url for the dataType (display as link for dataType)
+         *          UOMs:{
+         *              default: // default Unit of Measure
+         *              supported:[] // array of supported Units of Measure
+         *      }
+         *  
+         *   Append the following structure to $parent
+         *   
+         *      <span id="id" class="hilite">literalData.defaultValue</span>
+         *      
+         *   
+         *   IMPORTANT : jQuery .data() is used to store addtionnal information on value
+         *   (for example UOM if specified)
+         *   
+         *   @param {Object} process : msp.WPS.Process
+         *   @param {Object} put : Input or Output object containing LiteralData
+         *   @param {Object} $parent
+         *      
+         */
+        this.displayLiteralData = function(process, put, $parent) {
+            
+            var type = 'input', data = put.literalData, id = msp.Util.getId(), $id, $uom, self = this;
+            
+            /*
+             * Store Input type within $parent.data()
+             */
+            $parent.data('type', 'LiteralData');
+            
+            /*
+            * Set content i.e. add a 'Set value' action
+            */
+            $parent.append('<span id="'+id+'" class="hover" title="'+msp.Util._("Change value")+'">'+(data.defaultValue || msp.Util._("Not set"))+'</span>');
+            $id = $('#'+id);
+            
+            /*
+             * Set the Units of Measure if specified
+             */
+            if (data.UOMs) {
+                
+                /*
+                 * Create a <select> form
+                 */
+                $parent.append('<span class="paddedleft"><select id="'+id+'uom"></select></span>');
+                
+               /*
+                * Store UOM value for parent $parent on change selection within .data() store
+                */
+                $uom = $('#'+id+'uom').change(function(){
+                    $parent.data('uom', $(this).val());
+                    self.setPuts(process, type);
+                });
+                     
+                for (var i = 0, l = data.UOMs.supported.length; i< l; i++) {
+                    (function($uom, v, d) {
+                        
+                        /*
+                         * Add a new option in the select form
+                         */
+                        $uom.append('<option value="'+v+'">'+v+'</option>');
+                        
+                        /*
+                         * The default UOM is selected within the list of possible UOMs
+                         */
+                        if (v === d) {
+                            $('option:last-child', $uom).attr("selected", "selected").change();
+                        }
+                        
+                    })($uom, data.UOMs.supported[i], data.UOMs["default"]);
+                }
+                
+            }
+            
+           /*
+            * Switch between hilite and warning classes depending
+            * if input literealData has a default value or not
+            */
+            if (!data.defaultValue) {
+                $id.removeClass('hilite').addClass('warning');
+            }
+            else {
+                $id.addClass('hilite').removeClass('warning');
+                $parent.data('data', data.defaultValue);
+                self.setPuts(process, type);
+            }
+
+            /*
+             * Ask for value on click
+             */
+            $id.click(function(e) {
+
+                msp.Util.askFor({
+                    title:put.title,
+                    content:msp.Util._("Enter a valid")+' <a href="'+data.reference+'" target="_blank">'+data.dataType+'</a>',
+                    dataType:data.dataType,
+                    /* TODO */
+                    bounds:data.bounds,
+                    size:5,
+                    value:$id.text(),
+                    callback:function(v){
+                    
+                        /*
+                         * Value is set
+                         */
+                         if (v) {
+
+                            /*
+                             * Update link content text with
+                             * the new set value
+                             */
+                             $id.html(v).addClass('hilite').removeClass('warning');
+
+                             /*
+                              * Store new value and update process accordingly
+                              */
+                             $parent.data('data', v);
+                             self.setPuts(process, type);
+                         }
+                    }
+                });
+                
+                return false;
+            });
+            
+        };
+        
+        
+        /**
+         * Append form for LiteralOutput within $parent container 
+         * 
+         *   Structure of LiteralOuput
          * 
          *      {
          *          anyValue: // ???
@@ -377,44 +598,48 @@
          *   (for example UOM if specified)
          *   
          *   @param {Object} process : msp.WPS.Process
-         *   @param {Object} input : Input object containing LiteralData
+         *   @param {Object} put : Input or Output object containing LiteralData
          *   @param {Object} $parent
          *      
          */
-        this.displayLiteralData = function(process, input, $parent) {
+        this.displayLiteralOutput = function(process, put, $parent) {
             
-            var literalData = input.literalData, id = msp.Util.getId(), $id, $uom, self = this;
+            var type = 'output', data = put.literalOutput, id = $parent.attr('id'), $uom, self = this;
             
             /*
              * Store Input type within $parent.data()
              */
-            $parent.data('type', 'LiteralData');
+            $parent.data('type', 'LiteralOutput');
             
             /*
             * Set content i.e. add a 'Set value' action
             */
-            $parent.append('<span id="'+id+'" class="hover" title="'+msp.Util._("Change value")+'">'+(literalData.defaultValue || msp.Util._("Not set"))+'</span>');
-            $id = $('#'+id);
+            $parent.append('<span id="'+id+'v" class="bold">---</span>');
+            
+            /*
+             * Add output to process
+             */
+            self.setPuts(process, type);
             
             /*
              * Set the Units of Measure if specified
              */
-            if (literalData.UOMs) {
+            if (data.UOMs) {
                 
                 /*
                  * Create a <select> form
                  */
-                $parent.append('<span class="paddedleft"><select id="'+id+'uom"></select></span>');
+                $parent.append('<span class="paddedleft"><select id="'+id+'vuom"></select></span>');
                 
                /*
                 * Store UOM value for parent $parent on change selection within .data() store
                 */
-                $uom = $('#'+id+'uom').change(function(){
+                $uom = $('#'+id+'vuom').change(function(){
                     $parent.data('uom', $(this).val());
-                    self.setInputs(process);
+                    self.setPuts(process, type);
                 });
                      
-                for (var i = 0, l = literalData.UOMs.supported.length; i< l; i++) {
+                for (var i = 0, l = data.UOMs.supported.length; i< l; i++) {
                     (function($uom, v, d) {
                         
                         /*
@@ -429,62 +654,22 @@
                             $('option:last-child', $uom).attr("selected", "selected").change();
                         }
                         
-                    })($uom, literalData.UOMs.supported[i], literalData.UOMs["default"]);
+                    })($uom, data.UOMs.supported[i], data.UOMs["default"]);
                 }
                 
             }
-            
-           /*
-            * Switch between hilite and warning classes depending
-            * if input literealData has a default value or not
-            */
-            if (!literalData.defaultValue) {
-                $id.removeClass('hilite').addClass('warning');
-            }
-            else {
-                $id.addClass('hilite').removeClass('warning');
-                $parent.data('data', literalData.defaultValue);
-                self.setInputs(process);
-            }
 
-            /*
-             * Ask for value on click
-             */
-            $id.click(function(e) {
-
-                msp.Util.askFor({
-                    title:input.title,
-                    content:msp.Util._("Enter a valid")+' <a href="'+literalData.reference+'" target="_blank">'+literalData.dataType+'</a>',
-                    dataType:literalData.dataType,
-                    /* TODO */
-                    bounds:literalData.bounds,
-                    size:5,
-                    value:$id.text(),
-                    callback:function(v){
-                    
-                        /*
-                         * Value is set
-                         */
-                         if (v) {
-
-                            /*
-                             * Update link content text with
-                             * the new set value
-                             */
-                             $id.html(v).addClass('hilite').removeClass('warning');
-
-                             /*
-                              * Store new value and update process accordingly
-                              */
-                             $parent.data('data', v);
-                             self.setInputs(process);
-                         }
-                    }
-                });
-                
-                return false;
-            });
-            
+        };
+        
+        /**
+         * Update inputs or outputs list for process
+         * 
+         * @param {Object} process
+         * @param {String} type : 'input' or 'output'
+         *
+         */
+        this.setPuts = function(process, type) {
+            type === 'input' ? this.setInputs(process) : this.setOutputs(process);
         };
         
         /**
@@ -496,7 +681,7 @@
         this.setInputs = function(process) {
             
             /*
-             * Clear process inputs list
+             * Clear process list
              */
             process.clearInputs();
             
@@ -507,6 +692,31 @@
              */
             $('.input', this.items[process.wps.url].$d).each(function(){
                 process.addInput($(this).data());
+            });
+            
+            
+        };
+        
+        /**
+         * Update outputs list for process
+         * 
+         * @param {Object} process
+         *
+         */
+        this.setOutputs = function(process) {
+            
+            /*
+             * Clear process list
+             */
+            process.clearOutputs();
+            
+            /*
+             * Populate process outputs list with
+             * the .data() content of each process Input
+             * identified by 'input' CSS class
+             */
+            $('.output', this.items[process.wps.url].$d).each(function(){
+                process.addOutput($(this).data());
             });
             
         };

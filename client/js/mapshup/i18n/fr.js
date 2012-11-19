@@ -125,6 +125,7 @@
     i["No description available"]="Pas de description disponible";
     i["No information available here"]="Pas d'information disponible à cet endroit";
     i["No layers available"]="Pas de couches disponibles";
+    i["No process selected"]="Pas de traitement sélectionné";
     i["No result"]="Aucun résultat";
     i["No Streetview data around this point"]="Streetview n'est pas disponible autour de ce point";
     i["Normal/Fullscreen"]="Normal/Plein écran";

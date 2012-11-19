@@ -1065,7 +1065,7 @@ a.tab img {
     background: #5C6166;
     font-family:Arial, sans-serif;
     display: block;
-    padding: 6px;
+    padding: 8px;
     position: relative;
     text-align: center;
     text-decoration: none;
@@ -1691,7 +1691,6 @@ td.clear {
 }
 .wpsclient a {
     color:#fff;
-    padding:0px;
 }
 .wpsclient h1 {
     color:#fff;
@@ -1705,29 +1704,41 @@ td.clear {
     padding:10px;
     height:100px;
     width:auto;
-    line-height:25px;
+    line-height:35px;
     overflow:auto;
-}
-.wpsclient .processes a {
-    padding:3px;
 }
 .wpsclient .processes a.active {
     background-color:#f00;
 }
 .wpsclient .describe {
     background:#eee;
-    padding:5px;
+    padding:5px 100px 5px 5px;
     margin-bottom:10px;
 }
 .wpsclient .describe h1 {
     color:#f00;
 }
+.wpsclient .describe .execute {
+    position:absolute;
+    padding:10px;
+    top:25px;
+    right:30px;
+} 
 .wpsclient .list {
     padding:5px 5px 5px 15px;
     height:100px;
-    line-height:25px;
+    line-height:35px;
     overflow:auto;
 }
+.wpsclient .inputs {
+    float:left;
+    width:50%;
+}
+.wpsclient .outputs {
+    float:right;
+    width:50%;
+}
+
 .wpsclient .hilite {
     background-color:olivedrab;
     padding:4px;
