@@ -1160,6 +1160,9 @@ a.tab img {
 .small {
    font-size:0.8em;
 }
+.smaller {
+   font-size:0.5em;
+}
 
 .padded {
     padding:10px;
@@ -1197,6 +1200,22 @@ a.tab img {
     padding:5px;
 }
 
+/*
+ * A drag&drop zone - see msp.DDZone
+ */
+.ddzone {
+    border: 2px dashed #BBBBBB;
+    border-radius: 5px 5px 5px 5px;
+    color: #BBBBBB;
+    font: 20pt bold,"Vollkorn";
+    padding: 25px;
+    text-align: center;
+}
+.ddhover {
+    background-color:pink;
+    color:#FFF;
+    border: 2px dashed #FFF;
+}
 /************************************
  *
  * OpenLayers classes redefinition
@@ -1722,7 +1741,7 @@ td.clear {
     position:absolute;
     padding:10px;
     top:25px;
-    right:30px;
+    right:20px;
 } 
 .wpsclient .list {
     padding:5px 5px 5px 15px;
