@@ -569,6 +569,13 @@
                 self.events.trigger('resizeend');
             }, 1000);
             
+            /**
+             * Prevent Drag&drop over everything
+             */
+            $(window).bind('drop dragover',function(e){
+                e.preventDefault();
+                return false;
+            });
             
         },
         
