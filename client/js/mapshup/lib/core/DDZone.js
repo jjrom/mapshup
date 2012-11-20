@@ -54,6 +54,11 @@
         this.file = null;
         
         /**
+         * Dropped file url
+         */
+        this.fileUrl = null;
+        
+        /**
          * Drag&Drop zone width
          */
         this.width = 'auto';
@@ -100,12 +105,12 @@
              * Create a Drag&Drop zone under parent
              */
             this.$d = msp.Util.$$('#'+msp.Util.getId(), options.parent)
-                .addClass('ddzone')
-                .css({
-                    'min-height':'50px',
-                    width:options.width || this.width,
-                    height:options.height || this.height
-                });
+            .addClass('ddzone')
+            .css({
+                'min-height':'50px',
+                width:options.width || this.width,
+                height:options.height || this.height
+            });
             
             /*
              * Only allow to drag files with a supported format and a 
@@ -119,6 +124,7 @@
              * Set file reference if one is already specified
              */
             this.file = options.file;
+            this.fileUrl = options.fileUrl;
             
             /*
              * Callback functions
@@ -157,23 +163,29 @@
 
                     self.$d.removeClass('ddhover');
 
-                   /*
+                    /*
                     * Stop events
                     */
                     e.preventDefault();
                     e.stopPropagation();
 
-                   /*
+                    /*
                     * HTML5 : get dataTransfer object
                     */
-                    var files = e.originalEvent.dataTransfer.files;
+                    var url, files = e.originalEvent.dataTransfer.files;
 
                     /*
                     * If there is no file, we assume that user dropped
                     * something else...a url for example !
                     */
-                    if (files.length === 0) {
-                        self.guess(e.originalEvent.dataTransfer.getData('Text'));
+                    if (files.length === 0 && self.allowUrl) {
+                        url = e.originalEvent.dataTransfer.getData('Text');
+                        if (msp.Util.isUrl(url)) {
+                            self.fileUrl = url;
+                            self.success({
+                                fileUrl:self.fileUrl
+                                });
+                        }
                     }
                     else if (files.length > 1) {
                         msp.Util.message(msp.Util._("Error : drop only one file at a time"));
@@ -189,9 +201,16 @@
                     */
                     else {
                         self.file = files[0];
-                        self.setContent();
-                        self.success(self.file);
+                        self.success({
+                            file:self.file
+                            });
                     }
+                    
+                    /*
+                     * Refresh popup content
+                     */
+                    self.setContent();
+                    
                 });
             
         };
@@ -211,12 +230,16 @@
             var i, l = this.supportedFormats.length;
             
             /*
-             * If file had been dropped - show file info
+             * If file or url had been dropped - show file info
              */
             if (this.file) {
-                this.$d.html(escape(this.file.name)+'<br/><p class="smaller">'+msp.Util._("Size")+': '+this.getSize()+'MB</p>');
+                this.$d.html(this.file.name+'<br/><p class="smaller">'+msp.Util._("Size")+': '+this.getSize()+'MB</p>');
+            }
+            else if (this.fileUrl){
+                this.$d.html(this.fileUrl);
             }
             else {
+                
                 /*
                  * A simple title by default...
                  */
