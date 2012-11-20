@@ -110,8 +110,8 @@
              * getcapabilities has been already called
              *  => no need to call it again !
              */
-            if (self.title) {
-                self.events.trigger("getcapabilities");
+            if (this.title) {
+                this.events.trigger("getcapabilities", this);
             }
             /*
              * Call GetCapabilities through ajax
@@ -158,7 +158,7 @@
          */
         this.describeProcess = function(identifiers) {
            
-            var url, self = this;
+            var url, process, self = this;
             
             /*
              * Convert input to array if needed
@@ -167,6 +167,18 @@
                 identifiers = [identifiers];
             }
             
+            /*
+             * If descriveProcess has been already called before,
+             * refresh it but do not call service again
+             */
+            if (identifiers.length === 1) {
+                process = this.getProcess(identifiers[0]);
+                if (process && process.dataInputsDescription) {
+                    process.clear();
+                    self.events.trigger("describeprocess", [process]);
+                    return true;
+                }
+            }
             /*
              * Call DescribeProcess through ajax
              */
@@ -201,6 +213,7 @@
                 cancel:true
             });
            
+           return true;
             
         };
         
@@ -880,9 +893,9 @@
         this["abstract"] = null;
         
         /**
-         * InputsData description read from describeDescription
+         * DataInputs description read from describeDescription
          */
-        this.inputsDataDescription = null;
+        this.dataInputsDescription = null;
         
         /**
          * OutputsProcess description read from describeDescription
