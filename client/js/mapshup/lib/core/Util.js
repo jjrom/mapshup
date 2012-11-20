@@ -704,6 +704,7 @@
             options = options || {};
             
             var id,
+            data,
             self = this,
             input = [],
             /* Create popup */
@@ -758,19 +759,13 @@
             /*
              * dataType='complexData' special case
              * 
-             * Mandatory options are 
+             * Dedicated options are 
              *      
-             *      defaultFormat:
-             *      supportedFormat:
-             *      maximumMegaBytes:
-             *      
-             * Structure of defaultFormat is
-             *      {
-             *          mimeType://
-             *          encoding://
-             *          schema://
-             *      }
-             * 
+             *      supportedFormat:  // optional
+             *      maximumMegaBytes: // optional
+             *      file: // File object - optional 
+             *      fileUrl: // Url to file - optional 
+             *     
              * Structure of supportedFormat is
              * 
              *      [
@@ -782,17 +777,49 @@
              *          ...
              *      ]
              * 
+             * A Drag&Drop zone is set with an hidden OK button
+             * When user Drop a valid file, the OK button is shown
+             * 
              * 
              */
             else if (options.dataType === "complexData") {
+                
+                /*
+                 * Set validate button
+                 */
+                id = this.getId();
+                
+                /*
+                 * Set drop zone
+                 */
                 new msp.DDZone({
                     parent:popup.$b,
                     maximumMegaBytes:options.maximumMegaBytes,
                     supportedFormats:options.supportedFormats,
-                    success:function(data) {
+                    file:options.file,
+                    fileUrl:options.fileUrl,
+                    success:function(_data) {
                         popup.center();
+                        data = _data;
+                        $('#'+id).show();
                     }
                 });
+                
+                popup.$b.append('<p class="big center padded"><br/><a href="#" class="button inline validate" id="'+id+'">'+msp.Util._("Set")+'</a></p>');
+                $('#'+id).click(function(){
+                    if ($.isFunction(options.callback)) {
+                        options.callback(data);
+                    }
+                    popup.remove(); 
+                });
+                
+                /*
+                 * Hide "set" button
+                 */
+                if(!options.file && !options.fileUrl) {
+                    $('#'+id).hide();
+                }
+                
             }
             else {
                 
