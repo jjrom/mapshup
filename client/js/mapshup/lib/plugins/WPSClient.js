@@ -745,7 +745,7 @@
          */
         this.displayComplexData = function(process, put, $parent) {
             
-            var type = 'input', data = put.complexData, id = msp.Util.getId(), $id, self = this;
+            var type = 'input', data = put.complexData, id = msp.Util.getId(), idgeo = msp.Util.getId(), self = this;
             
             /*
              * Store Input type within $parent.data()
@@ -753,15 +753,17 @@
             $parent.data('type', 'ComplexData');
             
             /*
-            * Set content i.e. add a 'Set value' action
+            * Set content i.e. add an 'Upload' action
             */
-            $parent.append('<span id="'+id+'" class="hover" title="'+msp.Util._("Change value")+'">'+msp.Util._("Not set")+'</span>');
-            $id = $('#'+id).removeClass('hilite').addClass('warning');
+            $parent.append('<span id="'+id+'" class="hover" title="'+msp.Util._("Upload")+'">'+msp.Util._("Upload")+'</span>');
             
             /*
              * Ask for value on click
              */
-            $id.click(function(e) {
+            $('#'+id)
+            .removeClass('hilite')
+            .addClass('warning')
+            .click(function(e) {
 
                 msp.Util.askFor({
                     title:put.title + ": " + put["abstract"],
@@ -781,8 +783,9 @@
                             /*
                              * Update link content 
                              */
-                            $id.html(msp.Util.shorten(data.file ? data.file.name : data.fileUrl, 20, true)).addClass('hilite').removeClass('warning');
-
+                            $('#'+id).html(msp.Util.shorten(data.file ? data.file.name : data.fileUrl, 10, true)).addClass('hilite').removeClass('warning');
+                            $('#'+idgeo).html(msp.Util._("Map")).removeClass('hilite').addClass('warning');
+                            
                             /*
                              * Store file or fileUrl within parent data cache
                              */
@@ -797,6 +800,71 @@
                 
                 return false;
             });
+            
+            /*
+             * Special case of Geometries 
+             * 
+             * If the mimeType of the ComplexData is one of the geographical
+             * mimeTypes, then use can also choose one feature within the map :)
+             * 
+             */
+            if (data["default"] && msp.Util.isGeoMimeType(data["default"].mimeType)) {
+                 
+                $parent.append(' or <span id="'+idgeo+'" class="hover" title="'+msp.Util._("Select feature on Map")+'">'+msp.Util._("Map")+'</span>');
+                
+                /*
+                 * Select geometry within the map
+                 */
+                $('#'+idgeo)
+                .removeClass('hilite')
+                .addClass('warning')
+                .click(function(e) {
+                    
+                    /*
+                     * Set a callback function on FeatureInfo
+                     */
+                    msp.Map.featureInfo.bypassCallback = function(feature) {
+                        
+                        /*
+                         * Hide popup
+                         */
+                        self._sgp.remove();
+                        
+                        /*
+                         * Update "Select on map" action display and store feature in the .data() cache
+                         */
+                        if (feature) {
+                            $('#'+id).html(msp.Util._("Upload")).removeClass('hilite').addClass('warning');
+                            $('#'+idgeo).html(msp.Util.shorten(msp.Map.Util.Feature.getTitle(feature), 10, true)).addClass('hilite').removeClass('warning');
+                            // TODO : store GML feature
+                        }
+                    };
+                    
+                    if (!self._sgp) {
+                        self._sgp = new msp.Popup({
+                            modal:false,
+                            noHeader:true,
+                            autoSize:true,
+                            body:'<div class="marged">'+msp.Util._("Select a feature on map")+'</div>',
+                            onClose: function() {
+                                msp.Map.featureInfo.bypassCallback = null;
+                                self._sgp = null;
+                            }
+                        });
+                    }
+                    
+                    /*
+                     * Display popup
+                     */
+                    self._sgp.show();
+                    self._sgp.moveTo({
+                        x:msp.$map.width() - self._sgp.$d.width() - 100,
+                        y:40
+                    });
+                    
+                    return false;
+                });
+            }
             
         };
         
