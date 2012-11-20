@@ -722,25 +722,29 @@
                     defaultFormat:data["default"],
                     maximumMegabytes:data.maximumMegabytes,
                     supportedFormats:data.supported,
-                    callback:function(v){
-                    
+                    file:$parent.data('file'),
+                    fileUrl:$parent.data('fileUrl'),
+                    callback:function(data){
+                       
                         /*
-                         * Value is set
+                         * Data can be either a File object or an url
                          */
-                         if (v) {
+                        if (data.file || data.fileUrl) {
+                            
+                            /*
+                             * Update link content 
+                             */
+                            $id.html(msp.Util.shorten(data.file ? data.file.name : data.fileUrl, 20, true)).addClass('hilite').removeClass('warning');
 
                             /*
-                             * Update link content text with
-                             * the new set value
+                             * Store file or fileUrl within parent data cache
                              */
-                             $id.html(v).addClass('hilite').removeClass('warning');
+                             data.file ? $parent.removeData('fileUrl').data('file', data.file) : $parent.removeData('file').data('fileUrl', data.fileUrl);
 
-                             /*
-                              * Store new value and update process accordingly
-                              */
-                             $parent.data('data', v);
                              self.setPuts(process, type);
-                         }
+
+                        }
+                        
                     }
                 });
                 
@@ -781,7 +785,6 @@
             $('.input', this.items[process.wps.url].$d).each(function(){
                 process.addInput($(this).data());
             });
-            
             
         };
         
