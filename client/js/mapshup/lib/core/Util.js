@@ -1306,36 +1306,6 @@
         },
         
         /**
-         * Return true if input mimeType is a geo mimeType
-         */
-        isGeoMimeType: function(mimeType) {
-           
-            if (!mimeType) {
-                return false
-            }
-           
-            /*
-            * List of geometrical mimeTypes
-            */
-            var geoMimeTypes = [
-            "text/xml; subtype=gml/3.1.1",    
-            "application/gml+xml",
-            "text/gml",
-            "application/geo+json", // TBD
-            "application/wkt"
-            ];
-        
-            for (var i = geoMimeTypes.length;i--;) {
-                if (geoMimeTypes[i] === mimeType) {
-                    return true;
-                }
-            }
-            
-            return false;
-          
-        },
-        
-        /**
          * Check if a string is a valid ISO8601 date or interval
          * i.e. YYYY-MM-DDTHH:mm:ss or YYYY-MM-DDTHH:mm:ss/YYYY-MM-DDTHH:mm:ss
          */
