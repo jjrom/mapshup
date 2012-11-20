@@ -639,6 +639,37 @@
                         }
                     });
                 }
+                /*
+                 * AllowedValues case
+                 * 
+                 *      <AllowedValues>
+                 *          <Value>blabalbl</Value>
+                 *          <Value>bliblibli</Value>
+                 *          <Range>
+                 *              <MinimumValue></MinimumValue>
+                 *              <MaximumValue></MaximumValue>
+                 *          </Range>
+                 *      </AllowedValues>
+                 *      
+                 *      // TODO range
+                 * 
+                 */
+                else if (nn === 'allowedValues') {
+                    
+                    p['allowedValues'] = [];
+                    
+                    $(this).children().filter(function() {
+                        
+                        nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+
+                        if (nn === 'value') {
+                            p['allowedValues'].push({value:$(this).text()});
+                        }
+                        else if (nn === 'range') {
+                            // TODO
+                        }
+                    });
+                }
                 else {
                     p[nn] = $(this).text();
                 }
