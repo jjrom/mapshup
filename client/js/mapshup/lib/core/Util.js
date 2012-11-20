@@ -1318,9 +1318,11 @@
             * List of geometrical mimeTypes
             */
             var geoMimeTypes = [
+            "text/xml; subtype=gml/3.1.1",    
             "application/gml+xml",
             "text/gml",
-            "application/geo+json" // TBD
+            "application/geo+json", // TBD
+            "application/wkt"
             ];
         
             for (var i = geoMimeTypes.length;i--;) {
