@@ -49,6 +49,11 @@
         this.$d = [];
         
         /**
+         * Dropped file reference
+         */
+        this.file = null;
+        
+        /**
          * Drag&Drop zone width
          */
         this.width = 'auto';
@@ -111,6 +116,11 @@
             this.title = options.title || "Drop file here";
             
             /*
+             * Set file reference if one is already specified
+             */
+            this.file = options.file;
+            
+            /*
              * Callback functions
              */
             if ($.isFunction(options.success)) {
@@ -156,7 +166,7 @@
                    /*
                     * HTML5 : get dataTransfer object
                     */
-                    var file, files = e.originalEvent.dataTransfer.files;
+                    var files = e.originalEvent.dataTransfer.files;
 
                     /*
                     * If there is no file, we assume that user dropped
@@ -169,20 +179,28 @@
                         msp.Util.message(msp.Util._("Error : drop only one file at a time"));
                     }
                     else if (!self.isFormatSupported(files[0].type)) {
-                        msp.Util.message(msp.Util._("Error : file format is not supported"));
+                        msp.Util.message(msp.Util._("Error : mimeType is not supported")+ ' ['+files[0].type+']');
                     }
-                    else if (files[0].size/1024/1024 > self.maximumMegabytes) {
+                    else if (files[0].size/1048576 > self.maximumMegabytes) {
                         msp.Util.message(msp.Util._("Error : file is to big"));
                     }
                     /*
                     * User dropped a valid file
                     */
                     else {
-                        self.$d.html(msp.Util._("Dropped") + " " + escape(files[0].name));
-                        self.success(files[0]);
+                        self.file = files[0];
+                        self.setContent();
+                        self.success(self.file);
                     }
                 });
             
+        };
+        
+        /**
+         * Get file size in Megabytes
+         */
+        this.getSize = function() {
+            return this.file ? this.file.size/1048576 : 0; 
         };
         
         /**
@@ -193,17 +211,25 @@
             var i, l = this.supportedFormats.length;
             
             /*
-             * A simple title by default...
+             * If file had been dropped - show file info
              */
-            this.$d.html(this.title);
-            
-            /*
-             * ...followed by all droppable supported formats
-             */
-            if (l > 0) {
-                this.$d.append('<br/><p class="smaller">'+msp.Util._("Supported mimeTypes")+'</p>');
-                for (i = 0; i < l; i++) {
-                    this.$d.append('<p class="smaller">'+this.supportedFormats[i].mimeType+'</p>');
+            if (this.file) {
+                this.$d.html(escape(this.file.name)+'<br/><p class="smaller">'+msp.Util._("Size")+': '+this.getSize()+'MB</p>');
+            }
+            else {
+                /*
+                 * A simple title by default...
+                 */
+                this.$d.html(this.title);
+
+                /*
+                 * ...followed by all droppable supported formats
+                 */
+                if (l > 0) {
+                    this.$d.append('<br/><p class="smaller">'+msp.Util._("Supported mimeTypes")+'</p>');
+                    for (i = 0; i < l; i++) {
+                        this.$d.append('<p class="smaller">'+this.supportedFormats[i].mimeType+'</p>');
+                    }
                 }
             }
             
