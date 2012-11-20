@@ -1018,7 +1018,8 @@
             var i, l, data, template, formatStr, put, outputs = "", inputs = "", self = this;
             
             data = msp.Util.parseTemplate(msp.WPS.executeRequestTemplate,{
-                identifier:this.identifier, 
+                identifier:this.identifier,
+                storeExecute:"false",
                 status:this.async
             });
             
@@ -1040,27 +1041,41 @@
                         uom:put.uom || ""
                     });
                 }
-                /*
-                else if (input.CLASS_NAME.search("Complex")>-1) {
-                    if (input.asReference) {
-                        tmpl = OpenLayers.WPS.complexInputReferenceTemplate.replace("$REFERENCE$",escape(input.getValue()));
+                else if (put.type === "ComplexData") {
+                    
+                    /*
+                     * Pass data by reference
+                     */
+                    if (put.fileUrl) {
+                        template = msp.Util.parseTemplate(msp.WPS.complexDataInputReferenceTemplate,{
+                            identifier:put.identifier,
+                            reference:put.fileUrl
+                        });
                     }
+                    /*
+                     * Pass data within XML file
+                     */
                     else {
-                        tmpl = OpenLayers.WPS.complexInputDataTemplate.replace("$DATA$",input.getValue());
+                        template = msp.Util.parseTemplate(msp.WPS.complexDataInputTemplate,{
+                            identifier:put.identifier,
+                            data:put.data
+                        });
                     }
-                    if (format) {
-                        if (format.mimeType) {
-                            formatStr += " mimeType=\""+format.mimeType+"\"";
+                    if (put.format) {
+                        if (put.format.mimeType) {
+                            formatStr += " mimeType=\""+put.format.mimeType+"\"";
                         }
-                        if (format.schema) {
-                            formatStr += " schema=\""+format.schema+"\"";
+                        if (put.format.schema) {
+                            formatStr += " schema=\""+put.format.schema+"\"";
                         }
-                        if (format.encoding) {
-                            formatStr += " encoding=\""+format.encoding+"\"";
+                        if (put.format.encoding) {
+                            formatStr += " encoding=\""+put.format.encoding+"\"";
                         }
                     }
-                    tmpl = tmpl.replace("$FORMAT$",formatStr);
-                }       
+                    template = template.replace("{format}",formatStr);
+                    
+                }
+                /*       
                 else if (input.CLASS_NAME.search("BoundingBox") > -1) {
                     tmpl = OpenLayers.WPS.boundingBoxInputTemplate.replace("$DIMENSIONS$",input.dimensions);
                     tmpl = tmpl.replace("$CRS$",input.crs);
@@ -1089,42 +1104,23 @@
                         identifier:put.identifier
                     });
                 }
+                else if (put.type === "ComplexOutput") {
+                    if (put.mimeType) {
+                            formatStr += " mimeType=\""+put.mimeType+"\"";
+                    }
+                    template = msp.Util.parseTemplate(msp.WPS.complexOutputTemplate,{
+                        identifier:put.identifier,
+                        asReference:"false",
+                        format:formatStr
+                    });
+                }
+                else if (put.type === "BoundingBoxOutput") {
+                    template = msp.Util.parseTemplate(msp.WPS.boundingBoxOutputTemplate,{
+                        identifier:put.identifier
+                    });
+                }
                 outputs += template;
             }
-            
-            // outputs
-            /*
-            var outputs = "";
-            for (var i = 0; i < process.outputs.length; i++) {
-                var output = process.outputs[i];
-                var tmpl = "";
-                if (output.CLASS_NAME.search("Complex")>-1) {
-                    tmpl = OpenLayers.WPS.complexOutputTemplate.replace("$AS_REFERENCE$",output.asReference);
-                    var format = (output.format ? output.format : output.formats[0]);
-                    var formatStr ="";
-                    if (format) {
-                        if (format.mimeType) {
-                            formatStr += " mimeType=\""+format.mimeType+"\"";
-                        }
-                        if (format.schema) {
-                            formatStr += " schema=\""+format.schema+"\"";
-                        }
-                        if (format.encoding) {
-                            formatStr += " encoding=\""+format.encoding+"\"";
-                        }
-                    }
-                    tmpl = tmpl.replace("$FORMAT$",formatStr);
-                }
-                else if (output.CLASS_NAME.search("Literal") > -1) {
-                    tmpl = OpenLayers.WPS.literalOutputTemplate;
-                }
-                else if (output.CLASS_NAME.search("BoundingBox") > -1) {
-                    tmpl = OpenLayers.WPS.boundingBoxOutputTemplate;
-                }
-                tmpl = tmpl.replace("$IDENTIFIER$",output.identifier); 
-                outputs += tmpl;
-            }
-            */
             
             /*
              * Set Inputs and Outputs
@@ -1415,7 +1411,7 @@
                 '<wps:DataInputs>{dataInputs}</wps:DataInputs>'+
                 '<wps:ResponseForm>'+
                     '<wps:ResponseDocument wps:lineage="false" '+
-                        'storeExecuteResponse="true" '+
+                        'storeExecuteResponse="{storeExecute}" '+
                          'status="{status}">{dataOutputs}</wps:ResponseDocument>'+
                 '</wps:ResponseForm>'+
             '</wps:Execute>';
@@ -1461,7 +1457,7 @@
      *      {data} : ???
      *      
      */
-    msp.WPS.complexDataInputDataTemplate = '<wps:Input>'+
+    msp.WPS.complexDataInputTemplate = '<wps:Input>'+
             '<ows:Identifier>{identifier}</ows:Identifier>'+
             '<wps:Data>'+
                 '<wps:ComplexData {format}>{data}</wps:ComplexData>'+

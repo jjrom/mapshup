@@ -491,7 +491,7 @@
                 $parent.append('<span class="paddedleft"><select id="'+id+'av"></select></span>');
                 
                 /*
-                * Store UOM value for parent $parent on change selection within .data() store
+                * Store allowedValues value for parent $parent on change selection within .data() store
                 */
                 $av = $('#'+id+'av').change(function(){
                     $parent.data('data', $(this).val());
@@ -584,7 +584,7 @@
                 $id.click(function(e) {
 
                     msp.Util.askFor({
-                        title:put.title + ": " + put["abstract"],
+                        title:put.title,
                         content:msp.Util._("Enter a valid")+' <a href="'+data.reference+'" target="_blank">'+data.dataType+'</a>',
                         dataType:data.dataType,
                         /* TODO */
@@ -766,7 +766,7 @@
             .click(function(e) {
 
                 msp.Util.askFor({
-                    title:put.title + ": " + put["abstract"],
+                    title:put.title,
                     dataType:"complexData",
                     defaultFormat:data["default"],
                     maximumMegabytes:data.maximumMegabytes,
@@ -790,8 +790,10 @@
                              * Store file or fileUrl within parent data cache
                              */
                             data.file ? $parent.removeData('fileUrl').data('file', data.file) : $parent.removeData('file').data('fileUrl', data.fileUrl);
-
+                            
                             self.setPuts(process, type);
+                            
+                            console.log("TODO : format ?");
 
                         }
                         
@@ -808,7 +810,7 @@
              * mimeTypes, then use can also choose one feature within the map :)
              * 
              */
-            if (data["default"] && msp.Util.isGeoMimeType(data["default"].mimeType)) {
+            if (data["default"] && msp.Map.Util.getGeoType(data["default"].mimeType)) {
                  
                 $parent.append(' or <span id="'+idgeo+'" class="hover" title="'+msp.Util._("Select feature on Map")+'">'+msp.Util._("Map")+'</span>');
                 
@@ -834,9 +836,20 @@
                          * Update "Select on map" action display and store feature in the .data() cache
                          */
                         if (feature) {
+                            
                             $('#'+id).html(msp.Util._("Upload")).removeClass('hilite').addClass('warning');
                             $('#'+idgeo).html(msp.Util.shorten(msp.Map.Util.Feature.getTitle(feature), 10, true)).addClass('hilite').removeClass('warning');
-                            // TODO : store GML feature
+                            
+                            /*
+                             * Store file or fileUrl within parent data cache
+                             */
+                            $parent
+                            .removeData('fileUrl')
+                            .data('data', msp.Map.Util.Feature.toGeoMimeType(feature, data["default"].mimeType))
+                            .data('format', data["default"]);
+                            
+                            self.setPuts(process, type);
+                            
                         }
                     };
                     
@@ -973,7 +986,7 @@
             $('.input', this.items[process.wps.url].$d).each(function(){
                 process.addInput($(this).data());
             });
-            
+           
         };
         
         /**
