@@ -69,6 +69,15 @@
         };
         
         /**
+         * Bypass normal select feature
+         * 
+         * WARNING : this value SHOULD not be modified
+         * It is used by the WPS plugin to bypass the 
+         * normal feature selection execution
+         */
+        this.bypassCallback = null;
+        
+        /**
          * Initialization
          */
         this.init = function(options) {
@@ -582,6 +591,14 @@
                     }
                 }
                 return c.select(feature);
+            }
+            
+            /*
+             * Experimental : bypass mechanism (used by Plugins/WPSClient)
+             */
+            if ($.isFunction(self.bypassCallback)) {
+                self.bypassCallback(feature);
+                return false;
             }
             
             /*
