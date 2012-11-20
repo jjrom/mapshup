@@ -112,7 +112,7 @@
                  */
                 wps = new msp.WPS(url);
                 
-               /*
+                /*
                 * Register GetCapabilites event
                 */
                 wps.events.register("getcapabilities", this, function(scope, wps) {
@@ -155,7 +155,7 @@
                     
                 });
                 
-               /*
+                /*
                 * Register DescribeProcess event
                 */
                 wps.events.register("describeprocess", this, function(scope, processes) {
@@ -164,7 +164,7 @@
                     }
                 });
             
-               /*
+                /*
                 * Register Execute event
                 */
                 wps.events.register("execute", this, function(scope, process) {
@@ -250,7 +250,7 @@
                         item.wps.describeProcess(process.identifier);
                         return false;
                     });
-                    msp.tooltip.add($id, 'w');
+                    msp.tooltip.add($id, 's');
                 })(process,$('#'+id), item);
             }
             
@@ -355,7 +355,7 @@
                 
                 result = process.result[i];
                 
-               /*
+                /*
                 * Searh within jQuery data('identifier')
                 */
                 $outputsList.each(function(){
@@ -428,12 +428,15 @@
                 else if (put.complexData) {
                     this.displayComplexData(process, put, $id);
                 }
+                else if (put.complexOutput) {
+                    this.displayComplexOutput(process, put, $id);
+                }
                 else if (put.boundingBoxData) {
                     $id.append("// TODO");
                 }
                 
             }
-            
+            console.log(process);
             return;
             
         };
@@ -469,7 +472,7 @@
          */
         this.displayLiteralData = function(process, put, $parent) {
             
-            var type = 'input', data = put.literalData, id = msp.Util.getId(), $id, $uom, self = this;
+            var type = 'input', data = put.literalData, id = msp.Util.getId(), $id, $uom, $av, i, l, self = this;
             
             /*
              * Store Input type within $parent.data()
@@ -477,10 +480,47 @@
             $parent.data('type', 'LiteralData');
             
             /*
-            * Set content i.e. add a 'Set value' action
+            * Set content i.e. add a 'Set value' action except if allowedValues is set.
+            * In this case, set a select box with a finite list of elements
             */
-            $parent.append('<span id="'+id+'" class="hover" title="'+msp.Util._("Change value")+'">'+(data.defaultValue || msp.Util._("Not set"))+'</span>');
-            $id = $('#'+id);
+            if (data.allowedValues) {
+                
+                /*
+                 * Create a <select> form
+                 */
+                $parent.append('<span class="paddedleft"><select id="'+id+'av"></select></span>');
+                
+                /*
+                * Store UOM value for parent $parent on change selection within .data() store
+                */
+                $av = $('#'+id+'av').change(function(){
+                    $parent.data('data', $(this).val());
+                    self.setPuts(process, type);
+                });
+                     
+                for (i = 0, l = data.allowedValues.length; i< l; i++) {
+                    (function($av, v, d) {
+                        
+                        /*
+                         * Add a new option in the select form
+                         */
+                        $av.append('<option value="'+v+'">'+v+'</option>');
+                        
+                        /*
+                         * The default UOM is selected within the list of possible UOMs
+                         */
+                        if (v === d) {
+                            $('option:last-child', $av).attr("selected", "selected").change();
+                        }
+                        
+                    })($av, data.allowedValues[i].value, data.defaultValue);
+                }
+                $av.trigger('change');
+            }
+            else {
+                $parent.append('<span id="'+id+'" class="hover" title="'+msp.Util._("Change value")+'">'+(data.defaultValue || msp.Util._("Not set"))+'</span>');
+                $id = $('#'+id);
+            }
             
             /*
              * Set the Units of Measure if specified
@@ -492,7 +532,7 @@
                  */
                 $parent.append('<span class="paddedleft"><select id="'+id+'uom"></select></span>');
                 
-               /*
+                /*
                 * Store UOM value for parent $parent on change selection within .data() store
                 */
                 $uom = $('#'+id+'uom').change(function(){
@@ -500,7 +540,7 @@
                     self.setPuts(process, type);
                 });
                      
-                for (var i = 0, l = data.UOMs.supported.length; i< l; i++) {
+                for (i = 0, l = data.UOMs.supported.length; i< l; i++) {
                     (function($uom, v, d) {
                         
                         /*
@@ -520,56 +560,63 @@
                 
             }
             
-           /*
-            * Switch between hilite and warning classes depending
-            * if input literealData has a default value or not
-            */
-            if (!data.defaultValue) {
-                $id.removeClass('hilite').addClass('warning');
-            }
-            else {
-                $id.addClass('hilite').removeClass('warning');
-                $parent.data('data', data.defaultValue);
-                self.setPuts(process, type);
-            }
-
             /*
-             * Ask for value on click
+             * This only make sense if $id is set (i.e. if there are no allowedValues select)
              */
-            $id.click(function(e) {
+            if ($id) {
+                
+                /*
+                * Switch between hilite and warning classes depending
+                * if input literealData has a default value or not
+                */
+                if (!data.defaultValue) {
+                    $id.removeClass('hilite').addClass('warning');
+                }
+                else {
+                    $id.addClass('hilite').removeClass('warning');
+                    $parent.data('data', data.defaultValue);
+                    self.setPuts(process, type);
+                }
 
-                msp.Util.askFor({
-                    title:put.title + ": " + put["abstract"],
-                    content:msp.Util._("Enter a valid")+' <a href="'+data.reference+'" target="_blank">'+data.dataType+'</a>',
-                    dataType:data.dataType,
-                    /* TODO */
-                    bounds:data.bounds,
-                    size:5,
-                    value:$id.text(),
-                    callback:function(v){
-                    
-                        /*
-                         * Value is set
-                         */
-                         if (v) {
+                /*
+                 * Ask for value on click
+                 */
+                $id.click(function(e) {
+
+                    msp.Util.askFor({
+                        title:put.title + ": " + put["abstract"],
+                        content:msp.Util._("Enter a valid")+' <a href="'+data.reference+'" target="_blank">'+data.dataType+'</a>',
+                        dataType:data.dataType,
+                        /* TODO */
+                        bounds:data.bounds,
+                        size:5,
+                        value:$id.text(),
+                        callback:function(v){
 
                             /*
-                             * Update link content text with
-                             * the new set value
+                             * Value is set
                              */
-                             $id.html(v).addClass('hilite').removeClass('warning');
+                            if (v) {
 
-                             /*
-                              * Store new value and update process accordingly
-                              */
-                             $parent.data('data', v);
-                             self.setPuts(process, type);
-                         }
-                    }
+                                /*
+                                 * Update link content text with
+                                 * the new set value
+                                 */
+                                $id.html(v).addClass('hilite').removeClass('warning');
+
+                                /*
+                                  * Store new value and update process accordingly
+                                  */
+                                $parent.data('data', v);
+                                self.setPuts(process, type);
+                            }
+                        }
+                    });
+
+                    return false;
                 });
-                
-                return false;
-            });
+            
+            }
             
         };
         
@@ -631,7 +678,7 @@
                  */
                 $parent.append('<span class="paddedleft"><select id="'+id+'vuom"></select></span>');
                 
-               /*
+                /*
                 * Store UOM value for parent $parent on change selection within .data() store
                 */
                 $uom = $('#'+id+'vuom').change(function(){
@@ -705,7 +752,7 @@
              */
             $parent.data('type', 'ComplexData');
             
-           /*
+            /*
             * Set content i.e. add a 'Set value' action
             */
             $parent.append('<span id="'+id+'" class="hover" title="'+msp.Util._("Change value")+'">'+msp.Util._("Not set")+'</span>');
@@ -739,9 +786,9 @@
                             /*
                              * Store file or fileUrl within parent data cache
                              */
-                             data.file ? $parent.removeData('fileUrl').data('file', data.file) : $parent.removeData('file').data('fileUrl', data.fileUrl);
+                            data.file ? $parent.removeData('fileUrl').data('file', data.file) : $parent.removeData('file').data('fileUrl', data.fileUrl);
 
-                             self.setPuts(process, type);
+                            self.setPuts(process, type);
 
                         }
                         
@@ -752,6 +799,79 @@
             });
             
         };
+        
+        /**
+         * Append form for complexOutput within $parent container 
+         * 
+         *   Structure of ComplexOuput
+         * 
+         *      {
+         *          default: // default mimeType
+         *          supported:[] // array of supported mimeType
+         *      }
+         *      
+         *   Append the following structure to $parent
+         *   
+         *      <span id="idv" class="hilite">---</span>
+         *      
+         *   
+         *   IMPORTANT : jQuery .data() is used to store addtionnal information on value
+         *   (for example UOM if specified)
+         *   
+         *   @param {Object} process : msp.WPS.Process
+         *   @param {Object} put : Input or Output object containing ComplexOutput
+         *   @param {Object} $parent
+         *      
+         */
+        this.displayComplexOutput = function(process, put, $parent) {
+            
+            var type = 'output', data = put.complexOutput, id = $parent.attr('id'), self = this;
+            
+            /*
+             * Store Input type within $parent.data()
+             */
+            $parent
+            .append('<span id="'+id+'v" class="bold">---</span>')
+            .data('type', 'ComplexOutput');
+            
+            /*
+             * Add output to process
+             */
+            self.setPuts(process, type);
+            
+            /*
+             * Create a <select> form
+             */
+            $parent.append('<span class="paddedleft"><select id="'+id+'vmtype"></select></span>');
+
+            /*
+            * Store mimeType value for parent $parent on change selection within .data() store
+            */
+            $mtype = $('#'+id+'vmtype').change(function(){
+                $parent.data('mimeType', $(this).val());
+                self.setPuts(process, type);
+            });
+
+            for (var i = 0, l = data.supported.length; i< l; i++) {
+                (function($mtype, v, d) {
+
+                    /*
+                     * Add a new option in the select form
+                     */
+                    $mtype.append('<option value="'+v+'">'+v+'</option>');
+
+                    /*
+                     * The default mimeType is selected within the list of possible mimeTypes
+                     */
+                    if (v === d) {
+                        $('option:last-child', $mtype).attr("selected", "selected").change();
+                    }
+
+                })($mtype, data.supported[i].mimeType, data["default"].mimeType);
+            }
+
+        };
+        
         
         /**
          * Update inputs or outputs list for process

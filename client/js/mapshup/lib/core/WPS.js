@@ -582,8 +582,6 @@
         /**
         * Parse LiteralData (or LiteralOutput) of the DescribeProcess elements
         * 
-        * TODO : anyValue with Range (= allowedValues)
-        * 
         * @param {Object} $obj : jQuery object reference to a LiteralData (or a LiteralOutput) element
         */
         this.parseDescribeLiteralPut = function($obj) {
