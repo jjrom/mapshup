@@ -122,17 +122,20 @@
                      */
                     if (!scope.items[url]) {
                         
+                        var id = msp.Util.getId();
+                        
                         /*
                          * Create a panel for this WPS
                          */
                         var panelItem = msp.sp.add({
-                            id:msp.Util.getId(),
+                            id:id,
                             icon:msp.Util.getImgUrl('configure.png'),
                             title:wps.title,
                             classes:"wpsclient",
+                            mask:true,
                             html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes"></div></div><div style="float:right;width:60%;"><div class="describe">'+msp.Util._("No process selected")+'</div><form method="POST" action="#"><div class="inputs"></div></form><div class="outputs"></div></div>'
                         });
-
+                        
                         /*
                          * Add a wps item to WPSClient
                          * with input url as the hash key
@@ -824,15 +827,17 @@
                 .addClass('warning')
                 .click(function(e) {
                     
+                    var $mask = self.items[process.wps.url].panelItem.$mask;
+                    
                     /*
                      * Set a callback function on FeatureInfo
                      */
                     msp.Map.featureInfo.bypassCallback = function(feature) {
                         
                         /*
-                         * Hide popup
+                         * Hide mask
                          */
-                        self._sgp.remove();
+                        $mask.hide();
                         
                         /*
                          * Update "Select on map" action display and store feature in the .data() cache
@@ -854,26 +859,19 @@
                         }
                     };
                     
-                    if (!self._sgp) {
-                        self._sgp = new msp.Popup({
-                            modal:false,
-                            noHeader:true,
-                            autoSize:true,
-                            body:'<div class="marged">'+msp.Util._("Select a feature on map")+'</div>',
-                            onClose: function() {
-                                msp.Map.featureInfo.bypassCallback = null;
-                                self._sgp = null;
-                            }
-                        });
-                    }
+                    /*
+                     * Show mask
+                     */
+                    $mask
+                    .html('<div class="content">'+msp.Util._("Select a feature on map")+' (<a href="#" class="cancel">'+msp.Util._("Cancel")+'<a/>)</div>')
+                    .show();
                     
                     /*
-                     * Display popup
+                     * Add a cancel action
                      */
-                    self._sgp.show();
-                    self._sgp.moveTo({
-                        x:msp.$map.width() - self._sgp.$d.width() - 100,
-                        y:40
+                    $('.cancel', $mask).click(function(e) {
+                        msp.Map.featureInfo.bypassCallback = null;
+                        $mask.hide();
                     });
                     
                     return false;
