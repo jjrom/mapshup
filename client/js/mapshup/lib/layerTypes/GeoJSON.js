@@ -107,7 +107,7 @@
              */
             if (layerDescription.hasOwnProperty("data")) {
                 if (!self.load(layerDescription.data, layerDescription, newLayer)) {
-                    //msp.Map.removeLayer(newLayer, false);
+                //msp.Map.removeLayer(newLayer, false);
                 }
             }
             /*
@@ -122,24 +122,24 @@
                  */
                 newLayer['_msp'].isLoaded = false;
                 
-                /*
-                 * Add a featuresadded event
-                 */
-                newLayer.events.register("featuresadded", newLayer, function() {
-                    
-                    /*
-                    * Tell mapshup that features were added
-                    */
-                    Map.events.trigger("layersend", {
-                        action:"features",
-                        layer:newLayer
-                    });
-                    
-                });
-                
                 self.refresh(newLayer, urlModifier);
                 
             }
+            
+            /*
+             * Add a featuresadded event
+             */
+            newLayer.events.register("featuresadded", newLayer, function() {
+
+               /*
+                * Tell mapshup that features were added
+                */
+                Map.events.trigger("layersend", {
+                    action:"features",
+                    layer:newLayer
+                });
+
+            });
             
             return newLayer;
 
