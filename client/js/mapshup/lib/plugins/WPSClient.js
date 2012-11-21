@@ -345,7 +345,7 @@
          */
         this.updateOutputContent = function(process) {
             
-            var result, item = this.items[process.wps.url], $outputsList = $('.output', $('.outputs', item.$d));
+            var i, l, geoType, result, item = this.items[process.wps.url], $outputsList = $('.output', $('.outputs', item.$d));
             
             if (!$.isArray(process.result)) {
                 return false;
@@ -354,7 +354,7 @@
             /*
              * Update each Output DOM element that are identified in the process.result array
              */
-            for (var i = 0, l = process.result.length; i < l; i++) {
+            for (i = 0, l = process.result.length; i < l; i++) {
                 
                 result = process.result[i];
                 
@@ -366,6 +366,14 @@
                         $('#'+$(this).attr('id')+'v').html(result.data.value);
                     }
                 });
+                
+                /*
+                 * Add new features within WPSClient layer
+                 */
+                geoType = msp.Map.Util.getGeoType(result.data["mimeType"]);
+                if (geoType === 'GML') {
+                    this.load(msp.Map.Util.GML.toGeoJSON(result.data.value));
+                }
                 
             }
             
@@ -796,7 +804,7 @@
                             
                             self.setPuts(process, type);
                             
-                            console.log("TODO : format ?");
+                            alert("TODO : format ?");
 
                         }
                         
@@ -1021,6 +1029,39 @@
             $('.output', this.items[process.wps.url].$d).each(function(){
                 process.addOutput($(this).data());
             });
+            
+        };
+        
+        /*
+         * Return layer to display Geometries results
+         */
+        this.getLayer = function() {
+            
+            if (this._layer) {
+                return this._layer
+            }
+            
+            this._layer = msp.Map.addLayer({
+                type:"GeoJSON",
+                title:"WPS results",
+                clusterized:false
+            });
+            
+            return this._layer;
+        };
+        
+        /*
+         * Add GeoJSON features within WPS result layer
+         * 
+         * @param {String} data : a GeoJSON string
+         */
+        this.load = function(data) {
+            
+            var geoJSONLayerType = msp.Map.layerTypes["GeoJSON"];
+            
+            if (geoJSONLayerType) {
+                geoJSONLayerType.load(data, null, this.getLayer());
+            }
             
         };
         
