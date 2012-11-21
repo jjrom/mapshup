@@ -1057,10 +1057,19 @@
          */
         this.load = function(data) {
             
-            var geoJSONLayerType = msp.Map.layerTypes["GeoJSON"];
+            var features, geoJSONLayerType = msp.Map.layerTypes["GeoJSON"];
             
             if (geoJSONLayerType) {
-                geoJSONLayerType.load(data, null, this.getLayer());
+                
+                /*
+                 * Add new feature(s)
+                 */
+                features = geoJSONLayerType.load({
+                    data:data,
+                    layer:this.getLayer(),
+                    zoomOnNew:true
+                });
+                
             }
             
         };
