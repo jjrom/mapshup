@@ -349,13 +349,13 @@
                  * Parse interior and interiors
                  */
                 $(this).children().each(function() {
-                    geometries.push(Map.Util.posListToGeoJsonGeometry($(this).children().text()));
+                    geometries.push('[' + Map.Util.posListToGeoJsonGeometry($(this).children().text())+']');
                 });
                 
             });
             
             return JSON.parse(msp.Util.parseTemplate(this.geoJSONTemplate,{
-                geometry:'{"type":"Polygon","coordinates":[['+geometries.join(",")+']]}',
+                geometry:'{"type":"Polygon","coordinates":['+geometries.join(',')+']}',
                 properties:JSON.stringify(properties)
             }));
             
