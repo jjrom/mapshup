@@ -745,7 +745,7 @@
          */
         this.displayComplexData = function(process, put, $parent) {
             
-            var type = 'input', data = put.complexData, id = msp.Util.getId(), idgeo = msp.Util.getId(), self = this;
+            var type = 'input', data = put.complexData, id = msp.Util.getId(), idgeoselect = msp.Util.getId(), idgeodraw = msp.Util.getId(), self = this;
             
             /*
              * Store Input type within $parent.data()
@@ -755,7 +755,7 @@
             /*
             * Set content i.e. add an 'Upload' action
             */
-            $parent.append('<span id="'+id+'" class="hover" title="'+msp.Util._("Upload")+'">'+msp.Util._("Upload")+'</span>');
+            $parent.append('<img class="hover middle" src="'+msp.Util.getImgUrl('upload.png')+'" id="'+id+'" title="'+msp.Util._("Upload")+'"/>');
             
             /*
              * Ask for value on click
@@ -783,8 +783,8 @@
                             /*
                              * Update link content 
                              */
-                            $('#'+id).html(msp.Util.shorten(data.file ? data.file.name : data.fileUrl, 10, true)).addClass('hilite').removeClass('warning');
-                            $('#'+idgeo).html(msp.Util._("Map")).removeClass('hilite').addClass('warning');
+                            $('#'+id).attr('title', data.file ? data.file.name : data.fileUrl).addClass('hilite').removeClass('warning');
+                            $('#'+idgeoselect).attr('title',msp.Util._("Select feature on Map")).removeClass('hilite').addClass('warning');
                             
                             /*
                              * Store file or fileUrl within parent data cache
@@ -812,12 +812,14 @@
              */
             if (data["default"] && msp.Map.Util.getGeoType(data["default"].mimeType)) {
                  
-                $parent.append(' or <span id="'+idgeo+'" class="hover" title="'+msp.Util._("Select feature on Map")+'">'+msp.Util._("Map")+'</span>');
+                $parent
+                .append(' <img src="'+msp.Util.getImgUrl('earth.png')+'" id="'+idgeoselect+'" class="hover middle" title="'+msp.Util._("Select feature on Map")+'"/>')
+                .append(' <img src="'+msp.Util.getImgUrl('drawing.png')+'" id="'+idgeodraw+'" class="hover middle" title="'+msp.Util._("Draw feature on Map")+'"/>');
                 
                 /*
                  * Select geometry within the map
                  */
-                $('#'+idgeo)
+                $('#'+idgeoselect)
                 .removeClass('hilite')
                 .addClass('warning')
                 .click(function(e) {
@@ -837,15 +839,15 @@
                          */
                         if (feature) {
                             
-                            $('#'+id).html(msp.Util._("Upload")).removeClass('hilite').addClass('warning');
-                            $('#'+idgeo).html(msp.Util.shorten(msp.Map.Util.Feature.getTitle(feature), 10, true)).addClass('hilite').removeClass('warning');
+                            $('#'+id).attr('title',msp.Util._("Upload")).removeClass('hilite').addClass('warning');
+                            $('#'+idgeoselect).attr('title',msp.Map.Util.Feature.getTitle(feature)).addClass('hilite').removeClass('warning');
                             
                             /*
                              * Store file or fileUrl within parent data cache
                              */
                             $parent
                             .removeData('fileUrl')
-                            .data('data', msp.Map.Util.Feature.toGeoMimeType(feature, data["default"].mimeType))
+                            .data('data', msp.Map.Util.Feature.toGeo(feature, data["default"]))
                             .data('format', data["default"]);
                             self.setPuts(process, type);
                             
@@ -876,6 +878,17 @@
                     
                     return false;
                 });
+                
+                /*
+                 * Draw geometry within the map
+                 */
+                $('#'+idgeodraw)
+                .removeClass('hilite')
+                .addClass('warning')
+                .click(function(e) {
+                    alert("This function is not available yet");
+                });
+                
             }
             
         };
