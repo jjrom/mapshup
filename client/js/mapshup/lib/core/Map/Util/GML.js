@@ -234,7 +234,8 @@
          */
         toGeoJSON: function(gml) {
             
-            var geoJSON = "";
+            var geoJSON = {};
+            
             /*
              * Input gml description must be a jQuery object to be parsed
              */
@@ -278,10 +279,10 @@
             /*
              * First children is gml:posList
              */
-            return msp.Util.parseTemplate(this.geoJSONTemplate,{
+            return JSON.parse(msp.Util.parseTemplate(this.geoJSONTemplate,{
                 geometry:'{"type":"LineString","coordinates":['+Map.Util.posListToGeoJsonGeometry($(this).children().text()).join(",")+']}',
                 identifier:msp.Util.getId()
-            });
+            }));
             
         },
         
@@ -302,10 +303,10 @@
             /*
              * First children is gml:posList
              */
-            return msp.Util.parseTemplate(this.geoJSONTemplate,{
+            return JSON.parse(msp.Util.parseTemplate(this.geoJSONTemplate,{
                 geometry:'{"type":"LineString","coordinates":['+Map.Util.posListToGeoJsonGeometry($(this).children().text()).join(",")+']}',
                 identifier:msp.Util.getId()
-            });
+            }));
             
         },
         
@@ -343,10 +344,10 @@
                 
             });
             
-            return msp.Util.parseTemplate(this.geoJSONTemplate,{
+            return JSON.parse(msp.Util.parseTemplate(this.geoJSONTemplate,{
                 geometry:'{"type":"Polygon","coordinates":[['+geometries.join(",")+']]}',
                 identifier:msp.Util.getId()
-            });
+            }));
             
         },
         
