@@ -182,8 +182,175 @@
              */
             return '<gml:Polygon '+Map.Util.GML.namespaces+' srsName="'+Map.map.displayProjection.projCode+'"><gml:exterior><gml:LinearRing><gml:posList>'+gml.substring(0, gml.length-1)+'</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>';
 
-        }
+        },
         
+        /*
+         * Take a GML object in entry and return a GeoJSON FeatureCollection string
+         * 
+         * GeoJSON example (from http://www.geojson.org/geojson-spec.html)
+         * 
+         *      { "type": "FeatureCollection",
+         *          "features": [
+         *              { 
+         *                  "type": "Feature",
+         *                  "geometry": {"type": "Point", "coordinates": [102.0, 0.5]},
+         *                  "properties": {"prop0": "value0"}
+         *              },
+         *              {
+         *                  "type": "Feature",
+         *                  "geometry": {
+         *                      "type": "LineString",
+         *                      "coordinates": [
+         *                          [102.0, 0.0], 
+         *                          [103.0, 1.0], 
+         *                          [104.0, 0.0], 
+         *                          [105.0, 1.0]
+         *                       ]
+         *                  },
+         *                  "properties": {"prop0": "value0", "prop1": 0.0}
+         *              },
+         *              { 
+         *                  "type": "Feature",
+         *                  "geometry": {
+         *                      "type": "Polygon",
+         *                      "coordinates": [
+         *                           [
+         *                              [100.0, 0.0],
+         *                              [101.0, 0.0],
+         *                              [101.0, 1.0],
+         *                              [100.0, 1.0],
+         *                              [100.0, 0.0]
+         *                           ]
+         *                      ]
+         *                  },
+         *                  "properties": {"prop0": "value0","prop1": {"this": "that"} }
+         *              }
+         *          ]
+         *      }
+         *      
+         *      
+         * @param {jQuery Object} gml : gml in javascript XML object
+         * 
+         */
+        toGeoJSON: function(gml) {
+            
+            var geoJSON = "";
+            /*
+             * Input gml description must be a jQuery object to be parsed
+             */
+            if (gml instanceof jQuery) {
+                
+                /*
+                 * Detect GML type
+                 */
+                switch (msp.Util.stripNS(gml[0].nodeName)) {
+                    case 'Point':
+                        geoJSON = this.pointToGeoJSON(gml);
+                        break;
+                    case 'LineString':
+                        geoJSON = this.lineStringToGeoJSON(gml);
+                        break;
+                    case 'Polygon':
+                        geoJSON = this.polygonToGeoJSON(gml);
+                        break;
+                    
+                }
+                
+            }
+            
+            return geoJSON;
+        },
+        
+        /*
+         * Return a GeoJSON geometry from a GML Point
+         * 
+         *  GML Point structure 
+         *  
+         *          <gml:Point srsName="urn:ogc:def:crs:epsg:7.9:4326">
+         *              <gml:pos>77.0223274997802 52.58523464466345</gml:posList>
+         *          </gml:Point>
+         *  
+         * @param {jQuery Object} gml : gml in javascript XML object
+         * 
+         */
+        pointToGeoJSON: function(gml) {
+            
+            /*
+             * First children is gml:posList
+             */
+            return msp.Util.parseTemplate(this.geoJSONTemplate,{
+                geometry:'{"type":"LineString","coordinates":['+Map.Util.posListToGeoJsonGeometry($(this).children().text()).join(",")+']}',
+                identifier:msp.Util.getId()
+            });
+            
+        },
+        
+        /*
+         * Return a GeoJSON geometry from a GML Polygon
+         * 
+         *  GML LineString structure 
+         *  
+         *          <gml:LineString srsName="urn:ogc:def:crs:epsg:7.9:4326">
+         *              <gml:posList>77.0223274997802 52.58523464466345 86.63758854839588 41.09044727093532 86.34797437056751 40.97981843953097 77.0223274997802 52.58523464466345</gml:posList>
+         *          </gml:LineString>
+         *  
+         * @param {jQuery Object} gml : gml in javascript XML object
+         * 
+         */
+        lineStringToGeoJSON: function(gml) {
+            
+            /*
+             * First children is gml:posList
+             */
+            return msp.Util.parseTemplate(this.geoJSONTemplate,{
+                geometry:'{"type":"LineString","coordinates":['+Map.Util.posListToGeoJsonGeometry($(this).children().text()).join(",")+']}',
+                identifier:msp.Util.getId()
+            });
+            
+        },
+        
+        /*
+         * Return a GeoJSON geometry from a GML Polygon
+         * 
+         *  GML Polygon structure 
+         *  
+         *          <gml:Polygon srsName="urn:ogc:def:crs:epsg:7.9:4326">
+         *               <gml:exterior>
+         *                   <gml:LinearRing srsName="urn:ogc:def:crs:epsg:7.9:4326">
+         *                      <gml:posList>77.0223274997802 52.58523464466345 86.63758854839588 41.09044727093532 86.34797437056751 40.97981843953097 77.0223274997802 52.58523464466345</gml:posList>
+         *                   </gml:LinearRing>
+         *               </gml:exterior>
+         *           </gml:Polygon>
+         *  
+         * @param {jQuery Object} gml : gml in javascript XML object
+         * 
+         */
+        polygonToGeoJSON: function(gml) {
+            
+            var geometries = [];
+            
+            /*
+             * Roll over exterior and interiors
+             */
+            gml.children().each(function(){
+                
+                /*
+                 * Parse interior and interiors
+                 */
+                $(this).children().each(function() {
+                    geometries.push(Map.Util.posListToGeoJsonGeometry($(this).children().text()));
+                });
+                
+            });
+            
+            return msp.Util.parseTemplate(this.geoJSONTemplate,{
+                geometry:'{"type":"Polygon","coordinates":[['+geometries.join(",")+']]}',
+                identifier:msp.Util.getId()
+            });
+            
+        },
+        
+        geoJSONTemplate:'{"type":"FeatureCollection","features":[{"type":"Feature","geometry":$geometry$,"properties":{"identifier":"$identifier$"}}]}'
         
     }
     
