@@ -847,7 +847,6 @@
                             .removeData('fileUrl')
                             .data('data', msp.Map.Util.Feature.toGeoMimeType(feature, data["default"].mimeType))
                             .data('format', data["default"]);
-                            
                             self.setPuts(process, type);
                             
                         }

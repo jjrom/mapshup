@@ -633,7 +633,7 @@
         toGeoMimeType: function(feature, mimeType) {
             switch(Map.Util.getGeoType(mimeType)) {
                 case 'GML':
-                    return this.toGML(feature);
+                    return Map.Util.GML.featureToGML(feature);
                     break;
                 case 'WKT':
                     return this.toWKT(feature);
@@ -641,95 +641,6 @@
                 default:
                     return null;
             }
-        },
-        
-        /*
-         * Return a GML representation of feature
-         * 
-         * Structure :
-         *
-         *  feature.geometry // geometry object
-         *  feature.geometry.CLASS_NAME // geometry type
-         *      - OpenLayers.Geometry.Point
-         *      - OpenLayers.Geometry.LineString
-         *      - OpenLayers.Geometry.Polygon
-         *  feature.geometry.components[] // array of points
-         *      feature.geometry.components[].x
-         *      feature.geometry.components[].y
-         *
-         * @param {OpenLayers.Feature} feature
-         * 
-         */
-        toGML: function(feature) {
-            
-            var point, i, l,namespaces = 'xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"',
-                srsName = Map.map.displayProjection.projCode,
-                gml = '';
-                
-            /*
-             * Roll over each component. A component contain
-             * a point in (x,y) map coordinates.
-             * Each point is transformed in lat/lon for GML
-             */
-            if (feature && feature.geometry) {
-
-                var gt = feature.geometry.CLASS_NAME;
-
-                /*
-                 * Initialize kml string based on the feature
-                 * geometry class
-                 */
-                if (gt === "OpenLayers.Geometry.Point") {
-                    point = msp.Map.Util.p2d(new OpenLayers.LonLat(feature.geometry.x,feature.geometry.y));
-                    gml = '<gml:Point '+namespaces+' srsName="'+srsName+'"><gml:pos>'+point.lon + ' ' + point.lat + '</gml:pos></gml:Point>';
-                }
-                else if (gt === "OpenLayers.Geometry.LineString") {
-
-                    /*
-                     * LineString geometry get a "components" array of points
-                     */
-                    if (feature.geometry.components) {
-                        for (i = 0, l = feature.geometry.components.length; i < l; i++) {
-                            point = feature.geometry.components[i];
-                            point = msp.Map.Util.p2d(new OpenLayers.LonLat(point.x,point.y));
-                            gml += point.lon + ' ' + point.lat + ' ';
-                        }
-                    }
-
-                    /*
-                     * Remove trailing white space
-                     */
-                    gml = '<gml:LineString '+namespaces+' srsName="'+srsName+'"><gml:posList>'+gml.substring(0, gml.length-1)+'</gml:posList></gml:LineString>';
-
-                }
-                else if (gt === "OpenLayers.Geometry.Polygon") {
-
-                    var j, k, component;
-
-                    /*
-                     * Polygon geometry get a "components" array of "components"
-                     */
-                    if (feature.geometry.components) {
-                        for (i = 0, l = feature.geometry.components.length; i < l; i++) {
-                            component = feature.geometry.components[i];
-                            for (j = 0, k = component.components.length; j < k; j++){
-                                point = component.components[j];
-                                point = msp.Map.Util.p2d(new OpenLayers.LonLat(point.x,point.y));
-                                gml += point.lon + ' ' + point.lat + ' ';
-                            }
-                        }
-                    }
-
-                    /*
-                     * Remove trailing white space
-                     */
-                    gml = '<gml:Polygon '+namespaces+' srsName="'+srsName+'"><gml:exterior><gml:LinearRing><gml:posList>'+gml.substring(0, gml.length-1)+'</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>';
-                }
-
-            }
-
-            return gml;
-        
         },
         
         /*

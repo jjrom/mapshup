@@ -15,6 +15,7 @@ lib/core/DDZone.js
 lib/core/WPS.js
 lib/core/Map.js
 lib/core/Map/Util.js
+lib/core/Map/Util/GML.js
 lib/core/Map/Util/KML.js
 lib/core/Map/Events.js
 lib/core/Map/LayersGroup.js
