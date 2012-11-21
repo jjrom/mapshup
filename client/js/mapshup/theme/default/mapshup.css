@@ -344,7 +344,10 @@ a.tab:hover
 
 /* Semi-transparent mask - displayed when an ajax call is performed for example */
 .mask {
+    position:absolute;
     background-color:rgba(0,0,0,0.5);
+    width:100%;
+    z-index:35000;
 }
 .mask .content {
     position:relative;
@@ -489,6 +492,13 @@ a.tab:hover
     left:0px;
     z-index:20000;
 }
+.pns .mask {
+    background-color:rgba(243,150,28,0.9);
+}
+.pns .mask .content {
+    font-size:1.8em;
+}
+
 .pnsit {
     background-color:rgba(243,150,28,0.9);
 }

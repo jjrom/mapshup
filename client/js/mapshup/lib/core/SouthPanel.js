@@ -479,7 +479,7 @@
              */
             id = msp.Util.getId();
             
-            item.$d.html((content.mask ? '<div id="'+id+'mask" class="mask" style="display:none;width:100%;height:'+self.h+'px;"><div class="content"></div></div>' : '') + '<div id="'+id+'" style="height:'+(self.h - self.padding.top - self.padding.bottom)+'px"'+(content.classes ? ' class="'+content.classes+'"' : '')+'>'+(content.html || "")+'</div>');
+            item.$d.html((content.mask ? '<div id="'+id+'mask" class="mask" style="display:none;width:100%;height:'+self.h+'px;"></div>' : '') + '<div id="'+id+'" style="height:'+(self.h - self.padding.top - self.padding.bottom)+'px"'+(content.classes ? ' class="'+content.classes+'"' : '')+'>'+(content.html || "")+'</div>');
             
             /*
              * Set jquery content object reference
@@ -489,6 +489,7 @@
              */
             $.extend(item,{
                 $content:$('#'+id),
+                $mask:$('#'+id+'mask'),
                 onclose:content.onclose,
                 onshow:content.onshow
             });
