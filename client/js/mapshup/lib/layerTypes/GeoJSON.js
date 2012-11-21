@@ -107,13 +107,13 @@
              */
             if (layerDescription.hasOwnProperty("data")) {
                 if (!self.load(layerDescription.data, layerDescription, newLayer)) {
-                    msp.Map.removeLayer(newLayer, false);
+                    //msp.Map.removeLayer(newLayer, false);
                 }
             }
             /*
              * Otherwise, read data asynchronously from url
              */
-            else {
+            else if (layerDescription.url) {
                 
                 /*
                  * First set the isLoaded status to false to avoid
@@ -166,7 +166,7 @@
                 p = layer['_msp'].pagination || {};
                 
                 /*
-                 * No features then remove layer
+                 * No features
                  */
                 if (l === 0) {
                     msp.Util.message(msp.Util._(layer.name)+ " : " + msp.Util._("No result"));
@@ -208,7 +208,7 @@
                      * By default, GeoJSON stream is assume to be in EPSG:4326 projection
                      * unless srs is specified in EPSG:3857 or EPSG:900913
                      */
-                    if (layerDescription.srs === "EPSG:3857" || layerDescription.srs === "EPSG:900913") {
+                    if (layerDescription && (layerDescription.srs === "EPSG:3857" || layerDescription.srs === "EPSG:900913")) {
                         layer.addFeatures(new OpenLayers.Format.GeoJSON().read(data));
                     }
                     else {
