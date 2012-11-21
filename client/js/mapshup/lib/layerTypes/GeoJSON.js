@@ -106,7 +106,7 @@
              */
             newLayer.events.register("featuresadded", newLayer, function() {
 
-               /*
+                /*
                 * Tell mapshup that features were added
                 */
                 Map.events.trigger("layersend", {
@@ -148,36 +148,38 @@
         /*
          * Load GeoJSON data from a stream
          */
-        load: function(data, layerDescription, layer) {
+        load: function(options) {
             
-            var l,p;
+            var l,p,features;
+            
+            options = options || {};
             
             /*
              * First check if there is no error
              * Otherwise, display results
              */
-            if (!data || data.error) {
-                msp.Util.message(layer.name + " : " + (data ? data.error["message"] : "Error"), -1);
-                return false
+            if (!options.data || options.data.error) {
+                msp.Util.message(options.layer.name + " : " + (options.data ? options.data.error["message"] : "Error"), -1);
+                return null
             }
             else {
                 
-                l = data.features.length;
-                p = layer['_msp'].pagination || {};
+                l = options.data.features.length;
+                p = options.layer['_msp'].pagination || {};
                 
                 /*
                  * No features
                  */
                 if (l === 0) {
-                    msp.Util.message(msp.Util._(layer.name)+ " : " + msp.Util._("No result"));
-                    return false;
+                    msp.Util.message(msp.Util._(options.layer.name)+ " : " + msp.Util._("No result"));
+                    return null;
                 }
                 else {
                     
                     /*
                      * Set layer isLoaded status to true
                      */
-                    layer['_msp'].isLoaded = true;
+                    options.layer['_msp'].isLoaded = true;
                     
                     /*
                      * Pagination
@@ -200,7 +202,7 @@
                         * Update the totalResults value
                         * If data.totalResults is not set then set totalResults to the number of features
                         */
-                        p.totalResults = data.hasOwnProperty("totalResults") ? data.totalResults : l;
+                        p.totalResults = options.data.hasOwnProperty("totalResults") ? options.data.totalResults : l;
                         
                     }
                      
@@ -208,26 +210,33 @@
                      * By default, GeoJSON stream is assume to be in EPSG:4326 projection
                      * unless srs is specified in EPSG:3857 or EPSG:900913
                      */
-                    if (layerDescription && (layerDescription.srs === "EPSG:3857" || layerDescription.srs === "EPSG:900913")) {
-                        layer.addFeatures(new OpenLayers.Format.GeoJSON().read(data));
+                    if (options.layerDescription && (options.layerDescription.srs === "EPSG:3857" || options.layerDescription.srs === "EPSG:900913")) {
+                        features = new OpenLayers.Format.GeoJSON().read(options.data);
                     }
                     else {
-                        layer.addFeatures(new OpenLayers.Format.GeoJSON({
+                        features = new OpenLayers.Format.GeoJSON({
                             internalProjection:Map.map.projection,
                             externalProjection:Map.pc
-                        }).read(data));
+                        }).read(options.data);
                     }
-
+                    
+                    options.layer.addFeatures(features);
+                    
                     /*
-                     * Zoom on layer
+                     * Zoom on new added features otherwise zoom on layer
                      */
-                    Map.Util.zoomOn(layer);
+                    if (options.zoomOnNew) {
+                        Map.Util.Feature.zoomOn(features);
+                    }
+                    else {
+                        Map.Util.zoomOn(options.layer);
+                    }
                     
                 }
                 
             }
             
-            return true;
+            return features;
 
         },
         
@@ -264,7 +273,11 @@
                 async:true,
                 dataType:"json",
                 success:function(data) {
-                    self.load(data, ld, this.layer);
+                    self.load({
+                        data:data,
+                        layerDescription:ld, 
+                        layer:this.layer
+                    });
                 }
             },{
                 title:msp.Util._("Retrieve features"),
@@ -317,7 +330,11 @@
                      */
                     this.layer.destroyFeatures();
                     
-                    if (!self.load(data, layerDescription, this.layer)) {
+                    if (!self.load({
+                        data:data, 
+                        layerDescription:layerDescription, 
+                        layer:this.layer
+                        })) {
                             
                         /*
                         * Tell mapshup that layer is loaded
@@ -334,6 +351,8 @@
                     }
                 }
             });
+            
+            return true;
         }
         
     }
