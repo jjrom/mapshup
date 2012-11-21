@@ -1256,7 +1256,7 @@
             controls.push(new OpenLayers.Control.SelectFeature(self.selectableLayers.items, {
                 id: "__CONTROL_SELECT__",
                 clickout:false,
-                toggle:false,
+                toggle:true,
                 multiple:false,
                 hover:false
             }));
