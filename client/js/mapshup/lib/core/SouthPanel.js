@@ -398,7 +398,8 @@
          *          html: // Html content to display within panel - OPTIONAL
          *          classes:  // class name(s) to add to main item div - OPTIONAL
          *          onclose: // function called on panel closing - OPTIONAL
-         *          onshow: // function called on panel show
+         *          onshow: // function called on panel show,
+         *          mask: // true to add a mask on top of panel
          *        }
          *        
          */
@@ -477,7 +478,8 @@
              * Update item content
              */
             id = msp.Util.getId();
-            item.$d.html('<div id="'+id+'" style="height:'+(self.h - self.padding.top - self.padding.bottom)+'px"'+(content.classes ? ' class="'+content.classes+'"' : '')+'>'+(content.html || "")+'</div>');
+            
+            item.$d.html((content.mask ? '<div id="'+id+'mask" class="mask" style="display:none;width:100%;height:'+self.h+'px;"><div class="content"></div></div>' : '') + '<div id="'+id+'" style="height:'+(self.h - self.padding.top - self.padding.bottom)+'px"'+(content.classes ? ' class="'+content.classes+'"' : '')+'>'+(content.html || "")+'</div>');
             
             /*
              * Set jquery content object reference
