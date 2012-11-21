@@ -1468,10 +1468,10 @@
         },
 
         /**
-         * Parse a string containing keys between brackets {} and replace these
+         * Parse a string containing keys between dollars $$ and replace these
          * keys with obj properties.
          * Example :
-         *      str = "Hello my name is {name} {surname}"
+         *      str = "Hello my name is $name$ $surname$"
          *      keys = {name:"Jerome", surname:"Gasperi"}
          *      modifiers = {name:{transform:function(v){...}}
          *
@@ -1495,12 +1495,12 @@
             if (typeof template === "string") {
 
                 /*
-                 * Replace all {key} within string by obj[key] value
+                 * Replace all $key$ within string by obj[key] value
                  */
-                return template.replace(/{+([^}])+}/g, function(m) {
+                return template.replace(/\$+([^\$])+\$/g, function(m) {
                     
                     var k,
-                    key = m.replace(/[{}]/g, ''),
+                    key = m.replace(/[\$\$]/g, ''),
                     value = keys[key];
                         
                     /*
@@ -1534,7 +1534,7 @@
                     /*
                     * Return value or unmodified key if value is null
                     */
-                    return value != null ? value : "{"+key+"}";
+                    return value != null ? value : "$"+key+"$";
                     
                 });
                 

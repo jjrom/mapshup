@@ -142,18 +142,18 @@
                 /*
                  * The tricky part :
                  * 
-                 * Parse title and replace keys between brackets {} with the corresponding value
+                 * Parse title and replace keys between dollars $$ with the corresponding value
                  * eventually transformed with the getValue() function
                  *
                  * Example :
-                 *      title = "Hello my name is {name} {surname}"
+                 *      title = "Hello my name is $name$ $surname$"
                  *      feature.attributes = {name:"Jerome", surname:"Gasperi"}
                  *
                  *      will return "Hello my name is Jerome Gasperi"
                  * 
                  */
-                return feature.layer["_msp"].layerDescription.featureInfo.title.replace(/{+([^}])+}/g, function(m,key,value) {
-                    var k = m.replace(/[{}]/g, '');
+                return feature.layer["_msp"].layerDescription.featureInfo.title.replace(/\$+([^\$])+\$/g, function(m,key,value) {
+                    var k = m.replace(/[\$\$]/g, '');
                     return Map.Util.Feature.getValue(feature, k, feature.attributes[k]);
                 });
                 
@@ -1278,6 +1278,49 @@
         
         return false;
         
+    };
+    
+    /**
+     * Return a GeoJSON geometry string from a GML posList
+     * 
+     * @param {String} posList : a GML posList (or a GML pos) i.e. a string
+     *                           containing x y coordinqtes separated by white spaces
+     *                           (i.e. x1 y1 x2 y2 x3 y3 ..., x* y* being double)
+     */
+    Map.Util.posListToGeoJsonGeometry = function(posList) {
+       
+        var pairs = [], i, l, coordinates, latlon = false;
+       
+        /*
+        * Paranoid mode
+        */
+        if (posList) {
+           
+            coordinates = posList.split(" ");
+            
+            /*
+             * Parse each coordinates
+             */
+            for (i = 0, l = coordinates.length; i < l; i = i + 2) {
+
+                /*
+                 * Case 1 : coordinates order is latitude then longitude
+                 */
+                if (latlon) {
+                    pairs.push('['+coordinates[i + 1] + ',' + coordinates[i]+']');
+                }
+                /*
+                * Case 2 : coordinates order is longitude then latitude
+                */
+                else {
+                    pairs.push('['+coordinates[i] + ',' + coordinates[i + 1]+']');
+                }
+            }
+           
+        }
+       
+        return pairs.join(',');
+       
     };
     
     

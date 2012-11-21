@@ -1072,7 +1072,7 @@
                             formatStr += " encoding=\""+put.format.encoding+"\"";
                         }
                     }
-                    template = template.replace("{format}",formatStr);
+                    template = template.replace("$format$",formatStr);
                     
                 }
                 /*       
@@ -1141,7 +1141,7 @@
                 contentType:"text/xml",
                 data:data,
                 success:function(xml) {
-                    self.result = self.parseExecute(xml);
+                    self.result = self.parseExecuteResponse(xml);
                     if (self.result) {
                         self.wps.events.trigger("execute", self);
                     }
@@ -1182,7 +1182,7 @@
          *      </wps:ExecuteResponse>
          * 
          */
-        this.parseExecute = function(xml) {
+        this.parseExecuteResponse = function(xml) {
             
             var p, nn, result = [], $obj = $(xml);
             
@@ -1238,7 +1238,8 @@
                                         p['data']['value'] = $(this).text();
                                     }
                                     else if (nn === 'ComplexData') {
-                                    // TODO
+                                        $.extend(p['data'], msp.Util.getAttributes($(this)));
+                                        p['data']['value'] = $(this).children();
                                     }
                                     else if (nn === 'BoundingBox') {
                                     // TODO    
@@ -1260,7 +1261,7 @@
                 } // End if (msp.Util.stripNS(this.nodeName) === 'ProcessOutputs')
                
             });
-            
+            console.log(p);
             return result;
             
         };
@@ -1384,20 +1385,20 @@
      *      </div>
      */
     msp.WPS.infoTemplate = '<div>'+
-        '<h1>{title}</h1>'+
-        '<p>{abstract}</p>'+
-        '<p>Version {version}</p>'+
-        '<h2>Provided by <a href="{providerSite}" target="_blank">{providerName}</a></h2>'+
+        '<h1>$title$</h1>'+
+        '<p>$abstract$</p>'+
+        '<p>Version $version$</p>'+
+        '<h2>Provided by <a href="$providerSite$" target="_blank">$providerName$</a></h2>'+
         '</div>';
 
     /**
      * XML POST template for WPS execute request
      * 
      *  Template keys :
-     *      {identifier} : process identifier
-     *      {dataInputs} : data inputs (see *PutsTemplate)
-     *      {dataOutputs} : data outputs (see *PutsTemplate)
-     *      {status} : status ??
+     *      $identifier$ : process identifier
+     *      $dataInputs$ : data inputs (see *PutsTemplate)
+     *      $dataOutputs$ : data outputs (see *PutsTemplate)
+     *      $status$ : status ??
      * 
      */
     msp.WPS.executeRequestTemplate = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
@@ -1407,12 +1408,12 @@
             'xmlns:xlink="http://www.w3.org/1999/xlink" '+
             'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '+
             'xsi:schemaLocation="http://www.opengis.net/wps/1.0.0/wpsExecute_request.xsd">'+
-                '<ows:Identifier>{identifier}</ows:Identifier>'+
-                '<wps:DataInputs>{dataInputs}</wps:DataInputs>'+
+                '<ows:Identifier>$identifier$</ows:Identifier>'+
+                '<wps:DataInputs>$dataInputs$</wps:DataInputs>'+
                 '<wps:ResponseForm>'+
                     '<wps:ResponseDocument wps:lineage="false" '+
-                        'storeExecuteResponse="{storeExecute}" '+
-                         'status="{status}">{dataOutputs}</wps:ResponseDocument>'+
+                        'storeExecuteResponse="$storeExecute$" '+
+                         'status="$status$">$dataOutputs$</wps:ResponseDocument>'+
                 '</wps:ResponseForm>'+
             '</wps:Execute>';
         
@@ -1420,15 +1421,15 @@
      * LiteralDataInput template
      *   
      *   Template keys :
-     *      {identifier} : Input identifier
-     *      {uom}: unit of measure
-     *      {data} : value
+     *      $identifier$ : Input identifier
+     *      $uom$: unit of measure
+     *      $data$ : value
      *    
      */
     msp.WPS.literalDataInputTemplate = '<wps:Input>'+
-            '<ows:Identifier>{identifier}</ows:Identifier>'+
+            '<ows:Identifier>$identifier$</ows:Identifier>'+
             '<wps:Data>'+
-                '<wps:LiteralData uom="{uom}">{data}</wps:LiteralData>'+
+                '<wps:LiteralData uom="$uom$">$data$</wps:LiteralData>'+
             '</wps:Data>'+
         '</wps:Input>';
 
@@ -1436,15 +1437,15 @@
      * ComplexDataInput reference template
      *   
      *   Template keys :
-     *      {identifier} : Input identifier
-     *      {reference} : url reference to get input data
-     *      {format} : Input data format
+     *      $identifier$ : Input identifier
+     *      $reference$ : url reference to get input data
+     *      $format$ : Input data format
      *      
      */
     msp.WPS.complexDataInputReferenceTemplate = '<wps:Input>'+
-            '<ows:Identifier>{identifier}</ows:Identifier>'+
+            '<ows:Identifier>$identifier$</ows:Identifier>'+
             '<wps:Data>'+
-                '<wps:Reference xlink:href="{reference}" {format}/>'+
+                '<wps:Reference xlink:href="$reference$" $format$/>'+
             '</wps:Data>'+
         '</wps:Input>';
                             
@@ -1452,15 +1453,15 @@
      * ComplexDataInput data template
      *   
      *   Template keys :
-     *      {identifier} : Input identifier
-     *      {format} : Input data format
-     *      {data} : ???
+     *      $identifier$ : Input identifier
+     *      $format$ : Input data format
+     *      $data$ : ???
      *      
      */
     msp.WPS.complexDataInputTemplate = '<wps:Input>'+
-            '<ows:Identifier>{identifier}</ows:Identifier>'+
+            '<ows:Identifier>$identifier$</ows:Identifier>'+
             '<wps:Data>'+
-                '<wps:ComplexData {format}>{data}</wps:ComplexData>'+
+                '<wps:ComplexData $format$>$data$</wps:ComplexData>'+
             '</wps:Data>'+
         '</wps:Input>';
                             
@@ -1469,19 +1470,19 @@
      * BoundingBoxDataInput template
      *   
      *   Template keys :
-     *      {identifier} : Input identifier
-     *      {dimension} : dimension of the BoundingBox (generally ???)
-     *      {crs} : CRS (Coordinates Reference System) for the bounding box 
-     *      {minx} {miny} {maxx} {maxy} : Bounding Box coordinates expressed in {crs} coordinates
+     *      $identifier$ : Input identifier
+     *      $dimension$ : dimension of the BoundingBox (generally ???)
+     *      $crs$ : CRS (Coordinates Reference System) for the bounding box 
+     *      $minx$ $miny$ $maxx$ $maxy$ : Bounding Box coordinates expressed in {crs} coordinates
      *      
      *
      */
     msp.WPS.boundingBoxDataInputTemplate = '<wps:Input>'+
-            '<ows:Identifier>{identifier}</ows:Identifier>'+
+            '<ows:Identifier>$identifier$</ows:Identifier>'+
             '<wps:Data>'+
-                '<wps:BoundingBoxData ows:dimensions="{dimension}" ows:crs="{crs}">'+
-                    '<ows:LowerCorner>{minx} {miny}</ows:LowerCorner>'+
-                    '<ows:UpperCorner>{maxx} {maxy}</ows:UpperCorner>'+
+                '<wps:BoundingBoxData ows:dimensions="$dimension$" ows:crs="$crs$">'+
+                    '<ows:LowerCorner>$minx$ $miny$</ows:LowerCorner>'+
+                    '<ows:UpperCorner>$maxx$ $maxy$</ows:UpperCorner>'+
                 '</wps:BoundingBoxData>'+
             '</wps:Data>'+
         '</wps:Input>';
@@ -1490,12 +1491,12 @@
      * ComplexOutput template
      * 
      *   Template keys :
-     *      {asReference} : ???
-     *      {identifier} : Output identifier
+     *      $asReference$ : ???
+     *      $identifier$ : Output identifier
      *  
      */
-    msp.WPS.complexOutputTemplate = '<wps:Output asReference="{asReference}" {format}>'+
-            '<ows:Identifier>{identifier}</ows:Identifier>'+
+    msp.WPS.complexOutputTemplate = '<wps:Output asReference="$asReference$" $format$>'+
+            '<ows:Identifier>$identifier$</ows:Identifier>'+
         '</wps:Output>';
                             
 
@@ -1503,11 +1504,11 @@
      * LiteralOutput template
      * 
      *   Template keys :
-     *      {identifier} : Output identifier
+     *      $identifier$ : Output identifier
      * 
      */
     msp.WPS.literalOutputTemplate = '<wps:Output asReference="false">'+
-            '<ows:Identifier>{identifier}</ows:Identifier>'+
+            '<ows:Identifier>$identifier$</ows:Identifier>'+
         '</wps:Output>';
 
     /**
