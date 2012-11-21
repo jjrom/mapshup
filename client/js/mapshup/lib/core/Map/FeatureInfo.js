@@ -594,14 +594,6 @@
             }
             
             /*
-             * Experimental : bypass mechanism (used by Plugins/WPSClient)
-             */
-            if ($.isFunction(self.bypassCallback)) {
-                self.bypassCallback(feature);
-                return false;
-            }
-            
-            /*
              * Call mapshup featureselect event unless the selected was triggered
              */
             if (!self._triggered) {
@@ -622,6 +614,14 @@
              * Set the current selected object
              */
             msp.Map.featureInfo.selected = feature;
+            
+            /*
+             * Experimental : bypass mechanism (used by Plugins/WPSClient)
+             */
+            if ($.isFunction(self.bypassCallback)) {
+                self.bypassCallback(feature);
+                return true;
+            }
             
             /*
              * If layerType.resolvedUrlAttributeName is set,

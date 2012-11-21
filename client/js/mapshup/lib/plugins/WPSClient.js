@@ -838,6 +838,7 @@
                          * Hide mask
                          */
                         $mask.hide();
+                        msp.Map.featureInfo.bypassCallback = null;
                         
                         /*
                          * Update "Select on map" action display and store feature in the .data() cache
