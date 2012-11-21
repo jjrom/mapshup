@@ -628,12 +628,20 @@
          * Return a feature to given mimeType representation
          * 
          * @param {OpenLayers.Feature} feature 
-         * @param {String} mimeType
+         * @param {Object} format
+         *                  {
+         *                      mimeType:
+         *                      encoding:
+         *                      schema:
+         *                  }
          */
-        toGeoMimeType: function(feature, mimeType) {
-            switch(Map.Util.getGeoType(mimeType)) {
+        toGeo: function(feature, format) {
+            
+            format = format || {};
+            
+            switch(Map.Util.getGeoType(format["mimeType"])) {
                 case 'GML':
-                    return Map.Util.GML.featureToGML(feature);
+                    return Map.Util.GML.featureToGML(feature, format["schema"]);
                     break;
                 case 'WKT':
                     return this.toWKT(feature);

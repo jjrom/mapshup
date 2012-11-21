@@ -48,7 +48,7 @@
      */
     Map.Util.GML = {
         
-        namespaces:'xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink"',
+        namespaces:'xmlns:gml="http://www.opengis.net/gml"',
         
         /*
          * Return a GML representation of feature
@@ -65,9 +65,13 @@
          *      feature.geometry.components[].y
          *
          * @param {OpenLayers.Feature} feature
+         * @param {String} schema : GML schema
+         *                 if schema = "http://schemas.opengis.net/gml/3.1.1/base/feature.xsd"
+         *                 then a FeatureCollection is returned
+         *                 otherwise a GeometryProperty is returned
          * 
          */
-        featureToGML: function(feature) {
+        featureToGML: function(feature, schema) {
             
             var gml = '';
             
@@ -85,13 +89,13 @@
                  * geometry class
                  */
                 if (gt === "OpenLayers.Geometry.Point") {
-                    return this.geometryPointToGML(feature.geometry);
+                    gml = this.geometryPointToGML(feature.geometry);
                 }
                 else if (gt === "OpenLayers.Geometry.MultiPoint") {
                     // TODO
                 }
                 else if (gt === "OpenLayers.Geometry.LineString") {
-                    return this.geometryLineStringToGML(feature.geometry);                    
+                    gml = this.geometryLineStringToGML(feature.geometry);                    
                 }
                 else if (gt === "OpenLayers.Geometry.Polygon") {
                     return this.geometryPolygonToGML(feature.geometry); 
@@ -105,6 +109,16 @@
                 }
             }
 
+            /*
+             * Return a FeatureCollection
+             */
+            if (schema === "http://schemas.opengis.net/gml/3.1.1/base/feature.xsd") {
+                return '<gml:FeatureCollection '+Map.Util.GML.namespaces+' ><gml:featureMember><gml:GeometryPropertyType>'+gml+'</gml:GeometryPropertyType></gml:featureMember></gml:FeatureCollection>';
+            }
+            
+            /*
+             * Return a GeometryType
+             */
             return gml;
         
         },
