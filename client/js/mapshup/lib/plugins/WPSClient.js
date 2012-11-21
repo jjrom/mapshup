@@ -372,7 +372,12 @@
                  */
                 geoType = msp.Map.Util.getGeoType(result.data["mimeType"]);
                 if (geoType === 'GML') {
-                    this.load(msp.Map.Util.GML.toGeoJSON(result.data.value));
+                    this.load(msp.Map.Util.GML.toGeoJSON(result.data.value,{
+                        title:process.title,
+                        processid:process.identifier,
+                        description:process["abstract"],
+                        time:(new Date()).toISOString()
+                    }));
                 }
                 
             }
@@ -1057,14 +1062,12 @@
          */
         this.load = function(data) {
             
-            var features, geoJSONLayerType = msp.Map.layerTypes["GeoJSON"];
-            
-            if (geoJSONLayerType) {
+            if (msp.Map.layerTypes["GeoJSON"]) {
                 
                 /*
-                 * Add new feature(s)
+                 * Add new feature(s) and center on it
                  */
-                features = geoJSONLayerType.load({
+                msp.Map.layerTypes["GeoJSON"].load({
                     data:data,
                     layer:this.getLayer(),
                     zoomOnNew:true

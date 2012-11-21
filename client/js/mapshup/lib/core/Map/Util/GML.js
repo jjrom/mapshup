@@ -230,9 +230,10 @@
          *      
          *      
          * @param {jQuery Object} gml : gml in javascript XML object
+         * @param {Object} properties : properties to set
          * 
          */
-        toGeoJSON: function(gml) {
+        toGeoJSON: function(gml, properties) {
             
             var geoJSON = {};
             
@@ -246,13 +247,13 @@
                  */
                 switch (msp.Util.stripNS(gml[0].nodeName)) {
                     case 'Point':
-                        geoJSON = this.pointToGeoJSON(gml);
+                        geoJSON = this.pointToGeoJSON(gml, properties);
                         break;
                     case 'LineString':
-                        geoJSON = this.lineStringToGeoJSON(gml);
+                        geoJSON = this.lineStringToGeoJSON(gml, properties);
                         break;
                     case 'Polygon':
-                        geoJSON = this.polygonToGeoJSON(gml);
+                        geoJSON = this.polygonToGeoJSON(gml, properties);
                         break;
                     
                 }
@@ -272,16 +273,19 @@
          *          </gml:Point>
          *  
          * @param {jQuery Object} gml : gml in javascript XML object
+         * @param {Object} properties : properties to set
          * 
          */
-        pointToGeoJSON: function(gml) {
+        pointToGeoJSON: function(gml, properties) {
+            
+            properties = properties || {identifier:msp.Util.getId()};
             
             /*
              * First children is gml:posList
              */
             return JSON.parse(msp.Util.parseTemplate(this.geoJSONTemplate,{
                 geometry:'{"type":"LineString","coordinates":['+Map.Util.posListToGeoJsonGeometry($(this).children().text()).join(",")+']}',
-                identifier:msp.Util.getId()
+                properties:JSON.stringify(properties)
             }));
             
         },
@@ -296,16 +300,19 @@
          *          </gml:LineString>
          *  
          * @param {jQuery Object} gml : gml in javascript XML object
+         * @param {Object} properties : properties to set
          * 
          */
-        lineStringToGeoJSON: function(gml) {
+        lineStringToGeoJSON: function(gml, properties) {
+            
+            properties = properties || {identifier:msp.Util.getId()};
             
             /*
              * First children is gml:posList
              */
             return JSON.parse(msp.Util.parseTemplate(this.geoJSONTemplate,{
                 geometry:'{"type":"LineString","coordinates":['+Map.Util.posListToGeoJsonGeometry($(this).children().text()).join(",")+']}',
-                identifier:msp.Util.getId()
+                properties:JSON.stringify(properties)
             }));
             
         },
@@ -324,11 +331,14 @@
          *           </gml:Polygon>
          *  
          * @param {jQuery Object} gml : gml in javascript XML object
+         * @param {Object} properties : properties to set
          * 
          */
-        polygonToGeoJSON: function(gml) {
+        polygonToGeoJSON: function(gml, properties) {
             
             var geometries = [];
+            
+            properties = properties || {identifier:msp.Util.getId()};
             
             /*
              * Roll over exterior and interiors
@@ -346,12 +356,12 @@
             
             return JSON.parse(msp.Util.parseTemplate(this.geoJSONTemplate,{
                 geometry:'{"type":"Polygon","coordinates":[['+geometries.join(",")+']]}',
-                identifier:msp.Util.getId()
+                properties:JSON.stringify(properties)
             }));
             
         },
         
-        geoJSONTemplate:'{"type":"FeatureCollection","features":[{"type":"Feature","geometry":$geometry$,"properties":{"identifier":"$identifier$"}}]}'
+        geoJSONTemplate:'{"type":"FeatureCollection","features":[{"type":"Feature","geometry":$geometry$,"properties":$properties$}]}'
         
     }
     
