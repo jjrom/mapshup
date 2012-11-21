@@ -102,6 +102,21 @@
             newLayer = new OpenLayers.Layer.Vector(layerDescription.title, options);
 
             /*
+             * Add a featuresadded event
+             */
+            newLayer.events.register("featuresadded", newLayer, function() {
+
+               /*
+                * Tell mapshup that features were added
+                */
+                Map.events.trigger("layersend", {
+                    action:"features",
+                    layer:newLayer
+                });
+
+            });
+            
+            /*
              * If layerDescription.data is set, the GeoJSON stream is directly
              * read from data description
              */
@@ -125,21 +140,6 @@
                 self.refresh(newLayer, urlModifier);
                 
             }
-            
-            /*
-             * Add a featuresadded event
-             */
-            newLayer.events.register("featuresadded", newLayer, function() {
-
-               /*
-                * Tell mapshup that features were added
-                */
-                Map.events.trigger("layersend", {
-                    action:"features",
-                    layer:newLayer
-                });
-
-            });
             
             return newLayer;
 
