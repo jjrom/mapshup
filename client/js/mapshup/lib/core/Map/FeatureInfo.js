@@ -613,13 +613,19 @@
             /*
              * Set the current selected object
              */
-            msp.Map.featureInfo.selected = feature;
+            self.selected = feature;
             
             /*
              * Experimental : bypass mechanism (used by Plugins/WPSClient)
              */
             if ($.isFunction(self.bypassCallback)) {
                 self.bypassCallback(feature);
+                try {
+                    c.unselect(self.selected);
+                }
+                catch(e) {
+                    self.selected = null
+                }
                 return true;
             }
             
@@ -841,7 +847,7 @@
         this.hilite = function(f) {
             
             var self = this,
-                c = msp.Map.Util.getControlById("__CONTROL_HIGHLITE__");
+            c = msp.Map.Util.getControlById("__CONTROL_HIGHLITE__");
                 
             if (c && f) {
                 try {
@@ -873,7 +879,7 @@
         this.unhilite = function(f) {
             
             var self = this,
-                c = msp.Map.Util.getControlById("__CONTROL_HIGHLITE__");
+            c = msp.Map.Util.getControlById("__CONTROL_HIGHLITE__");
                 
             if (c && f) {
                 try {
