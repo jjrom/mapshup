@@ -659,6 +659,27 @@
                 return msp.Map.Util.p2d(feature.geometry.clone()).toString();
             }
             return "";
+        },
+        
+        /**
+         * Zoom on features
+         * 
+         * @param {Array} features : array of OpenLayers Features
+         */
+        zoomOn: function(features) {
+            
+           if (!$.isArray(features)) {
+               features = [features];
+           } 
+           
+           var i, l, bounds = new OpenLayers.Bounds();
+           
+           for (i = 0, l = features.length; i < l; i++) {
+               bounds.extend(features[i].geometry.getBounds());
+           }
+           
+           msp.Map.zoomTo(bounds);
+           
         }
         
     };
