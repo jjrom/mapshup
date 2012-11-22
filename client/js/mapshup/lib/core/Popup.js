@@ -64,6 +64,11 @@
         this.onClose = options.onClose;
         
         /*
+         * True to display a generic popup (see mapshup.css .tools .generic definition)
+         */
+        this.generic = msp.Util.getPropertyValue(options, "generic", true);
+        
+        /*
          * True to hide popup when closing it instead of remove it
          */
         this.hideOnClose = msp.Util.getPropertyValue(options, "hideOnClose", false);
@@ -134,11 +139,11 @@
              * <div id="..." class="po">
              *      <div class="whole">
              *          <div class="header"> // optional
-             *          <div class="body">
+             *          <div class="body generic"> // generic class is not added if this.generic = false
              *      </div>
              *  </div>
              */
-            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$mcontainer).addClass('po').html('<div class="whole">'+(self.noHeader ? ''  : '<div class="header"></div>')+'<div class="body"></div></div>');
+            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$mcontainer).addClass('po').html('<div class="whole">'+(self.noHeader ? ''  : '<div class="header"></div>')+'<div class="body'+(self.generic ? ' generic' : '')+'"></div></div>');
 
             /*
              * If popup is modal, set a semi transparent mask

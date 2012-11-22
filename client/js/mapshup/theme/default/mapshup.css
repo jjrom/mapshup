@@ -69,7 +69,10 @@ body {
     /* Everything is on one page */
     overflow:hidden;
 }
-
+h1 {
+    text-transform: uppercase;
+    font-size:1.2em;
+}
 a {
     color:#3b5998;
     text-decoration:none;
@@ -303,8 +306,6 @@ a.tab:hover
     text-align:right;
     padding-right:5px;
     font-weight:lighter;
-    text-transform: uppercase;
-    font-size:1.2em;
     letter-spacing: 0.2em;
 }
 
@@ -391,10 +392,6 @@ a.tab:hover
     padding:20px;
     font-size:1.1em;
     line-height:16px;
-}
-.help h1 {
-    font-size:1.2em;
-    text-transform: uppercase;
 }
 .help p {
     padding-top:10px;
@@ -743,114 +740,30 @@ a.tab:hover
 }
 
 .fi {
-    position:absolute;
-    width:450px;
-    height:250px;
-    color:#000;
-    background-color:rgba(243,150,28,0.8);
-    z-index:20000;
-}
-.fi .main {
-    position:absolute;
-    top:50px;
-    left:50px;
-    right:50px;
-    bottom:50px;
-    font-size:2em;
+    width:100%;
+    height:100%;
 }
 .fi .header {
-    position:absolute;
-    top:0px;
-    left:0px;
-    height:20px;
-    width:100%;
+    padding:10px;
     text-transform:uppercase;
-    font-weight: bold;
     text-align:center;
-    padding:5px 0px;
 }
-.fi .tabs {
-    position:absolute;
-    top:20px;
-    left:0px;
-    height:30px;
-    width:100%;
-}
-
-.fi a {
-    padding:0px;
-    background-color:transparent;
-}
-.fi a:hover{
-    border-bottom:1px solid #c76400;
-}
-
 .fi .title {
     overflow:hidden;
     text-overflow:ellipsis;
 }
-
-.fi .west {
-    position:absolute;
-    left:0px;
-    top:50px;
-    width:150px;
-    height:200px;
+.fi .ql {
     border-right: 1px solid #ccc;
 }
-.fi .east {
-    position: absolute;
-    left:150px;
-    top:50px;
-    width:300px;
-    height:200px;
-    overflow-y: auto;
-}
-.fi .block {
-    padding:5px;
-    margin-bottom:5px;
-}
 .fi .info {
-    padding:5px;
-    margin-bottom:5px;
+    overflow-y: auto;
 }
 .fi .info table {
     width:100%;
 }
-.fi .thumb {
-    width:125px;
-    height:125px;
-    text-align:center;
-    padding:5px;
-    margin:0px 0px 5px 5px;
-}
-.fi .thumb img {
-    max-height:125px;
-    max-width:125px;
-}
-.fi .actions {
-    height:30px;
-    width:125px;
-    background-color:#ccc;
-    margin-left:10px;
-    padding-top:10px;
-    white-space:nowrap;
-    text-align:center;
-}
-.fi .item {
-    cursor:pointer;
-    padding:3px;
-    margin:0px 5px;
-}
-.fi .item img {
-    height:16px;
-    width:auto;
-}
-
 .fi td {
     padding:5px 0px;
 }
-
 .fi tr:nth-child(even) {
     background:#ccc;
 }
@@ -1787,8 +1700,6 @@ td.clear {
 }
 .wpsclient h1 {
     color:#fff;
-    font-size:1.2em;
-    text-transform: uppercase;
 }
 .wpsclient p {
     padding-top:10px;
