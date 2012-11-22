@@ -402,7 +402,7 @@ a.tab:hover
 *  Tooltip
 *
 *=======================================*/
-#tooltip { position:absolute; display:none; padding: 5px; background-repeat: no-repeat; z-index:36000; }
+#tooltip { position:absolute; display:none; padding: 5px; background-repeat: no-repeat; z-index:36000; overflow:hidden; }
 #tooltip .inner { padding: 5px 8px 4px 8px; background-color: #000; max-width: 200px; text-align: left; }
 
 
