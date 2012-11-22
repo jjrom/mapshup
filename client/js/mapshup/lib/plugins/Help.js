@@ -81,17 +81,8 @@
             /*
              * Create the help container over everything else
              */
-            self.$d = msp.Util.$$('#'+msp.Util.getId(),$('#mwrapper')).addClass("help").css(
-            {
-                'position':'absolute',
-                'display':'none',
-                'left':'0',
-                'top':'0',
-                'width':'100%',
-                'height':'100%',
-                'z-index':'40000'
-            });
-    
+            self.$d = msp.Util.$$('#'+msp.Util.getId(),$('#mwrapper')).addClass("overall help").hide();
+            
             /*
              * Add a close button to the Help panel
              */
