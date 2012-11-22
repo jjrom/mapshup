@@ -320,7 +320,7 @@
                     d.value = this.origin; // Value === origin
                     d.icon = d.icon ? msp.Util.getImgUrl(d.icon) : null;
                     d.shortcut = options.shortcut;
-                    d.options = options.options;
+                    d.options = options.options || {};
                     
                     /*
                      * Add new service
@@ -533,7 +533,7 @@
                  * Set searchTerms
                  */
                 if (kvps[key].indexOf('searchTerms') === 1) {
-                    kvps[key] = self.$input.val();
+                    kvps[key] = encodeURIComponent(self.$input.val());
                 }
                 
                 /*
