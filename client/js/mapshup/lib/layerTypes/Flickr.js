@@ -165,10 +165,10 @@
         /*
          * Overide FeatureInfo setBody() function
          */
-        setFeatureInfoBody: function(feature, $d) {
+        setFeatureInfoBody: function(feature, $info) {
 
             var i,l,tags,$tags,
-                id = msp.Util.getId();
+            id = msp.Util.getId();
             
             /*
              * Photo page url :
@@ -176,31 +176,41 @@
              *
              * (see http://www.flickr.com/services/api/misc.urls.html)
              */
-            $d.html('<div class="info">'+feature.attributes['description']+'<br/><div class="tags"></div><br/><div class="center"><a target="_blank" href="http://www.flickr.com/photos/'+feature.attributes['owner']+'/'+feature.attributes['identifier']+'">'+msp.Util._("Go to flickr page")+'</a></div></div>');
+            $info.html('<div class="padded">'+feature.attributes['description']+'</div><div class="tags"></div><br/><div class="center"><a target="_blank" href="http://www.flickr.com/photos/'+feature.attributes['owner']+'/'+feature.attributes['identifier']+'">'+msp.Util._("Go to flickr page")+'</a></div>');
             
-            /*
-             * Popup image
-             */
-            $('#'+id).click(function() {
-                var $t = $(this);
-                msp.Util.showPopupImage($t.attr('href'), $t.attr('title'));
-                return false;
-            });
-            
-            $tags = $('.tags', $d);
+            $tags = $('.tags', $info);
             if (feature.attributes["tags"]) {
                 tags = feature.attributes["tags"].split(' ');
                 for (i = 0, l = tags.length ; i < l; i++) {
                     (function(tag, id) {
                         $tags.append('<a href="#" id="'+id+'">'+tag+'</a> ');
                         $('#' + id).click(function(){
-                            Map.addLayer({
-                                type:"Flickr",
-                                title:tag,
-                                q:tag
-                            },{
-                                noDeletionCheck:true
+                            msp.Util.askFor({
+                                title:msp.Util._("Search"),
+                                content:msp.Util._("Do you really want to search for")+" "+tag,
+                                dataType:"list",
+                                value:[{
+                                    title:msp.Util._("Yes"), 
+                                    value:"y"
+                                },
+                                {
+                                    title:msp.Util._("No"), 
+                                    value:"n"
+                                }
+                                ],
+                                callback:function(v){
+                                    if (v === "y") {
+                                        Map.addLayer({
+                                            type:"Flickr",
+                                            title:tag,
+                                            q:tag
+                                        },{
+                                            noDeletionCheck:true
+                                        });
+                                    }
+                                }
                             });
+                            
                             return false;
                         });
                     })(tags[i], msp.Util.getId());
