@@ -711,6 +711,7 @@
             popup = new msp.Popup({
                 modal:true,
                 autoSize:true,
+                centered:true,
                 header:'<p>'+options.title+'</p>',
                 body:options.content ? options.content : ''
                 
@@ -737,7 +738,7 @@
                     id = this.getId();
                     el = options.value[i];
                     icon = el.icon ? '<img class="middle" src="'+el.icon+'"/>&nbsp;' : '';
-                    popup.$b.append('<a href="#" class="button marged" id="'+id+'">'+icon+el.title+'</a>');
+                    popup.append('<a href="#" class="button marged" id="'+id+'">'+icon+el.title+'</a>', 'body');
                     
                     /*
                      * Return item value to callback on click
@@ -805,7 +806,7 @@
                     }
                 });
                 
-                popup.$b.append('<p class="big center padded"><br/><a href="#" class="button inline validate" id="'+id+'">'+msp.Util._("Set")+'</a></p>');
+                popup.append('<p class="big center padded"><br/><a href="#" class="button inline validate" id="'+id+'">'+msp.Util._("Set")+'</a></p>', 'body');
                 $('#'+id).click(function(){
                     if ($.isFunction(options.callback)) {
                         options.callback(data);
@@ -831,7 +832,7 @@
                 /*
                  * Append input text box to body
                  */
-                popup.$b.append('<input id="'+id+'" type="text" size="'+(options.size || 10)+'"/>');
+                popup.append('<input id="'+id+'" type="text" size="'+(options.size || 10)+'"/>', 'body');
                 
                 /*
                  * Set default value if defined

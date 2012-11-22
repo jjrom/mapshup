@@ -664,6 +664,17 @@ a.tab:hover
 */
 .fi {
     position:absolute;
+    width:auto;
+    min-width:200px;
+    height:40px;
+    color:#000;
+    background-color:#eee;
+    display:none;
+    z-index:20000;
+}
+/*
+.fi {
+    position:absolute;
     width:450px;
     height:250px;
     color:#000;
@@ -673,7 +684,6 @@ a.tab:hover
 }
 .fi .main {
     position:absolute;
-    /*background-color:#eee;*/
     top:5px;
     left:5px;
     right:5px;
@@ -775,7 +785,7 @@ a.tab:hover
 .fi tr:nth-child(even) {
     background:#ccc;
 }
-
+*/
 #_fit {
     padding-bottom:10px;
 }

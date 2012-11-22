@@ -59,19 +59,9 @@
         this.classes = options.classes;
         
         /*
-         * Html content for body
-         */
-        this.body = options.body;
-        
-        /*
          * Function callback called after popup is removed
          */
         this.onClose = options.onClose;
-        
-        /*
-         * Html content for header
-         */
-        this.header = options.header;
         
         /*
          * True to hide popup when closing it instead of remove it
@@ -91,6 +81,7 @@
         
         /*
          * True to not set a popup header
+         * !! WARNING !! If set to true, then 'header' parameter is discarded
          */
         this.noHeader = msp.Util.getPropertyValue(options, "noHeader", false);
         
@@ -105,11 +96,32 @@
         this.scope = options.scope || this;
         
         /*
+         * If true popup cannot be displayed outside of the map view
+         */
+        this.unbounded = msp.Util.getPropertyValue(options, "unbounded", false);
+        
+        /*
+         * If true popup position is fixed relatively to the map
+         * (i.e. it moves with the map). 
+         * !! WARNING !! Set the parameter to true overides the "unbounded" parameter
+         * since the popup is unbounded in this case
+         */
+        this.followMap = msp.Util.getPropertyValue(options, "followMap", false);
+        
+        /*
+         * Attach popup to the specified {OpenLayers.LonLat} map coordinates
+         * This option is onlu used if 'followMap' is true
+         */
+        this.mapXY = options.mapXY;
+        
+        /*
          * Initialize Popup object
          */
-        this.init = function() {
+        this.init = function(options) {
             
             var self = this;
+            
+            options = options || {};
             
             /*
              * Set an empty modal mask
@@ -157,21 +169,17 @@
             else {
                 /*
                  * Set popup under the mask
+                 * If popup followMap, then it is displayed behind Toolbars and LayersManager
                  */
                 self.$d.css({
-                    'z-index':'35900'
+                    'z-index':self.followMap ? '19000' : '35900'
                 });
             }
             
             /*
              * Set classes or automatic popup size
              */
-            if (self.classes) {
-                self.$d.addClass(self.classes);
-            }
-            else {
-                self.$d.addClass(self.autoSize ? 'poa' : 'pona'); 
-            }
+            self.$d.addClass(self.classes ? self.classes : (self.autoSize ? 'poa' : 'pona'));
             
             /*
              * Set body and header reference
@@ -182,15 +190,15 @@
             /*
              * Set header content
              */
-            if (self.header) {
-                self.$h.html(self.header);
+            if (options.header) {
+                self.$h.html(options.header);
             }
             
             /*
              * Set body content
              */
-            if (self.body) {
-                self.$b.html(self.body);
+            if (options.body) {
+                self.$b.html(options.body);
             }
             
             /*
@@ -208,6 +216,17 @@
             });
             
             /*
+             * Move popup on map move
+             */
+            if (options.followMap) {
+                msp.Map.map.events.register('move', msp.Map.map, function(){
+                    if (self.$d.is(':visible')) {
+                        self.updatePosition(self);
+                    }
+                });
+            }
+            
+            /*
              * Compute position on init
              */
             self.updatePosition(self);
@@ -215,7 +234,22 @@
             return self;
             
         };
-
+        
+        /**
+         * Append content to popup header or body
+         * 
+         * @param {String} html : HTML string to append
+         * @param {String} target : 'body' or 'header'
+         */
+        this.append = function(html, target) {
+            
+            var $div = target === 'header' ? this.$h : this.$b;
+            
+            $div.append(html);
+            this.updatePosition(this);
+            
+        };
+        
         /*
          * Update position and size of div
          */
@@ -226,23 +260,37 @@
             scope = scope || this;
             
             /*
-             * If window is not resizable, do nothing
+             * Popup body max height is equal to 75% of its container
              */
-            if (!scope.resize) {
-                return;
+            if (scope.resize) {
+                scope.$b.css({
+                    'max-height':Math.round( (3 * ($c.height() - scope.$h.height())) / 4)
+                });
             }
             
             /*
-             * Popup body max height is equal to 75% of its container
+             * Center popup if needed
              */
-            scope.$b.css({
-                'max-height':Math.round( (3 * ($c.height() - scope.$h.height())) / 4)
-            });
+            if (scope.center) {
+                scope.center(scope);
+            }
             
             /*
-             * Center popup
+             * Follow map
              */
-            scope.center(scope);
+            if (scope.followMap && scope.mapXY) {
+                
+                var xy = msp.Map.map.getPixelFromLonLat(scope.mapXY);
+                    
+                /*
+                 * Set action info menu position
+                 */
+                scope.$d.css({
+                    'left': xy.x - 31, //'left': xy.x - self.$d.outerWidth() + 31,
+                    'top': xy.y - scope.$d.outerHeight() - 12 // 'top': xy.y + 12
+                });
+                
+            }
             
         };
         
@@ -280,9 +328,22 @@
         
         /**
          * 
+         * Attach popup to the specified map coordinates
+         * when the popup 'followMap'
+         * 
+         * @param {OpenLayers.LonLat} mapXY
+         * 
+         */
+        this.setMapXY = function(mapXY) {
+            this.mapXY = mapXY;
+            this.updatePosition(this);
+        };
+        
+        /**
+         * 
          * Move popup to be centered on pixel
          * 
-         * @input {Object} MapPixel : pixel in {x,y} relative to the map
+         * @param {Object} MapPixel : pixel in {x,y} relative to the map
          * 
          */
         this.moveTo = function(MapPixel) {
@@ -316,11 +377,11 @@
                 x = offset.left + ((parent.width() - $d.width()) / 2);
                 y = offset.top + ((parent.height() - $d.height()) / 2);
             }
-
             /*
-             * Check if div can be centered on xy
+             * Non unbounded popup are enterely contained within the map view
              */
-            else {
+            else if (!this.unbounded) {
+                
                 /*
                  * div left is far too left
                  */
@@ -356,8 +417,12 @@
                  * div top is ok
                  */
                 else {
-                    y = pixel.y - ($d.height() / 2)
+                    y = pixel.y - ($d.height() / 2);
                 }
+            }
+            else {
+                x = pixel.x - ($d.width() / 2);
+                y = pixel.y - ($d.height() / 2);
             }
 
             /*
@@ -390,12 +455,38 @@
             if (!noUpdate) {
                 this.updatePosition(this);
             }
+            
+            if (this.followMap) {
+                /*
+                * Move the map to ensure that feature info panel is completely
+                * visible
+                */
+                var lmo = $('.lm').offset(), // Check if LayersManager is visible
+                    dy = this.$d.offset().top - msp.$map.offset().top - (lmo ? lmo.top : 0),
+                    dx = msp.$map.offset().left + msp.$map.width() - this.$d.offset().left - this.$d.outerWidth(),
+                    c;
+
+                if (dx > 0) {
+                    dx = 0;
+                }
+                if (dy > 0) {
+                    dy = 0;
+                }
+                
+                /*
+                 * Transform pixels to meters
+                 */
+                if (dx < 0 || dy < 0) {
+                    c = msp.Map.map.getPixelFromLonLat(msp.Map.map.getCenter());
+                    msp.Map.map.setCenter(msp.Map.map.getLonLatFromPixel(new OpenLayers.Pixel(c.x - dx, c.y + dy)));
+                }
+            }
         };
 
         /*
          * Initialize object
          */
-        this.init();
+        this.init(options);
         
         return this;
     }
