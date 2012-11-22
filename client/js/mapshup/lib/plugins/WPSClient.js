@@ -260,7 +260,7 @@
             /*
              * Add a nice scrollbar :)
              */
-            $processes.mCustomScrollbar();
+            //$processes.mCustomScrollbar();
             
         };
         
@@ -335,8 +335,8 @@
             /*
              * Add nice scrollbars :)
              */
-            $inputsList.mCustomScrollbar();
-            $outputsList.mCustomScrollbar();
+            //$inputsList.mCustomScrollbar();
+            //$outputsList.mCustomScrollbar();
         
         };
         
