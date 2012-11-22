@@ -821,8 +821,8 @@
              * Set quicklook width and height to respectively
              * 40% and 90% of the main wrapper 
              */
-            $('.body', $target).append(ql ? '<div class="ql" style="float:left;width:50%;"><img src="'+ql+'"/></div><div class="info" style="float:right;width:50%;"></div>' : '<div class="info"></div>');
-            $('.ql', $target).css({
+            $('.body', $target).append(ql ? '<div class="ql" style="float:left;width:50%;"><img src="'+ql+'"/></div><div class="info" style="width:50%;"></div>' : '<div class="info"></div>');
+            $('.ql img', $target).css({
                 'max-width':Math.round($('#mwrapper').width() * 4 / 10),
                 'max-height':Math.round($('#mwrapper').height() * 9 / 10)
             });
@@ -837,26 +837,6 @@
              */
             $tabs = $('.tabs', $target);
            
-            /*
-             * Add an action on "Add Quicklook to map" link
-             * This action is added only if layer allow to display Quicklook on the map
-             */
-            /*
-            if (feature.layer["_msp"].qlToMap) {
-                id = msp.Util.getId()
-                $thumb.append('<br/><a href="#" class="center" id="'+id+'">'+msp.Util._('Add quicklook to map')+'</a>');
-                $('#'+id).click(function() {
-                    msp.Map.addLayer({
-                        type:"Image",
-                        title:feature.attributes['identifier'],
-                        url:feature.attributes['quicklook'],
-                        bbox:feature.geometry.getBounds().toBBOX(),
-                        // By default, quicklooks are added to the "Quicklooks" group 
-                        groupName:"Quicklooks"
-                    });
-                });
-            }
-            *
             /*
              * Roll over layer types to detect layer features that should be
              * displayed using a dedicated setFeatureInfoBody function
@@ -1020,21 +1000,21 @@
                                     else {
                                         for (kkk in v[kk]) {
                                             ts = msp.Map.Util.Feature.translate(kkk, feature);
-                                            d.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
+                                            d.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 20, true) + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
                                         }
                                     }
 
                                 }
                                 else {
                                     ts = msp.Map.Util.Feature.translate(k, feature);
-                                    $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + ' &rarr; ' + msp.Map.Util.Feature.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
+                                    $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 20, true) + ' &rarr; ' + msp.Map.Util.Feature.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
                                 }
                             }
 
                         }
                         else {
                             ts = msp.Map.Util.Feature.translate(k, feature);
-                            $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 15, true) + '</td><td>&nbsp;</td><td>' + msp.Map.Util.Feature.getValue(feature,k,v) + '</td></tr>');
+                            $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 20, true) + '</td><td>&nbsp;</td><td>' + msp.Map.Util.Feature.getValue(feature,k,v) + '</td></tr>');
                         }
                     }
                 }
