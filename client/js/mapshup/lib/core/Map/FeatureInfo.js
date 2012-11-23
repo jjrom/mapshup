@@ -241,6 +241,18 @@
             });
             
             /*
+            * Add "switch layer visibility"
+            */
+            tools.push({
+                id:msp.Util.getId(),
+                icon:"hide.png",
+                title:"Hide the parent layer",
+                callback:function(a, f) {
+                    msp.Map.Util.setVisibility(f.layer, false);
+                }
+            });
+            
+            /*
              * services defines specific tools and should contains optional properties
              *      - download : to add a download action
              *      - browse : to add a layer
@@ -1000,21 +1012,21 @@
                                     else {
                                         for (kkk in v[kk]) {
                                             ts = msp.Map.Util.Feature.translate(kkk, feature);
-                                            d.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 20, true) + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
+                                            d.append('<tr><td title="'+ts+'">' + ts + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
                                         }
                                     }
 
                                 }
                                 else {
                                     ts = msp.Map.Util.Feature.translate(k, feature);
-                                    $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 20, true) + ' &rarr; ' + msp.Map.Util.Feature.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
+                                    $info.append('<tr><td title="'+ts+'">' + ts, 20 + ' &rarr; ' + msp.Map.Util.Feature.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
                                 }
                             }
 
                         }
                         else {
                             ts = msp.Map.Util.Feature.translate(k, feature);
-                            $info.append('<tr><td title="'+ts+'">' + msp.Util.shorten(ts, 20, true) + '</td><td>&nbsp;</td><td>' + msp.Map.Util.Feature.getValue(feature,k,v) + '</td></tr>');
+                            $info.append('<tr><td title="'+ts+'">' + ts + '</td><td>&nbsp;</td><td>' + msp.Map.Util.Feature.getValue(feature,k,v) + '</td></tr>');
                         }
                     }
                 }
