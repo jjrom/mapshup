@@ -269,7 +269,7 @@
                         layerDescription.capabilities = availableLayer.capabilities;
                         layerDescription.describeFeatureType = availableLayer.describeFeatureType;
                         if (doCall) {
-                            //callback(self.getLayerDescriptions(layerDescription));
+                            callback(self.getLayerDescriptions(layerDescription));
                         }
                         return true;
                     }
