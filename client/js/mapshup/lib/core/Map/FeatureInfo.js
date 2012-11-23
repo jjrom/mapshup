@@ -549,7 +549,7 @@
             /*
              * Hide menu
              */
-            msp.menu.hide();
+            //msp.menu.hide();
             
             /*
              * Set the current selected object
@@ -672,7 +672,7 @@
                     /*
                      * Hide feature info panel
                      */
-                    msp.menu.hide();
+                    //msp.menu.hide();
                     self.popup.hide();
                     
                 }
