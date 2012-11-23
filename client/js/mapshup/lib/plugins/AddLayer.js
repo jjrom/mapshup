@@ -672,7 +672,9 @@
             /*
              * Show popup
              */
-            self.popup.show();
+            if (self.popup) {
+                self.popup.show();
+            }
             
             return true;
         };
