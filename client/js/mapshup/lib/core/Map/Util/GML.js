@@ -97,6 +97,13 @@
                 else if (gt === "OpenLayers.Geometry.LineString") {
                     gml = this.geometryLineStringToGML(feature.geometry);                    
                 }
+                else if (gt === "OpenLayers.Geometry.MultiLineString") {
+                    if (feature.geometry.components) {
+                        for (var i = 0, l = feature.geometry.components.length; i < l; i++) {
+                            gml += this.geometryLineStringToGML(feature.geometry.components[i]);
+                        }
+                    }
+                }
                 else if (gt === "OpenLayers.Geometry.Polygon") {
                     return this.geometryPolygonToGML(feature.geometry); 
                 }
@@ -138,7 +145,7 @@
         geometryLineStringToGML: function(geometry) {
             
             var point, gml = '';
-            
+            console.log(geometry);
             /*
              * LineString geometry get a "components" array of points
              */
