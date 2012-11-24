@@ -61,7 +61,7 @@
         /*
          * Panel width
          */
-        this.w = msp.Util.getPropertyValue(options, "w", '60%');
+        this.w = msp.Util.getPropertyValue(options, "w", '70%');
         
         /**
          * Current tabs page number
