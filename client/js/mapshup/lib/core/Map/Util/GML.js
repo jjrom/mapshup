@@ -291,7 +291,7 @@
              * First children is gml:posList
              */
             return JSON.parse(msp.Util.parseTemplate(this.geoJSONTemplate,{
-                geometry:'{"type":"LineString","coordinates":['+Map.Util.posListToGeoJsonGeometry(gml.children().text()).join(",")+']}',
+                geometry:'{"type":"LineString","coordinates":['+Map.Util.posListToGeoJsonGeometry(gml.children().text())+']}',
                 properties:JSON.stringify(properties)
             }));
             
@@ -318,7 +318,7 @@
              * First children is gml:posList
              */
             return JSON.parse(msp.Util.parseTemplate(this.geoJSONTemplate,{
-                geometry:'{"type":"LineString","coordinates":['+Map.Util.posListToGeoJsonGeometry(gml.children().text()).join(",")+']}',
+                geometry:'{"type":"LineString","coordinates":['+Map.Util.posListToGeoJsonGeometry(gml.children().text())+']}',
                 properties:JSON.stringify(properties)
             }));
             
