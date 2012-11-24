@@ -133,7 +133,7 @@
                             title:wps.title,
                             classes:"wpsclient",
                             mask:true,
-                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes"></div></div><div style="float:right;width:60%;"><div class="describe">'+msp.Util._("No process selected")+'</div><form method="POST" action="#"><div class="inputs"></div></form><div class="outputs"></div></div>'
+                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes"></div></div><div style="float:right;width:60%;"><div class="describe">'+msp.Util._("No process selected")+'</div><form method="POST" action="#"><div class="puts"></div></form><div class="outputs"></div></div>'
                         });
                         
                         /*
@@ -205,11 +205,8 @@
          *                  </div>
          *              </div>
          *              <form>
-         *                  <div class="inputs">
-         *                      // Display interactive InputsData
-         *                  </div>
-         *                  <div class="outputs">
-         *                      // Display interactive OutputsData
+         *                  <div class="puts">
+         *                      // Display interactive InputsData and OutputsData
          *                  </div>
          *              </form>
          *          </div>
@@ -272,7 +269,7 @@
          */
         this.updateDescribeProcessContent = function(process) {
             
-            var executeId = msp.Util.getId(), $inputsList, $outputsList, item = this.items[process.wps.url];
+            var type, putsDescription, i, j, l, id, $id, put, $list, executeId = msp.Util.getId(), item = this.items[process.wps.url];
             
             /*
              * Set '.info' div
@@ -291,30 +288,29 @@
             msp.tooltip.add($('#'+executeId), 'n', 20);
             
             /*
-             * Set '.inputs' and '.outputs' div
+             * Set '.puts' div
              * 
              * Entering the awfully complicated part of the code :D
              * 
              * Three types of InputsData (OutputsData) exist :
              *  
              *      - complexData (complexOuput) : basically something to upload to the WPS server
+             *                                     This could be an image, a geometry, etc.
+             *                                     Since most implementation support only reference to 
+             *                                     uploaded data, mapshup first upload drag&drop file
+             *                                     to the mapshup server and then send back an url
+             *                                     to the uploaded file that is referenced within
+             *                                     the TODO
+             *                                     
              *      
              *      - boundingBoxData (boundingBoxOutput) : an input bbox (i.e. a geometry)
              *      
              *      - literalData (literalOutput) : basically an input text form containing one of
-             *                         the supported dataType
+             *                                      the supported dataType (Double, String, etc.)
              * 
              * 
              * HTML structures :
-             *      <div class="inputs">
-             *          <div class="list">
-             *              <div id="id">
-             *                  <span class="title paddedright">Title (or identifier if title is null)</span>
-             *              </p>
-             *          </div>
-             *      </div>
-             *      
-             *      <div class="outputs">
+             *      <div class="puts">
              *          <div class="list">
              *              <div id="id">
              *                  <span class="title paddedright">Title (or identifier if title is null)</span>
@@ -323,20 +319,73 @@
              *      </div>      
              * 
              */
-            $('.inputs', item.$d).html('<h1>'+msp.Util._('Set inputs')+'</h1><div class="list"></div>');
-            $('.outputs', item.$d).html('<h1>'+msp.Util._('Result')+'</h1><div class="list"></div>');
+            $('.puts', item.$d).html('<h1>'+msp.Util._('Set inputs')+'</h1><div class="list"></div>');
+            $list = $('.list', $('.puts', item.$d));
             
-            $inputsList = $('.list', $('.inputs', item.$d));
-            $outputsList = $('.list', $('.outputs', item.$d));
-            
-            this.displayPuts(process, process.dataInputsDescription, 'input', $inputsList);
-            this.displayPuts(process, process.processOutputsDescription, 'output', $outputsList);
+            /*
+             * Roll over dataInputs and processOutputs
+             */
+            type = 'input';
+            putsDescription = process.dataInputsDescription;
+            for (j = 0; j < 2; j++) {
+                
+                if (j === 1) {
+                    type = 'input';
+                    putsDescription = process.processOutputsDescription;
+                }
+                
+                for (i = 0, l = putsDescription.length; i < l; i++) {
+
+                    put = putsDescription[i];
+                    id = msp.Util.getId();
+
+                    /*
+                     * Create Input or Output div with a CSS 'input' class.
+                     * The 'input' (or 'output') class is necessary since the pre-execute function
+                     * will roll over each div with class 'input' (or 'output') to construct the
+                     * execute query.
+                     * 
+                     */
+                    $list.append('<div id="'+id+'" class="'+type+'"><span class="title paddedright" jtitle="'+put['abstract']+'">'+(put['title'] || put['identifier'])+' :</span></div>');
+
+                    /*
+                     * Attach Input identifier to the 'input' div
+                     * This is done by using the jQuery .data() function
+                     */
+                    $id = $("#"+id).data('identifier', put['identifier']);
+
+                    /*
+                     * Add a tooltip on the input title
+                     * This tooltip contains input abstract
+                     */
+                    msp.tooltip.add($(".title", $id), 'w');
+
+                    /*
+                     * The hard part...
+                     */
+                    if (put.literalData) {
+                        this.displayLiteralData(process, put, $id);
+                    }
+                    else if (put.literalOutput) {
+                        this.displayLiteralOutput(process, put, $id);
+                    }
+                    else if (put.complexData) {
+                        this.displayComplexData(process, put, $id);
+                    }
+                    else if (put.complexOutput) {
+                        this.displayComplexOutput(process, put, $id);
+                    }
+                    else if (put.boundingBoxData) {
+                        $id.append("// TODO");
+                    }
+
+                }
+            }
             
             /*
              * Add nice scrollbars :)
              */
             //$inputsList.mCustomScrollbar();
-            //$outputsList.mCustomScrollbar();
         
         };
         
@@ -385,78 +434,6 @@
             return true;
             
         };
-        
-        /**
-         * Display Inputs and Outputs
-         * 
-         * @param {Object} process
-         * @param {Object} putsDescription : process.dataInputsDescription or process.processOutuptsDescription
-         * @param {String} type: 'input' or 'output'
-         * @param {Object} $list : jQuery DOM element referencing $('.list', '.inputs') or $('.list', '.outputs')
-         * 
-         */
-        this.displayPuts = function(process, putsDescription, type, $list) {
-            
-            var id, $id, put;
-            
-            if (!putsDescription) {
-                return;
-            }
-            
-            /*
-             * Roll over dataInputs
-             */
-            for (var i = 0, l = putsDescription.length; i < l; i++) {
-                
-                put = putsDescription[i];
-                id = msp.Util.getId();
-                
-                /*
-                 * Create Input or Output div with a CSS 'input' class.
-                 * The 'input' (or 'output') class is necessary since the pre-execute function
-                 * will roll over each div with class 'input' (or 'output') to construct the
-                 * execute query.
-                 * 
-                 */
-                $list.append('<div id="'+id+'" class="'+type+'"><span class="title paddedright" jtitle="'+put['abstract']+'">'+(put['title'] || put['identifier'])+' :</span></div>');
-                
-                /*
-                 * Attach Input identifier to the 'input' div
-                 * This is done by using the jQuery .data() function
-                 */
-                $id = $("#"+id).data('identifier', put['identifier']);
-                
-                /*
-                 * Add a tooltip on the input title
-                 * This tooltip contains input abstract
-                 */
-                msp.tooltip.add($(".title", $id), 'w');
-                
-                /*
-                 * The hard part...
-                 */
-                if (put.literalData) {
-                    this.displayLiteralData(process, put, $id);
-                }
-                else if (put.literalOutput) {
-                    this.displayLiteralOutput(process, put, $id);
-                }
-                else if (put.complexData) {
-                    this.displayComplexData(process, put, $id);
-                }
-                else if (put.complexOutput) {
-                    this.displayComplexOutput(process, put, $id);
-                }
-                else if (put.boundingBoxData) {
-                    $id.append("// TODO");
-                }
-                
-            }
-            
-            return;
-            
-        };
-        
         
         /**
          * Append form for LiteralData within $parent container
@@ -635,8 +612,7 @@
             }
             
         };
-        
-        
+       
         /**
          * Append form for LiteralOutput within $parent container 
          * 
@@ -915,12 +891,15 @@
          *          supported:[] // array of supported mimeType
          *      }
          *      
-         *   Append the following structure to $parent
+         *   Append the following structure to $parent for non geometrical output
          *   
          *      <span id="idv" class="hilite">---</span>
-         *      
          *   
-         *   IMPORTANT : jQuery .data() is used to store addtionnal information on value
+         *   For geometrical output (i.e. msp.Map.Util.getGeoType(data["default"].mimeType) is not null)
+         *   then nothing is appended to $parent container, since geometrical results are directly
+         *   displayed within the map
+         *   
+         *   IMPORTANT : jQuery .data() is used to store additionnal information on value
          *   (for example UOM if specified)
          *   
          *   @param {Object} process : msp.WPS.Process
@@ -933,48 +912,57 @@
             var type = 'output', data = put.complexOutput, id = $parent.attr('id'), self = this;
             
             /*
-             * Store Input type within $parent.data()
+             * Geometrical output options are not displayed within $parent
              */
-            $parent
-            .append('<span id="'+id+'v" class="bold">---</span>')
-            .data('type', 'ComplexOutput');
-            
-            /*
-             * Add output to process
-             */
-            self.setPuts(process, type);
-            
-            /*
-             * Create a <select> form
-             */
-            $parent.append('<span class="paddedleft"><select id="'+id+'vmtype"></select></span>');
-
-            /*
-            * Store mimeType value for parent $parent on change selection within .data() store
-            */
-            $mtype = $('#'+id+'vmtype').change(function(){
-                $parent.data('mimeType', $(this).val());
+            if (msp.Map.Util.getGeoType(data["default"].mimeType)){
+                $parent.data('mimeType', data["default"].mimeType).hide();
                 self.setPuts(process, type);
-            });
-
-            for (var i = 0, l = data.supported.length; i< l; i++) {
-                (function($mtype, v, d) {
-
-                    /*
-                     * Add a new option in the select form
-                     */
-                    $mtype.append('<option value="'+v+'">'+v+'</option>');
-
-                    /*
-                     * The default mimeType is selected within the list of possible mimeTypes
-                     */
-                    if (v === d) {
-                        $('option:last-child', $mtype).attr("selected", "selected").change();
-                    }
-
-                })($mtype, data.supported[i].mimeType, data["default"].mimeType);
             }
+            else {
+            
+                /*
+                 * Store Input type within $parent.data()
+                 */
+                $parent
+                .append('<span id="'+id+'v" class="bold">---</span>')
+                .data('type', 'ComplexOutput');
 
+                /*
+                 * Add output to process
+                 */
+                self.setPuts(process, type);
+
+                /*
+                 * Create a <select> form
+                 */
+                $parent.append('<span class="paddedleft"><select id="'+id+'vmtype"></select></span>');
+
+                /*
+                * Store mimeType value for parent $parent on change selection within .data() store
+                */
+                $mtype = $('#'+id+'vmtype').change(function(){
+                    $parent.data('mimeType', $(this).val());
+                    self.setPuts(process, type);
+                });
+
+                for (var i = 0, l = data.supported.length; i< l; i++) {
+                    (function($mtype, v, d) {
+
+                        /*
+                         * Add a new option in the select form
+                         */
+                        $mtype.append('<option value="'+v+'">'+v+'</option>');
+
+                        /*
+                         * The default mimeType is selected within the list of possible mimeTypes
+                         */
+                        if (v === d) {
+                            $('option:last-child', $mtype).attr("selected", "selected").change();
+                        }
+
+                    })($mtype, data.supported[i].mimeType, data["default"].mimeType);
+                }
+            }
         };
         
         

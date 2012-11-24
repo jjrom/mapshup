@@ -1739,15 +1739,6 @@ td.clear {
     line-height:35px;
     overflow:auto;
 }
-.wpsclient .inputs {
-    float:left;
-    width:50%;
-}
-.wpsclient .outputs {
-    float:right;
-    width:50%;
-}
-
 .wpsclient .hilite {
     background-color:olivedrab;
     padding:4px;
