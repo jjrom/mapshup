@@ -228,7 +228,7 @@
              */
             $('.item', scope.$m).remove();
            
-            for (i = 0, l; i < l; i++) {
+            for (i = 0; i < l; i++) {
                 (function(item, $m) {
                 
                     /*
