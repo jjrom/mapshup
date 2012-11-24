@@ -330,7 +330,7 @@
             for (j = 0; j < 2; j++) {
                 
                 if (j === 1) {
-                    type = 'input';
+                    type = 'output';
                     putsDescription = process.processOutputsDescription;
                 }
                 
@@ -394,7 +394,7 @@
          */
         this.updateOutputContent = function(process) {
             
-            var i, l, geoType, result, item = this.items[process.wps.url], $outputsList = $('.output', $('.outputs', item.$d));
+            var i, l, geoType, result, item = this.items[process.wps.url], $outputsList = $('.output', item.$d);
             
             if (!$.isArray(process.result)) {
                 return false;
@@ -912,20 +912,24 @@
             var type = 'output', data = put.complexOutput, id = $parent.attr('id'), self = this;
             
             /*
+             * In any case store parent type and mimeType
+             */
+            $parent.data('mimeType', data["default"].mimeType)
+            .data('type', 'ComplexOutput');
+            
+            /*
              * Geometrical output options are not displayed within $parent
              */
             if (msp.Map.Util.getGeoType(data["default"].mimeType)){
-                $parent.data('mimeType', data["default"].mimeType).hide();
                 self.setPuts(process, type);
+                $parent.hide();
             }
             else {
             
                 /*
                  * Store Input type within $parent.data()
                  */
-                $parent
-                .append('<span id="'+id+'v" class="bold">---</span>')
-                .data('type', 'ComplexOutput');
+                $parent.append('<span id="'+id+'v" class="bold">---</span>');
 
                 /*
                  * Add output to process
