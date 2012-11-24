@@ -40,15 +40,15 @@
  * Context sharing
  * 
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Share = function() {
+    M.Plugins.Share = function() {
         
         /*
          * Only one Share object instance is created
          */
-        if (msp.Plugins.Share._o) {
-            return msp.Plugins.Share._o;
+        if (M.Plugins.Share._o) {
+            return M.Plugins.Share._o;
         }
         
         /**
@@ -75,15 +75,15 @@
             $.extend(self.options, {
                 saveContextServiceUrl:self.options.saveContextServiceUrl || "/plugins/logger/saveContext.php?",
                 getContextsServiceUrl:self.options.getContextsServiceUrl || "/plugins/logger/getContexts.php?",
-                shareEmbed:msp.Util.getPropertyValue(self.options, "shareEmbed", false),
-                geocode:msp.Util.getPropertyValue(self.options, "geocode", true)
+                shareEmbed:M.Util.getPropertyValue(self.options, "shareEmbed", false),
+                geocode:M.Util.getPropertyValue(self.options, "geocode", true)
             });
 
             /*
              * Add share action within header toolbar 
              */
-            (new msp.Toolbar({
-                parent:$('.leftBar', msp.$header), 
+            (new M.Toolbar({
+                parent:$('.leftBar', M.$header), 
                 classes:'shr'
             })).add({
                 icon:"share.png",
@@ -105,7 +105,7 @@
             /*
              * Get map extent
              */
-            var p, data, context = JSON.stringify(msp.Map.getContext()); // Get serialized context
+            var p, data, context = JSON.stringify(M.Map.getContext()); // Get serialized context
             
             /*
              * Save context unless it was already saved
@@ -115,10 +115,10 @@
                 /*
                  * Get projected map extend
                  */
-                p = msp.Map.Util.p2d(msp.Map.map.getExtent().clone());
+                p = M.Map.Util.p2d(M.Map.map.getExtent().clone());
                 
                 data = {
-                    userid:msp.Util.getUserInfo().userid, // Get userid
+                    userid:M.Util.getUserInfo().userid, // Get userid
                     context:context,
                     bbox:p.left+","+p.bottom+","+p.right+","+p.top
                 }
@@ -133,15 +133,15 @@
                  * Method POST is used to avoid "maximum length url" server error
                  * 
                  */
-                msp.Util.ajax({
-                    url:msp.Util.getAbsoluteUrl(scope.options.saveContextServiceUrl+msp.Util.abc),
+                M.Util.ajax({
+                    url:M.Util.getAbsoluteUrl(scope.options.saveContextServiceUrl+M.Util.abc),
                     async:true,
                     dataType:"json",
                     type:"POST",
                     data:data,
                     success: function(data) {
                         if (data.error) {
-                            msp.Util.message(data.error["message"]);
+                            M.Util.message(data.error["message"]);
                         }
                         else {
                             
@@ -164,7 +164,7 @@
 
                     }
                 },{
-                    title:msp.Util._("Saving context"),
+                    title:M.Util._("Saving context"),
                     cancel:true
                 });
 
@@ -183,8 +183,8 @@
             /*
              * Retrieve contexts
              */
-            msp.Util.ajax({
-                url:msp.Util.proxify(msp.Util.getAbsoluteUrl(scope.options.getContextsServiceUrl)+"userid="+msp.Util.getUserInfo().userid),
+            M.Util.ajax({
+                url:M.Util.proxify(M.Util.getAbsoluteUrl(scope.options.getContextsServiceUrl)+"userid="+M.Util.getUserInfo().userid),
                 async:true,
                 dataType:"json",
                 success: function(data) {
@@ -193,7 +193,7 @@
                      * Parse result
                      */
                     if (data.error) {
-                        msp.Util.message(data.error["message"]);
+                        M.Util.message(data.error["message"]);
                     }
                     else {
 
@@ -221,7 +221,7 @@
                             /*
                              * Generate unique id
                              */
-                            id = msp.Util.getId();
+                            id = M.Util.getId();
 
                             /*
                              * Get the date (YYYY-MM-DD) and time (HH:MM) from utc time (10 first characters)
@@ -243,8 +243,8 @@
                             else {
                                 scope.$d.append('<br/>');
                             }
-                            id = msp.Util.getId();
-                            scope.$d.append('&nbsp; <a href="#" id="'+id+'">'+time+' - '+msp.Util._(data.contexts[i].location)+'</a>');
+                            id = M.Util.getId();
+                            scope.$d.append('&nbsp; <a href="#" id="'+id+'">'+time+' - '+M.Util._(data.contexts[i].location)+'</a>');
 
                             /*
                              * Add link to load context
@@ -255,7 +255,7 @@
                                     /*
                                      * Load the context
                                      */
-                                    msp.Map.loadContext(JSON.parse(context.context));
+                                    M.Map.loadContext(JSON.parse(context.context));
 
                                     /*
                                      * Set this new context as the last saved/load context
@@ -274,7 +274,7 @@
 
                 }
             },{
-                title:msp.Util._("Contexts retrieving"),
+                title:M.Util._("Contexts retrieving"),
                 cancel:true
             });
 
@@ -286,10 +286,10 @@
         this.share = function() {
             
             var self = this,
-            url = msp.Config["general"].rootUrl+msp.Config["general"].indexPath+"?uid="+self.last["uid"],
-            popup = new msp.Popup({
+            url = M.Config["general"].rootUrl+M.Config["general"].indexPath+"?uid="+self.last["uid"],
+            popup = new M.Popup({
                 modal:true,
-                header:'<p>'+msp.Util._("Share")+' : ' + self.last["location"] + ' - ' + self.last["utc"].substring(0,10) + '</p>',
+                header:'<p>'+M.Util._("Share")+' : ' + self.last["location"] + ' - ' + self.last["utc"].substring(0,10) + '</p>',
                 body:'<div class="share"><div><a href="#" target="_blank" class="button inline facebook">&nbsp;&nbsp;facebook&nbsp;&nbsp;</a><a href="#" target="_blank" class="button inline twitter">&nbsp;&nbsp;twitter&nbsp;&nbsp;</a><a href="#" class="button inline email">&nbsp;&nbsp;email&nbsp;&nbsp;</a></div></div>'
             });
 
@@ -313,7 +313,7 @@
              * Share by email
              */
             $('.email', popup.$b).click(function() {
-                $(this).attr('href', 'mailto:?subject=[mapshup] '+ msp.Util._("Look at this map")+'&body='+msp.Util._("Take a look at  ")+url);
+                $(this).attr('href', 'mailto:?subject=[mapshup] '+ M.Util._("Look at this map")+'&body='+M.Util._("Take a look at  ")+url);
                 return true;
             });
 
@@ -321,7 +321,7 @@
              * Embed code
              */
             if (self.options.shareEmbed) {
-                $('.share', popup.$b).append('<div class="embed"><h1>'+msp.Util._("Embed code in your website")+'</h1><textarea rows="4" class="code"></textarea></div>');
+                $('.share', popup.$b).append('<div class="embed"><h1>'+M.Util._("Embed code in your website")+'</h1><textarea rows="4" class="code"></textarea></div>');
                 $('.code', popup.$b).val('<iframe width="1024" height="600" frameBorder="0" src="'+url+'"></iframe>');
             }
             
@@ -332,10 +332,10 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Share._o = this;
+        M.Plugins.Share._o = this;
         
         return this;
         
     };
     
-})(window.msp);
+})(window.M);

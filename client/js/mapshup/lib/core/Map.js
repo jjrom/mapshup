@@ -35,19 +35,19 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-(function(msp) {
+(function(M) {
     
     /*
-     * Initialize msp.Map
+     * Initialize M.Map
      */
-    msp = msp || {};
+    M = M || {};
     
     /*
-     * Initialize msp.Map
+     * Initialize M.Map
      * 
      * This is the main mapshup object
      */
-    msp.Map = {
+    M.Map = {
         
         /**
          * Reference to featureHilite jquery object
@@ -145,7 +145,7 @@
                 self.items[p["type"]] = self.items[p["type"]] || [];
                 t = self.items[p["type"]]
                 for (i = 0, l = t.length; i < l; i++) {
-                    if ((new msp.Map.LayerDescription(t[i], msp.Map)).getMspID() === (new msp.Map.LayerDescription(p, msp.Map)).getMspID()) {
+                    if ((new M.Map.LayerDescription(t[i], M.Map)).getMID() === (new M.Map.LayerDescription(p, M.Map)).getMID()) {
                         add = false;
                         break;
                     }
@@ -185,10 +185,10 @@
             add: function(layer) {
                 layer.events.on({
                     "featureselected":function(e) {
-                        msp.Map.featureInfo.select(e["feature"]);
+                        M.Map.featureInfo.select(e["feature"]);
                     },
                     "featureunselected":function(e) {
-                        msp.Map.featureInfo.unselect(e["feature"]);
+                        M.Map.featureInfo.unselect(e["feature"]);
                     }
                 });
                 this.items.push(layer);
@@ -197,11 +197,11 @@
                  * By default, selectable layer is hilitable
                  * unless specified that it is not
                  */
-                if (layer['_msp'].hilitable) {
-                    msp.Map.hilitableLayers.add(layer);
+                if (layer['_M'].hilitable) {
+                    M.Map.hilitableLayers.add(layer);
                 }
                 
-                msp.Map.resetControl();
+                M.Map.resetControl();
             },
 
             /**
@@ -220,7 +220,7 @@
                  * By default, selectable layer is hilitable
                  * unless specified that it is not
                  */
-                msp.Map.hilitableLayers.remove(layer);
+                M.Map.hilitableLayers.remove(layer);
                  
             }
         },
@@ -264,7 +264,7 @@
          *  @input {object} layerDescription : layer description object (see layerTypes js files)
          *  @input {Object} options : options can be
          *          {boolean} noDeletionCheck : if 'true', user is not request if the added layer replace an existing one
-         *          {boolean} forceInitialized : if true, the layer["_msp"].initialized is set to true and thus the map
+         *          {boolean} forceInitialized : if true, the layer["_M"].initialized is set to true and thus the map
          *                                      is not zoom on layer after load
          */
         addLayer: function(_layerDescription, _options) {
@@ -278,7 +278,7 @@
             /**
              * By default, check for deletion
              */
-            var noDeletionCheck = msp.Util.getPropertyValue(_options, "noDeletionCheck", false);
+            var noDeletionCheck = M.Util.getPropertyValue(_options, "noDeletionCheck", false);
 
             /*
              * Create a layerDescriptionObj from current layerDescription
@@ -300,21 +300,21 @@
             }
 
             /**
-             * Each layer must include a _msp object wich contains 
-             * specific msp properties
+             * Each layer must include a _M object wich contains 
+             * specific M properties
              * 
-             * One of this property, mspID, is a unique and mandatory identifier
-             * based on a checksum (see msp.crc32 method)
+             * One of this property, MID, is a unique and mandatory identifier
+             * based on a checksum (see M.crc32 method)
              */
-            var mspID = ldo.getMspID();
+            var MID = ldo.getMID();
 
             /**
-             * Check if newLayer already exist. Based on mspID uniqueness
+             * Check if newLayer already exist. Based on MID uniqueness
              */
-            var newLayer = this.Util.getLayerByMspID(mspID);
+            var newLayer = this.Util.getLayerByMID(MID);
 
             /**
-             * If layer is already defined, replace it unless msp.Config.general.confirmDeletion
+             * If layer is already defined, replace it unless M.Config.general.confirmDeletion
              * is set to true.
              * In this case, ask for deletion  - dialog box (div : #jDialog)
              */
@@ -323,34 +323,34 @@
                 /**
                  * Ask for deletion if :
                  *  - it is requested in the query
-                 *  - msp.Config.general.confirmDeletion is set to true
+                 *  - M.Config.general.confirmDeletion is set to true
                  */
-                if (!noDeletionCheck && msp.Config["general"].confirmDeletion) {
+                if (!noDeletionCheck && M.Config["general"].confirmDeletion) {
 
-                    msp.Util.askFor({
-                        title:msp.Util._("Delete layer"),
-                        content:msp.Util._("Do you really want to remove layer")+" "+newLayer.name,
+                    M.Util.askFor({
+                        title:M.Util._("Delete layer"),
+                        content:M.Util._("Do you really want to remove layer")+" "+newLayer.name,
                         dataType:"list",
                         value:[{
-                                title:msp.Util._("Yes"), 
+                                title:M.Util._("Yes"), 
                                 value:"y"
                             },
                             {
-                                title:msp.Util._("No"), 
+                                title:M.Util._("No"), 
                                 value:"n"
                             }
                             ],
                        callback:function(v){
                             if (v === "y") {
-                                msp.Map.removeLayer(newLayer);
-                                msp.Map.addLayer(_layerDescription);
+                                M.Map.removeLayer(newLayer);
+                                M.Map.addLayer(_layerDescription);
                             }
                         }
                     });
                     return null;
                 }
                 else {
-                    msp.Map.removeLayer(newLayer);
+                    M.Map.removeLayer(newLayer);
                 }
             }
 
@@ -363,7 +363,7 @@
              * Ensure that layerDescription.url is an absolute url
              */
             if (layerDescription.url) {
-                layerDescription.url = msp.Util.getAbsoluteUrl(layerDescription.url);
+                layerDescription.url = M.Util.getAbsoluteUrl(layerDescription.url);
             }
 
             /**
@@ -382,15 +382,15 @@
             }
 
             /*
-             * msp specific properties.
+             * M specific properties.
              */
-            options["_msp"] = {
+            options["_M"] = {
 
                 /** True : add opacity buttons in LayersManager panel */
-                allowChangeOpacity:msp.Util.getPropertyValue(layerDescription, "allowChangeOpacity", false),
+                allowChangeOpacity:M.Util.getPropertyValue(layerDescription, "allowChangeOpacity", false),
 
                 /** True : layer is clusterized if it is supported in the layerTypes */
-                clusterized:msp.Util.getPropertyValue(layerDescription, "clusterized", msp.Util.getPropertyValue(layerType, "clusterized", false)),
+                clusterized:M.Util.getPropertyValue(layerDescription, "clusterized", M.Util.getPropertyValue(layerType, "clusterized", false)),
 
                 /** Total number of feature within layer (see "layersend" event) */
                 count:0,
@@ -399,49 +399,49 @@
                 group:null,
 
                 /** True : layer is selectable through click in the map (i.e. add to __CONTROL_SELECT__) */
-                hilitable:msp.Util.getPropertyValue(layerDescription, "hilitable", msp.Util.getPropertyValue(layerType, "hilitable", true)),
+                hilitable:M.Util.getPropertyValue(layerDescription, "hilitable", M.Util.getPropertyValue(layerType, "hilitable", true)),
 
                 /** Icon */
-                icon:msp.Util.getPropertyValue(layerDescription, "icon", msp.Util.getImgUrl(msp.Util.getPropertyValue(layerType, "icon", null))),
+                icon:M.Util.getPropertyValue(layerDescription, "icon", M.Util.getImgUrl(M.Util.getPropertyValue(layerType, "icon", null))),
 
                 /** True : the layer is load during startup */
-                initial:msp.Util.getPropertyValue(layerDescription, "initial", false),
+                initial:M.Util.getPropertyValue(layerDescription, "initial", false),
                 
                 /** True : the layer content is initialized */
-                initialized:msp.Util.getPropertyValue(_options, "forceInitialized", false),
+                initialized:M.Util.getPropertyValue(_options, "forceInitialized", false),
 
                 /** True : the layer content is loaded */
                 isLoaded:true,
 
-                /** Unique msp identifier for this layer */
-                mspID:mspID,
+                /** Unique M identifier for this layer */
+                MID:MID,
 
                 /** LayerDescription for this layer : use for context saving */
                 layerDescription:layerDescription,
                 
                 /** True : the layer is a mapshup layer - mapshup layers are not part of a saved context */
-                mspLayer:msp.Util.getPropertyValue(layerDescription, "mspLayer", false),
+                MLayer:M.Util.getPropertyValue(layerDescription, "MLayer", false),
 
                 /** True : avoid zoomon on layer name click in LayersManager panel */
-                noZoomOn:msp.Util.getPropertyValue(layerDescription, "noZoomOn", false),
+                noZoomOn:M.Util.getPropertyValue(layerDescription, "noZoomOn", false),
                 
                 /** Pagination should be an object - see below */
-                pagination:msp.Util.getPropertyValue(layerDescription, "pagination", null),
+                pagination:M.Util.getPropertyValue(layerDescription, "pagination", null),
                 
                 /** True : for catalog layers, quicklook attached to feature results can be added as an image layer on the map  */
-                qlToMap:msp.Util.getPropertyValue(layerDescription, "qlToMap", false),
+                qlToMap:M.Util.getPropertyValue(layerDescription, "qlToMap", false),
 
                 /** True : add refresh button in LayersManager panel */
-                refreshable:msp.Util.getPropertyValue(layerDescription, "refreshable", false),
+                refreshable:M.Util.getPropertyValue(layerDescription, "refreshable", false),
 
                 /** Refresh time interval for this layer is multicated by refreshFactor */
-                refreshFactor:msp.Util.getPropertyValue(layerDescription, "refreshFactor", 1),
+                refreshFactor:M.Util.getPropertyValue(layerDescription, "refreshFactor", 1),
 
                 /** True : layer is selectable through click in the map (i.e. add to __CONTROL_SELECT__) */
-                selectable:msp.Util.getPropertyValue(layerDescription, "selectable", msp.Util.getPropertyValue(layerType, "selectable", false)),
+                selectable:M.Util.getPropertyValue(layerDescription, "selectable", M.Util.getPropertyValue(layerType, "selectable", false)),
 
                 /** True : no remove button in LayersManager panel */
-                unremovable:msp.Util.getPropertyValue(layerDescription, "unremovable", false)
+                unremovable:M.Util.getPropertyValue(layerDescription, "unremovable", false)
 
             };
 
@@ -481,8 +481,8 @@
                  * Tell user a non mapshup layer has been added (only if it has been loaded)
                  */
                 /* TODO : remove
-                if (!newLayer["_msp"].mspLayer && newLayer["_msp"].isLoaded) {
-                    msp.Util.message(msp.Util._("Added")+ " : " + msp.Util._(newLayer.name));
+                if (!newLayer["_M"].MLayer && newLayer["_M"].isLoaded) {
+                    M.Util.message(M.Util._("Added")+ " : " + M.Util._(newLayer.name));
                 }
                 */
 
@@ -492,7 +492,7 @@
                  */
                 if (!newLayer.events.listeners.hasOwnProperty('loadstart') || newLayer.events.listeners['loadstart'].length === 0) {
                     newLayer.events.register("loadstart", newLayer, function() {
-                        msp.Map.events.trigger("loadstart", newLayer);
+                        M.Map.events.trigger("loadstart", newLayer);
                     });
                 }
 
@@ -504,33 +504,33 @@
                     newLayer.events.register("loadend", newLayer, function() {
 
                         /* OpenLayers bug with select control ? */
-                        msp.Map.resetControl();
+                        M.Map.resetControl();
 
                         /*
                          * Remove the load indicator
                          */
-                        msp.Map.events.trigger("loadend", newLayer);
+                        M.Map.events.trigger("loadend", newLayer);
 
                         /*
                          * If the layer is empty, it is automatically removed
                          * if its type 'removeOnEmpty' property is set to true
                          */
-                        var layerType = msp.Map.layerTypes[this["_msp"].layerDescription.type];
+                        var layerType = M.Map.layerTypes[this["_M"].layerDescription.type];
                         if (layerType && layerType.removeOnEmpty) {
 
                             /*
                              * Layer is empty => remove it
                              */
-                            if (msp.Map.Util.layerIsEmpty(this)) {
-                                msp.Util.message(msp.Util._("No result"));
-                                return msp.Map.removeLayer(this);
+                            if (M.Map.Util.layerIsEmpty(this)) {
+                                M.Util.message(M.Util._("No result"));
+                                return M.Map.removeLayer(this);
                             }
                         }
 
                         /*
                          * Set a flag to indicate that this layer has been initialized
                          */
-                        this._msp.initialized = true;
+                        this._M.initialized = true;
 
                         return true;
 
@@ -554,7 +554,7 @@
                 /*
                  * Add newLayer to the TimeLine
                  */
-                msp.timeLine.add(newLayer);
+                M.timeLine.add(newLayer);
                 
                 /*
                  * First baseLayer is set as the new baseLayer
@@ -562,7 +562,7 @@
                  */
                 if (newLayer.isBaseLayer && !this.hasNonEmptyBaseLayer) {
                     this.map.setBaseLayer(newLayer);
-                    this.removeLayer(this.Util.getLayerByMspID("EmptyBaseLayer"), false);
+                    this.removeLayer(this.Util.getLayerByMID("EmptyBaseLayer"), false);
                     this.hasNonEmptyBaseLayer = true
                 }
 
@@ -576,29 +576,29 @@
                 /*
                  * Add to selectable list
                  */
-                if (newLayer["_msp"] && newLayer["_msp"].selectable) {
+                if (newLayer["_M"] && newLayer["_M"].selectable) {
                     this.selectableLayers.add(newLayer);
                 }
 
                 /*
                  * Add to layersGroups if a groupName is defined
                  */
-                if (newLayer["_msp"].layerDescription && newLayer["_msp"].layerDescription.groupName) {
+                if (newLayer["_M"].layerDescription && newLayer["_M"].layerDescription.groupName) {
 
-                    var layerGroup = this.layersGroups[newLayer["_msp"].layerDescription.groupName];
+                    var layerGroup = this.layersGroups[newLayer["_M"].layerDescription.groupName];
 
                     /*
                      * layerGroup does not exist => create it
                      */
                     if (!layerGroup) {
-                        layerGroup = new this.LayersGroup(newLayer["_msp"].layerDescription.groupName, null);
-                        this.layersGroups[newLayer["_msp"].layerDescription.groupName] = layerGroup;
+                        layerGroup = new this.LayersGroup(newLayer["_M"].layerDescription.groupName, null);
+                        this.layersGroups[newLayer["_M"].layerDescription.groupName] = layerGroup;
                     }
 
                     /*
                      * Add the newLayer
                      */
-                    newLayer["_msp"].group = layerGroup;
+                    newLayer["_M"].group = layerGroup;
                     layerGroup.add(newLayer);
                 }
                 
@@ -736,9 +736,9 @@
                 /*
                  * mapshup layers are excluded from the processing
                  */
-                if (layer && layer["_msp"] && !layer["_msp"].mspLayer) {
+                if (layer && layer["_M"] && !layer["_M"].MLayer) {
                     
-                    id = layer["_msp"].mspID;
+                    id = layer["_M"].MID;
                     
                     /*
                      * Roll over context layers
@@ -748,7 +748,7 @@
                         /*
                          * The layer is present in the context layer list. No need to remove it
                          */
-                        if (id === (new self.LayerDescription(context.layers[j], self)).getMspID()) {
+                        if (id === (new self.LayerDescription(context.layers[j], self)).getMID()) {
                             b = false;
                             break;
                             
@@ -760,7 +760,7 @@
                      * Remove the layer
                      */
                     if (b) {
-                        self.removeLayer(self.Util.getLayerByMspID(id), false);
+                        self.removeLayer(self.Util.getLayerByMID(id), false);
                     }
                     
                 }
@@ -773,7 +773,7 @@
              */
             for (i = 0, l = context.layers.length; i < l; i++) {
                 
-                id = (new self.LayerDescription(context.layers[i], self)).getMspID();
+                id = (new self.LayerDescription(context.layers[i], self)).getMID();
                 
                 /*
                  * By default, add the layer
@@ -790,12 +790,12 @@
                     /*
                      * mapshup layers are excluded from the processing
                      */
-                    if (layer["_msp"] && !layer["_msp"].mspLayer) {
+                    if (layer["_M"] && !layer["_M"].MLayer) {
                         
                         /*
                          * The layer already exist - update it
                          */
-                        if (id === layer["_msp"].mspID) {
+                        if (id === layer["_M"].MID) {
                             b = false;
                             break;
                         }
@@ -822,7 +822,7 @@
                      * Set visibility
                      */
                     if (!layer.isBaseLayer) {
-                        msp.Map.Util.setVisibility(layer, !context.layers[i].hidden);
+                        M.Map.Util.setVisibility(layer, !context.layers[i].hidden);
                     }
                     
                     /*
@@ -835,12 +835,12 @@
                         //
                         // Update the search items
                         //
-                        layer["_msp"].searchContext.items = s.items;
+                        layer["_M"].searchContext.items = s.items;
 
                         //
                         // Launch unitary search
                         //
-                        layer["_msp"].searchContext.search(s.nextRecord);
+                        layer["_M"].searchContext.search(s.nextRecord);
 
                     }
                     
@@ -851,7 +851,7 @@
              * Set default background
              */
             if (context.location.bg) {
-                layer = self.Util.getLayerByMspID(context.location.bg);
+                layer = self.Util.getLayerByMID(context.location.bg);
                 if (layer && layer.isBaseLayer) {
                     self.map.setBaseLayer(layer);
                 }
@@ -881,7 +881,7 @@
              */
             c = {
                 location:{
-                    bg:self.map.baseLayer["_msp"].mspID,
+                    bg:self.map.baseLayer["_M"].MID,
                     lat:center.lat,
                     lon:center.lon,
                     zoom:self.map.getZoom()
@@ -900,9 +900,9 @@
                 layer = self.map.layers[i];
 
                 /*
-                 * mapshup layers (i.e. mspLayer) are not stored in the context
+                 * mapshup layers (i.e. MLayer) are not stored in the context
                  */
-                if (layer["_msp"] && layer["_msp"].layerDescription && !layer["_msp"].mspLayer) {
+                if (layer["_M"] && layer["_M"].layerDescription && !layer["_M"].MLayer) {
 
                     /*
                      * Initialize object with an initial property set to true to indicate that
@@ -916,9 +916,9 @@
                      * Clone layerDescription omitting layer and ol properties
                      * to avoid serialization cycling during JSON.stringify processing
                      */
-                    for (key in layer["_msp"].layerDescription) {
+                    for (key in layer["_M"].layerDescription) {
                         if (key !== "layer" && key !== "ol") {
-                            ld[key] = layer["_msp"].layerDescription[key];
+                            ld[key] = layer["_M"].layerDescription[key];
                         }
                     }
                     
@@ -930,11 +930,11 @@
                     /*
                      * Layer got a non empty searchContext
                      */
-                    if (layer["_msp"].searchContext && layer["_msp"].searchContext.items.length > 0) {
+                    if (layer["_M"].searchContext && layer["_M"].searchContext.items.length > 0) {
                         ld.search = {
-                            mspID:layer["_msp"].mspID,
-                            items:layer["_msp"].searchContext.items,
-                            nextRecord:layer["_msp"].searchContext.nextRecord
+                            MID:layer["_M"].MID,
+                            items:layer["_M"].searchContext.items,
+                            nextRecord:layer["_M"].searchContext.nextRecord
                         }
                     }
                     
@@ -956,7 +956,7 @@
         /**
          * Map initialization
          *
-         * config : msp.config object
+         * config : M.config object
          * urlParameters: window.location.href key/value pair if any
          */
         init: function(_config) {
@@ -974,7 +974,7 @@
             /**
              * Set the ProxyHost URL to bypass cross-scripting javascript
              */
-            OpenLayers.ProxyHost = msp.Util.proxify("");
+            OpenLayers.ProxyHost = M.Util.proxify("");
 
             /**
              * Disable select feature on map pan
@@ -989,7 +989,7 @@
             OpenLayers.Layer.Vector.prototype.renderers = ["SVG", "VML"];
 
             /**
-             * Force msp CSS to overide default OpenLayers CSS
+             * Force M CSS to overide default OpenLayers CSS
              */
             _config.mapOptions.theme = null;
             
@@ -1002,12 +1002,12 @@
              * Hack : if Map height is set to auto, it is assumed that the Map div
              * height cover 100% of the navigator window minus a fixed sized header.
              * So the Map height is set to window height minus Map.css('top') value
-             * The 'processHeightOnResize' class is also added to msp.$map in order to
-             * reprocess the width when window is resized (see msp.resize() method)
+             * The 'processHeightOnResize' class is also added to M.$map in order to
+             * reprocess the width when window is resized (see M.resize() method)
              */
-            if (msp.$map.css('height') === 'auto' || msp.$map.css('height') === '0px') {
-                msp.$map.css('height', window.innerHeight - msp.$map.offset().top);
-                msp.$map.addClass('processHeightOnResize')
+            if (M.$map.css('height') === 'auto' || M.$map.css('height') === '0px') {
+                M.$map.css('height', window.innerHeight - M.$map.offset().top);
+                M.$map.addClass('processHeightOnResize')
             }
 
             /**
@@ -1066,7 +1066,7 @@
                                         x:e.x,
                                         y:e.y
                                     };
-                                    msp.menu.show();
+                                    M.menu.show();
                                 }
                                 
                             }
@@ -1075,20 +1075,20 @@
                     }
                 }
             };
-            _config.mapOptions.controls = msp.Util.device.touch ? [new OpenLayers.Control.TouchNavigation(opt)] : [new OpenLayers.Control.Navigation(opt)];
+            _config.mapOptions.controls = M.Util.device.touch ? [new OpenLayers.Control.TouchNavigation(opt)] : [new OpenLayers.Control.Navigation(opt)];
             
             /**
              * Create the mapfile
              */
-            self.map = new OpenLayers.Map(msp.$map.attr('id'), _config.mapOptions);
+            self.map = new OpenLayers.Map(M.$map.attr('id'), _config.mapOptions);
 
             /**
              * Add a very first empty baseLayer to the map
              * Usefull to avoid crash if no baseLayer are specified
              */
             self.map.addLayer(new OpenLayers.Layer("EmptyBaseLayer", {
-                _msp:{
-                    mspID:"EmptyBaseLayer"
+                _M:{
+                    MID:"EmptyBaseLayer"
                 },
                 isBaseLayer:true,
                 displayInLayerSwitcher:false
@@ -1108,8 +1108,8 @@
              * Update menu position on map move
              */
             self.map.events.register('move', self.map, function(){
-                if (msp.menu) {
-                    msp.menu.updatePosition();
+                if (M.menu) {
+                    M.menu.updatePosition();
                 }
             });
             
@@ -1121,12 +1121,12 @@
                 /*
                  * Propagate moveend to registered plugin
                  */
-                msp.Map.events.trigger('moveend');
+                M.Map.events.trigger('moveend');
                 
                 /*
                  * Store the new lastExtent
                  */
-                self.currentState = msp.Map.getState();
+                self.currentState = M.Map.getState();
                 
             });
 
@@ -1134,7 +1134,7 @@
              * onmouseover event definition is only
              * valid if the current device is not a touch device
              */
-            if(!msp.Util.device.touch) {
+            if(!M.Util.device.touch) {
 
                 /*
                  * Create "coords" div to display mouse position info
@@ -1146,7 +1146,7 @@
                      * (Note : this allow to display coordinates outside the map)
                      */
                     if ($('#coords').length === 0) {
-                        msp.Util.$$('#coords', msp.$map);
+                        M.Util.$$('#coords', M.$map);
                     }
                     
                     self.$coords = $('#coords');
@@ -1162,7 +1162,7 @@
                      * (Note : this allow to display hilited feature info outside the map)
                      */
                     if (self.$featureHilite.length === 0) {
-                        self.$featureHilite = msp.Util.$$('#'+msp.Util.getId(), msp.$map).addClass("featureHilite").hide();
+                        self.$featureHilite = M.Util.$$('#'+M.Util.getId(), M.$map).addClass("featureHilite").hide();
                     }
 
                 }
@@ -1170,22 +1170,22 @@
                 /*
                  * Define action on mousemove
                  */
-                msp.$map.mousemove(function (e){
+                M.$map.mousemove(function (e){
 
                     /*
                      * Set the mousePosition object
                      */
-                    var offset = msp.$map.offset();
+                    var offset = M.$map.offset();
                         
-                    msp.Map.mousePosition = new OpenLayers.Pixel(e.pageX - offset.left, e.pageY - offset.top);
+                    M.Map.mousePosition = new OpenLayers.Pixel(e.pageX - offset.left, e.pageY - offset.top);
 
                     /*
                      * Display the mouse position if Config.general.displayCoordinates is set to true
                      */
                     if (_config["general"].displayCoordinates) {
-                        msp.Map.$coords.html(msp.Map.Util.getFormattedLonLat(self.Util.p2d(msp.Map.map.getLonLatFromPixel(msp.Map.mousePosition)), msp.Config["general"].coordinatesFormat)).css({
-                            'top': msp.Map.mousePosition.y - 20,
-                            'left': msp.Map.mousePosition.x
+                        M.Map.$coords.html(M.Map.Util.getFormattedLonLat(self.Util.p2d(M.Map.map.getLonLatFromPixel(M.Map.mousePosition)), M.Config["general"].coordinatesFormat)).css({
+                            'top': M.Map.mousePosition.y - 20,
+                            'left': M.Map.mousePosition.x
                         }).show();
                       
                     }
@@ -1194,18 +1194,18 @@
                      * Display hilited feature
                      */
                     self.$featureHilite.css({
-                        'top': msp.Map.mousePosition.y + 30,
-                        'left': msp.Map.mousePosition.x + 15
+                        'top': M.Map.mousePosition.y + 30,
+                        'left': M.Map.mousePosition.x + 15
                     });
 
                     return true;
                 });
 
                 /*
-                 * Hide divs when mouse is outside of msp.$map
+                 * Hide divs when mouse is outside of M.$map
                  */
-                msp.$map.mouseleave(function (e){
-                    msp.Map.$coords.hide();
+                M.$map.mouseleave(function (e){
+                    M.Map.$coords.hide();
                     self.$featureHilite.hide();
                     return true;
                 });
@@ -1276,7 +1276,7 @@
                              * If menu is visible do not hilite feature
                              * to avoid 'post modern art flickering' effect
                              */
-                            if (msp.menu && msp.menu.$m.is(':visible')) {
+                            if (M.menu && M.menu.$m.is(':visible')) {
                                 return false;
                             }
                             
@@ -1288,12 +1288,12 @@
                                 /*
                                  * Never hilite an already selected or hilited feature
                                  */
-                                if (msp.Map.featureInfo.hilited) {
+                                if (M.Map.featureInfo.hilited) {
                                     self.$featureHilite.empty().hide();
                                     return true;
                                 }
-                                if (msp.Map.featureInfo.selected) {
-                                    if (msp.Map.featureInfo.selected.id === e.feature.id) {
+                                if (M.Map.featureInfo.selected) {
+                                    if (M.Map.featureInfo.selected.id === e.feature.id) {
                                         self.$featureHilite.empty().hide();
                                         return false;
                                     }
@@ -1302,7 +1302,7 @@
                                 /*
                                  * Title is first 'name' or 'title' or 'identifier' or 'id'
                                  */
-                                self.$featureHilite.html(msp.Map.Util.Feature.getTitle(e.feature)).attr("hilited", "hilited").show();
+                                self.$featureHilite.html(M.Map.Util.Feature.getTitle(e.feature)).attr("hilited", "hilited").show();
 
                             }
                             
@@ -1344,7 +1344,7 @@
                     /* Overviewmap is visibility */
                     maximized:_config.general.overviewMap === "opened" ? true : false,
                     size:new OpenLayers.Size('250','125'),
-                    layers:[new OpenLayers.Layer.Image('ImageLayer', msp.Util.getImgUrl('overviewmap.png'),
+                    layers:[new OpenLayers.Layer.Image('ImageLayer', M.Util.getImgUrl('overviewmap.png'),
                         overviewMapExtent,
                         new OpenLayers.Size('250','125')
                         )]
@@ -1376,18 +1376,18 @@
                 /**
                  * Update the refreshCycle counter
                  */
-                msp.Map.refreshCycle++;
+                M.Map.refreshCycle++;
                 var i,
                 layer;
-                for (i=msp.Map.map.layers.length;i--;) {
-                    layer = msp.Map.map.layers[i];
+                for (i=M.Map.map.layers.length;i--;) {
+                    layer = M.Map.map.layers[i];
 
                     /**
                      * Switch over non-backgrounds layer
                      * (i.e. isBaseLayer = false)
                      */
-                    if (!layer.isBaseLayer && layer["_msp"]) {
-                        if (layer["_msp"].refresh && ((msp.Map.refreshCycle % layer["_msp"].refreshFactor) === 0)) {
+                    if (!layer.isBaseLayer && layer["_M"]) {
+                        if (layer["_M"].refresh && ((M.Map.refreshCycle % layer["_M"].refreshFactor) === 0)) {
                             layer.refresh({
                                 force:true
                             });
@@ -1399,7 +1399,7 @@
                 /**
                  * Respawn a timetout AFTER previous code has been executed
                  */
-                window.setTimeout(loopsiloopsi, msp.Config["general"].refreshInterval || 1000);
+                window.setTimeout(loopsiloopsi, M.Config["general"].refreshInterval || 1000);
 
             })();
             
@@ -1409,9 +1409,9 @@
             self.resetControl(self.Util.getControlById("__CONTROL_NAVIGATION__"));
 
             /*
-             * Add msp event : update map size when window size change
+             * Add M event : update map size when window size change
              */
-            msp.events.register("resizeend", self, function(self) {
+            M.events.register("resizeend", self, function(self) {
                 
                 /*
                  * Update map size
@@ -1442,27 +1442,27 @@
             /*
              * Ask for deletion :
              *  - if it is requested in the query
-             *  - and if msp.Config.general.confirmDeletion is set to true
+             *  - and if M.Config.general.confirmDeletion is set to true
              */
-            if (confirm && msp.Config["general"].confirmDeletion) {
+            if (confirm && M.Config["general"].confirmDeletion) {
 
 
-                msp.Util.askFor({
-                        title:msp.Util._("Delete layer"),
-                        content:msp.Util._("Do you really want to remove layer")+" "+layer.name,
+                M.Util.askFor({
+                        title:M.Util._("Delete layer"),
+                        content:M.Util._("Do you really want to remove layer")+" "+layer.name,
                         dataType:"list",
                         value:[{
-                                title:msp.Util._("Yes"), 
+                                title:M.Util._("Yes"), 
                                 value:"y"
                             },
                             {
-                                title:msp.Util._("No"), 
+                                title:M.Util._("No"), 
                                 value:"n"
                             }
                             ],
                        callback:function(v){
                             if (v === "y") {
-                                msp.Map.removeLayer(layer);
+                                M.Map.removeLayer(layer);
                             }
                         }
                     });
@@ -1472,7 +1472,7 @@
 
             /*
              * !Important! set a layer._tobedestroyed property to true
-             * to indicate to msp processing that this layer will be 
+             * to indicate to M processing that this layer will be 
              * removed at the end of this function
              * (e.g. see LayersManager plugin)
              */
@@ -1495,36 +1495,36 @@
             /*
              * Remove layer from group if any
              */
-            if (layer["_msp"] && layer["_msp"].group) {
-                layer["_msp"].group.remove(layer);
+            if (layer["_M"] && layer["_M"].group) {
+                layer["_M"].group.remove(layer);
             }
             
             /*
              * Remove SearchContext within layer
              */
-            if (layer["_msp"] && layer["_msp"].SearchContext) {
-                msp.remove(layer["_msp"].SearchContext);
+            if (layer["_M"] && layer["_M"].SearchContext) {
+                M.remove(layer["_M"].SearchContext);
             }
 
             /*
              * Remove layer from TimeLine
              */
-            msp.timeLine.remove(layer);
+            M.timeLine.remove(layer);
             
             /*
-             * If layer is an initial layer then its mspID is stored
+             * If layer is an initial layer then its MID is stored
              * to be sure that it will be indicated as removed in the
              * getContext method
              */
-            if (layer["_msp"] && layer["_msp"].mspLayer) {
+            if (layer["_M"] && layer["_M"].MLayer) {
                 this.removedLayers.push({
-                    mspID:layer["_msp"].mspID,
-                    layerDescription:layer["_msp"].layerDescription
+                    MID:layer["_M"].MID,
+                    layerDescription:layer["_M"].layerDescription
                 });
             }
 
             /*
-             * Finally remove the layer from msp.Map.map.layers
+             * Finally remove the layer from M.Map.map.layers
              */
             layer.destroy();
             
@@ -1599,7 +1599,7 @@
                 this.map.setCenter(lonlat,zoom);
             }
             else {
-                if (msp.Util.device.touch || msp.Config["general"].teleport) {
+                if (M.Util.device.touch || M.Config["general"].teleport) {
                     this.map.setCenter(lonlat);
                 }
                 else {
@@ -1630,14 +1630,14 @@
             var w = bounds.getWidth(),
             h = bounds.getHeight(),
             c = bounds.getCenterLonLat(),
-            e = msp.Util._("Cannot zoom : this feature is outside authorized extent");
+            e = M.Util._("Cannot zoom : this feature is outside authorized extent");
     
             /**
              * Bounds is too small => center to bounds
              */
             if (w < 1 && h < 1) {
                 if (self.map.restrictedExtent && !self.map.restrictedExtent.containsBounds(bounds, true)) {
-                    msp.Util.message(e);
+                    M.Util.message(e);
                 }
                 else {
                     self.map.setCenter(c, Math.max(9,self.map.getZoom()));
@@ -1648,7 +1648,7 @@
              */
             else {
                 if (self.map.restrictedExtent && !self.map.restrictedExtent.containsBounds(bounds, true)) {
-                    msp.Util.message(e);
+                    M.Util.message(e);
                 }
                 else {
                     self.map.zoomToExtent(bounds);
@@ -1660,4 +1660,4 @@
         
     }
     
-})(window.msp);
+})(window.M);

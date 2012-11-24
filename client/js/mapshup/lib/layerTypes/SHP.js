@@ -38,7 +38,7 @@
 /**
  * WMS layer type
  */
-(function (msp,Map){
+(function (M,Map){
     
     Map.layerTypes["SHP"] = {
 
@@ -81,7 +81,7 @@
             /*
              * Set title
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription)
+            layerDescription.title = M.Util.getTitle(layerDescription)
             
             /*
              * Set layerDescription.srs to the map projection
@@ -95,8 +95,8 @@
                  * The principle is to send the 3 urls to the getSHPWMS service which returns
                  * a WMS url for this layer
                  */
-                msp.Util.ajax({
-                    url:msp.Util.getAbsoluteUrl(msp.Config["general"].shpToWMSServiceUrl)+msp.Util.abc+"&title="+encodeURIComponent(layerDescription.title)+"&shp="+encodeURIComponent(layerDescription.file),
+                M.Util.ajax({
+                    url:M.Util.getAbsoluteUrl(M.Config["general"].shpToWMSServiceUrl)+M.Util.abc+"&title="+encodeURIComponent(layerDescription.title)+"&shp="+encodeURIComponent(layerDescription.file),
                     async:true,
                     dataType:"json",
                     success:function(result){
@@ -108,14 +108,14 @@
                             Map.addLayer(layerDescription);
                         }
                         else {
-                            msp.Util.message(msp.Util._("Error : cannot add this shapefile"));
+                            M.Util.message(M.Util._("Error : cannot add this shapefile"));
                         }
                     },
                     error:function() {
-                        msp.Util.message(msp.Util._("Error : cannot perform action"));
+                        M.Util.message(M.Util._("Error : cannot perform action"));
                     }
                 }, !layerDescription.initial ? {
-                    title:msp.Util._("Loading shapefile"), 
+                    title:M.Util._("Loading shapefile"), 
                     cancel:true
                 } : null);
 
@@ -146,9 +146,9 @@
              * A WMS cannot be "selectable"
              * Thus this property cannot be overriden
              */
-            options["_msp"].selectable = false;
-            options["_msp"].bounds = bounds;
-            options["_msp"].allowChangeOpacity = true;
+            options["_M"].selectable = false;
+            options["_M"].bounds = bounds;
+            options["_M"].allowChangeOpacity = true;
 
 
             /*
@@ -176,10 +176,10 @@
 
         /**
          * MANDATORY
-         * Compute an unique mspID based on layerDescription
+         * Compute an unique MID based on layerDescription
          */
-        getMspID:function(layerDescription) {
-            return msp.Util.crc32(layerDescription.type + (layerDescription.file || ""));
+        getMID:function(layerDescription) {
+            return M.Util.crc32(layerDescription.type + (layerDescription.file || ""));
         }
     }
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

@@ -38,7 +38,7 @@
 /**
  * WMS layer type
  */
-(function (msp,Map){
+(function (M,Map){
     
     Map.layerTypes["WMS"] = {
         
@@ -91,12 +91,12 @@
             /**
              * Repare URL if it is not well formed
              */
-            layerDescription.url = msp.Util.repareUrl(layerDescription.url);
+            layerDescription.url = M.Util.repareUrl(layerDescription.url);
 
             /**
              * Set layerDescription.srs if not set
              */
-            layerDescription.srs = msp.Util.getPropertyValue(layerDescription, "srs", Map.pc.projCode);
+            layerDescription.srs = M.Util.getPropertyValue(layerDescription, "srs", Map.pc.projCode);
 
             /*
              * Set version default to 1.1.1 if not specified
@@ -119,14 +119,14 @@
             }
 
             /**
-             * If the srs is different from get map srs, msp creates
+             * If the srs is different from get map srs, M creates
              * a mapfile on server side to allow on the fly reprojection of the WMS tiles
              */
-            projection = msp.Util.getPropertyValue(Map.map, "projection", Map.pc);
+            projection = M.Util.getPropertyValue(Map.map, "projection", Map.pc);
 
             if (layerDescription.srs !== projection.projCode) {
                 OpenLayers.Request.GET({
-                    url:msp.Util.getAbsoluteUrl(msp.Config["general"].reprojectionServiceUrl)+msp.Util.abc+"&url="+encodeURIComponent(layerDescription.url)+"&layers="+encodeURIComponent(layerDescription.layers)+"&srs="+layerDescription.srs,
+                    url:M.Util.getAbsoluteUrl(M.Config["general"].reprojectionServiceUrl)+M.Util.abc+"&url="+encodeURIComponent(layerDescription.url)+"&layers="+encodeURIComponent(layerDescription.layers)+"&srs="+layerDescription.srs,
                     callback: function(request) {
                         var json = (new OpenLayers.Format.JSON()).read(request.responseText);
                         
@@ -140,7 +140,7 @@
                             Map.addLayer(layerDescription);
                         }
                         else {
-                            msp.Util.message(msp.Util._("Error : cannot reproject this layer"));
+                            M.Util.message(M.Util._("Error : cannot reproject this layer"));
                         }
                     }
                 });
@@ -159,7 +159,7 @@
                 avoidBoundError = 1;
             }
 
-            $.extend(options["_msp"],
+            $.extend(options["_M"],
             {
                 /* A WMS cannot be "selectable" */
                 selectable:false,
@@ -179,7 +179,7 @@
                 wrapDateLine:true,
                 transitionEffect:'resize',
                 /* WMS can be set as background (isBaseLayer:true) or as overlay */
-                isBaseLayer:msp.Util.getPropertyValue(layerDescription, "isBaseLayer", false)
+                isBaseLayer:M.Util.getPropertyValue(layerDescription, "isBaseLayer", false)
             }
             );
             
@@ -193,14 +193,14 @@
             /*
              * Set title
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription);
+            layerDescription.title = M.Util.getTitle(layerDescription);
             
             /*
              * Layer creation
              * !! If "projectedUrl" is defined, then use it instead
              * of original url
              */
-            var newLayer = new OpenLayers.Layer.WMS(layerDescription.title, msp.Util.getPropertyValue(layerDescription, "projectedUrl", layerDescription.url), {
+            var newLayer = new OpenLayers.Layer.WMS(layerDescription.title, M.Util.getPropertyValue(layerDescription, "projectedUrl", layerDescription.url), {
                 layers:layerDescription.layers,
                 format:"image/png",
                 transitionEffect: "resize",
@@ -214,7 +214,7 @@
              */
             if (layerDescription.hasOwnProperty("time")) {
                 
-                newLayer["_msp"].setTime = function(interval) {
+                newLayer["_M"].setTime = function(interval) {
                     
                     /*
                      * Currently only the first value of the interval is 
@@ -290,21 +290,21 @@
             /*
              * By default call WMS with version set to 1.1.0
              */
-            msp.Util.ajax({
-                url:msp.Util.proxify(msp.Util.repareUrl(layerDescription.url+"request=GetCapabilities&service=WMS&version=1.1.0"), "XML"),
+            M.Util.ajax({
+                url:M.Util.proxify(M.Util.repareUrl(layerDescription.url+"request=GetCapabilities&service=WMS&version=1.1.0"), "XML"),
                 async:true,
                 success:function(data, textStatus, XMLHttpRequest) {
 
                     /*
                      * Append capabilities to layerDescription
                      */
-                    layerDescription.capabilities = msp.Util.getCapabilities(XMLHttpRequest, new OpenLayers.Format.WMSCapabilities());
+                    layerDescription.capabilities = M.Util.getCapabilities(XMLHttpRequest, new OpenLayers.Format.WMSCapabilities());
 
                     /*
                      * Set the layerDescription title if not already set
                      */
                     if (!layerDescription.title) {
-                        layerDescription.title = layerDescription.capabilities.service ? layerDescription.capabilities.service["title"] : msp.Util.getTitle(layerDescription);
+                        layerDescription.title = layerDescription.capabilities.service ? layerDescription.capabilities.service["title"] : M.Util.getTitle(layerDescription);
                     }
                     
                     /*
@@ -350,10 +350,10 @@
                     }
                 },
                 error:function(e) {
-                    msp.Util.message(msp.Util._("Error reading Capabilities file"));
+                    M.Util.message(M.Util._("Error reading Capabilities file"));
                 }
             }, {
-                title:msp.Util._("WMS") + " : " + msp.Util._("Get capabilities"),
+                title:M.Util._("WMS") + " : " + M.Util._("Get capabilities"),
                 cancel:true
             });
 
@@ -401,7 +401,7 @@
                 /*
                  * Get the getmap url
                  */
-                var url = msp.Util.repareUrl(layerDescription.url),
+                var url = M.Util.repareUrl(layerDescription.url),
                     d,
                     layer,
                     ptitle = (capabilities.capability.nestedLayers && capabilities.capability.nestedLayers[0]) ? capabilities.capability.nestedLayers[0]["title"] : null;
@@ -460,7 +460,7 @@
                     /*
                      * Get the "best" srs, i.e. Map.map.getProjection()
                      * If this srs does not exists, put a EPSG:4326 srs instead
-                     * msp server will reproject the layer on the fly
+                     * M server will reproject the layer on the fly
                      */
                     for (var srs in layer.srs) {
                         if (srs === Map.map.projection.projCode) {
@@ -510,7 +510,7 @@
             /*
              * Set default url to a 150x75 pixels thumbnail
              */
-            url = msp.Util.repareUrl(layerDescription.url)+"WIDTH=150&HEIGHT=75&STYLES=&FORMAT=image/png&TRANSPARENT=false&SERVICE=WMS&REQUEST=GetMap&VERSION="+version;
+            url = M.Util.repareUrl(layerDescription.url)+"WIDTH=150&HEIGHT=75&STYLES=&FORMAT=image/png&TRANSPARENT=false&SERVICE=WMS&REQUEST=GetMap&VERSION="+version;
             
             /*
              * WMS 1.3.0 => srs is now crs and axis order is switched for
@@ -561,8 +561,8 @@
                 id;
             for (j=length;j--;) {
                 layer = map.layers[j];
-                if (layer["_msp"]) {
-                    layerDescription = layer["_msp"].layerDescription;
+                if (layer["_M"]) {
+                    layerDescription = layer["_M"].layerDescription;
                     if (layerDescription && layerDescription.type === "WMS" && layerDescription.queryable) {
 
                         /**
@@ -578,7 +578,7 @@
                         /**
                          * Prepare the getFeatureInfo request
                          */
-                        url = msp.Util.repareUrl(layerDescription.url);
+                        url = M.Util.repareUrl(layerDescription.url);
                         url += "SERVICE=WMS";
                         url += "&VERSION="+ layerDescription.version;
                         url += "&REQUEST=GetFeatureInfo";
@@ -610,15 +610,15 @@
                         /**
                          * Initialize information container
                          */
-                        id = msp.Util.getId();
+                        id = M.Util.getId();
                         div.append("<h1>"+layer.name+"</h1>");
-                        div.append('<div class="'+id+'"><img src="'+msp.Util.getImgUrl("loading.gif")+'" class="textmiddle"/> '+msp.Util._("Get data from server..."));
+                        div.append('<div class="'+id+'"><img src="'+M.Util.getImgUrl("loading.gif")+'" class="textmiddle"/> '+M.Util._("Get data from server..."));
                         /*
-                        description.append('<iframe src="'+msp.Util.proxify(url)+'" width="100%"><img src="'+msp.Util.getImgUrl("loading.gif")+'" class="textmiddle"/></iframe>');
+                        description.append('<iframe src="'+M.Util.proxify(url)+'" width="100%"><img src="'+M.Util.getImgUrl("loading.gif")+'" class="textmiddle"/></iframe>');
                         */
                         (function(div,id,url) {
                             $.ajax({
-                                url:msp.Util.proxify(url),
+                                url:M.Util.proxify(url),
                                 async:true,
                                 dataType:"text",
                                 success:function(data) {
@@ -626,7 +626,7 @@
                                 //$('.'+id, description).html('<iframe>'+data+'</iframe>');
                                 },
                                 error:function(e) {
-                                    $('.'+id, div).html(msp.Util._("No result"));
+                                    $('.'+id, div).html(M.Util._("No result"));
                                 }
                             });
                         })(div,id,url);
@@ -649,10 +649,10 @@
 
         /**
          * MANDATORY
-         * Compute an unique mspID based on layerDescription
+         * Compute an unique MID based on layerDescription
          */
-        getMspID:function(layerDescription) {
-            return msp.Util.crc32(layerDescription.type + (msp.Util.repareUrl(layerDescription.url) || "") + (layerDescription.layers || ""));
+        getMID:function(layerDescription) {
+            return M.Util.crc32(layerDescription.type + (M.Util.repareUrl(layerDescription.url) || "") + (layerDescription.layers || ""));
         }
     }
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

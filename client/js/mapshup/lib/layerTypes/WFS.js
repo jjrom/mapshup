@@ -38,7 +38,7 @@
 /**
  * WFS layer type
  */
-(function (msp,Map){
+(function (M,Map){
     
     Map.layerTypes["WFS"] = {
 
@@ -115,7 +115,7 @@
             /**
              * Repare URL if it is not well formed
              */
-            layerDescription.url = msp.Util.repareUrl(layerDescription.url);
+            layerDescription.url = M.Util.repareUrl(layerDescription.url);
 
             /*
              * Check mandatory properties
@@ -162,7 +162,7 @@
                 options.strategies = [new OpenLayers.Strategy.BBOX()];
             }
             
-            if (options["_msp"].clusterized && options.strategies.length == 1) {
+            if (options["_M"].clusterized && options.strategies.length == 1) {
                 options.strategies.push(new OpenLayers.Strategy.Cluster(new OpenLayers.Strategy.Cluster(Map.clusterOpts)));
             }
             
@@ -184,7 +184,7 @@
             /*
              * Set title
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription)
+            layerDescription.title = M.Util.getTitle(layerDescription)
             
             /*
              * Layer creation
@@ -225,7 +225,7 @@
                 describeFeatureType = (new OpenLayers.Format.WFSDescribeFeatureType()).read(XMLHttpRequestObj.responseXML);
             }
             catch(e) {
-            //msp.Util.message(msp.Util._("Error reading DescribeFeatureType file"));
+            //M.Util.message(M.Util._("Error reading DescribeFeatureType file"));
             }
 
             return describeFeatureType;
@@ -280,15 +280,15 @@
              * Retrieve geometryName, featureNS and version information by asynchronous call to
              * GetCapabilities and DescribeFeatureType
              */
-            msp.Util.ajax({
-                url:msp.Util.proxify(layerDescription.url+"request=GetCapabilities&service=WFS&version=1.1.0", "XML"),
+            M.Util.ajax({
+                url:M.Util.proxify(layerDescription.url+"request=GetCapabilities&service=WFS&version=1.1.0", "XML"),
                 async:true,
                 obj:layerDescription,
                 success:function(data, textStatus, XMLHttpRequest) {
-                    this.obj.capabilities = msp.Util.getCapabilities(XMLHttpRequest, new OpenLayers.Format.WFSCapabilities());
+                    this.obj.capabilities = M.Util.getCapabilities(XMLHttpRequest, new OpenLayers.Format.WFSCapabilities());
                     if (this.obj.capabilities) {
-                        msp.Util.ajax({
-                            url:msp.Util.proxify(layerDescription.url+"request=DescribeFeatureType&service=WFS", "XML"),
+                        M.Util.ajax({
+                            url:M.Util.proxify(layerDescription.url+"request=DescribeFeatureType&service=WFS", "XML"),
                             async:true,
                             obj:this.obj,
                             success:function(data, textStatus, XMLHttpRequest) {
@@ -304,7 +304,7 @@
                                  * Set the layerDescription title if not already set
                                  */
                                 if (!this.obj.title) {
-                                    this.obj.title = this.obj.capabilities.service ? this.obj.capabilities.service["title"] : msp.Util.getTitle(this.obj);
+                                    this.obj.title = this.obj.capabilities.service ? this.obj.capabilities.service["title"] : M.Util.getTitle(this.obj);
                                 }
 
                                 /*
@@ -372,10 +372,10 @@
 
                             },
                             error:function(e) {
-                                msp.Util.message(msp.Util._("Error performing DescribeFeatureType operation"));
+                                M.Util.message(M.Util._("Error performing DescribeFeatureType operation"));
                             }
                         },{
-                            title:msp.Util._("WFS") + " : " + msp.Util._("DescribeFeatureType"),
+                            title:M.Util._("WFS") + " : " + M.Util._("DescribeFeatureType"),
                             cancel:true
                         });
 
@@ -383,10 +383,10 @@
 
                 },
                 error:function(e) {
-                    msp.Util.message(msp.Util._("Error performing GetCapabilities operation"));
+                    M.Util.message(M.Util._("Error performing GetCapabilities operation"));
                 }
             },{
-               title:msp.Util._("WFS") + " : " + msp.Util._("Get capabilities"),
+               title:M.Util._("WFS") + " : " + M.Util._("Get capabilities"),
                cancel:true 
             });
 
@@ -534,7 +534,7 @@
              * on property layerDescription.time["name"]
              */
             if (isos.length === 1) {
-                if (msp.isISO8601(value)) {
+                if (M.isISO8601(value)) {
                     filter = new OpenLayers.Filter.Comparison({
                         type : OpenLayers.Filter.Comparison.EQUAL_TO,
                         property : name,
@@ -549,7 +549,7 @@
              * interval dates
              */
             else if (isos.length === 2) {
-                if (msp.isISO8601(value)) {
+                if (M.isISO8601(value)) {
                     filter = new OpenLayers.Filter.Logical({
                         type: OpenLayers.Filter.Logical.AND,
                         filters: [
@@ -578,8 +578,8 @@
             if (layer) {
                 var filter = this.getTimeFilter(name, value);
                 if (filter) {
-                    layer["_msp"].layerDescription.time = layer["_msp"].layerDescription.time || {};
-                    layer["_msp"].layerDescription.time["value"] = time;
+                    layer["_M"].layerDescription.time = layer["_M"].layerDescription.time || {};
+                    layer["_M"].layerDescription.time["value"] = time;
                     layer.filter = filter;
                     layer.refresh({
                         force:true
@@ -590,10 +590,10 @@
 
         /**
          * MANDATORY
-         * Compute an unique mspID based on layerDescription
+         * Compute an unique MID based on layerDescription
          */
-        getMspID:function(layerDescription) {
-            return msp.Util.crc32(layerDescription.type + (msp.Util.repareUrl(layerDescription.url) || "") + (layerDescription.typeName || ""));
+        getMID:function(layerDescription) {
+            return M.Util.crc32(layerDescription.type + (M.Util.repareUrl(layerDescription.url) || "") + (layerDescription.typeName || ""));
         }
     }
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

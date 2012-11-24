@@ -43,15 +43,15 @@
  * The authentication mechanism is based on OpenID protocol
  *
  */
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.UserManagement = function() {
+    M.Plugins.UserManagement = function() {
         
         /*
          * Only one UserManagement object instance is created
          */
-        if (msp.Plugins.UserManagement._o) {
-            return msp.Plugins.UserManagement._o;
+        if (M.Plugins.UserManagement._o) {
+            return M.Plugins.UserManagement._o;
         }
         
         /**
@@ -83,20 +83,20 @@
          */
         this.items = [
         {
-            id:msp.Util.getId(),
-            icon:msp.Util.getImgUrl("disconnect.png"),
+            id:M.Util.getId(),
+            icon:M.Util.getImgUrl("disconnect.png"),
             title:"Disconnect",
             callback:function(scope) {
                 if (scope.userInfo) {
-                    msp.Util.askFor({
-                        title:msp.Util._("Sign out"),
-                        content:msp.Util._("Do you really want to sign out ?"),
+                    M.Util.askFor({
+                        title:M.Util._("Sign out"),
+                        content:M.Util._("Do you really want to sign out ?"),
                         dataType:"list", value:[{
-                            title:msp.Util._("Yes"), 
+                            title:M.Util._("Yes"), 
                             value:"y"
                         },
                         {
-                            title:msp.Util._("No"), 
+                            title:M.Util._("No"), 
                             value:"n"
                         }
                         ],
@@ -110,8 +110,8 @@
             }
         },
         {
-            id:msp.Util.getId(),
-            icon:msp.Util.getImgUrl("save.png"),
+            id:M.Util.getId(),
+            icon:M.Util.getImgUrl("save.png"),
             title:"Save context",
             callback:function(scope) {
                 scope.storeContext();
@@ -143,12 +143,12 @@
              * The Sign In / Sign Up buttons and the user toolbar are stored within
              * the header bar under the 'userBar' CSS class
              */
-            self.$d = $('.userBar', msp.$header);
+            self.$d = $('.userBar', M.$header);
             
             /**
              * Check for a connection cookie
              */
-            userInfo = JSON.parse(msp.Util.Cookie.get("userInfo"));
+            userInfo = JSON.parse(M.Util.Cookie.get("userInfo"));
         
             if (userInfo) {
                 self.signIn({
@@ -214,19 +214,19 @@
             var self = this;
             
             if (self.userInfo) {    
-                msp.Util.ajax({
+                M.Util.ajax({
                     dataType:"json",
                     type:"POST",
-                    url:msp.Util.getAbsoluteUrl(self.options.saveContextUrl),
-                    data:msp.Util.abc+"&email=" + self.userInfo.email + "&sessionid=" + self.userInfo.sessionid + "&context=" + encodeURIComponent(JSON.stringify(msp.Map.getContext())),
+                    url:M.Util.getAbsoluteUrl(self.options.saveContextUrl),
+                    data:M.Util.abc+"&email=" + self.userInfo.email + "&sessionid=" + self.userInfo.sessionid + "&context=" + encodeURIComponent(JSON.stringify(M.Map.getContext())),
                     success: function(data){
-                        msp.Util.message(msp.Util._("Context succesfully stored"));
+                        M.Util.message(M.Util._("Context succesfully stored"));
                     },
                     error: function(msg) {
-                        msp.Util.message(msp.Util._("Error : context cannot be stored"));
+                        M.Util.message(M.Util._("Error : context cannot be stored"));
                     }
                 },{
-                    title:msp.Util._("Store context"),
+                    title:M.Util._("Store context"),
                     cancel:true
                 });
                 
@@ -248,7 +248,7 @@
             /*
              * Remove userInfo cookie
              */
-            msp.Util.Cookie.remove("userInfo");
+            M.Util.Cookie.remove("userInfo");
             
             /*
              * Tell UserManagement that user is disconnected
@@ -273,8 +273,8 @@
             /*
              * Check if email is valid
              */
-            if (!msp.Util.isEmailAdress(email)) {
-                msp.Util.message(msp.Util._("Please enter a valid email adress"));
+            if (!M.Util.isEmailAdress(email)) {
+                M.Util.message(M.Util._("Please enter a valid email adress"));
                 return false;
             }
 
@@ -282,31 +282,31 @@
              * Check if username is set
              */
             if (!username) {
-                msp.Util.message(msp.Util._("Please enter a valid username"));
+                M.Util.message(M.Util._("Please enter a valid username"));
                 return false;
             }
 
             /**
              * Register user
              */
-            msp.Util.ajax({
+            M.Util.ajax({
                 dataType:"json",
                 type:"POST",
-                url:msp.Util.getAbsoluteUrl(this.options.registerUrl),
-                data:msp.Util.abc+"&email=" + email + "&username=" + username,
+                url:M.Util.getAbsoluteUrl(this.options.registerUrl),
+                data:M.Util.abc+"&email=" + email + "&username=" + username,
                 success: function(data){
                     if (data.error) {
-                        msp.Util.message(data.error["message"]);
+                        M.Util.message(data.error["message"]);
                     }
                     else {
-                        msp.Util.message(msp.Util._("A password has been sent to your mailbox"));
+                        M.Util.message(M.Util._("A password has been sent to your mailbox"));
                     }
                 },
                 error: function(msg) {
-                    msp.Util.message(msp.Util._("An error occured during password generation. Registering is currently disable"));
+                    M.Util.message(M.Util._("An error occured during password generation. Registering is currently disable"));
                 }
             },{
-                title:msp.Util._("Register"),
+                title:M.Util._("Register"),
                 cancel:true
             });
 
@@ -341,11 +341,11 @@
             /*
              * Send an ajax login request
              */
-            msp.Util.ajax({
+            M.Util.ajax({
                 dataType:"json",
                 type:"POST",
-                url:msp.Util.getAbsoluteUrl(self.options.loginUrl),
-                data:msp.Util.abc+"&email=" + info.email + (info.password ? "&password=" + info.password : "&sessionid=" + info.sessionid),
+                url:M.Util.getAbsoluteUrl(self.options.loginUrl),
+                data:M.Util.abc+"&email=" + info.email + (info.password ? "&password=" + info.password : "&sessionid=" + info.sessionid),
                 success: function(data){
                     
                     if (data.username) {
@@ -365,23 +365,23 @@
                          * Load the user last context
                          */
                         if (data.context) {
-                            msp.Util.askFor({
-                                title:msp.Util._("Hello") + " " + data.username,
-                                content:msp.Util._("Do you want to restore your map context ?"),
+                            M.Util.askFor({
+                                title:M.Util._("Hello") + " " + data.username,
+                                content:M.Util._("Do you want to restore your map context ?"),
                                 dataType:"list",
                                 value:[{
-                                    title:msp.Util._("Yes"), 
+                                    title:M.Util._("Yes"), 
                                     value:"y"
                                 },
                                 {
-                                    title:msp.Util._("No"), 
+                                    title:M.Util._("No"), 
                                     value:"n"
                                 }
                                 ],
                                 callback:function(v){
                                     if (v === "y") {
-                                        if (msp.Util.Cookie.get("context")) {
-                                            msp.Map.loadContext(data.context);
+                                        if (M.Util.Cookie.get("context")) {
+                                            M.Map.loadContext(data.context);
                                         }
                                     }
                                 }
@@ -393,7 +393,7 @@
                          * a cookie for one year
                          */
                         if ($('#rememberMe').is(':checked')) {
-                            msp.Util.Cookie.set("userInfo", JSON.stringify(self.userInfo), 365);
+                            M.Util.Cookie.set("userInfo", JSON.stringify(self.userInfo), 365);
                         }
 
                         /*
@@ -401,7 +401,7 @@
                          * (valid until you close the navigator)
                          */
                         else {
-                            msp.Util.Cookie.set("userInfo", JSON.stringify(self.userInfo));
+                            M.Util.Cookie.set("userInfo", JSON.stringify(self.userInfo));
                         }
 
                         /*
@@ -420,7 +420,7 @@
                     else {
                         
                         if (!info.sessionid) {
-                            msp.Util.message(msp.Util._("Wrong login/password - Connection refused"));
+                            M.Util.message(M.Util._("Wrong login/password - Connection refused"));
                         }
                         
                         /*
@@ -433,7 +433,7 @@
                 error: function(msg) {
                     
                     if (!info.sessionid) {
-                        msp.Util.message(msp.Util._("Wrong login/password - Connection refused"));
+                        M.Util.message(M.Util._("Wrong login/password - Connection refused"));
                     }
                     
                     /*
@@ -443,7 +443,7 @@
                         
                 }
             }, !info.sessionid ? {
-                title:msp.Util._("Login")
+                title:M.Util._("Login")
             } : null);
         };
 
@@ -462,7 +462,7 @@
              * Create Toolbar
              */
             self.$d.empty();
-            self.tb = new msp.Toolbar({
+            self.tb = new M.Toolbar({
                 parent:self.$d, 
                 classes:'umgmt'
             });
@@ -471,7 +471,7 @@
              * Profile
              */
             self.tb.add({
-                id:msp.Util.getId(),
+                id:M.Util.getId(),
                 icon:self.userInfo.icon,
                 tt:"Open profile",
                 activable:false,
@@ -517,20 +517,20 @@
         this.displaySignInButton = function() {
             
             var self = this,
-            sinid = msp.Util.getId(),
-            supid = msp.Util.getId();
+            sinid = M.Util.getId(),
+            supid = M.Util.getId();
             
             /*
              * Add Sign in and Sign up button
              */
-            self.$d.html('<a href="#" class="button inline signin" id="'+sinid+'">'+msp.Util._("Sign in")+'</a> &nbsp; <a href="#" class="button inline signup" id="'+supid+'">'+msp.Util._("Sign up")+'</a></div>');
+            self.$d.html('<a href="#" class="button inline signin" id="'+sinid+'">'+M.Util._("Sign in")+'</a> &nbsp; <a href="#" class="button inline signup" id="'+supid+'">'+M.Util._("Sign up")+'</a></div>');
             
             /*
              * Sign In popup
              */
             $('#'+sinid).click(function(){
                 
-                var id = msp.Util.getId();
+                var id = M.Util.getId();
                 
                 if (self._p) {
                     self._p.remove();
@@ -539,14 +539,14 @@
                 /*
                  * Create the Sign In popup
                  */
-                self._p = new msp.Popup({
+                self._p = new M.Popup({
                     modal:true,
                     noHeader:true,
                     onClose:function(){
                         self._p = null;
                     },
-                    header:'<p>' + msp.Util._["Sign in"] + '</p>',
-                    body:'<form action="#" method="post" class="loginPanel"><input id="userEmail" type="text" placeholder="'+msp.Util._("Email")+'"/><br/><input id="userPassword" type="password" placeholder="'+msp.Util._("Password")+'"/><div class="signin"><a href="#" class="button inline colored" id="'+id+'">'+msp.Util._("Sign in")+'</a> <input name="rememberme" id="rememberMe" type="checkbox" checked="checked"/>&nbsp;'+msp.Util._("Remember me")+'</div></form>'
+                    header:'<p>' + M.Util._["Sign in"] + '</p>',
+                    body:'<form action="#" method="post" class="loginPanel"><input id="userEmail" type="text" placeholder="'+M.Util._("Email")+'"/><br/><input id="userPassword" type="password" placeholder="'+M.Util._("Password")+'"/><div class="signin"><a href="#" class="button inline colored" id="'+id+'">'+M.Util._("Sign in")+'</a> <input name="rememberme" id="rememberMe" type="checkbox" checked="checked"/>&nbsp;'+M.Util._("Remember me")+'</div></form>'
                 });
                 
                 /*
@@ -571,7 +571,7 @@
              */
             $('#'+supid).click(function(){
                 
-                var id = msp.Util.getId();
+                var id = M.Util.getId();
                 
                 if (self._p) {
                     self._p.remove();
@@ -580,14 +580,14 @@
                 /*
                  * Create the Sign Up popup
                  */
-                self._p = new msp.Popup({
+                self._p = new M.Popup({
                     modal:true,
                     noHeader:true,
                     onClose:function(){
                         self._p = null;
                     },
-                    header:'<p>' + msp.Util._["Sign up"] + '</p>',
-                    body:'<form action="#" method="post" class="loginPanel"><input id="userEmail" type="text" placeholder="'+msp.Util._("Email")+'"/><br/><input id="userName" type="text" placeholder="'+msp.Util._("Username")+'"/><div class="signin"><a href="#" class="button inline colored" id="'+id+'">'+msp.Util._("Sign up")+'</a></div></form>'
+                    header:'<p>' + M.Util._["Sign up"] + '</p>',
+                    body:'<form action="#" method="post" class="loginPanel"><input id="userEmail" type="text" placeholder="'+M.Util._("Email")+'"/><br/><input id="userName" type="text" placeholder="'+M.Util._("Username")+'"/><div class="signin"><a href="#" class="button inline colored" id="'+id+'">'+M.Util._("Sign up")+'</a></div></form>'
                 });
                 
                 /** 
@@ -616,16 +616,16 @@
              * Use google by default
              */
         //openid = openid || "https://www.google.com/accounts/o8/id";
-        //var w = window.open('http://localhost/mspsrv/login.php?action=verify&openid_identity='+encodeURIComponent(openid), 'openid_popup', 'width=450,height=500,location=1,status=1,resizable=yes');
+        //var w = window.open('http://localhost/Msrv/login.php?action=verify&openid_identity='+encodeURIComponent(openid), 'openid_popup', 'width=450,height=500,location=1,status=1,resizable=yes');
             
         };
         
         /*
          * Set unique instance
          */
-        msp.Plugins.UserManagement._o = this;
+        M.Plugins.UserManagement._o = this;
         
         return this;
         
     };
-})(window.msp);
+})(window.M);

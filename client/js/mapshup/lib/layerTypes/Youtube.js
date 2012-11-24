@@ -38,7 +38,7 @@
 /**
  * GeoRSS layer type
  */
-(function (msp,Map){
+(function (M,Map){
     
     Map.layerTypes["Youtube"] = {
 
@@ -96,17 +96,17 @@
                 /*
                  * Check if bbox is defined in layerDescription
                  */
-                layerDescription.bbox = msp.Util.getPropertyValue(layerDescription, "bbox", Map.getBBOX());
+                layerDescription.bbox = M.Util.getPropertyValue(layerDescription, "bbox", Map.getBBOX());
 
                 /*
                  * Set an empty search term value if not set
                  */
-                layerDescription.q = msp.Util.getPropertyValue(layerDescription, "q", "");
+                layerDescription.q = M.Util.getPropertyValue(layerDescription, "q", "");
 
                 /*
                  * Build url
                  */
-                layerDescription.url = msp.Util.getAbsoluteUrl("/plugins/youtube/search.php?q="+layerDescription.q+"&bbox="+layerDescription.bbox);
+                layerDescription.url = M.Util.getAbsoluteUrl("/plugins/youtube/search.php?q="+layerDescription.q+"&bbox="+layerDescription.bbox);
                 
             }
             
@@ -120,12 +120,12 @@
                  */
                 styleMap:new OpenLayers.StyleMap({
                     'default':new OpenLayers.Style({
-                        externalGraphic:msp.Util.getImgUrl('youtube.png'),
+                        externalGraphic:M.Util.getImgUrl('youtube.png'),
                         graphicWidth:24,
                         graphicHeight:24
                     }),
                     'select':new OpenLayers.Style({
-                        externalGraphic:msp.Util.getImgUrl('youtube_select.png'),
+                        externalGraphic:M.Util.getImgUrl('youtube_select.png'),
                         graphicWidth:24,
                         graphicHeight:24
                     })
@@ -145,7 +145,7 @@
              * Construct an embeded youtube object
              */
             if (feature.attributes["url"]) {
-                var vid = msp.Util.extractKVP(feature.attributes["url"]).v;
+                var vid = M.Util.extractKVP(feature.attributes["url"]).v;
                 $d.append('<div class="thumb"><object width="250" height="250"><param value="http://www.youtube.com/v/'+vid+'&amp;feature=youtube_gdata_player" name="movie"><param value="transparent" name="wmode"><param value="true" name="allowfullscreen"><embed width="250" height="250" allowfullscreen="true" wmode="transparent" type="application/x-shockwave-flash" src="http://www.youtube.com/v/'+vid+'&amp;feature=youtube_gdata_player"></object></div>');
             }
 
@@ -153,10 +153,10 @@
 
         /**
          * MANDATORY
-         * Compute an unique mspID based on layerDescription
+         * Compute an unique MID based on layerDescription
          */
-        getMspID:function(layerDescription) {
-            return msp.Util.crc32(layerDescription.type + (layerDescription.q || ""));
+        getMID:function(layerDescription) {
+            return M.Util.crc32(layerDescription.type + (layerDescription.q || ""));
         }
     }
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

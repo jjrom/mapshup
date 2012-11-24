@@ -38,7 +38,7 @@
 /**
  * XYZ layer type
  */
-(function (msp,Map){
+(function (M,Map){
     
     Map.layerTypes["XYZ"] = {
 
@@ -58,25 +58,25 @@
              */
             $.extend(options,
             {
-                numZoomLevels:msp.Util.getPropertyValue(layerDescription, "numZoomLevels", msp.Map.map.getNumZoomLevels()),
+                numZoomLevels:M.Util.getPropertyValue(layerDescription, "numZoomLevels", M.Map.map.getNumZoomLevels()),
                 sphericalMercator: true,
                 wrapDateLine:true,
                 transitionEffect:'resize',
                 buffer:0,
                 /* XYZ can be set as background (isBaseLayer:true) or as overlay */
-                isBaseLayer:msp.Util.getPropertyValue(layerDescription, "isBaseLayer", true)
+                isBaseLayer:M.Util.getPropertyValue(layerDescription, "isBaseLayer", true)
             }
             );
                 
             /*
              * selectable cannot be overriden
              */
-            options["_msp"].selectable = false;
+            options["_M"].selectable = false;
             
             /*
              * Transparency selection cannot be overriden
              */
-            options["_msp"].allowChangeOpacity = true;
+            options["_M"].allowChangeOpacity = true;
 
             /*
              * Layer creation
@@ -87,14 +87,14 @@
 
         /**
          * MANDATORY
-         * Compute an unique mspID based on layerDescription
+         * Compute an unique MID based on layerDescription
          */
-        getMspID:function(layerDescription) {
+        getMID:function(layerDescription) {
             var str = layerDescription.url;
             if (typeof layerDescription.url === "object") {
                 str = layerDescription.url.toString();
             }
-            return msp.Util.crc32(layerDescription.type + (str || ""));
+            return M.Util.crc32(layerDescription.type + (str || ""));
         }
     }
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

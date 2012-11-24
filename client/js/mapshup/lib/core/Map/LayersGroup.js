@@ -39,20 +39,20 @@
 /**
  * A LayersGroup is a layers container
  * It must be created like this :
- *  var newGroup = new msp.jMap.LayersGroup(map, "name")
+ *  var newGroup = new M.jMap.LayersGroup(map, "name")
  *  (with name a unique name for this group)
  */
-(function (msp) {
+(function (M) {
   
-    msp.Map.LayersGroup = function(map, name, icon) {
+    M.Map.LayersGroup = function(map, name, icon) {
 
         /**
          * Identify this object as a LayerGroup
          */
-        this.CLASS_NAME = "msp.Map.LayersGroup";
+        this.CLASS_NAME = "M.Map.LayersGroup";
         
         /**
-         * Reference to msp.Map object
+         * Reference to M.Map object
          */
         this.map = map;
         
@@ -64,12 +64,12 @@
         /**
          * Unique group id
          */
-        this.id = msp.Util.getId();
+        this.id = M.Util.getId();
         
         /**
          * Group icon
          */
-        this.icon = icon || msp.Util.getImgUrl('group.png');
+        this.icon = icon || M.Util.getImgUrl('group.png');
 
         /**
          * Returns true if all layers within this group are loaded
@@ -78,7 +78,7 @@
         this.isLoaded = function() {
             var length = this.layers.length;
             for (var i=length;i--;) {
-                if (!this.layers[i]["_msp"].isLoaded) {
+                if (!this.layers[i]["_M"].isLoaded) {
                     return false;
                 }
             }
@@ -97,10 +97,10 @@
          * Exemple of valid menu item :
          * {
          *      id:"search", // Replace with your code
-         *      icon:msp.getImgUrl("search.png"), // Replace with your code
+         *      icon:M.getImgUrl("search.png"), // Replace with your code
          *      title:"Search", // Replace with your code
          *      javascript:function() {
-         *          msp.plugins["Catalog"].searchAll();
+         *          M.plugins["Catalog"].searchAll();
          *          return false;
          *      }
          *  }
@@ -126,7 +126,7 @@
                 /**
                  * Layers is already in the group => do nothing
                  */
-                if (this.layers[i]["_msp"].mspID === layer["_msp"].mspID) {
+                if (this.layers[i]["_M"].MID === layer["_M"].MID) {
                     return false;
                 }
             }
@@ -152,7 +152,7 @@
                 /**
                  * Layer was found => remove it from layers
                  */
-                if (this.layers[i]["_msp"].mspID === layer["_msp"].mspID) {
+                if (this.layers[i]["_M"].MID === layer["_M"].MID) {
                     this.layers.splice(i,1);
                     break;
                 }
@@ -177,9 +177,9 @@
 
                 /**
                  * layers[i] has bounds => add it to the global bounds
-                 * Note : raster layers (e.g. WMS, Image) should have a layer["_msp"].bounds
+                 * Note : raster layers (e.g. WMS, Image) should have a layer["_M"].bounds
                  */
-                if ((layerBounds = this.layers[i].getDataExtent()) || (layerBounds = this.layers[i]["_msp"].bounds)) {
+                if ((layerBounds = this.layers[i].getDataExtent()) || (layerBounds = this.layers[i]["_M"].bounds)) {
                     bounds ? bounds.extend(layerBounds) : bounds = layerBounds.clone();
                 }
             }
@@ -220,4 +220,4 @@
             return this.layersManagerMenuItems;
         }
     }
-})(window.msp);
+})(window.M);

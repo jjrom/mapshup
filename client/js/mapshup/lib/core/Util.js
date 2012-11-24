@@ -35,17 +35,17 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-(function(window, msp, document) {
+(function(window, M, document) {
     
     /*
-     * Initialize msp
+     * Initialize M
      */
-    msp = msp || {};
+    M = M || {};
     
     /*
-     * Initilaze msp.Util
+     * Initilaze M.Util
      */
-    msp.Util = {
+    M.Util = {
         
         /**
          * Associative array of message
@@ -111,7 +111,7 @@
                  * rootUrl and indexPath
                  * It is assumes that rootUrl always start with "http//"
                  */
-                stripped = msp.Config["general"].rootUrl.substr(7, msp.Config["general"].rootUrl.length);
+                stripped = M.Config["general"].rootUrl.substr(7, M.Config["general"].rootUrl.length);
                 slash = stripped.indexOf('/');
                 if (slash === -1) {
                     domain = stripped;
@@ -204,10 +204,10 @@
          * this function
          */
         _: function(s) {
-            if (msp.i18n === undefined) {
+            if (M.i18n === undefined) {
                 return s;
             }
-            var i18nized = msp.i18n[s];
+            var i18nized = M.i18n[s];
             return i18nized === undefined ? s : i18nized;
         },
 
@@ -236,9 +236,9 @@
          */
         addClose: function($d, callback) {
             
-            var id = msp.Util.getId();
+            var id = M.Util.getId();
             
-            $d.append('<span id="'+id+'" class="close" title="'+msp.Util._('close')+'"></span>');
+            $d.append('<span id="'+id+'" class="close" title="'+M.Util._('close')+'"></span>');
             
             $('#'+id).click(function(e){
                 $.isFunction(callback) ? callback(e) : $d.hide();
@@ -280,10 +280,10 @@
                 return null
             }
             try {
-                capability = format.read(msp.Util.textToXML(XMLHttpRequestObj.responseText));
+                capability = format.read(M.Util.textToXML(XMLHttpRequestObj.responseText));
             }
             catch(e) {
-                msp.Util.message(msp.Util._("Error reading Capabilities file"));
+                M.Util.message(M.Util._("Error reading Capabilities file"));
             }
 
             return capability;
@@ -318,7 +318,7 @@
          */
         getUserInfo: function() {
             
-            var lm = msp.Plugins["LayersManager"];
+            var lm = M.Plugins["LayersManager"];
             
             if (lm && lm._o && lm._o.userInfo) {
                 return lm._o.userInfo;
@@ -374,7 +374,7 @@
             /*
              * Popup reference
              */
-            var popup = new msp.Popup({
+            var popup = new M.Popup({
                 modal:true,
                 resize:false,
                 autoSize:true,
@@ -385,7 +385,7 @@
             /*
              * Show Activity
              */
-            msp.activity.show();
+            M.activity.show();
 
             /*
              * Clear popup
@@ -445,7 +445,7 @@
                 /*
                  * Hide Activity
                  */
-                msp.activity.hide();
+                M.activity.hide();
 
                 /*
                  * Show popup image
@@ -456,10 +456,10 @@
                 /*
                  * Hide activity/popup
                  */
-                msp.activity.hide();
+                M.activity.hide();
                 popup.hide();
                 
-                msp.Util.message("Error loading image");
+                M.Util.message("Error loading image");
                 
             });
 
@@ -486,7 +486,7 @@
              * Popup reference
              */
             var type,w,h,img,codec,content,
-            popup = new msp.Popup({
+            popup = new M.Popup({
                 modal:true,
                 resize:false,
                 autoSize:true,
@@ -605,7 +605,7 @@
             if (obj && obj.length) {
                 a = obj[0].attributes;
                 for (i = 0, l = a.length; i < l; i++) {
-                    attributes[msp.Util.stripNS(a[i].nodeName)] = msp.Util.stringToRealType(a[i].nodeValue);
+                    attributes[M.Util.stripNS(a[i].nodeName)] = M.Util.stringToRealType(a[i].nodeValue);
                 }
             }
             
@@ -659,7 +659,7 @@
                 var id = this.getId();
                 
                 obj['complete'] = function(c) {
-                    msp.mask.abort(id);
+                    M.mask.abort(id);
                 }
                 
                 ajax = $.ajax(obj);
@@ -667,7 +667,7 @@
                 /**
                  * Add information about loading
                  */
-                msp.mask.add({
+                M.mask.add({
                     title:options.title || this._("Processing"),
                     cancel:options.cancel === true ? options.cancel : false,
                     id:id,
@@ -708,7 +708,7 @@
             self = this,
             input = [],
             /* Create popup */
-            popup = new msp.Popup({
+            popup = new M.Popup({
                 modal:true,
                 autoSize:true,
                 centered:true,
@@ -793,7 +793,7 @@
                 /*
                  * Set drop zone
                  */
-                new msp.DDZone({
+                new M.DDZone({
                     parent:popup.$b,
                     maximumMegaBytes:options.maximumMegaBytes,
                     supportedFormats:options.supportedFormats,
@@ -806,7 +806,7 @@
                     }
                 });
                 
-                popup.append('<p class="big center padded"><br/><a href="#" class="button inline validate" id="'+id+'">'+msp.Util._("Set")+'</a></p>', 'body');
+                popup.append('<p class="big center padded"><br/><a href="#" class="button inline validate" id="'+id+'">'+M.Util._("Set")+'</a></p>', 'body');
                 $('#'+id).click(function(){
                     if ($.isFunction(options.callback)) {
                         options.callback(data);
@@ -932,7 +932,7 @@
         
         /**
          * Checksum function
-         * Used to generate unique mspID based on layer description
+         * Used to generate unique MID based on layer description
          * Get from http://noteslog.com/post/crc32-for-javascript/
          * (c) 2006 Andrea Ercolino http://www.opensource.org/licenses/mit-license.php
          */
@@ -967,7 +967,7 @@
              * Create a message container and associate it
              * to a new entry within the messages array
              */
-            msp.$container.append('<div id="' + id + '" class="message"><div class="content"></div></div>');
+            M.$container.append('<div id="' + id + '" class="message"><div class="content"></div></div>');
             $d = $('#' + id);
             self.messages[id] = $d;
             
@@ -1015,7 +1015,7 @@
             }
             
             $d.css({
-                'left': (msp.$container.width() - $d.width()) / 2
+                'left': (M.$container.width() - $d.width()) / 2
             });
 
             return $d;
@@ -1055,7 +1055,7 @@
              * url is absolute => return url
              * else return absolute url
              */
-            if (url && msp.Config["general"].serverRootUrl) {
+            if (url && M.Config["general"].serverRootUrl) {
 
                 /*
                  * Be carefull of array of url !
@@ -1067,7 +1067,7 @@
                 /*
                  * If url does not start with '/' then returns it without modification
                  */
-                return (this.isUrl(url) || url.substr(0,1) !== '/') ? url : msp.Config["general"].serverRootUrl + url;
+                return (this.isUrl(url) || url.substr(0,1) !== '/') ? url : M.Config["general"].serverRootUrl + url;
                 
             }
             
@@ -1094,7 +1094,7 @@
              *  - a fully qualified url (i.e. starts with http:)
              *  - a base64 encoded image stream (i.e. starts with data:)
              */
-            return (!f || f.substr(0,5) ==='http:' || f.substr(0,5) ==='data:') ? f : msp.Config["general"].rootUrl + msp.Config["general"].themePath+"/img/"+f;
+            return (!f || f.substr(0,5) ==='http:' || f.substr(0,5) ==='data:') ? f : M.Config["general"].rootUrl + M.Config["general"].themePath+"/img/"+f;
         },
         
         /**
@@ -1448,7 +1448,7 @@
          * @input {String} returntype : force HTTP header to the return type //optional
          */
         proxify: function(url, returntype) {
-            return this.getAbsoluteUrl(msp.Config["general"].proxyUrl)+this.abc+(returntype ? "&returntype="+returntype : "")+"&url="+encodeURIComponent(url);
+            return this.getAbsoluteUrl(M.Config["general"].proxyUrl)+this.abc+(returntype ? "&returntype="+returntype : "")+"&url="+encodeURIComponent(url);
         },
         
         /**
@@ -1677,4 +1677,4 @@
         
     };
 
-})(window, window.msp, window.document);
+})(window, window.M, window.document);

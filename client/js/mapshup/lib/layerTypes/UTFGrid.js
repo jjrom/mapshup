@@ -38,7 +38,7 @@
 /**
  * UTFGrid support (see http://mbtiles.org/)
  */
-(function (msp,Map){
+(function (M,Map){
     
     Map.layerTypes["UTFGrid"] = {
 
@@ -56,7 +56,7 @@
             /*
              * No url defined or no UTFGrid plugin = no layer
              */
-            if (!layerDescription.url || !msp.plugins.UTFGrid) {
+            if (!layerDescription.url || !M.plugins.UTFGrid) {
                 return null;
             }
             
@@ -69,14 +69,14 @@
              * Extends options
              */
             $.extend(options,{
-                title:msp.Util.getTitle(layerDescription),
+                title:M.Util.getTitle(layerDescription),
                 url:layerDescription.url,
                 useJSONP:true,
                 displayInLayerSwitcher:false,
                 utfgridResolution:layerDescription.utfgridResolution || 4
             });
             
-            $.extend(options["_msp"],{
+            $.extend(options["_M"],{
                 z:layerDescription.z || [0,22],
                 bounds:Map.Util.d2p(new OpenLayers.Bounds(parseFloat(bbox[0]), parseFloat(bbox[1]), parseFloat(bbox[2]), parseFloat(bbox[3])))
             });
@@ -87,10 +87,10 @@
 
         /**
          * MANDATORY
-         * Compute an unique mspID based on layerDescription
+         * Compute an unique MID based on layerDescription
          */
-        getMspID:function(layerDescription) {
-            return msp.Util.crc32(layerDescription.type + (layerDescription.url || ""));
+        getMID:function(layerDescription) {
+            return M.Util.crc32(layerDescription.type + (layerDescription.url || ""));
         }
     }
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

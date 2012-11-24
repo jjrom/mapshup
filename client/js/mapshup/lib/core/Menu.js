@@ -39,15 +39,15 @@
 /**
  * mapshup contextual menu
  */
-(function (msp) {
+(function (M) {
 
-    msp.Menu = function (limit) {
+    M.Menu = function (limit) {
 
         /*
          * Only one Activity object instance is created
          */
-        if (msp.Menu._o) {
-            return msp.Menu._o;
+        if (M.Menu._o) {
+            return M.Menu._o;
         }
         
         /**
@@ -100,12 +100,12 @@
             }
 
             /*
-             * msp config says no menu
+             * M config says no menu
              * Menu is considered to be loaded (isLoaded) but jMenu
              * is not created. Thus hide() and show() function will do
              * nothing
              */
-            if (!msp.Config["general"].displayContextualMenu) {
+            if (!M.Config["general"].displayContextualMenu) {
                 self.isLoaded = true;
                 self.isNull = true;
                 self.$m = $();
@@ -115,7 +115,7 @@
             /*
              * Create the jMenu div
              */
-            msp.$map.append('<div id="menu"><div class="cross"><img src="'+msp.Util.getImgUrl("x.png")+'"</div></div>');
+            M.$map.append('<div id="menu"><div class="cross"><img src="'+M.Util.getImgUrl("x.png")+'"</div></div>');
             
             /*
              * Set jquery #menu reference
@@ -128,28 +128,28 @@
             self.add([
                 /* Add "close" menu item */
                 {
-                    id:msp.Util.getId(),
+                    id:M.Util.getId(),
                     ic:"x.png",
                     ti:"Close menu",
                     cb:function(scope) {}
                 }
                 /* Add "zoom in" menu item
                 {
-                    id:msp.Util.getId(),
+                    id:M.Util.getId(),
                     ic:"plus.png",
                     ti:"Zoom here",
                     cb:function(scope) {
-                        msp.Map.map.setCenter(scope.lonLat, msp.Map.map.getZoom() + 1);
+                        M.Map.map.setCenter(scope.lonLat, M.Map.map.getZoom() + 1);
                     }
                 },
                 */
                 /* Add "zoom out" menu item
                 {
-                    id:msp.Util.getId(),
+                    id:M.Util.getId(),
                     ic:"minus.png",
                     ti:"Zoom out",
                     cb:function(scope) {
-                        msp.Map.map.setCenter(scope.lonLat, Math.max(msp.Map.map.getZoom() - 1, msp.Map.lowestZoomLevel));
+                        M.Map.map.setCenter(scope.lonLat, Math.max(M.Map.map.getZoom() - 1, M.Map.lowestZoomLevel));
                     }
                 }
                 */
@@ -250,11 +250,11 @@
                     rad = (angle * Math.PI) / 180;
 
                     if (left) {
-                        $m.append('<div class="item right" id="'+item.id+'">'+msp.Util._(item.ti)+'&nbsp;<img class="middle" src="'+msp.Util.getImgUrl(item.ic)+'"/></div>');
+                        $m.append('<div class="item right" id="'+item.id+'">'+M.Util._(item.ti)+'&nbsp;<img class="middle" src="'+M.Util.getImgUrl(item.ic)+'"/></div>');
                         x = Math.cos(rad) * a - 200 + offsetX;
                     }
                     else {
-                        $m.append('<div class="item left" id="'+item.id+'"><img class="middle" src="'+msp.Util.getImgUrl(item.ic)+'"/>&nbsp;'+msp.Util._(item.ti)+'</div>');
+                        $m.append('<div class="item left" id="'+item.id+'"><img class="middle" src="'+M.Util.getImgUrl(item.ic)+'"/>&nbsp;'+M.Util._(item.ti)+'</div>');
                         x = Math.cos(rad) * a - offsetX;
                     }
 
@@ -327,20 +327,20 @@
              * If pixel is not given as input, it is inferred
              * from this.lonLat position (i.e. last click on #map div)
              */
-            if (msp.Map.mouseClick) {
+            if (M.Map.mouseClick) {
 
-                x = msp.Map.mouseClick.x;
-                y = msp.Map.mouseClick.y;
+                x = M.Map.mouseClick.x;
+                y = M.Map.mouseClick.y;
 
                 /**
                  * Click on the border of the map are
                  * note taken into account
                  */
-                if (y < this.limit || y > (msp.$map.height() - this.limit) || x < this.limit || x > (msp.$map.width() - this.limit)) {
+                if (y < this.limit || y > (M.$map.height() - this.limit) || x < this.limit || x > (M.$map.width() - this.limit)) {
                     this.$m.hide();
                     return false;
                 }
-                this.lonLat = msp.Map.map.getLonLatFromPixel(msp.Map.mouseClick);
+                this.lonLat = M.Map.map.getLonLatFromPixel(M.Map.mouseClick);
             }
             else {
                 return false;
@@ -374,7 +374,7 @@
                 return false;
             }
             
-            var xy = msp.Map.map.getPixelFromLonLat(this.lonLat);
+            var xy = M.Map.map.getPixelFromLonLat(this.lonLat);
             this.$m.css({
                 'left': xy.x,
                 'top': xy.y
@@ -406,9 +406,9 @@
         /*
          * Set unique instance
          */
-        msp.Menu._o = this;
+        M.Menu._o = this;
         
         return this;
     };
     
-})(window.msp);
+})(window.M);

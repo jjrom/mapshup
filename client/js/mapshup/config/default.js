@@ -45,16 +45,16 @@
 (function(c) {
     
     /**
+     * Application root url
+     */
+    c["general"].rootUrl = 'http://localhost/mapshup';
+    
+    /**
      * In the configuration file, each url starting with '/' is supposed to be relative
      * to serverRootUrl. Thus mapshup assume that the absolute url is the concatenation
      * of serverRootUrl + url
      */
-    c["general"].serverRootUrl = 'http://localhost/mspsrv';
-
-    /**
-     * Application root url
-     */
-    c["general"].rootUrl = 'http://localhost/msp';
+    c["general"].serverRootUrl = c["general"].rootUrl + '/s';
 
     /**
      * Application index path
@@ -102,7 +102,7 @@
      *      lon: // center map longitude
      *      lat: // center map latitude
      *      zoom: // map zoom level
-     *      bg: // mspID of the default background layer (optional)
+     *      bg: // MID of the default background layer (optional)
      *  }
      */
     c["general"].location = {
@@ -804,4 +804,4 @@
         name:"WPSClient"
     });
     
-})(window.msp.Config);
+})(window.M.Config);

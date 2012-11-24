@@ -42,7 +42,7 @@
  *
  *********************************************/
 
-msp.plugins["Print"] = {
+M.plugins["Print"] = {
 
     /**
      * Initialize plugin
@@ -62,12 +62,12 @@ msp.plugins["Print"] = {
 
     print: function() {
 
-        msp.mask.add(msp.Util._("Printing map..."));
+        M.mask.add(M.Util._("Printing map..."));
 
         /**
          * map reference
          */
-        var map = msp.Map.map;
+        var map = M.Map.map;
         var layername, tilerow, tilei;
 
         /**
@@ -104,7 +104,7 @@ msp.plugins["Print"] = {
 
         OpenLayers.Request.POST(
         {
-            url:msp.repareUrl(this.options.url),
+            url:M.repareUrl(this.options.url),
             data:OpenLayers.Util.getParameterString({
                 width:size.w,
                 height:size.h,
@@ -114,7 +114,7 @@ msp.plugins["Print"] = {
                 'Content-Type':'application/x-www-form-urlencoded'
             },
             callback: function(request) {
-                msp.mask.abort();
+                M.mask.abort();
                 console.log(request.responseText);
             }
         }

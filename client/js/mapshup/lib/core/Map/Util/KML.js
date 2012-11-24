@@ -39,7 +39,7 @@
 /**
  * Define Map util functions
  */
-(function(msp, Map) {
+(function(M, Map) {
     
     Map.Util = Map.Util || {};
     
@@ -68,8 +68,8 @@
             /*
              * KML layers are already in kml !
              */
-            if (layer["_msp"] && layer["_msp"].kml) {
-                return layer["_msp"].kml;
+            if (layer["_M"] && layer["_M"].kml) {
+                return layer["_M"].kml;
             }
 
             options = options || {};
@@ -158,7 +158,7 @@
                         + '<Style id="normalState">'
                         + '<IconStyle>'
                         + '<scale>1.1</scale>'
-                        + '<Icon><href>'+msp.Util.getImgUrl('ylw-pushpin.png')+'</href></Icon>'
+                        + '<Icon><href>'+M.Util.getImgUrl('ylw-pushpin.png')+'</href></Icon>'
                         + '<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>'
                         + '</IconStyle>'
                         + '<PolyStyle>'
@@ -183,7 +183,7 @@
                 kmlString = '<?xml version="1.0" encoding="UTF-8"?>'
                 + '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:kml="http://www.opengis.net/kml/2.2">'
                 + '<Document>'
-                + '<name>'+this.encode(msp.Util._(layer.name))+'</name>'
+                + '<name>'+this.encode(M.Util._(layer.name))+'</name>'
                 + '<description></description>'
                 + kmlString
                 + '</Document></kml>';
@@ -269,7 +269,7 @@
                          * The tricky part :
                          * If value begins by http, then it's a link
                          */
-                        if (typeof value === "string" && msp.Util.isUrl(value)) {
+                        if (typeof value === "string" && M.Util.isUrl(value)) {
                             if (attribute === "thumbnail") {
                                 description += '<img src="'+value+'" class="center" width="250"/><br/>';
                             }
@@ -315,7 +315,7 @@
                  * geometry class
                  */
                 if (gt === "OpenLayers.Geometry.Point") {
-                    point = msp.Map.Util.p2d(new OpenLayers.LonLat(feature.geometry.x,feature.geometry.y));
+                    point = M.Map.Util.p2d(new OpenLayers.LonLat(feature.geometry.x,feature.geometry.y));
                     kml = '<Point><coordinates>'+point.lon + ',' + point.lat + (elevation ? ',' + elevation : '') + '</coordinates></Point>';
                 }
                 else if (gt === "OpenLayers.Geometry.MultiPoint") {
@@ -326,7 +326,7 @@
                     if (feature.geometry.components) {
                         for (i = 0, l = feature.geometry.components.length; i < l; i++) {
                             point = feature.geometry.components[i];
-                            point = msp.Map.Util.p2d(new OpenLayers.LonLat(point.x,point.y));
+                            point = M.Map.Util.p2d(new OpenLayers.LonLat(point.x,point.y));
                             kml += '<Point><coordinates>'+point.lon + ',' + point.lat + (elevation ? ',' + elevation : '') + '</coordinates></Point>';
                         }
                     }
@@ -340,7 +340,7 @@
                     if (feature.geometry.components) {
                         for (i = 0, l = feature.geometry.components.length; i < l; i++) {
                             point = feature.geometry.components[i];
-                            point = msp.Map.Util.p2d(new OpenLayers.LonLat(point.x,point.y));
+                            point = M.Map.Util.p2d(new OpenLayers.LonLat(point.x,point.y));
                             kml += point.lon + ',' + point.lat + (elevation ? ',' + elevation : '') + ' ';
                         }
                     }
@@ -363,7 +363,7 @@
                             component = feature.geometry.components[i];
                             for (j = 0, k = component.components.length; j < k; j++){
                                 point = component.components[j];
-                                point = msp.Map.Util.p2d(new OpenLayers.LonLat(point.x,point.y));
+                                point = M.Map.Util.p2d(new OpenLayers.LonLat(point.x,point.y));
                                 kml += point.lon + ',' + point.lat + (elevation ? ',' + elevation : '') + ' ';
                             }
                         }
@@ -448,16 +448,16 @@
                      * Default google pushpin
                      */
                     else {
-                        kmlStyle = msp.Util.getImgUrl("ylw-pushpin.png");
+                        kmlStyle = M.Util.getImgUrl("ylw-pushpin.png");
                     }
 
                     /*
                      * Style for OpenLayers.Geometry.Point
                      */
                     if (kmlStyle.substr(0,5) !== 'http:' && kmlStyle.substr(0,1) !== '/') {
-                        kmlStyle = msp.Config.general.rootUrl + '/' + kmlStyle;
+                        kmlStyle = M.Config.general.rootUrl + '/' + kmlStyle;
                     }
-                    kmlStyle = '<Style><IconStyle><Icon><href>'+this.encode(msp.Util.getAbsoluteUrl(kmlStyle))+'</href></Icon></IconStyle></Style>';
+                    kmlStyle = '<Style><IconStyle><Icon><href>'+this.encode(M.Util.getAbsoluteUrl(kmlStyle))+'</href></Icon></IconStyle></Style>';
                 }
 
                 /*
@@ -575,11 +575,11 @@
             /*
              * Compute epsg:4326 extent
              */
-            var geoBounds = layer["_msp"] && layer["_msp"].bounds ? msp.Map.Util.p2d(layer["_msp"].bounds.clone()) : msp.Map.Util.p2d(layer.bounds.clone());
+            var geoBounds = layer["_M"] && layer["_M"].bounds ? M.Map.Util.p2d(layer["_M"].bounds.clone()) : M.Map.Util.p2d(layer.bounds.clone());
 
             if (layer.url) {
                 return '<GroundOverlay>'
-                + '<name>'+this.encode(msp.Util._(layer.name))+'</name>'
+                + '<name>'+this.encode(M.Util._(layer.name))+'</name>'
                 + '<description></description>'
                 + '<drawOrder>0</drawOrder>'
                 + '<Icon>'
@@ -620,17 +620,17 @@
              * Compute epsg:4326 extent of the map
              */
             var geoBounds = Map.Util.p2d(Map.map.getExtent()),
-                version = layer["_msp"].layerDescription.version || "1.1.0",
+                version = layer["_M"].layerDescription.version || "1.1.0",
                 projstr = version === "1.3.0" ? "&CRS=EPSG:4326&BBOX="+geoBounds.bottom+","+geoBounds.left+","+geoBounds.top+","+geoBounds.right : "&SRS=EPSG:4326&BBOX="+geoBounds.left+","+geoBounds.bottom+","+geoBounds.right+","+geoBounds.top,
                 WMSUrl = layer.url
                 +"WIDTH=512&HEIGHT=256&FORMAT=image/png&TRANSPARENT=true&SERVICE=WMS&REQUEST=GetMap&LAYERS="
-                +layer["_msp"].layerDescription.layers
+                +layer["_M"].layerDescription.layers
                 +"&VERSION="+version
                 +projstr;
 
             if (layer.url) {
                 return '<GroundOverlay>'
-                + '<name>'+this.encode(msp.Util._(layer.name))+'</name>'
+                + '<name>'+this.encode(M.Util._(layer.name))+'</name>'
                 + '<description></description>'
                 + '<drawOrder>0</drawOrder>'
                 + '<Icon>'
@@ -658,5 +658,5 @@
         
     }
     
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);
 

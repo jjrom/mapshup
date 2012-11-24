@@ -42,15 +42,15 @@
  * Add support for searching in OpenSearch feeds
  * 
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Search = function() {
+    M.Plugins.Search = function() {
         
         /*
          * Only one Search object instance is created
          */
-        if (msp.Plugins.Search._o) {
-            return msp.Plugins.Search._o;
+        if (M.Plugins.Search._o) {
+            return M.Plugins.Search._o;
         }
         
         /*
@@ -64,7 +64,7 @@
         this.init = function(options) {
 
             var sb,d,i,l,
-            id = msp.Util.getId(),
+            id = M.Util.getId(),
             self = this;
             
             /*
@@ -84,7 +84,7 @@
             /*
              * Create the search bar within mapshup header
              */
-            sb = $('.searchBar', msp.$header).html('<form method="get" action="#"><input id="'+id+'" name="q" type="text" size="40" placeholder="'+msp.Util._("Search / Add a layer url")+'"/></form>');
+            sb = $('.searchBar', M.$header).html('<form method="get" action="#"><input id="'+id+'" name="q" type="text" size="40" placeholder="'+M.Util._("Search / Add a layer url")+'"/></form>');
             self.$input = $('#'+id);
             
             /*
@@ -133,12 +133,12 @@
                             /*
                              * Tell user we zoom the map
                              */
-                            msp.Util.message(msp.Map.Util.getFormattedLonLat(lonlat, msp.Config["general"].coordinatesFormat));
+                            M.Util.message(M.Map.Util.getFormattedLonLat(lonlat, M.Config["general"].coordinatesFormat));
                                
                             /*
                              * Latitude/longitude to map projection
                              */
-                            msp.Map.map.setCenter(msp.Map.Util.d2p(lonlat), 14);
+                            M.Map.map.setCenter(M.Map.Util.d2p(lonlat), 14);
                             
                             return false;
                         }
@@ -151,9 +151,9 @@
                      * If value is a valid url, then call AddLayer plugin if defined
                      * 
                      */
-                    if (msp.Util.isUrl(v)) {
-                        if (msp.Plugins.AddLayer && msp.Plugins.AddLayer._o) {
-                            msp.Plugins.AddLayer._o.guess(v);
+                    if (M.Util.isUrl(v)) {
+                        if (M.Plugins.AddLayer && M.Plugins.AddLayer._o) {
+                            M.Plugins.AddLayer._o.guess(v);
                             return false;
                         }
                     }
@@ -250,13 +250,13 @@
             /*
              * Default is to display message
              */
-            options.msg = msp.Util.getPropertyValue(options, "msg", true);
+            options.msg = M.Util.getPropertyValue(options, "msg", true);
             
             /*
              * Asynchronously retrieve service information from url
              */
             $.ajax({
-                url:msp.Util.proxify(msp.Util.getAbsoluteUrl(url)),
+                url:M.Util.proxify(M.Util.getAbsoluteUrl(url)),
                 origin:url,
                 async:true,
                 success:function(data) {
@@ -299,7 +299,7 @@
                         type = "GeoRSS";
                     }
                     else {
-                        msp.Util.message(d.name + ": " + msp.Util._("Error : format not supported"));
+                        M.Util.message(d.name + ": " + M.Util._("Error : format not supported"));
                         return false;
                     }
 
@@ -318,26 +318,26 @@
                      */
                     d.title = d.name;
                     d.value = this.origin; // Value === origin
-                    d.icon = d.icon ? msp.Util.getImgUrl(d.icon) : null;
+                    d.icon = d.icon ? M.Util.getImgUrl(d.icon) : null;
                     d.shortcut = options.shortcut;
                     d.options = options.options || {};
                     
                     /*
                      * Add new service
                      */
-                    self.services[this.origin] = msp.Util.clone(d);
+                    self.services[this.origin] = M.Util.clone(d);
                     
                     /*
                      * Tell user that service is loaded
                      */
                     if (options.msg) {
-                        msp.Util.message(msp.Util._("Add search service") + " : " + msp.Util._(d.title));
+                        M.Util.message(M.Util._("Add search service") + " : " + M.Util._(d.title));
                     }
                     
                     return true;
                 },
                 error:function(e) {
-                    msp.Util.message(msp.Util._("Error : cannot add search service") + " - " + url);
+                    M.Util.message(M.Util._("Error : cannot add search service") + " - " + url);
                 }
             });
             
@@ -350,8 +350,8 @@
             
             var self = this;
             
-            msp.Util.askFor({
-                title:msp.Util._("Choose a search service"),
+            M.Util.askFor({
+                title:M.Util._("Choose a search service"),
                 dataType:"list",
                 value:self.services,
                 callback:function(v){
@@ -425,7 +425,7 @@
              * Extend layerDescription with input options
              */
             $.extend(layerDescription, service.options);
-            layer = msp.Map.Util.getLayerByMspID((new msp.Map.LayerDescription(layerDescription, msp.Map)).getMspID());
+            layer = M.Map.Util.getLayerByMID((new M.Map.LayerDescription(layerDescription, M.Map)).getMID());
             
             /*
              * Layer already exist -> replace features
@@ -435,7 +435,7 @@
                 /*
                  * Set new layerDescription
                  */
-                $.extend(layer["_msp"].layerDescription,layerDescription);
+                $.extend(layer["_M"].layerDescription,layerDescription);
                 
                 /*
                  * Refresh layer name
@@ -445,7 +445,7 @@
                 /*
                  * Refresh features
                  */
-                lt = msp.Map.layerTypes[layer["_msp"].layerDescription.type];
+                lt = M.Map.layerTypes[layer["_M"].layerDescription.type];
                 if ($.isFunction(lt.refresh)) {
                     lt.refresh(layer);
                 }
@@ -454,16 +454,16 @@
                 /*
                  * Add layer and store it for post processing 
                  */
-                layer = msp.Map.addLayer(layerDescription);
+                layer = M.Map.addLayer(layerDescription);
 
                 /*
                  * Add a setTime Function
                  */
                 if (service.options.changeOnTime) {
-                    layer["_msp"].setTime = function(interval) {
+                    layer["_M"].setTime = function(interval) {
                         self.search(service, getParams);
                     };
-                    msp.timeLine.add(layer);
+                    M.timeLine.add(layer);
                 }
             }
             
@@ -471,8 +471,8 @@
             /*
              * Tell user that search is in progress
              */
-            msp.mask.add({
-                title:msp.Util._(service.name)+' : '+msp.Util._("Searching")+" "+ (a.title || self.$input.val()),
+            M.mask.add({
+                title:M.Util._(service.name)+' : '+M.Util._("Searching")+" "+ (a.title || self.$input.val()),
                 layer:layer,
                 cancel:true
             });
@@ -503,18 +503,18 @@
             for (j = 1, k = parts.length; j < k; j++) {
                 kvps += "?"+parts[j];
             }
-            kvps = msp.Util.extractKVP(kvps);
+            kvps = M.Util.extractKVP(kvps);
 
             /*
              * Avoid XSS vulnerability
              */
-            self.$input.val(msp.Util.stripTags($.trim(self.$input.val())));
+            self.$input.val(M.Util.stripTags($.trim(self.$input.val())));
            
             /*
              * Get time
              */
-            if (msp.timeLine.enabled) {
-                interval =  msp.timeLine.getInterval();
+            if (M.timeLine.enabled) {
+                interval =  M.timeLine.getInterval();
             }
             
             /*
@@ -540,8 +540,8 @@
                  * Set bbox
                  */
                 else if (kvps[key].indexOf('geo:box') === 1) {
-                    kvps[key] = msp.Map.Util.convert({
-                        input:msp.Map.Util.p2d(msp.Map.map.getExtent().clone()),
+                    kvps[key] = M.Map.Util.convert({
+                        input:M.Map.Util.p2d(M.Map.map.getExtent().clone()),
                         format:"EXTENT",
                         precision:6,
                         limit:true
@@ -552,7 +552,7 @@
                  * Set lang
                  */
                 else if (kvps[key].indexOf('lang') === 1) {
-                    kvps[key] = msp.Config.i18n.lang;
+                    kvps[key] = M.Config.i18n.lang;
                 }
                 
                 /*
@@ -581,7 +581,7 @@
                 else if (kvps[key].indexOf('count') === 1) {
                     pagination["numRecordsPerPage"] = {
                         name:key,
-                        value:msp.Config["general"].numRecordsPerPage
+                        value:M.Config["general"].numRecordsPerPage
                     }
                 }
                 
@@ -617,9 +617,9 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Search._o = this;
+        M.Plugins.Search._o = this;
         
         return this;
         
     };
-})(window.msp);
+})(window.M);

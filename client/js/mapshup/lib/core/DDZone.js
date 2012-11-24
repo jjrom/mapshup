@@ -39,9 +39,9 @@
 /**
  * Define a Drag&Drop zone
  */
-(function (msp) {
+(function (M) {
    
-    msp.DDZone = function(options) {
+    M.DDZone = function(options) {
 
         /**
          * Zone reference
@@ -104,7 +104,7 @@
             /*
              * Create a Drag&Drop zone under parent
              */
-            this.$d = msp.Util.$$('#'+msp.Util.getId(), options.parent)
+            this.$d = M.Util.$$('#'+M.Util.getId(), options.parent)
             .addClass('ddzone')
             .css({
                 'min-height':'50px',
@@ -180,7 +180,7 @@
                     */
                     if (files.length === 0 && self.allowUrl) {
                         url = e.originalEvent.dataTransfer.getData('Text');
-                        if (msp.Util.isUrl(url)) {
+                        if (M.Util.isUrl(url)) {
                             self.fileUrl = url;
                             self.success({
                                 fileUrl:self.fileUrl
@@ -188,13 +188,13 @@
                         }
                     }
                     else if (files.length > 1) {
-                        msp.Util.message(msp.Util._("Error : drop only one file at a time"));
+                        M.Util.message(M.Util._("Error : drop only one file at a time"));
                     }
                     else if (!self.isFormatSupported(files[0].type)) {
-                        msp.Util.message(msp.Util._("Error : mimeType is not supported")+ ' ['+files[0].type+']');
+                        M.Util.message(M.Util._("Error : mimeType is not supported")+ ' ['+files[0].type+']');
                     }
                     else if (files[0].size/1048576 > self.maximumMegabytes) {
-                        msp.Util.message(msp.Util._("Error : file is to big"));
+                        M.Util.message(M.Util._("Error : file is to big"));
                     }
                     /*
                     * User dropped a valid file
@@ -233,7 +233,7 @@
              * If file or url had been dropped - show file info
              */
             if (this.file) {
-                this.$d.html(this.file.name+'<br/><p class="smaller">'+msp.Util._("Size")+': '+this.getSize()+'MB</p>');
+                this.$d.html(this.file.name+'<br/><p class="smaller">'+M.Util._("Size")+': '+this.getSize()+'MB</p>');
             }
             else if (this.fileUrl){
                 this.$d.html(this.fileUrl);
@@ -249,7 +249,7 @@
                  * ...followed by all droppable supported formats
                  */
                 if (l > 0) {
-                    this.$d.append('<br/><p class="smaller">'+msp.Util._("Supported mimeTypes")+'</p>');
+                    this.$d.append('<br/><p class="smaller">'+M.Util._("Supported mimeTypes")+'</p>');
                     for (i = 0; i < l; i++) {
                         this.$d.append('<p class="smaller">'+this.supportedFormats[i].mimeType+'</p>');
                     }
@@ -292,4 +292,4 @@
 
     }
     
-})(window.msp);
+})(window.M);

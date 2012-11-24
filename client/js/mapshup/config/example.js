@@ -69,4 +69,4 @@
     c.remove("plugins", "WorldGrid");
     c.remove("plugins", "Welcome");
     
-})(window.msp.Config);
+})(window.M.Config);

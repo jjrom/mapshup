@@ -38,9 +38,9 @@
 /**
  * mapshup Popup
  */
-(function (msp) {
+(function (M) {
 
-    msp.Popup = function (options) {
+    M.Popup = function (options) {
 
         /*
          * Paranoid mode
@@ -50,7 +50,7 @@
         /*
          * True to adapt popup size to its content 
          */
-        this.autoSize = msp.Util.getPropertyValue(options, "autoSize", false);
+        this.autoSize = M.Util.getPropertyValue(options, "autoSize", false);
         
         /*
          * Class names to add to this popup
@@ -66,12 +66,12 @@
         /*
          * True to display a generic popup (see mapshup.css .tools .generic definition)
          */
-        this.generic = msp.Util.getPropertyValue(options, "generic", true);
+        this.generic = M.Util.getPropertyValue(options, "generic", true);
         
         /*
          * True to hide popup when closing it instead of remove it
          */
-        this.hideOnClose = msp.Util.getPropertyValue(options, "hideOnClose", false);
+        this.hideOnClose = M.Util.getPropertyValue(options, "hideOnClose", false);
         
         /*
          * True to set this popup modal.
@@ -82,18 +82,18 @@
          * http://en.wikipedia.org/wiki/Modal_window
          * 
          */
-        this.modal = msp.Util.getPropertyValue(options, "modal", false);
+        this.modal = M.Util.getPropertyValue(options, "modal", false);
         
         /*
          * True to not set a popup header
          * !! WARNING !! If set to true, then 'header' parameter is discarded
          */
-        this.noHeader = msp.Util.getPropertyValue(options, "noHeader", false);
+        this.noHeader = M.Util.getPropertyValue(options, "noHeader", false);
         
         /*
          * True to automatically resize popup on window size change
          */
-        this.resize = msp.Util.getPropertyValue(options, "resize", true);
+        this.resize = M.Util.getPropertyValue(options, "resize", true);
         
         /*
          * Parent scope for callback
@@ -103,7 +103,7 @@
         /*
          * If true popup cannot be displayed outside of the map view
          */
-        this.unbounded = msp.Util.getPropertyValue(options, "unbounded", false);
+        this.unbounded = M.Util.getPropertyValue(options, "unbounded", false);
         
         /*
          * If true popup position is fixed relatively to the map
@@ -111,7 +111,7 @@
          * !! WARNING !! Set the parameter to true overides the "unbounded" parameter
          * since the popup is unbounded in this case
          */
-        this.followMap = msp.Util.getPropertyValue(options, "followMap", false);
+        this.followMap = M.Util.getPropertyValue(options, "followMap", false);
         
         /*
          * Attach popup to the specified {OpenLayers.LonLat} map coordinates
@@ -143,7 +143,7 @@
              *      </div>
              *  </div>
              */
-            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$mcontainer).addClass('po').html('<div class="whole">'+(self.noHeader ? ''  : '<div class="header"></div>')+'<div class="body'+(self.generic ? ' generic' : '')+'"></div></div>');
+            self.$d = M.Util.$$('#'+M.Util.getId(), M.$mcontainer).addClass('po').html('<div class="whole">'+(self.noHeader ? ''  : '<div class="header"></div>')+'<div class="body'+(self.generic ? ' generic' : '')+'"></div></div>');
 
             /*
              * If popup is modal, set a semi transparent mask
@@ -158,7 +158,7 @@
                     'z-index':'38000'
                 });
                 
-                self.$m = msp.Util.$$('#modmask',msp.$container)
+                self.$m = M.Util.$$('#modmask',M.$container)
                 .addClass("mask")
                 .css(
                 {
@@ -209,14 +209,14 @@
             /*
              * Add a close button
              */
-            msp.Util.addClose(self.$d, function(e){
+            M.Util.addClose(self.$d, function(e){
                 self.hideOnClose ? self.hide() : self.remove();
             });
             
             /*
              * Compute popup position on window resize
              */
-            msp.events.register("resizeend", self, function(scope) {
+            M.events.register("resizeend", self, function(scope) {
                 scope.updatePosition(scope);
             });
             
@@ -224,7 +224,7 @@
              * Move popup on map move
              */
             if (options.followMap) {
-                msp.Map.map.events.register('move', msp.Map.map, function(){
+                M.Map.map.events.register('move', M.Map.map, function(){
                     if (self.$d.is(':visible')) {
                         self.updatePosition(self);
                     }
@@ -260,7 +260,7 @@
          */
         this.updatePosition = function(scope) {
             
-            var $c = msp.$container;
+            var $c = M.$container;
             
             scope = scope || this;
             
@@ -285,7 +285,7 @@
              */
             if (scope.followMap && scope.mapXY) {
                 
-                var xy = msp.Map.map.getPixelFromLonLat(scope.mapXY);
+                var xy = M.Map.map.getPixelFromLonLat(scope.mapXY);
                     
                 /*
                  * Set action info menu position
@@ -310,7 +310,7 @@
              * Center the popup over its container 
              */
             scope.$d.css({
-                'left': ((msp.$container.width() - scope.$d.width()) / 2 )
+                'left': ((M.$container.width() - scope.$d.width()) / 2 )
             });
             
         };
@@ -355,7 +355,7 @@
 
             var x,y,pixel,
             $d = this.$d,
-            parent = msp.$map,
+            parent = M.$map,
             offset = parent.offset();
 
             /*
@@ -366,7 +366,7 @@
             }
             
             /*
-             * (0,0) origin of MapPixel is msp.$map
+             * (0,0) origin of MapPixel is M.$map
              * (0,0) origin of pixel is window
              */
             pixel = {
@@ -446,7 +446,7 @@
          */
         this.remove = function() {
             this.hide();
-            msp.remove(this);
+            M.remove(this);
         };
         
         /**
@@ -467,8 +467,8 @@
                 * visible
                 */
                 var lmo = $('.lm').offset(), // Check if LayersManager is visible
-                    dy = this.$d.offset().top - msp.$map.offset().top - (lmo ? lmo.top : 0),
-                    dx = msp.$map.offset().left + msp.$map.width() - this.$d.offset().left - this.$d.outerWidth(),
+                    dy = this.$d.offset().top - M.$map.offset().top - (lmo ? lmo.top : 0),
+                    dx = M.$map.offset().left + M.$map.width() - this.$d.offset().left - this.$d.outerWidth(),
                     c;
 
                 if (dx > 0) {
@@ -482,8 +482,8 @@
                  * Transform pixels to meters
                  */
                 if (dx < 0 || dy < 0) {
-                    c = msp.Map.map.getPixelFromLonLat(msp.Map.map.getCenter());
-                    msp.Map.map.setCenter(msp.Map.map.getLonLatFromPixel(new OpenLayers.Pixel(c.x - dx, c.y + dy)));
+                    c = M.Map.map.getPixelFromLonLat(M.Map.map.getCenter());
+                    M.Map.map.setCenter(M.Map.map.getLonLatFromPixel(new OpenLayers.Pixel(c.x - dx, c.y + dy)));
                 }
             }
         };
@@ -497,4 +497,4 @@
     }
     
     
-})(window.msp);
+})(window.M);

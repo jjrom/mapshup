@@ -38,7 +38,7 @@
 /**
  * GeoRSS layer type
  */
-(function (msp, Map){
+(function (M, Map){
     
     Map.layerTypes["GeoJSON"] = {
 
@@ -87,12 +87,12 @@
             /*
              * Set title
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription);
+            layerDescription.title = M.Util.getTitle(layerDescription);
             
             /*
              * Cluster strategy
              */
-            if (options["_msp"].clusterized && !options.hasOwnProperty("strategies")) {
+            if (options["_M"].clusterized && !options.hasOwnProperty("strategies")) {
                 options.strategies = [new OpenLayers.Strategy.Cluster(new OpenLayers.Strategy.Cluster(Map.clusterOpts))];
             }
             
@@ -122,7 +122,7 @@
              */
             if (layerDescription.hasOwnProperty("data")) {
                 if (!self.load(layerDescription.data, layerDescription, newLayer)) {
-                //msp.Map.removeLayer(newLayer, false);
+                //M.Map.removeLayer(newLayer, false);
                 }
             }
             /*
@@ -135,7 +135,7 @@
                  * annoying popup telling that the layer is added before
                  * the data has been effectively retrieve from server
                  */
-                newLayer['_msp'].isLoaded = false;
+                newLayer['_M'].isLoaded = false;
                 
                 self.refresh(newLayer, urlModifier);
                 
@@ -159,19 +159,19 @@
              * Otherwise, display results
              */
             if (!options.data || !options.data.features || options.data.error) {
-                msp.Util.message(options.layer.name + " : " + (options.data ? options.data.error["message"] : "Error"), -1);
+                M.Util.message(options.layer.name + " : " + (options.data ? options.data.error["message"] : "Error"), -1);
                 return null
             }
             else {
                 
                 l = options.data.features.length;
-                p = options.layer['_msp'].pagination || {};
+                p = options.layer['_M'].pagination || {};
                 
                 /*
                  * No features
                  */
                 if (l === 0) {
-                    msp.Util.message(msp.Util._(options.layer.name)+ " : " + msp.Util._("No result"));
+                    M.Util.message(M.Util._(options.layer.name)+ " : " + M.Util._("No result"));
                     return null;
                 }
                 else {
@@ -179,7 +179,7 @@
                     /*
                      * Set layer isLoaded status to true
                      */
-                    options.layer['_msp'].isLoaded = true;
+                    options.layer['_M'].isLoaded = true;
                     
                     /*
                      * Pagination
@@ -246,8 +246,8 @@
         next: function(layer) {
             
             var self = this,
-            p = layer["_msp"].pagination,
-            ld = layer["_msp"].layerDescription;
+            p = layer["_M"].pagination,
+            ld = layer["_M"].layerDescription;
             
             /*
              * Paranoid mode
@@ -267,8 +267,8 @@
             /*
             * Retrieve FeatureCollection from server
             */
-            msp.Util.ajax({
-                url:msp.Util.proxify(msp.Util.paginate(ld.url, p)),
+            M.Util.ajax({
+                url:M.Util.proxify(M.Util.paginate(ld.url, p)),
                 layer:layer,
                 async:true,
                 dataType:"json",
@@ -280,7 +280,7 @@
                     });
                 }
             },{
-                title:msp.Util._("Retrieve features"),
+                title:M.Util._("Retrieve features"),
                 cancel:true 
             });
 
@@ -298,16 +298,16 @@
             /*
              * Paranoid mode
              */
-            if (!layer || !layer["_msp"]) {
+            if (!layer || !layer["_M"]) {
                 return false;
             }
             
-            layerDescription = layer["_msp"].layerDescription;
+            layerDescription = layer["_M"].layerDescription;
             
             /*
              * Refresh pagination
              */
-            p = layer['_msp'].pagination || {};
+            p = layer['_M'].pagination || {};
             if (p.nextRecord) {
                 p.nextRecord.value = 1;
             }
@@ -316,10 +316,10 @@
              * If urlModifier is set, add it before layerDescription.url
              * (See Pleiades.js layerType to understand why)
              */
-            url = urlModifier ? msp.Util.getAbsoluteUrl(urlModifier + encodeURIComponent(layerDescription.url + msp.Util.abc)) : layerDescription.url;
+            url = urlModifier ? M.Util.getAbsoluteUrl(urlModifier + encodeURIComponent(layerDescription.url + M.Util.abc)) : layerDescription.url;
 
             $.ajax({
-                url:msp.Util.proxify(msp.Util.paginate(url, layer["_msp"].pagination)),
+                url:M.Util.proxify(M.Util.paginate(url, layer["_M"].pagination)),
                 layer:layer,
                 async:true,
                 dataType:"json",
@@ -339,7 +339,7 @@
                         /*
                         * Tell mapshup that layer is loaded
                         */
-                        this.layer["_msp"].isLoaded = true;
+                        this.layer["_M"].isLoaded = true;
                             
                         /*
                         * Tell mapshup that no features were added
@@ -357,4 +357,4 @@
         
     }
     
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

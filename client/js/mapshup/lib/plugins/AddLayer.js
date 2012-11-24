@@ -41,15 +41,15 @@
  * This plugin allows user to add a layer to the map
  * 
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.AddLayer = function() {
+    M.Plugins.AddLayer = function() {
         
         /*
          * Only one Context object instance is created
          */
-        if (msp.Plugins.AddLayer._o) {
-            return msp.Plugins.AddLayer._o;
+        if (M.Plugins.AddLayer._o) {
+            return M.Plugins.AddLayer._o;
         }
         
         
@@ -85,12 +85,12 @@
              */
             $.extend(self.options,
             {
-                allowedExtensions:msp.Config["upload"].allowedExtensions || [],
+                allowedExtensions:M.Config["upload"].allowedExtensions || [],
                 allowedLayerTypes:self.options.allowedLayerTypes || [],
                 allowedMaxNumber:1,
-                allowedMaxSize:msp.Config["upload"].allowedMaxSize || 1000000,
+                allowedMaxSize:M.Config["upload"].allowedMaxSize || 1000000,
                 magicServiceUrl:self.options.magicServiceUrl || "/utilities/magic.php?",
-                uploadServiceUrl:msp.Config["upload"].serviceUrl || "/utilities/upload.php?"
+                uploadServiceUrl:M.Config["upload"].serviceUrl || "/utilities/upload.php?"
             });
 
             /*
@@ -108,9 +108,9 @@
             if (dd) {
 
                 /*
-                 * Create an info div mask upon msp.$mcontainer
+                 * Create an info div mask upon M.$mcontainer
                  */
-                self.$ddzone = msp.Util.$$('#ddzone', msp.$mcontainer).html('<div class="content">'+msp.Util._("Drop !")+'</div>');
+                self.$ddzone = M.Util.$$('#ddzone', M.$mcontainer).html('<div class="content">'+M.Util._("Drop !")+'</div>');
 
                 /*
                  * The valid drop zone is the whole Map div
@@ -165,7 +165,7 @@
                         }
                     });
 
-                msp.$map
+                M.$map
                 .bind(
                     'dragenter',
                     function(e) {
@@ -191,10 +191,10 @@
                 /**
                  * Add layer description to Map.predefined
                  */
-                if (msp.Map.layerTypes[name]) {
+                if (M.Map.layerTypes[name]) {
                     for (j = 0, m = predefined.length; j < m; j++){
                         predefined[j].type = name;
-                        msp.Map.predefined.add(predefined[j]);
+                        M.Map.predefined.add(predefined[j]);
                     }
                 }
             }
@@ -212,13 +212,13 @@
 
             var scope = this;
             
-            msp.Util.ajax({
-                url:msp.Util.getAbsoluteUrl(scope.options.magicServiceUrl)+msp.Util.abc+"&url="+encodeURIComponent(msp.Util.repareUrl($.trim(url))),
+            M.Util.ajax({
+                url:M.Util.getAbsoluteUrl(scope.options.magicServiceUrl)+M.Util.abc+"&url="+encodeURIComponent(M.Util.repareUrl($.trim(url))),
                 async:true,
                 dataType:"json",
                 success:function(result){
                     if (result.error) {
-                        msp.Util.message(result.error["message"]);
+                        M.Util.message(result.error["message"]);
                     }
                     else {
 
@@ -236,10 +236,10 @@
 
                 },
                 error:function() {
-                    msp.Util.message(msp.Util._("Error : cannot perform action"));
+                    M.Util.message(M.Util._("Error : cannot perform action"));
                 }
             },{
-                title:msp.Util._("Layer detection in progress..."),
+                title:M.Util._("Layer detection in progress..."),
                 cancel:true
             });
 
@@ -255,13 +255,13 @@
             for (i = 0, l = self.options.allowedLayerTypes.length; i < l; i++) {
                 t = self.options.allowedLayerTypes[i].name;
                 list.push({
-                    title:msp.Util._(t),
+                    title:M.Util._(t),
                     value:t
                 })
             }
-            msp.Util.askFor({
-                title:msp.Util._("Add layer"),
-                content:msp.Util._("What is the type for this layer ?"),
+            M.Util.askFor({
+                title:M.Util._("Add layer"),
+                content:M.Util._("What is the type for this layer ?"),
                 dataType:"list",
                 value:list,
                 callback:function(v){
@@ -298,8 +298,8 @@
             /*
              * Tell user that we are processing things !
              */
-            msp.mask.add({
-                title:msp.Util._("Upload data")+"...",
+            M.mask.add({
+                title:M.Util._("Upload data")+"...",
                 cancel:false
             });
 
@@ -323,7 +323,7 @@
                      * File size is too big
                      */
                     if (file.fileSize > scope.options.allowedMaxSize) {
-                        msp.Util.message(msp.Util._("Error : file is to big"));
+                        M.Util.message(M.Util._("Error : file is to big"));
                         isValid = false;
                         return false;
                     }
@@ -338,7 +338,7 @@
                         c = cpt.hasOwnProperty(extension) ? cpt.extension : 1;
 
                         if (count++ >= c) {
-                            msp.Util.message(msp.Util._("Error : only one file at a time is allowed"));
+                            M.Util.message(M.Util._("Error : only one file at a time is allowed"));
                             isValid = false;
                             return false;
                         }
@@ -349,7 +349,7 @@
                     }
                 }
                 if (isValid) {
-                    id = msp.Util.getId();
+                    id = M.Util.getId();
                     ids += ids !== "" ? "," + id : id;
                 }
                 
@@ -392,7 +392,7 @@
                      */
                     if (http.readyState === 4 && (http.status === 200 || http.status === 0)) {
 
-                        msp.mask.hide();
+                        M.mask.hide();
 
                         result = JSON.parse(http.responseText);
 
@@ -400,7 +400,7 @@
                          * In case of success, roll over processed items
                          */
                         if (result.error) {
-                            msp.Util.message(result.error["message"]);
+                            M.Util.message(result.error["message"]);
                         }
                         else {
                             if (result.items) {
@@ -431,15 +431,15 @@
                         form.append('file[]', files[i]);
                     }
                     
-                    http.open('POST', msp.Util.getAbsoluteUrl(scope.options.uploadServiceUrl)+msp.Util.abc+ids+"&magic=true");
+                    http.open('POST', M.Util.getAbsoluteUrl(scope.options.uploadServiceUrl)+M.Util.abc+ids+"&magic=true");
                     http.send(form);
                 } else {
-                    msp.Util.message('Error : your browser does not support HTML5 Drag and Drop');
+                    M.Util.message('Error : your browser does not support HTML5 Drag and Drop');
                 }
             }
             else {
-                msp.Util.message('Error : this file type is not allowed');
-                msp.mask.hide();
+                M.Util.message('Error : this file type is not allowed');
+                M.mask.hide();
             }
         },
 
@@ -472,22 +472,22 @@
             /*
              * Special case for WPS services
              */
-            if (p.type === "WPS" && (msp.Plugins.WPSClient && msp.Plugins.WPSClient._o)) {
-                msp.Plugins.WPSClient._o.add(p.url);
+            if (p.type === "WPS" && (M.Plugins.WPSClient && M.Plugins.WPSClient._o)) {
+                M.Plugins.WPSClient._o.add(p.url);
                 return true
             }
             
             /*
              * Special case for Search service
              */
-            if (p.type === "OpenSearch" && (msp.Plugins.Search && msp.Plugins.Search._o)) {
-                msp.Plugins.Search._o.add(p.url);
+            if (p.type === "OpenSearch" && (M.Plugins.Search && M.Plugins.Search._o)) {
+                M.Plugins.Search._o.add(p.url);
             }
             
             /*
              * Add layer description to predefined layersDescription.
              */
-            msp.Map.predefined.add(p);
+            M.Map.predefined.add(p);
             
             /*
              * Update layers list and trigger getInfo for this result
@@ -535,7 +535,7 @@
              * Special case for error
              */
             if (a.type === "error") {
-                msp.Util.message(msp.Util._(a.error["message"]));
+                M.Util.message(M.Util._(a.error["message"]));
                 return false;
             }
             
@@ -565,15 +565,15 @@
                 p = a[i];
 
                 /*
-                 * Convert p to msp.Map.LayerDescription object
+                 * Convert p to M.Map.LayerDescription object
                  */
-                ld = new msp.Map.LayerDescription(p, msp.Map);
+                ld = new M.Map.LayerDescription(p, M.Map);
                 
                 /*
                  * Get additional parameters if needed
                  * (e.g. getCapabilities for WMS)
                  */
-                lt = msp.Map.layerTypes[p.type];
+                lt = M.Map.layerTypes[p.type];
 
                 /*
                  * Process only valid layerTypes
@@ -604,7 +604,7 @@
                  * then automatically add it to the map
                  */
                 if (l === 1) {
-                    msp.Map.addLayer(p);
+                    M.Map.addLayer(p);
                     return true;
                 }
                 
@@ -612,7 +612,7 @@
                  * Layer Description
                  */
                 info = ld.getInfo();
-                id = msp.Util.getId();
+                id = M.Util.getId();
                 
                 /*
                  * Get info popup
@@ -623,12 +623,12 @@
                      * Create info popup.
                      * popup reference is removed on popup close
                      */
-                    self.popup = new msp.Popup({
+                    self.popup = new M.Popup({
                         modal:true,
                         onClose:function(scope){
                             scope.popup = null;
                         },
-                        header:'<p>'+msp.Util._("Add layer")+'</p>',
+                        header:'<p>'+M.Util._("Add layer")+'</p>',
                         scope:self
                     });
 
@@ -637,14 +637,14 @@
                 /*
                  * Set title and description
                  */
-                self.popup.$b.append('<div class="title">'+msp.Util._(p["title"])+'&nbsp;[<a href="#" id="'+id+'" class="hover">'+msp.Util._("Add")+'</a>]</div><div class="description">'+msp.Util._(p["description"] || "No description available")+'</div>');
+                self.popup.$b.append('<div class="title">'+M.Util._(p["title"])+'&nbsp;[<a href="#" id="'+id+'" class="hover">'+M.Util._("Add")+'</a>]</div><div class="description">'+M.Util._(p["description"] || "No description available")+'</div>');
                 
                 /*
                  * Add layer on click
                  */
                 (function (p, id) {
                     $('#'+id).click(function(){
-                        msp.Map.addLayer(p);
+                        M.Map.addLayer(p);
                         self.popup.remove();
                     });
                 })(p, id);
@@ -658,10 +658,10 @@
                      * Preview special case
                      */
                     if (info[j][0] == "Preview") {
-                        self.popup.$b.append('<div class="title">'+msp.Util._(info[j][0])+'</div><div class="description"><img src="'+info[j][1]+'" title=""/></div>');
+                        self.popup.$b.append('<div class="title">'+M.Util._(info[j][0])+'</div><div class="description"><img src="'+info[j][1]+'" title=""/></div>');
                     }
                     else {
-                        self.popup.$b.append('<div class="title">'+msp.Util._(info[j][0])+'</div><div class="description">'+info[j][1]+'</div>');
+                        self.popup.$b.append('<div class="title">'+M.Util._(info[j][0])+'</div><div class="description">'+info[j][1]+'</div>');
                     }
                 }
                 
@@ -682,10 +682,10 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.AddLayer._o = this;
+        M.Plugins.AddLayer._o = this;
         
         return this;
         
     };
     
-})(window.msp);
+})(window.M);

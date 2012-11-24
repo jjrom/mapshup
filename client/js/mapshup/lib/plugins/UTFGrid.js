@@ -38,15 +38,15 @@
 /*
  * UTFGrid plugin.
  */
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.UTFGrid = function() {
+    M.Plugins.UTFGrid = function() {
         
         /*
          * Only one UTFGrid object instance is created
          */
-        if (msp.Plugins.UTFGrid._o) {
-            return msp.Plugins.UTFGrid._o;
+        if (M.Plugins.UTFGrid._o) {
+            return M.Plugins.UTFGrid._o;
         }
         
         /*
@@ -84,19 +84,19 @@
             /*
              * Create UTFGrid alert container
              */
-            self.$d = msp.Util.$$('#'+msp.Util.getId()).addClass("utfginfo").click(function(){
+            self.$d = M.Util.$$('#'+M.Util.getId()).addClass("utfginfo").click(function(){
                 self.activate(!self.active);
             });
             
             /*
              * Define action on mousemove
              */
-            msp.$map.mousemove(function (e){
+            M.$map.mousemove(function (e){
                 
                 /*
                  * Never display UTFGrid info if a vector feature is already hilited
                  */
-                if (msp.Map.$featureHilite.attr("hilited") === "hilited") {
+                if (M.Map.$featureHilite.attr("hilited") === "hilited") {
                     
                     /* Important - reset last hilited object if any */
                     self._current = {};
@@ -106,7 +106,7 @@
                 
                 var i, l, items, layer, z, mz,
                 show = false,
-                lonLat = msp.Map.map.getLonLatFromPixel(msp.Map.mousePosition);
+                lonLat = M.Map.map.getLonLatFromPixel(M.Map.mousePosition);
                 
                 if (!lonLat) { 
                     return false;
@@ -124,18 +124,18 @@
                         /*
                          * Do not send request outside of zoom levels and location bounds
                          */
-                        z = layer["_msp"].z;
-                        mz = msp.Map.map.getZoom();
+                        z = layer["_M"].z;
+                        mz = M.Map.map.getZoom();
                         
-                        if ((mz >= z[0] && mz <= z[1]) && layer["_msp"].bounds.containsLonLat(lonLat)) {
+                        if ((mz >= z[0] && mz <= z[1]) && layer["_M"].bounds.containsLonLat(lonLat)) {
                             
                             /*
                              * Show info if UTFGrid is active
                              */
                             if (self.active) {
-                                items[OpenLayers.Util.indexOf(msp.Map.map.layers, layer)] = {
+                                items[OpenLayers.Util.indexOf(M.Map.map.layers, layer)] = {
                                     attributes:layer.getFeatureInfo(lonLat),
-                                    modifiers:layer["_msp"].layerDescription["info"]
+                                    modifiers:layer["_M"].layerDescription["info"]
                                 }
                             }
                             
@@ -167,7 +167,7 @@
              * Create overlay layer to display polygon on hover
              */
             self.layer = new OpenLayers.Layer.Vector("__LAYER_UTFGRID__", {
-                projection:msp.Map.sm,
+                projection:M.Map.sm,
                 displayInLayerSwitcher:false,
                 styleMap:new OpenLayers.StyleMap({
                     'default':{
@@ -182,29 +182,29 @@
             /**
              * Add Drawing layer to Map object
              */
-            msp.Map.addLayer({
+            M.Map.addLayer({
                 type:"Generic",
                 title:self.layer.name,
                 unremovable:true,
-                mspLayer:true,
+                MLayer:true,
                 layer:self.layer
             });
             
             /*
              * Track layersend events to add/remove UTFGrid layers
              */
-            msp.Map.events.register("layersend", self, function(action, layer, scope) {
+            M.Map.events.register("layersend", self, function(action, layer, scope) {
                 
                 var i,l;
                 
                 /*
                  * Only process UTFGrid layers
                  */
-                if (!layer || !layer["_msp"] || !layer["_msp"].layerDescription) {
+                if (!layer || !layer["_M"] || !layer["_M"].layerDescription) {
                     return false;
                 }
                 
-                if (layer["_msp"].layerDescription["type"] !== "UTFGrid") {
+                if (layer["_M"].layerDescription["type"] !== "UTFGrid") {
                     return false;
                 }
                 
@@ -233,7 +233,7 @@
          */
         this.activate = function(b) {
             this.active = b;
-            this.$d.html(msp.Util._((b ? "Hide" : "Show") +" thematic metadata"));
+            this.$d.html(M.Util._((b ? "Hide" : "Show") +" thematic metadata"));
             if (!b) {
                 this.layer.destroyFeatures();
             }
@@ -292,12 +292,12 @@
                      * displayed do not reprocess things
                      */
                     if (JSON.stringify(keys) === JSON.stringify(self._current)) {
-                        msp.Map.$featureHilite.show();
+                        M.Map.$featureHilite.show();
                         return false;
                     }
                     
                     if (o.modifiers.title) {
-                        c = msp.Util.parseTemplate(o.modifiers.title, keys, o.modifiers.keys);
+                        c = M.Util.parseTemplate(o.modifiers.title, keys, o.modifiers.keys);
                     }
                     else {
 
@@ -327,7 +327,7 @@
                 /*
                 * Display tooltip
                 */
-                msp.Map.$featureHilite.html(c).show();
+                M.Map.$featureHilite.html(c).show();
                 
                 /*
                 * Display geometry
@@ -345,7 +345,7 @@
              */
             self.layer.destroyFeatures();
             self._current = {};
-            msp.Map.$featureHilite.hide();
+            M.Map.$featureHilite.hide();
             
             return false;
             
@@ -354,8 +354,8 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.UTFGrid._o = this;
+        M.Plugins.UTFGrid._o = this;
         
         return this;
     };
-})(window.msp);
+})(window.M);

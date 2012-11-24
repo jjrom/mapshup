@@ -107,7 +107,7 @@
  *      OpenLayers objects          :   2 to something << 10000
  *      coords                      :   10000
  *      hiliteFeature               :   10000
- *      msplogo                     :   10000
+ *      Mlogo                     :   10000
  *      menu                        :   10000
  *
  *      whereami                    :   10100   (plugins/Geonames.js)
@@ -139,14 +139,14 @@
 (function(window,navigator) {
     
     /**
-     * Create mapshup msp object with properties and functions
+     * Create mapshup M object with properties and functions
      */
-    window.msp = {
+    window.M = {
         
         VERSION_NUMBER:'mapshup 2.0',
         
         /**
-         * Plugin objects are defined within msp.Plugins
+         * Plugin objects are defined within M.Plugins
          */
         Plugins:{},
         
@@ -156,7 +156,7 @@
          * through the jquery .ready() i.e.
          * 
          *      $(document).ready(function() {
-         *          msp.load();
+         *          M.load();
          *      });
          * 
          */
@@ -170,7 +170,7 @@
                 
             
             /**
-             * If msp.Config is not defined, everything stops !
+             * If M.Config is not defined, everything stops !
              */
             if (self.Config === undefined) {
                 alert("GRAVE : no configuration file defined. Load aborted");
@@ -324,8 +324,8 @@
             /*
              * Internationalisation (i18n)
              * lang is defined as follow :
-             *  - msp.defaultLang
-             *  - superseed by msp.Config.lang (if defined)
+             *  - M.defaultLang
+             *  - superseed by M.Config.lang (if defined)
              *  - superseed by kvp.lang (if defined)
              */
             c.langs = c.langs || ['en', 'fr'];
@@ -458,15 +458,15 @@
             
             /*
              * Plugins initialization
-             * Roll over msp.plugins hash table
+             * Roll over M.plugins hash table
              * and remove all entries that are not defined
-             * within the msp.Config.plugins object
+             * within the M.Config.plugins object
              */
             self.plugins = [];
             for (i = 0, l = c.plugins.length; i < l; i++) {
                 name = c.plugins[i].name;
                 options = c.plugins[i].options || {};
-                plugin = (new Function('return msp.Plugins.'+name+' ? new msp.Plugins.'+name+'() : null;'))();
+                plugin = (new Function('return M.Plugins.'+name+' ? new M.Plugins.'+name+'() : null;'))();
                 
                 /*
                  * Plugin exists and is successfully initialized
@@ -503,7 +503,7 @@
              * Set background
              */
             if (c["general"].location.bg) {
-                bg = self.Map.Util.getLayerByMspID(c["general"].location.bg);
+                bg = self.Map.Util.getLayerByMID(c["general"].location.bg);
                 if (bg && bg.isBaseLayer) {
                     self.Map.map.setBaseLayer(bg);
                 }
@@ -523,7 +523,7 @@
                 h:window.innerHeight
             };
             
-            /* Force msp.$mcontainer dimensions to pixels values (avoid computation problem with %) */
+            /* Force M.$mcontainer dimensions to pixels values (avoid computation problem with %) */
             self.$mcontainer.css({
                 'width':self.$mcontainer.width(),
                 'height':self.$mcontainer.height()
@@ -539,7 +539,7 @@
                 fn = setTimeout(function(){
                     
                     /*
-                     * Resize msp.$map container div following window resize
+                     * Resize M.$map container div following window resize
                      */
                     self.$mcontainer.css({
                         'width':self.$mcontainer.width() + (window.innerWidth - self._wd.w),
@@ -547,7 +547,7 @@
                     });
 
                     /*
-                     * Set  msp._ww andreference to the new window size
+                     * Set  M._ww andreference to the new window size
                      */
                     self._wd = {
                         w:window.innerWidth,

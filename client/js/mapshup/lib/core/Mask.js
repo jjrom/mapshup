@@ -39,15 +39,15 @@
 /**
  * mapshup Mask
  */
-(function (msp) {
+(function (M) {
 
-    msp.Mask = function () {
+    M.Mask = function () {
 
         /*
          * Only one Mask object instance is created
          */
-        if (msp.Mask._o) {
-            return msp.Mask._o;
+        if (M.Mask._o) {
+            return M.Mask._o;
         }
   
         /**
@@ -65,7 +65,7 @@
             /*
              * Create #jMask
              */
-            this.$m = msp.Util.$$('#'+msp.Util.getId(),msp.$container).addClass("mask").css(
+            this.$m = M.Util.$$('#'+M.Util.getId(),M.$container).addClass("mask").css(
             {
                 'position':'absolute',
                 'display':'none',
@@ -160,7 +160,7 @@
                 title:obj.title || "",
                 cancel:obj.cancel || false,
                 layer:obj.layer || null,
-                id:obj.id || msp.Util.getId(),
+                id:obj.id || M.Util.getId(),
                 request:obj.request || null
             });
 
@@ -176,7 +176,7 @@
              * If cancel is to true, user can close the Mask
              */
             if (obj.cancel) {
-                this.$l.append('<div id="'+obj.id+'">'+obj.title+'&nbsp;(<a href="#" id="aj'+obj.id+'">'+msp.Util._("Cancel")+'</a>)</div>');
+                this.$l.append('<div id="'+obj.id+'">'+obj.title+'&nbsp;(<a href="#" id="aj'+obj.id+'">'+M.Util._("Cancel")+'</a>)</div>');
 
                 /**
                  * The class name of the link is the id which uniquely
@@ -193,7 +193,7 @@
             }
 
             if (obj.layer) {
-                msp.Map.events.register("layersend", obj, function(action, layer, scope) {
+                M.Map.events.register("layersend", obj, function(action, layer, scope) {
                     
                     /*
                      * Only process current layer
@@ -203,15 +203,15 @@
                        /*
                         * Unregister event
                         */
-                       msp.Map.events.unRegister(scope);
+                       M.Map.events.unRegister(scope);
                         
                        /*
                         * Show item on layer manager
                         */
-                        var lm = msp.Plugins.LayersManager;
+                        var lm = M.Plugins.LayersManager;
                         if (!layer._tobedestroyed) {
                            if (lm && lm._o) {
-                                lm._o.show(lm._o.get(layer['_msp'].mspID));
+                                lm._o.show(lm._o.get(layer['_M'].MID));
                             }
                         }
                         
@@ -237,7 +237,7 @@
         this.show = function(a) {
             this.$m.show();
             if (!a) {
-                msp.activity.show();
+                M.activity.show();
             }
         };
 
@@ -247,7 +247,7 @@
         this.hide = function() {
             this.$l.empty();
             this.$m.hide();
-            msp.activity.hide();
+            M.activity.hide();
         };
         
         /*
@@ -258,10 +258,10 @@
         /*
          * Create unique instance
          */
-        msp.Mask._o = this;
+        M.Mask._o = this;
         
         return this;
     }
     
     
-})(window.msp);
+})(window.M);

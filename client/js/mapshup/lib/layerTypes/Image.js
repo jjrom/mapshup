@@ -38,7 +38,7 @@
 /**
  * Image layer type
  */
-(function (msp,Map){
+(function (M,Map){
     
     Map.layerTypes["Image"] = {
     
@@ -83,7 +83,7 @@
             /*
              * Set title
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription);
+            layerDescription.title = M.Util.getTitle(layerDescription);
             
             /*
              * Check mandatory properties
@@ -145,12 +145,12 @@
             );
 
             /*
-             * Modify options["_msp"]
+             * Modify options["_M"]
              */
-            options["_msp"].selectable = false;
-            options["_msp"].allowChangeOpacity = true;
-            options["_msp"].bounds = bounds;
-            options["_msp"].icon = layerDescription.url;
+            options["_M"].selectable = false;
+            options["_M"].allowChangeOpacity = true;
+            options["_M"].bounds = bounds;
+            options["_M"].icon = layerDescription.url;
 
             /**
              * Layer creation
@@ -170,9 +170,9 @@
          */
         update:function(layerDescription, callback) {
 
-            msp.Util.askFor({
-                title:msp.Util._("Image") + ' : ' + layerDescription.title,
-                content:msp.Util._("Enter Image BBOX"),
+            M.Util.askFor({
+                title:M.Util._("Image") + ' : ' + layerDescription.title,
+                content:M.Util._("Enter Image BBOX"),
                 dataType:'bbox',
                 callback:function(v){
                     layerDescription["bbox"] = v;
@@ -185,4 +185,4 @@
 
         }
     }
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

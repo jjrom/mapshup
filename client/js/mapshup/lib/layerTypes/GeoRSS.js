@@ -38,7 +38,7 @@
 /**
  * GeoRSS layer type
  */
-(function (msp, Map){
+(function (M, Map){
     
     Map.layerTypes["GeoRSS"] = {
 
@@ -79,12 +79,12 @@
             /*
              * Set title
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription);
+            layerDescription.title = M.Util.getTitle(layerDescription);
             
             /**
              * Input "options" modification
              */
-            options["_msp"].selectable = msp.Util.getPropertyValue(options, "selectable", this.selectable);
+            options["_M"].selectable = M.Util.getPropertyValue(options, "selectable", this.selectable);
 
             /*
              * Extend options object with Flickr specific properties
@@ -94,18 +94,18 @@
                 projection:Map.pc,
                 styleMap:new OpenLayers.StyleMap({
                     'default' :  new OpenLayers.Style({
-                        externalGraphic : options["_msp"].icon,
+                        externalGraphic : options["_M"].icon,
                         graphicWidth:24,
                         graphicHeight:24
                     }),
                     'select' : new OpenLayers.Style({
-                        externalGraphic : msp.Util.getImgUrl('rss_select.png'),
+                        externalGraphic : M.Util.getImgUrl('rss_select.png'),
                         graphicWidth:24,
                         graphicHeight:24
                     })
                 }),
                 protocol: new OpenLayers.Protocol.HTTP({
-                    url:msp.Util.getAbsoluteUrl(msp.Config["general"].rssToGeoRSSServiceUrl + encodeURIComponent(layerDescription.url) + msp.Util.abc),
+                    url:M.Util.getAbsoluteUrl(M.Config["general"].rssToGeoRSSServiceUrl + encodeURIComponent(layerDescription.url) + M.Util.abc),
                     format:new OpenLayers.Format.GeoRSS()
                 }),
                 strategies:options.strategies || []
@@ -142,4 +142,4 @@
         }
     }
 
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

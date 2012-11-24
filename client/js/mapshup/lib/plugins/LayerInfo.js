@@ -35,15 +35,15 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.LayerInfo = function() {
+    M.Plugins.LayerInfo = function() {
         
         /*
          * Only one BackgroundsManager object instance is created
          */
-        if (msp.Plugins.LayerInfo._o) {
-            return msp.Plugins.LayerInfo._o;
+        if (M.Plugins.LayerInfo._o) {
+            return M.Plugins.LayerInfo._o;
         }
         
         /*
@@ -67,7 +67,7 @@
             var scope = this;
 
             return {
-                id:msp.Util.getId(),
+                id:M.Util.getId(),
                 icon:"info.png",
                 title:"Info",
                 tt:"Layer information",
@@ -87,7 +87,7 @@
              */
             var value,
                 key,
-                html = msp.Util.shorten(msp.Util._(layer.name), 40);
+                html = M.Util.shorten(M.Util._(layer.name), 40);
 
             /*
              * Intialize table with properties
@@ -97,17 +97,17 @@
             /*
              * Number of features
              */
-            html += '<tr><td>'+msp.Util._("entities")+'</td><td> : '+(layer.features ? layer.features.length : "-");
+            html += '<tr><td>'+M.Util._("entities")+'</td><td> : '+(layer.features ? layer.features.length : "-");
 
             /*
-             * Unique id mspID
+             * Unique id MID
              */
-            html += '<tr><td>'+msp.Util._("mspID")+'</td><td> : '+ layer["_msp"].mspID;
+            html += '<tr><td>'+M.Util._("MID")+'</td><td> : '+ layer["_M"].MID;
 
             /*
              * Roll over properties
              */
-            for (key in layer["_msp"].layerDescription) {
+            for (key in layer["_M"].layerDescription) {
 
                 /*
                  * Some properties are not displayed
@@ -116,14 +116,14 @@
                     continue;
                 }
 
-                value = layer["_msp"].layerDescription[key];
+                value = layer["_M"].layerDescription[key];
 
                 /*
                  * url is a special key that must be transformed into link
                  */
-                value = msp.Util.isUrl(value) ? '<a href="'+value+'" title="'+value+'" target="_blank">'+msp.Util.shorten(value, 100)+'</a>' : msp.Util._(value);
+                value = M.Util.isUrl(value) ? '<a href="'+value+'" title="'+value+'" target="_blank">'+M.Util.shorten(value, 100)+'</a>' : M.Util._(value);
                
-                html += '<tr><td>'+msp.Util._(key)+'</td><td> : ' + value + '</td></tr>';
+                html += '<tr><td>'+M.Util._(key)+'</td><td> : ' + value + '</td></tr>';
 
             }
 
@@ -132,16 +132,16 @@
             /*
              * Display layer information within jMessage
              */
-            msp.Util.message(html, -1);
+            M.Util.message(html, -1);
 
         };
 
         /*
          * Set unique instance
          */
-        msp.Plugins.LayerInfo._o = this;
+        M.Plugins.LayerInfo._o = this;
         
         return this;
         
     };
-})(window.msp);
+})(window.M);

@@ -39,7 +39,7 @@
 /**
  * mapshup TimeLIne object
  */
-(function(msp) {
+(function(M) {
     
     
     /*
@@ -60,13 +60,13 @@
      *                      }
      *                   }
      */
-    msp.TimeLine = function(options) {
+    M.TimeLine = function(options) {
         
         /*
          * Only one TimeLine object instance is created
          */
-        if (msp.TimeLine._o) {
-            return msp.TimeLine._o;
+        if (M.TimeLine._o) {
+            return M.TimeLine._o;
         }
         
         /*
@@ -152,21 +152,21 @@
              * </div>
              * 
              */
-            self.$d = msp.Util.$$('#timeLine', $('#mwrapper')).html('<div class="timeLine"></div><div class="mask"><h2>'+msp.Util._("Date filter disabled")+'</h2>('+msp.Util._("Click to enable")+')</div>')
+            self.$d = M.Util.$$('#timeLine', $('#mwrapper')).html('<div class="timeLine"></div><div class="mask"><h2>'+M.Util._("Date filter disabled")+'</h2>('+M.Util._("Click to enable")+')</div>')
             
             /*
              * Create actions Toolbar
              */
-            self.tb = new msp.Toolbar({
+            self.tb = new M.Toolbar({
                 parent:self.$d, 
                 classes:'tools'
             });
             
             if (self.absolutes.editable) {
                 self.tb.add({
-                    id:msp.Util.getId(),
-                    icon:msp.Util.getImgUrl("clock.png"),
-                    tt:msp.Util._("Set time line bounds"),
+                    id:M.Util.getId(),
+                    icon:M.Util.getImgUrl("clock.png"),
+                    tt:M.Util._("Set time line bounds"),
                     activable:false,
                     switchable:false,
                     callback:function() {
@@ -178,9 +178,9 @@
             
             if (options.values.editable) {
                 self.tb.add({
-                    id:msp.Util.getId(),
-                    icon:msp.Util.getImgUrl("clock.png"),
-                    tt:msp.Util._("Set time interval bounds"),
+                    id:M.Util.getId(),
+                    icon:M.Util.getImgUrl("clock.png"),
+                    tt:M.Util._("Set time interval bounds"),
                     activable:false,
                     switchable:false,
                     callback:function() {
@@ -192,9 +192,9 @@
             
             if (options.disablable) {
                 self.tb.add({
-                    id:msp.Util.getId(),
-                    icon:msp.Util.getImgUrl("disable.png"),
-                    tt:msp.Util._("Disable date filter"),
+                    id:M.Util.getId(),
+                    icon:M.Util.getImgUrl("disable.png"),
+                    tt:M.Util._("Disable date filter"),
                     activable:false,
                     switchable:false,
                     callback:function() {
@@ -276,7 +276,7 @@
             /*
              * Recompute size when window is resized
              */
-            msp.events.register("resizeend", self, self.resize);
+            M.events.register("resizeend", self, self.resize);
             
             /*
              * Resize
@@ -301,11 +301,11 @@
             /*
              * Paranoid mode
              */
-            if (!layer || !layer['_msp']) {
+            if (!layer || !layer['_M']) {
                 return false;
             }
             
-            if ($.isFunction(layer['_msp'].setTime)) {
+            if ($.isFunction(layer['_M'].setTime)) {
                 for (i = 0, l = self.items.length; i < l; i++) {
                     if (self.items[i].layer.id === layer.id) {
                         return false;
@@ -329,8 +329,8 @@
             
             var i, fct,
             t = "",
-            id1 = msp.Util.getId(),
-            id2 = msp.Util.getId(),
+            id1 = M.Util.getId(),
+            id2 = M.Util.getId(),
             self = this;
             
             /*
@@ -350,7 +350,7 @@
             /*
              * Set search popup
              */
-            self._p = new msp.Popup({
+            self._p = new M.Popup({
                 modal:true,
                 header:'<p>TimeLine</p>',
                 body:'<div class="description"><form>Change scale bounds from <select id="'+id1+'">'+t+'</select> to <select id="'+id2+'">'+t+'</select></form></div>',
@@ -379,7 +379,7 @@
                     self.$timeLine.dateRangeSlider('bounds', new Date(v1,0,1), new Date(v2,0,1));
                 }
                 else {
-                    msp.Util.message(msp.Util._(msg));
+                    M.Util.message(M.Util._(msg));
                     return false;
                 }
                 
@@ -412,23 +412,23 @@
          */
         this.changeValues = function() {
             
-            var d1, d2, id1 = msp.Util.getId(),
-            id2 = msp.Util.getId(),
+            var d1, d2, id1 = M.Util.getId(),
+            id2 = M.Util.getId(),
             self = this;
             
             /*
              * Set search popup
              */
-            self._p = msp.Util.askFor({
-                title:msp.Util._("TimeLine"),
+            self._p = M.Util.askFor({
+                title:M.Util._("TimeLine"),
                 content:'<form>Set time interval from <input id="'+id1+'" type="text" style="width:100px" value="'+self.toISO8601(self.min, true)+'"> to <input id="'+id2+'" type="text" style="width:100px" value="'+self.toISO8601(self.max, true)+'"></form>',
                 dataType:"list",
                 value:[{
-                        title:msp.Util._("Ok"), 
+                        title:M.Util._("Ok"), 
                         value:"y"
                     },
                     {
-                        title:msp.Util._("Cancel"), 
+                        title:M.Util._("Cancel"), 
                         value:"n"
                     }],
                 callback:function(v){
@@ -529,7 +529,7 @@
                  * Hidden layer are not updated !!!
                  */
                 if (item.layer.getVisibility()) {
-                    item.layer["_msp"].setTime(interval);
+                    item.layer["_M"].setTime(interval);
                     item.upToDate = true;
                 }
                 else {
@@ -574,7 +574,7 @@
         /*
          * Create unique instance
          */
-        msp.TimeLine._o = this;
+        M.TimeLine._o = this;
         
         /*
          * Initialize object
@@ -583,4 +583,4 @@
         
     }
     
-})(window.msp);
+})(window.M);

@@ -39,15 +39,15 @@
 /**
  * Define FeatureInfo object
  */
-(function (msp) {
+(function (M) {
     
-    msp.Map.FeatureInfo = function(options) {
+    M.Map.FeatureInfo = function(options) {
 
         /*
          * Only one FeatureInfo object instance is created
          */
-        if (msp.Map.FeatureInfo._o) {
-            return msp.Map.FeatureInfo._o;
+        if (M.Map.FeatureInfo._o) {
+            return M.Map.FeatureInfo._o;
         }
         
         /**
@@ -93,7 +93,7 @@
              * Initialize featureInfo popup
              * See this.setContent() 
              */
-            this.popup = new msp.Popup({
+            this.popup = new M.Popup({
                 modal:false,
                 generic:false,
                 hideOnClose:true,
@@ -109,7 +109,7 @@
             /*
              * Hide FeatureInfo panel when layer is removed
              */
-            msp.Map.events.register("layersend", this, function(action, layer, scope) {
+            M.Map.events.register("layersend", this, function(action, layer, scope) {
 
                 /*
                  * If a feature is selected and the corresponding layer is removed,
@@ -128,7 +128,7 @@
             /*
              * Event on a change in layer visibility
              */
-            msp.Map.events.register("visibilitychanged", self, function (layer, scope) {
+            M.Map.events.register("visibilitychanged", self, function (layer, scope) {
                 
                 /*
                  * Show/Hide featureinfo menu depending on layer visibility
@@ -163,7 +163,7 @@
          */
         this.clear = function() {
 
-            var c = msp.Map.Util.getControlById("__CONTROL_SELECT__");
+            var c = M.Map.Util.getControlById("__CONTROL_SELECT__");
             
             /*
              * The cluster nightmare
@@ -203,12 +203,12 @@
             var a,d,i,l,connector,key,plugin,menutools,_a,$f,
             self = this,
             tools = [],
-            fi = feature.layer["_msp"].layerDescription.featureInfo;
+            fi = feature.layer["_M"].layerDescription.featureInfo;
              
             /*
              * Initialize skeleton
              */
-            self.popup.$b.html('<span class="title">'+msp.Util.stripTags(msp.Map.Util.Feature.getTitle(feature))+'</span><br/><span class="tools"></span>');
+            self.popup.$b.html('<span class="title">'+M.Util.stripTags(M.Map.Util.Feature.getTitle(feature))+'</span><br/><span class="tools"></span>');
             
             $f = $('.tools', self.popup.$b);
             
@@ -216,7 +216,7 @@
              * Add "Show info" action
              */
             tools.push({
-                id:msp.Util.getId(),
+                id:M.Util.getId(),
                 icon:"info.png",
                 title:"Info",
                 tt:"More info",
@@ -230,7 +230,7 @@
              * Add "Center on feature" action
              */
             tools.push({
-                id:msp.Util.getId(),
+                id:M.Util.getId(),
                 icon:"center.png",
                 title:"Zoom",
                 tt:"Zoom on feature",
@@ -244,11 +244,11 @@
             * Add "switch layer visibility"
             */
             tools.push({
-                id:msp.Util.getId(),
+                id:M.Util.getId(),
                 icon:"hide.png",
                 title:"Hide the parent layer",
                 callback:function(a, f) {
-                    msp.Map.Util.setVisibility(f.layer, false);
+                    M.Map.Util.setVisibility(f.layer, false);
                 }
             });
             
@@ -266,7 +266,7 @@
                  */
                 if(feature.attributes["services"]["download"]) {
                     tools.push({
-                        id:msp.Util.getId(),
+                        id:M.Util.getId(),
                         icon:"download.png",
                         title:"Download",
                         tt:"Download feature",
@@ -302,7 +302,7 @@
                  */
                 if (_a) {
                     tools.push({
-                        id:msp.Util.getId(),
+                        id:M.Util.getId(),
                         icon:"add.png",
                         tt:_a["title"] || "Add to map",
                         title:"Add",
@@ -311,13 +311,13 @@
                             /*
                              * Add layer obj
                              */
-                            var l = msp.Map.addLayer(f.attributes["services"]["browse"]["layer"]);
+                            var l = M.Map.addLayer(f.attributes["services"]["browse"]["layer"]);
                             
                             /*
                              * Force zoom on added layer
                              */
                             if (l) {
-                                msp.Map.zoomTo(l.getDataExtent() || l["_msp"].bounds);
+                                M.Map.zoomTo(l.getDataExtent() || l["_M"].bounds);
                             }
                             
                             return false;
@@ -331,8 +331,8 @@
             /**
              * Add item from other plugins
              */
-            for(key in msp.plugins) {
-                plugin = msp.plugins[key];
+            for(key in M.plugins) {
+                plugin = M.plugins[key];
                 if (plugin) {
                     if ($.isFunction(plugin.getFeatureActions)) {
                         menutools = plugin.getFeatureActions(feature);
@@ -364,7 +364,7 @@
                      * Add feature action
                      */
                     tools.push({
-                        id:msp.Util.getId(),
+                        id:M.Util.getId(),
                         icon:fi.action["icon"],
                         title:fi.action["title"],
                         tt:fi.action["tt"],
@@ -381,9 +381,9 @@
             /*
              * If feature layer got a searchContext, set actions defined within its connector
              */
-            if (feature.layer["_msp"].searchContext) {
+            if (feature.layer["_M"].searchContext) {
 
-                connector = feature.layer["_msp"].searchContext.connector;
+                connector = feature.layer["_M"].searchContext.connector;
                 
                 if (connector && connector.action) {                    
                 
@@ -391,7 +391,7 @@
                      * Add feature action
                      */
                     tools.push({
-                        id:msp.Util.getId(),
+                        id:M.Util.getId(),
                         icon:connector.action["icon"],
                         title:connector.action["title"],
                         tt:connector.action["tt"],
@@ -421,11 +421,11 @@
              */
             for (i = 0, l = tools.length;i < l; i++) {
                 a = tools[i];
-                $f.append('<a class="item image" jtitle="'+msp.Util._(a.tt || a.title)+'" id="'+a.id+'"><img class="middle" src="'+msp.Util.getImgUrl(a.icon)+'"/></a>');
+                $f.append('<a class="item image" jtitle="'+M.Util._(a.tt || a.title)+'" id="'+a.id+'"><img class="middle" src="'+M.Util.getImgUrl(a.icon)+'"/></a>');
                 d = $('#'+a.id);
                 
                 /* Add tooltip */
-                msp.tooltip.add(d, 'n', 10);
+                M.tooltip.add(d, 'n', 10);
                 
                 (function(d,a,f){
                     d.click(function(e) {
@@ -445,7 +445,7 @@
             /*
              * Hide featureHilite menu
              */
-            msp.Map.$featureHilite.empty().hide();
+            M.Map.$featureHilite.empty().hide();
             
         };
         
@@ -494,7 +494,7 @@
                     /*
                      * Zoom on the cluster bounds
                      */
-                    msp.Map.map.zoomToExtent(bounds);
+                    M.Map.map.zoomToExtent(bounds);
                     
                     /*
                      * Hide feature info panel
@@ -514,7 +514,7 @@
              * Otherwise it is set on the middle of the clicked object if it is a Point and on the clicked xy
              * if it is a LineString or a Polygon
              */
-            self.popup.setMapXY(self._triggered ? msp.Map.map.getCenter() : (feature.geometry.CLASS_NAME === "OpenLayers.Geometry.Point" ? feature.geometry.getBounds().getCenterLonLat() : msp.Map.map.getLonLatFromPixel(msp.Map.mousePosition)));
+            self.popup.setMapXY(self._triggered ? M.Map.map.getCenter() : (feature.geometry.CLASS_NAME === "OpenLayers.Geometry.Point" ? feature.geometry.getBounds().getCenterLonLat() : M.Map.map.getLonLatFromPixel(M.Map.mousePosition)));
             
             /*
              * This is a bit tricky...
@@ -522,7 +522,7 @@
              */
             if (_triggered) {
                 self._triggered = true;
-                c = msp.Map.Util.getControlById("__CONTROL_SELECT__");
+                c = M.Map.Util.getControlById("__CONTROL_SELECT__");
                 if (self.selected) {
                     try {
                         c.unselect(self.selected);
@@ -538,7 +538,7 @@
              * Call mapshup featureselect event unless the selected was triggered
              */
             if (!self._triggered) {
-                msp.Map.events.trigger("featureselected", feature);
+                M.Map.events.trigger("featureselected", feature);
             }
             
             /*
@@ -549,7 +549,7 @@
             /*
              * Hide menu
              */
-            //msp.menu.hide();
+            //M.menu.hide();
             
             /*
              * Set the current selected object
@@ -574,7 +574,7 @@
              * If layerType.resolvedUrlAttributeName is set,
              * display feature info within an iframe
              */
-            ran = msp.Map.layerTypes[feature.layer["_msp"].layerDescription["type"]].resolvedUrlAttributeName;
+            ran = M.Map.layerTypes[feature.layer["_M"].layerDescription["type"]].resolvedUrlAttributeName;
             if (ran) {
                 
                 //extent = feature.geometry.getBounds().clone(); // Add container within panel
@@ -586,8 +586,8 @@
                  * and feature layer name. Ensure that two identical
                  * feature leads to only one panel item 
                  */
-                var t = msp.Map.Util.Feature.getTitle(feature), panelItem = msp.sp.add({
-                    id:msp.Util.crc32(t + feature.layer["_msp"].layerDescription["type"]),
+                var t = M.Map.Util.Feature.getTitle(feature), panelItem = M.sp.add({
+                    id:M.Util.crc32(t + feature.layer["_M"].layerDescription["type"]),
                     tt:t,
                     title:t,
                     unremovable:false,
@@ -598,23 +598,23 @@
                          * Unselect feature
                          */
                         if (feature && feature.layer) {
-                            msp.Map.Util.getControlById("__CONTROL_SELECT__").unselect(feature);
+                            M.Map.Util.getControlById("__CONTROL_SELECT__").unselect(feature);
                         }
                         
                         /*
                          * Hide activity
                          */
-                        msp.activity.hide();
+                        M.activity.hide();
                         
 
                     }
                 });
                 
-                msp.sp.show(panelItem);
+                M.sp.show(panelItem);
                 
-                msp.activity.show();
+                M.activity.show();
                 $('.frame', panelItem.$d).load(function() {
-                    msp.activity.hide();
+                    M.activity.hide();
                 });
               
             }
@@ -649,12 +649,12 @@
              */
             self._tun = (new Date()).getTime();
             
-            msp.Map.featureInfo.selected = null;
+            M.Map.featureInfo.selected = null;
             
             /*
              * Call mapshup featureselect event
              */
-            msp.Map.events.trigger("featureselected", null);
+            M.Map.events.trigger("featureselected", null);
             
             /*
              * This is really and awfully tricky...
@@ -672,7 +672,7 @@
                     /*
                      * Hide feature info panel
                      */
-                    //msp.menu.hide();
+                    //M.menu.hide();
                     self.popup.hide();
                     
                 }
@@ -685,8 +685,8 @@
          * Zoom map on selected feature
          */
         this.zoomOn = function() {
-            if (msp.Map.featureInfo.selected && msp.Map.featureInfo.selected.geometry) {
-                msp.Map.zoomTo(msp.Map.featureInfo.selected.geometry.getBounds());
+            if (M.Map.featureInfo.selected && M.Map.featureInfo.selected.geometry) {
+                M.Map.zoomTo(M.Map.featureInfo.selected.geometry.getBounds());
             }
         };
         
@@ -696,7 +696,7 @@
         this.hilite = function(f) {
             
             var self = this,
-            c = msp.Map.Util.getControlById("__CONTROL_HIGHLITE__");
+            c = M.Map.Util.getControlById("__CONTROL_HIGHLITE__");
                 
             if (c && f) {
                 try {
@@ -704,7 +704,7 @@
                     /*
                      * First unhighlight all feature
                      */
-                    var i, l, fs = msp.Map.Util.getFeatures(f.layer);
+                    var i, l, fs = M.Map.Util.getFeatures(f.layer);
                     
                     for (i = 0, l = fs.length; i < l; i++) {
                         c.unhighlight(fs[i]);
@@ -728,7 +728,7 @@
         this.unhilite = function(f) {
             
             var self = this,
-            c = msp.Map.Util.getControlById("__CONTROL_HIGHLITE__");
+            c = M.Map.Util.getControlById("__CONTROL_HIGHLITE__");
                 
             if (c && f) {
                 try {
@@ -800,7 +800,7 @@
             $thumb,
             layerType,
             typeIsUnknown = true,
-            title = msp.Util.stripTags(msp.Map.Util.Feature.getTitle(feature)),
+            title = M.Util.stripTags(M.Map.Util.Feature.getTitle(feature)),
             ql = feature.attributes['quicklook']; // Thumbnail of quicklook attributes
                 
             /*
@@ -817,14 +817,14 @@
              *      
              * 
              */
-            $target = msp.Util.$$('#'+msp.Util.getId(),$('#mwrapper'))
+            $target = M.Util.$$('#'+M.Util.getId(),$('#mwrapper'))
             .addClass("overall")
             .append('<div class="fi"><div class="header"><div class="title"></div></div><div class="body"></div></div>');
     
             /*
              * Add a close button to the Help panel
              */
-            msp.Util.addClose($target,function(){
+            M.Util.addClose($target,function(){
                 $target.remove();
             });
             
@@ -853,7 +853,7 @@
              * Roll over layer types to detect layer features that should be
              * displayed using a dedicated setFeatureInfoBody function
              */
-            if ((layerType = msp.Map.layerTypes[feature.layer["_msp"].layerDescription["type"]])) {
+            if ((layerType = M.Map.layerTypes[feature.layer["_M"].layerDescription["type"]])) {
                 if ($.isFunction(layerType.setFeatureInfoBody)) {
                     layerType.setFeatureInfoBody(feature, $('.info', $target));
                     typeIsUnknown = false;
@@ -902,8 +902,8 @@
                         /*
                          * Simple case : string
                          */
-                        if (t === "string" && msp.Util.isUrl(v)) {
-                            $info.append('<tr><td>' + msp.Map.Util.Feature.translate(k, feature) + '</td><td>&nbsp;</td><td><a target="_blank" title="'+v+'" href="'+v+'">'+ msp.Util._("Download") +'</a></td></tr>');
+                        if (t === "string" && M.Util.isUrl(v)) {
+                            $info.append('<tr><td>' + M.Map.Util.Feature.translate(k, feature) + '</td><td>&nbsp;</td><td><a target="_blank" title="'+v+'" href="'+v+'">'+ M.Util._("Download") +'</a></td></tr>');
                         }
                         /*
                          * Object case
@@ -939,7 +939,7 @@
                                      */
                                     if (kk === 'photo') {
                                         for (i = 0, l = v[kk].length; i < l; i++) {
-                                            id = msp.Util.getId();
+                                            id = M.Util.getId();
                                             /* Remove default thumbnail if any */
                                             $('.dftthb', $thumb).remove();
                                             $thumb.append('<a href="'+v[kk][i]["url"]+'" title="'+v[kk][i]["name"]+'" id="'+id+'" class="image"><img height="50px" width="50px" src="'+v[kk][i]["url"]+'"/></a>');
@@ -948,7 +948,7 @@
                                              */
                                             (function($id){
                                                 $id.click(function() {
-                                                    msp.Util.showPopupImage($id.attr('href'), $id.attr('title'));
+                                                    M.Util.showPopupImage($id.attr('href'), $id.attr('title'));
                                                     return false;
                                                 });    
                                             })($('#'+id));
@@ -961,7 +961,7 @@
                                      * Initialize tab
                                      */
                                     if ($tabs.is(':empty')) {
-                                        $tabs.html('<div id="_fit"><ul><li><a href="#_fitm" class="selected">'+msp.Util._("Description")+'</a></li></ul></div>');
+                                        $tabs.html('<div id="_fit"><ul><li><a href="#_fitm" class="selected">'+M.Util._("Description")+'</a></li></ul></div>');
                                     }
                                     
                                     /*
@@ -974,8 +974,8 @@
                                     /*
                                      * If kk object is a non empty array, add a new tab
                                      */
-                                    id = msp.Util.getId() ;
-                                    $('ul', $tabs).append('<li><a href="#' + id + '">' + msp.Util._(kk) + '</a></li>');
+                                    id = M.Util.getId() ;
+                                    $('ul', $tabs).append('<li><a href="#' + id + '">' + M.Util._(kk) + '</a></li>');
                                     $('.east', $target).append('<div id="'+id+'" class="noflw"><table></table></div>');
 
                                     /*
@@ -992,14 +992,14 @@
                                             /*
                                              * Popup video
                                              */
-                                            id = msp.Util.getId();
+                                            id = M.Util.getId();
                                             
                                             d.append('<tr><td><a id="'+id+'" href="'+v[kk][i]["url"]+'">' + v[kk][i]["name"] + '</a></td></tr>');
                                             
                                             
                                             (function($id){
                                                 $id.click(function() {
-                                                    msp.Util.showPopupVideo({
+                                                    M.Util.showPopupVideo({
                                                         url:$id.attr('href'), 
                                                         title:$id.attr('title')
                                                     });
@@ -1011,22 +1011,22 @@
                                     }
                                     else {
                                         for (kkk in v[kk]) {
-                                            ts = msp.Map.Util.Feature.translate(kkk, feature);
+                                            ts = M.Map.Util.Feature.translate(kkk, feature);
                                             d.append('<tr><td title="'+ts+'">' + ts + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
                                         }
                                     }
 
                                 }
                                 else {
-                                    ts = msp.Map.Util.Feature.translate(k, feature);
-                                    $info.append('<tr><td title="'+ts+'">' + ts, 20 + ' &rarr; ' + msp.Map.Util.Feature.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
+                                    ts = M.Map.Util.Feature.translate(k, feature);
+                                    $info.append('<tr><td title="'+ts+'">' + ts, 20 + ' &rarr; ' + M.Map.Util.Feature.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
                                 }
                             }
 
                         }
                         else {
-                            ts = msp.Map.Util.Feature.translate(k, feature);
-                            $info.append('<tr><td title="'+ts+'">' + ts + '</td><td>&nbsp;</td><td>' + msp.Map.Util.Feature.getValue(feature,k,v) + '</td></tr>');
+                            ts = M.Map.Util.Feature.translate(k, feature);
+                            $info.append('<tr><td title="'+ts+'">' + ts + '</td><td>&nbsp;</td><td>' + M.Map.Util.Feature.getValue(feature,k,v) + '</td></tr>');
                         }
                     }
                 }
@@ -1049,9 +1049,9 @@
         /*
          * Create unique object instance
          */
-        msp.Map.FeatureInfo._o = this;
+        M.Map.FeatureInfo._o = this;
 
         return this.init(options);
     }
     
-})(window.msp);
+})(window.M);

@@ -38,7 +38,7 @@
 /**
  * TMS layer type
  */
-(function (msp,Map){
+(function (M,Map){
     
     Map.layerTypes["TMS"] = {
 
@@ -69,7 +69,7 @@
             /*
              * selectable cannot be overriden
              */
-            options["_msp"].selectable = false;
+            options["_M"].selectable = false;
 
             /*
              * Layer creation
@@ -80,10 +80,10 @@
 
         /**
          * MANDATORY
-         * Compute an unique mspID based on layerDescription
+         * Compute an unique MID based on layerDescription
          */
-        getMspID:function(layerDescription) {
-            return msp.Util.crc32(layerDescription.type + (layerDescription.url || "") + (layerDescription.layername || ""));
+        getMID:function(layerDescription) {
+            return M.Util.crc32(layerDescription.type + (layerDescription.url || "") + (layerDescription.layername || ""));
         }
     }
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

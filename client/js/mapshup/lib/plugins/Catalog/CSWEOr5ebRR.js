@@ -40,21 +40,21 @@
  * Connector for CSW EO catalogs 06-131r5 ebRR
  * 
  *********************************************/
-(function (msp){
+(function (M){
     
-    msp.Plugins.Catalog = msp.Plugins.Catalog || {};
+    M.Plugins.Catalog = M.Plugins.Catalog || {};
     
     /**
      * Connector object
-     * One connector should be initialized for each catalog layer within the _msp.searchContext property
-     * (i.e. layer["_msp"].searchContext.connector = new Connector(layer, options)
+     * One connector should be initialized for each catalog layer within the _M.searchContext property
+     * (i.e. layer["_M"].searchContext.connector = new Connector(layer, options)
      *
      * @input catalog : catalog layer
      * @input options : options object
      * @input registerCallback : callback function called after connector is successfully registered
      * @input filterCallback : callback function called after filter is successfully updated
      */
-    msp.Plugins.Catalog.CSWEOr5 = function(catalog, options, registerCallback, filterCallback) {
+    M.Plugins.Catalog.CSWEOr5 = function(catalog, options, registerCallback, filterCallback) {
         
         $.extend(options, {
         
@@ -71,7 +71,7 @@
             url: "/plugins/catalog/CSWEOCatalogProxy.php?version=06-131r5ebRR&"
         });
         
-        return new msp.Plugins.Catalog.CSWEO(catalog, options, registerCallback, filterCallback)
+        return new M.Plugins.Catalog.CSWEO(catalog, options, registerCallback, filterCallback)
         
     }
-})(window.msp);
+})(window.M);

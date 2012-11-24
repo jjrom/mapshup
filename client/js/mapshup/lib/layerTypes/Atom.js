@@ -38,7 +38,7 @@
 /**
  * GeoRSS layer type
  */
-(function (msp, Map){
+(function (M, Map){
     
     Map.layerTypes["Atom"] = {
 
@@ -87,12 +87,12 @@
             /*
              * Set title
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription);
+            layerDescription.title = M.Util.getTitle(layerDescription);
             
             /*
              * Cluster strategy
              */
-            if (options["_msp"].clusterized && !options.hasOwnProperty("strategies")) {
+            if (options["_M"].clusterized && !options.hasOwnProperty("strategies")) {
                 options.strategies = [new OpenLayers.Strategy.Cluster(new OpenLayers.Strategy.Cluster(Map.clusterOpts))];
             }
 
@@ -107,7 +107,7 @@
              */
             if (layerDescription.hasOwnProperty("data")) {
                 if (!self.load(layerDescription.data, layerDescription, newLayer)) {
-                    msp.Map.removeLayer(newLayer, false);
+                    M.Map.removeLayer(newLayer, false);
                 }
             }
             /*
@@ -120,7 +120,7 @@
                  * annoying popup telling that the layer is added before
                  * the data has been effectively retrieve from server
                  */
-                newLayer['_msp'].isLoaded = false;
+                newLayer['_M'].isLoaded = false;
                 
                 /*
                  * Add a featuresadded event
@@ -141,12 +141,12 @@
                  * Retrieve FeatureCollection from server
                  */
                 $.ajax({
-                    url:msp.Util.proxify(msp.Util.getAbsoluteUrl(layerDescription.url)),
+                    url:M.Util.proxify(M.Util.getAbsoluteUrl(layerDescription.url)),
                     layer:newLayer,
                     async:true,
                     success:function(data) {
                         if (!self.load(data, layerDescription, this.layer)) {
-                            msp.Map.removeLayer(this.layer, false);
+                            M.Map.removeLayer(this.layer, false);
                         }
                     }
                 });
@@ -184,7 +184,7 @@
                 
             }
             catch(e) {
-                msp.Util.message(layer.name + " : " + msp.Util._("Error"), -1);
+                M.Util.message(layer.name + " : " + M.Util._("Error"), -1);
                 return false;
             }
             
@@ -194,7 +194,7 @@
                  * No features then remove layer
                  */
                 if (features.length === 0) {
-                    msp.Util.message(msp.Util._(layer.name)+ " : " + msp.Util._("No result"));
+                    M.Util.message(M.Util._(layer.name)+ " : " + M.Util._("No result"));
                     return false;
                 }
                 else {
@@ -202,12 +202,12 @@
                     /*
                      * Tell user that layer is added
                      */
-                    msp.Util.message(msp.Util._("Added")+ " : " + msp.Util._(layer.name));
+                    M.Util.message(M.Util._("Added")+ " : " + M.Util._(layer.name));
 
                     /*
                      * Set layer isLoaded status to true
                      */
-                    layer['_msp'].isLoaded = true;
+                    layer['_M'].isLoaded = true;
 
                     /*
                      * Add features to layer
@@ -234,4 +234,4 @@
         
     }
 
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

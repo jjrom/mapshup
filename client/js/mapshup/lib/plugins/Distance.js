@@ -43,15 +43,15 @@
  * at least the init() mandatory function.
  *
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Distance = function() {
+    M.Plugins.Distance = function() {
         
         /*
          * Only one Distance object instance is created
          */
-        if (msp.Plugins.Distance._o) {
-            return msp.Plugins.Distance._o;
+        if (M.Plugins.Distance._o) {
+            return M.Plugins.Distance._o;
         }
         
         /*
@@ -84,7 +84,7 @@
             /*
              * Generate a unique id for elevation panel
              */
-            self.uid = msp.Util.getId();
+            self.uid = M.Util.getId();
             
             /**
              * Default options values
@@ -133,9 +133,9 @@
                             measure = e.measure,
                             out = "";
                             if(order === 1) {
-                                out += msp.Util._("Distance")+" : " + measure.toFixed(3) + " " + units;
+                                out += M.Util._("Distance")+" : " + measure.toFixed(3) + " " + units;
                             } else {
-                                out += msp.Util._("Area")+" : " + measure.toFixed(3) + " " + units + "<sup>2</sup>";
+                                out += M.Util._("Area")+" : " + measure.toFixed(3) + " " + units + "<sup>2</sup>";
                             }
                             
                             /*
@@ -149,13 +149,13 @@
                              * Display results
                              */
                             self.display(e.geometry.getVertices());
-                            msp.Map.resetControl(this);
+                            M.Map.resetControl(this);
                         }
                     }
                 });
 
             self.layer = new OpenLayers.Layer.Vector("__LAYER_DISTANCE__",{
-                projection:msp.Map.pc,
+                projection:M.Map.pc,
                 displayInLayerSwitcher:false,
                 styleMap:new OpenLayers.StyleMap({
                     "default": new OpenLayers.Style("default",{
@@ -185,30 +185,30 @@
             /**
              * Add a distance layer
              */
-            msp.Map.addLayer({
+            M.Map.addLayer({
                 type:"Generic",
                 title:self.layer.name,
                 unremovable:true,
-                mspLayer:true,
+                MLayer:true,
                 layer:self.layer
             });
 
             /*
              * Add control to map
              */
-            msp.Map.map.addControl(mc);
+            M.Map.map.addControl(mc);
 
             /*
              * Add "Measure" item in menu
              */
-            if (msp.menu) {
-                msp.menu.add([
+            if (M.menu) {
+                M.menu.add([
                 {
-                    id:msp.Util.getId(),
+                    id:M.Util.getId(),
                     ic:"distance.png",
                     ti:"Measure distance",
                     cb:function() {
-                        msp.Map.Util.getControlById("__CONTROL_MEASURE__").activate();
+                        M.Map.Util.getControlById("__CONTROL_MEASURE__").activate();
                     }
                 }
                 ]);
@@ -217,14 +217,14 @@
             /*
              * Distance layer is always on top of other layers
              */
-            msp.Map.events.register("layersend", self, function(action,layer,scope){
-                msp.Map.Util.setLayerOnTop(scope.layer);
+            M.Map.events.register("layersend", self, function(action,layer,scope){
+                M.Map.Util.setLayerOnTop(scope.layer);
             });
             
             /*
              * Elevation plot should be redrawn on map size change
              */
-            msp.Map.events.register("resizeend", self, function(scope){
+            M.Map.events.register("resizeend", self, function(scope){
                 scope.refreshElevation();
             });
             
@@ -260,7 +260,7 @@
                 self = this;
 
                 for(i = 0, l = vertices.length; i < l; i++) {
-                    latlonVertice = msp.Map.Util.p2d(vertices[i]);
+                    latlonVertice = M.Map.Util.p2d(vertices[i]);
                     if (!isFirst) {
                         path += "|";
                     }
@@ -283,8 +283,8 @@
                 /**
                  * Get elevation object
                  */
-                msp.Util.ajax({
-                    url:msp.Util.proxify(msp.Util.repareUrl(msp.Util.getAbsoluteUrl(this.options.elevationServiceUrl))+"path="+path+"&samples="+self.options.samples),
+                M.Util.ajax({
+                    url:M.Util.proxify(M.Util.repareUrl(M.Util.getAbsoluteUrl(this.options.elevationServiceUrl))+"path="+path+"&samples="+self.options.samples),
                     async:true,
                     dataType:"json",
                     success:function(data){
@@ -295,7 +295,7 @@
                         result,
                         layer = self.layer,
                         plots = [];
-                        msp.Map.Util.setVisibility(layer, true);
+                        M.Map.Util.setVisibility(layer, true);
                         layer.destroyFeatures();
 
                         /**
@@ -307,7 +307,7 @@
                         
                             for (i = 1; i <= l; i++) {
                                 result = data.results[i-1];
-                                xy = msp.Map.Util.d2p(new OpenLayers.LonLat(parseFloat(result.location.lng),parseFloat(result.location.lat)));
+                                xy = M.Map.Util.d2p(new OpenLayers.LonLat(parseFloat(result.location.lng),parseFloat(result.location.lat)));
                                 
                                 /**
                                  * Add feature to "__LAYER_DISTANCE__" layer
@@ -355,7 +355,7 @@
                                 /*
                                  * Add Streetview to South Panel
                                  */
-                                self.panelItem = msp.sp.add({
+                                self.panelItem = M.sp.add({
                                     id:self.uid,
                                     title:"Elevation",
                                     onclose:function() {
@@ -368,7 +368,7 @@
                                         /*
                                          * Hide layer
                                          */
-                                        msp.Map.Util.setVisibility(self.layer, false);
+                                        M.Map.Util.setVisibility(self.layer, false);
 
                                         /*
                                          * Nullify panelItem
@@ -377,7 +377,7 @@
                                         
                                     },
                                     onshow:function() {
-                                        msp.Map.Util.setVisibility(self.layer, true);
+                                        M.Map.Util.setVisibility(self.layer, true);
                                     }
                                 });
 
@@ -402,7 +402,7 @@
                          * No data...display simple distance
                          */
                         else {
-                            msp.Util.message(self.result.title);
+                            M.Util.message(self.result.title);
                         }
 
                     },
@@ -410,10 +410,10 @@
                      * Error...display simple distance
                      */
                     error:function(e) {
-                        msp.Util.message(self.result.title);
+                        M.Util.message(self.result.title);
                     }
                 },{
-                    title:msp.Util._("Retrieve elevation data..."),
+                    title:M.Util._("Retrieve elevation data..."),
                     cancel:true
                 });
 
@@ -422,7 +422,7 @@
              * Simple distance display
              */
             else {
-                msp.Util.message(self.result.title);
+                M.Util.message(self.result.title);
             }
         };
 
@@ -438,7 +438,7 @@
                 /*
                  * Activate panel item
                  */
-                msp.sp.show(self.panelItem);
+                M.sp.show(self.panelItem);
                 
             }
             
@@ -482,7 +482,7 @@
                         }
                     },
                     yaxis:{
-                        label:msp.Util._("Elevation (m)"),
+                        label:M.Util._("Elevation (m)"),
                         labelRenderer: $.jqplot.CanvasAxisLabelRenderer
                     }
                 },
@@ -507,10 +507,10 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Distance._o = this;
+        M.Plugins.Distance._o = this;
         
         return this;
         
     }
-})(window.msp);
+})(window.M);
 

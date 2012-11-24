@@ -41,15 +41,15 @@
  * Define a "Background layer" switcher
  * located in the mapshup header
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.BackgroundsManager = function() {
+    M.Plugins.BackgroundsManager = function() {
         
         /*
          * Only one BackgroundsManager object instance is created
          */
-        if (msp.Plugins.BackgroundsManager._o) {
-            return msp.Plugins.BackgroundsManager._o;
+        if (M.Plugins.BackgroundsManager._o) {
+            return M.Plugins.BackgroundsManager._o;
         }
         
         /**
@@ -70,22 +70,22 @@
             /*
              * Create Toolbar
              */
-            self.tb = new msp.Toolbar({
-                parent:self.options.parent || $('.leftBar', msp.$header), 
+            self.tb = new M.Toolbar({
+                parent:self.options.parent || $('.leftBar', M.$header), 
                 classes:'bgm'
             });
             
             /**
              * Register changebaselayer
              */
-            msp.Map.map.events.register('changebaselayer', msp.Map.map, function(e){
-                self.tb.activate(msp.Util.encode(e.layer.id), true);
+            M.Map.map.events.register('changebaselayer', M.Map.map, function(e){
+                self.tb.activate(M.Util.encode(e.layer.id), true);
             });
 
             /*
              * Register layersend event
              */
-            msp.Map.events.register("layersend", self, function(action, layer, scope) {
+            M.Map.events.register("layersend", self, function(action, layer, scope) {
 
                 /*
                  * Paranoid mode
@@ -94,7 +94,7 @@
                     return false;
                 }
             
-                var id = msp.Util.encode(layer.id);
+                var id = M.Util.encode(layer.id);
                 
                 /**
                  * Case 1 : layers list changed because a layer was added
@@ -103,12 +103,12 @@
                     if (layer.isBaseLayer && layer.displayInLayerSwitcher) {
                         scope.tb.add({
                             id:id,
-                            title:msp.Util._(layer.name).substring(0,1),
+                            title:M.Util._(layer.name).substring(0,1),
                             tt:layer.name,
                             activable:true,
                             switchable:false,
                             callback:function() {
-                                msp.Map.map.setBaseLayer(layer);
+                                M.Map.map.setBaseLayer(layer);
                             }
                         });
                     
@@ -138,9 +138,9 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.BackgroundsManager._o = this;
+        M.Plugins.BackgroundsManager._o = this;
         
         return this;
     }
     
-})(window.msp);
+})(window.M);

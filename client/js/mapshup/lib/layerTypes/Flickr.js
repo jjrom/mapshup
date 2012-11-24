@@ -39,7 +39,7 @@
 /**
  * Flickr layer type
  */
-(function (msp, Map){
+(function (M, Map){
     
     Map.layerTypes["Flickr"] = {
 
@@ -104,17 +104,17 @@
                 /*
                  * Check if bbox is defined in layerDescription
                  */
-                layerDescription.bbox = msp.Util.getPropertyValue(layerDescription, "bbox", Map.getBBOX());
+                layerDescription.bbox = M.Util.getPropertyValue(layerDescription, "bbox", Map.getBBOX());
 
                 /*
                  * Set an empty search term value if not set
                  */
-                layerDescription.q = msp.Util.getPropertyValue(layerDescription, "q", "");
+                layerDescription.q = M.Util.getPropertyValue(layerDescription, "q", "");
 
                 /*
                  * Build url
                  */
-                layerDescription.url = msp.Util.getAbsoluteUrl("/plugins/flickr/search.php?q="+layerDescription.q+"&bbox="+layerDescription.bbox);
+                layerDescription.url = M.Util.getAbsoluteUrl("/plugins/flickr/search.php?q="+layerDescription.q+"&bbox="+layerDescription.bbox);
                 
             }
             
@@ -168,7 +168,7 @@
         setFeatureInfoBody: function(feature, $info) {
 
             var i,l,tags,$tags,
-            id = msp.Util.getId();
+            id = M.Util.getId();
             
             /*
              * Photo page url :
@@ -176,7 +176,7 @@
              *
              * (see http://www.flickr.com/services/api/misc.urls.html)
              */
-            $info.html('<div class="padded">'+feature.attributes['description']+'</div><div class="tags"></div><br/><div class="center"><a target="_blank" href="http://www.flickr.com/photos/'+feature.attributes['owner']+'/'+feature.attributes['identifier']+'">'+msp.Util._("Go to flickr page")+'</a></div>');
+            $info.html('<div class="padded">'+feature.attributes['description']+'</div><div class="tags"></div><br/><div class="center"><a target="_blank" href="http://www.flickr.com/photos/'+feature.attributes['owner']+'/'+feature.attributes['identifier']+'">'+M.Util._("Go to flickr page")+'</a></div>');
             
             $tags = $('.tags', $info);
             if (feature.attributes["tags"]) {
@@ -185,16 +185,16 @@
                     (function(tag, id) {
                         $tags.append('<a href="#" id="'+id+'">'+tag+'</a> ');
                         $('#' + id).click(function(){
-                            msp.Util.askFor({
-                                title:msp.Util._("Search"),
-                                content:msp.Util._("Do you really want to search for")+" "+tag,
+                            M.Util.askFor({
+                                title:M.Util._("Search"),
+                                content:M.Util._("Do you really want to search for")+" "+tag,
                                 dataType:"list",
                                 value:[{
-                                    title:msp.Util._("Yes"), 
+                                    title:M.Util._("Yes"), 
                                     value:"y"
                                 },
                                 {
-                                    title:msp.Util._("No"), 
+                                    title:M.Util._("No"), 
                                     value:"n"
                                 }
                                 ],
@@ -213,17 +213,17 @@
                             
                             return false;
                         });
-                    })(tags[i], msp.Util.getId());
+                    })(tags[i], M.Util.getId());
                 }
             }
         },
 
         /**
          * MANDATORY
-         * Compute an unique mspID based on layerDescription
+         * Compute an unique MID based on layerDescription
          */
-        getMspID:function(layerDescription) {
-            return msp.Util.crc32(layerDescription.type + (layerDescription.title || "") + (layerDescription.userID || "") + (layerDescription.q || "") + (layerDescription.machineTags || ""));
+        getMID:function(layerDescription) {
+            return M.Util.crc32(layerDescription.type + (layerDescription.title || "") + (layerDescription.userID || "") + (layerDescription.q || "") + (layerDescription.machineTags || ""));
         }
     }
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

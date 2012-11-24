@@ -40,21 +40,21 @@
  * Connector for CSW EO Charter catalog
  *
  *********************************************/
-(function (msp){
+(function (M){
     
-    msp.Plugins.Catalog = msp.Plugins.Catalog || {};
+    M.Plugins.Catalog = M.Plugins.Catalog || {};
     
     /**
      * Connector object
-     * One connector should be initialized for each catalog layer within the _msp.searchContext property
-     * (i.e. layer["_msp"].searchContext.connector = new Connector(layer, options)
+     * One connector should be initialized for each catalog layer within the _M.searchContext property
+     * (i.e. layer["_M"].searchContext.connector = new Connector(layer, options)
      *
      * @input catalog : catalog layer
      * @input options : options object
      * @input registerCallback : callback function called after connector is successfully registered
      * @input filterCallback : callback function called after filter is successfully updated
      */
-    msp.Plugins.Catalog.CSWEOCharter = function(catalog, options, registerCallback, filterCallback) {
+    M.Plugins.Catalog.CSWEOCharter = function(catalog, options, registerCallback, filterCallback) {
 
         /**
          * Reference to the catalog layer
@@ -148,7 +148,7 @@
              */
             this.filters.push({
                 id:"disasterCallId",
-                title:msp.Util._("Call ID"),
+                title:M.Util._("Call ID"),
                 type:"text"
             });
 
@@ -156,7 +156,7 @@
              * Asynchronous retrieve of disasterType
              */
             $.ajax({
-                url:msp.Util.proxify(msp.Util.getAbsoluteUrl(this.options.slotComboProxyServiceUrl)+"getDisastersTypes"),
+                url:M.Util.proxify(M.Util.getAbsoluteUrl(this.options.slotComboProxyServiceUrl)+"getDisastersTypes"),
                 dataType:"json",
                 success:function(result){
 
@@ -171,7 +171,7 @@
                          */
                         var filter = {
                             id:"disasterType",
-                            title:msp.Util._("Disaster Type"),
+                            title:M.Util._("Disaster Type"),
                             type:"enumeration",
                             son:[]
                         }
@@ -212,7 +212,7 @@
              * Asynchronous retrieve of disasterType
              */
             $.ajax({
-                url:msp.Util.proxify(msp.Util.getAbsoluteUrl(this.options.slotComboProxyServiceUrl)+"getSatelliteNames"),
+                url:M.Util.proxify(M.Util.getAbsoluteUrl(this.options.slotComboProxyServiceUrl)+"getSatelliteNames"),
                 dataType:"json",
                 success:function(result){
 
@@ -229,7 +229,7 @@
                         var totpop = 0;
                         var filter = {
                             id:"satelliteName",
-                            title:msp.Util._("Satellite name"),
+                            title:M.Util._("Satellite name"),
                             type:"enumeration",
                             son:[]
                         }
@@ -295,4 +295,4 @@
 
         }
     };
-})(window.msp);
+})(window.M);

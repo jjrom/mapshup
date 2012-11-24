@@ -41,15 +41,15 @@
  * Add navigation tools
  * 
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Navigation = function() {
+    M.Plugins.Navigation = function() {
         
         /*
          * Only one Navigation object instance is created
          */
-        if (msp.Plugins.Navigation._o) {
-            return msp.Plugins.Navigation._o;
+        if (M.Plugins.Navigation._o) {
+            return M.Plugins.Navigation._o;
         }
         
         /**
@@ -67,23 +67,23 @@
              * Default toolbar is North East Vertical
              */
             $.extend(self.options, {
-                home:msp.Util.getPropertyValue(self.options, "home", {
+                home:M.Util.getPropertyValue(self.options, "home", {
                     lon:0,
                     lat:40,
                     zoom:2
                 }),
-                zoomin:msp.Util.getPropertyValue(self.options, "zoomin", true),
-                zoomout:msp.Util.getPropertyValue(self.options, "zoomout", true),
-                history:msp.Util.getPropertyValue(self.options, "history", false),
-                limit:msp.Util.getPropertyValue(self.options, "limit", 10),
-                position:msp.Util.getPropertyValue(self.options, "position", 'nw'),
-                orientation:msp.Util.getPropertyValue(self.options, "orientation", 'v')
+                zoomin:M.Util.getPropertyValue(self.options, "zoomin", true),
+                zoomout:M.Util.getPropertyValue(self.options, "zoomout", true),
+                history:M.Util.getPropertyValue(self.options, "history", false),
+                limit:M.Util.getPropertyValue(self.options, "limit", 10),
+                position:M.Util.getPropertyValue(self.options, "position", 'nw'),
+                orientation:M.Util.getPropertyValue(self.options, "orientation", 'v')
             });
 
             /*
              * Set the toolbar container
              */
-            tb = new msp.Toolbar({
+            tb = new M.Toolbar({
                 position:self.options.position, 
                 orientation:self.options.orientation
             });
@@ -97,7 +97,7 @@
                     tt:"Zoom",
                     activable:false,
                     callback:function() {
-                        msp.Map.map.setCenter(msp.Map.map.getCenter(), msp.Map.map.getZoom() + 1);
+                        M.Map.map.setCenter(M.Map.map.getCenter(), M.Map.map.getZoom() + 1);
                     }
                 });
             }
@@ -111,7 +111,7 @@
                     tt:"Zoom out",
                     activable:false,
                     callback:function() {
-                        msp.Map.map.setCenter(msp.Map.map.getCenter(), Math.max(msp.Map.map.getZoom() - 1, msp.Map.lowestZoomLevel));
+                        M.Map.map.setCenter(M.Map.map.getCenter(), Math.max(M.Map.map.getZoom() - 1, M.Map.lowestZoomLevel));
                     }
                 });
             }
@@ -242,7 +242,7 @@
                         /*
                          * Nothing is stored until mapshup is loaded
                          */
-                        if (!msp.isLoaded) {
+                        if (!M.isLoaded) {
                             return false;
                         }
                             
@@ -388,7 +388,7 @@
                         /*  
                          * Zoom to extent
                          */
-                        msp.Map.map.setCenter(s.center, msp.Map.map.getZoomForResolution(s.resolution));
+                        M.Map.map.setCenter(s.center, M.Map.map.getZoomForResolution(s.resolution));
                             
                         /*
                          * Store the state to the tmp array
@@ -441,8 +441,8 @@
                 /*
                  * Register event - on map move, store the map extent in the states array
                  */
-                msp.Map.events.register("moveend", self, function(map, scope) {
-                    self.nh.add(msp.Map.getState());
+                M.Map.events.register("moveend", self, function(map, scope) {
+                    self.nh.add(M.Map.getState());
                 });
             }
             
@@ -455,7 +455,7 @@
                     tt:"Global view",
                     activable:false,
                     callback:function() {
-                        msp.Map.map.restrictedExtent ? msp.Map.map.zoomToExtent(msp.Map.map.restrictedExtent) : msp.Map.setCenter(msp.Map.Util.d2p(new OpenLayers.LonLat(self.options.home.lon, self.options.home.lat)), self.options.home.zoom, true);
+                        M.Map.map.restrictedExtent ? M.Map.map.zoomToExtent(M.Map.map.restrictedExtent) : M.Map.setCenter(M.Map.Util.d2p(new OpenLayers.LonLat(self.options.home.lon, self.options.home.lat)), self.options.home.zoom, true);
                     }
                 });
             }
@@ -467,9 +467,9 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Navigation._o = this;
+        M.Plugins.Navigation._o = this;
         
         return this;
     }
     
-})(window.msp);
+})(window.M);

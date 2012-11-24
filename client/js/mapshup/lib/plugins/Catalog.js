@@ -41,15 +41,15 @@
  *
  * This plugin requires layerTypes/Catalog.js
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Catalog = function() {
+    M.Plugins.Catalog = function() {
         
         /*
          * Only one Catalog object instance is created
          */
-        if (msp.Plugins.Catalog._o) {
-            return msp.Plugins.Catalog._o;
+        if (M.Plugins.Catalog._o) {
+            return M.Plugins.Catalog._o;
         }
         
         /**
@@ -80,20 +80,20 @@
             /*
              * Store unique identifier for search menu
              */
-            self._menuId = msp.Util.getId();
+            self._menuId = M.Util.getId();
             
             /*
              * Add a "Search" action to the geonames menu
              * This action launch a search on all registered catalogs
              * on a 1x1 square degrees box around the toponym
              */
-            if (msp.Plugins.Geonames && msp.Plugins.Geonames._o) {
+            if (M.Plugins.Geonames && M.Plugins.Geonames._o) {
                 
                 /**
                  * Search all catalogs within the map view
                  */       
-                msp.Plugins.Geonames._o.add([{
-                    id:msp.Util.getId(),
+                M.Plugins.Geonames._o.add([{
+                    id:M.Util.getId(),
                     ic:"search.png",
                     ti:"Search in catalogs",
                     cb:function(toponym) {
@@ -101,7 +101,7 @@
                         /**
                          * Create a buffer around clicked point
                          */
-                        self.searchAll(msp.Map.Util.d2p(new OpenLayers.Bounds(toponym.lng - 1, toponym.lat - 1, toponym.lng + 1,toponym.lat + 1)),true);
+                        self.searchAll(M.Map.Util.d2p(new OpenLayers.Bounds(toponym.lng - 1, toponym.lat - 1, toponym.lng + 1,toponym.lat + 1)),true);
                         return false;
                         
                     }
@@ -112,7 +112,7 @@
             /*
              * Remove layer event
              */
-            msp.Map.events.register("layersend", self, function(action, layer, scope) {
+            M.Map.events.register("layersend", self, function(action, layer, scope) {
 
                 /*
                  * The only interesting case for this plugin is the "remove" action
@@ -126,7 +126,7 @@
             /*
              * Update search BBOX on map move
              */
-            msp.Map.events.register("moveend", self, function(map, scope) {
+            M.Map.events.register("moveend", self, function(map, scope) {
                 
                 var i,l,m;
                 /*
@@ -138,10 +138,10 @@
                      * Important : if search attribute is set, then BBOX should not be updated
                      * the first time
                      */
-                    m = scope.registeredCatalogs[i]._msp;
+                    m = scope.registeredCatalogs[i]._M;
                     
                     if (!m.layerDescription.search) {
-                        m.searchContext.setBBOX(msp.Map.map.getExtent());
+                        m.searchContext.setBBOX(M.Map.map.getExtent());
                     }
                     else {
                         delete m.layerDescription.search;
@@ -165,10 +165,10 @@
             /**
              * layers of type catalogs get a "Search" action
              */
-            if (layer && layer["_msp"].layerDescription.type === "Catalog") {
+            if (layer && layer["_M"].layerDescription.type === "Catalog") {
                 return [
                 {
-                    id:msp.Util.getId(),
+                    id:M.Util.getId(),
                     icon:"search.png",
                     title:"Search",
                     tt:"Search",
@@ -201,18 +201,18 @@
             }
 
             /*
-             * Get layer _msp object
+             * Get layer _M object
              */
             var i,l,c,options,
-            _msp = layer["_msp"],
+            _M = layer["_M"],
             scope = this,
-            name = _msp.layerDescription.connectorName;
+            name = _M.layerDescription.connectorName;
 
             /*
              * This should not be possible...
-             * but in case of _msp is not set, return false
+             * but in case of _M is not set, return false
              */
-            if (!_msp) {
+            if (!_M) {
                 return false;
             }
 
@@ -231,9 +231,9 @@
                     /*
                      * This is the tricky part
                      *
-                     * First create a function that return the msp.Plugins.Catalog.<name> connector
+                     * First create a function that return the M.Plugins.Catalog.<name> connector
                      */
-                    c = (new Function('return msp.Plugins.Catalog.'+name))();
+                    c = (new Function('return M.Plugins.Catalog.'+name))();
                     
                     /*
                      * If connector object does not exist, nothing is registered
@@ -276,7 +276,7 @@
                 return false;
             }
 
-            var s,i,j,l,m,add,_msp,filters,cFilters,
+            var s,i,j,l,m,add,_M,filters,cFilters,
             layer = connector.catalog;
 
             /*
@@ -288,8 +288,8 @@
                 return false;
             }
             
-            _msp = layer["_msp"];
-            filters = _msp.layerDescription["filters"];
+            _M = layer["_M"];
+            filters = _M.layerDescription["filters"];
             cFilters = connector.filters;
             
             /*
@@ -341,36 +341,36 @@
             /*
              * Initialize connector searchUrl if not defined
              */
-            connector.searchUrl = connector.searchUrl || msp.Util.getAbsoluteUrl(msp.Util.repareUrl(connector.options.url)) + "catalogUrl=" + encodeURIComponent(_msp.layerDescription.url) + "&";
+            connector.searchUrl = connector.searchUrl || M.Util.getAbsoluteUrl(M.Util.repareUrl(connector.options.url)) + "catalogUrl=" + encodeURIComponent(_M.layerDescription.url) + "&";
 
             /*
              * Initialize an empty searchContext
              */
-            if (!_msp.searchContext) {
+            if (!_M.searchContext) {
                 
                 /*
                  * Set new SearchContext
                  */ 
-                _msp.searchContext = new msp.Map.SearchContext(layer, connector, {
+                _M.searchContext = new M.Map.SearchContext(layer, connector, {
                     autoSearch:false,
-                    nextRecord:_msp.layerDescription.nextRecord || scope.options.nextRecord,
+                    nextRecord:_M.layerDescription.nextRecord || scope.options.nextRecord,
                     nextRecordAlias:connector.nextRecordAlias,
-                    numRecordsPerPage:_msp.layerDescription.numRecordsPerPage || msp.Config["general"].numRecordsPerPage, 
+                    numRecordsPerPage:_M.layerDescription.numRecordsPerPage || M.Config["general"].numRecordsPerPage, 
                     numRecordsPerPageAlias:connector.numRecordsPerPageAlias,
-                    callback:_msp.layerDescription.hasOwnProperty("callback") ? _msp.layerDescription.callback : null, 
+                    callback:_M.layerDescription.hasOwnProperty("callback") ? _M.layerDescription.callback : null, 
                     scope:scope
                 });
 
                 /*
                  * Set BBOX to current map view
                  */
-                _msp.searchContext.setBBOX(msp.Map.map.getExtent());
+                _M.searchContext.setBBOX(M.Map.map.getExtent());
                 
                 /*
                  * Clean layerDescription.nextRecord and layerDescription.numRecordsPerPage to avoid confusion
                  */
-                delete layer["_msp"].layerDescription.nextRecord;
-                delete layer["_msp"].layerDescription.numRecordsPerPage;
+                delete layer["_M"].layerDescription.nextRecord;
+                delete layer["_M"].layerDescription.numRecordsPerPage;
             }
 
             /*
@@ -378,7 +378,7 @@
              * If so, do not register it again
              */
             for (i = 0, l = scope.registeredCatalogs.length; i < l; i++) {
-                if ((new msp.Map.LayerDescription(scope.registeredCatalogs, msp.Map)).getMspID() === _msp.mspID) {
+                if ((new M.Map.LayerDescription(scope.registeredCatalogs, M.Map)).getMID() === _M.MID) {
                     return true;
                 }
             }
@@ -389,16 +389,16 @@
             scope.registeredCatalogs.push(layer);
             
             /*
-             * Add searchAll action to msp.menu
+             * Add searchAll action to M.menu
              */
-            if (msp.menu) {
+            if (M.menu) {
                 
                 if (scope.registeredCatalogs.length === 1) {
                 
                     /**
                      * Search all catalogs within the map view
                      */       
-                    msp.menu.add([{
+                    M.menu.add([{
                         id:scope.menuId,
                         ic:"search.png",
                         ti:"Search in catalogs",
@@ -420,19 +420,19 @@
              * If layer got a searchContext within layerDescription,
              * then launch search
              */
-            s = layer["_msp"].layerDescription.search;
+            s = layer["_M"].layerDescription.search;
             
             if (s) {
 
                 /*
                  * Update the search items
                  */
-                layer["_msp"].searchContext.items = s.items;
+                layer["_M"].searchContext.items = s.items;
 
                 /*
                  * Launch unitary search -
                  */
-                layer["_msp"].searchContext.search(s.nextRecord);
+                layer["_M"].searchContext.search(s.nextRecord);
 
             }
             return true;
@@ -462,7 +462,7 @@
                      * If this layer is unremovable, do not remove it. End of the process
                      * (this should never occurs but who knows...)
                      */
-                    if (catalog['_msp'].layerDescription && catalog['_msp'].layerDescription.unremovable) {
+                    if (catalog['_M'].layerDescription && catalog['_M'].layerDescription.unremovable) {
                         return false;
                     }
 
@@ -471,21 +471,21 @@
                     /*
                      * Remove the search panel
                      */
-                    if (catalog['_msp'].searchContext.btn) {
-                        catalog['_msp'].searchContext.btn.remove();
+                    if (catalog['_M'].searchContext.btn) {
+                        catalog['_M'].searchContext.btn.remove();
                     }
                     
                     /*
-                     * Remove searchAll action from msp.menu
+                     * Remove searchAll action from M.menu
                      */
-                    if (msp.menu) {
+                    if (M.menu) {
 
                         if (this.registeredCatalogs.length === 0) {
 
                             /**
                              * Search all catalogs within the map view
                              */       
-                            msp.menu.remove(this.menuId);
+                            M.menu.remove(this.menuId);
                         }
 
                     }
@@ -515,9 +515,9 @@
                 return false;
             }
             
-            var id1 = msp.Util.getId(),
-                id2 = msp.Util.getId(),
-                sc = layer["_msp"].searchContext,
+            var id1 = M.Util.getId(),
+                id2 = M.Util.getId(),
+                sc = layer["_M"].searchContext,
                 self = this;
             
             /*
@@ -537,11 +537,11 @@
             /*
              * Set search popup
              */
-            self.sp = new msp.Popup({
+            self.sp = new M.Popup({
                 modal:false,
                 classes:"sp",
                 header:'<p>'+layer.name+'</p>',
-                body:'<div class="description search"><div class="father">'+msp.Util._("Limit search to map view extent")+'&nbsp;&nbsp;<input class="usegeo" type="checkbox" name="usegeo" '+(sc.useGeo ? "checked" : "")+'/></div><div class="filters"></div><div class="launch"><a href="#" class="button inline" id="'+id1+'">'+msp.Util._("Reset filters")+'</a><a href="#" class="button facebook inline" id="'+id2+'">&nbsp;&nbsp;search&nbsp;&nbsp;</a></div></div>'
+                body:'<div class="description search"><div class="father">'+M.Util._("Limit search to map view extent")+'&nbsp;&nbsp;<input class="usegeo" type="checkbox" name="usegeo" '+(sc.useGeo ? "checked" : "")+'/></div><div class="filters"></div><div class="launch"><a href="#" class="button inline" id="'+id1+'">'+M.Util._("Reset filters")+'</a><a href="#" class="button facebook inline" id="'+id2+'">&nbsp;&nbsp;search&nbsp;&nbsp;</a></div></div>'
             });
             
             /*
@@ -563,7 +563,7 @@
                  * Set BBOX
                  */
                 if (sc.useGeo) {
-                    sc.setBBOX(msp.Map.map.getExtent());
+                    sc.setBBOX(M.Map.map.getExtent());
                 }
                 
                 sc.search();
@@ -614,7 +614,7 @@
             }
 
             var $d,
-            sc = layer["_msp"].searchContext,
+            sc = layer["_M"].searchContext,
             connector = sc.connector,
             self = this;
 
@@ -631,7 +631,7 @@
              * No filters defined => nevermind but tells it to the user
              */
             if (!connector.filters || connector.filters.length === 0) {
-                $d.html(msp.Util._("No dedicated filters for this catalog"));
+                $d.html(M.Util._("No dedicated filters for this catalog"));
             }
 
             /*
@@ -692,7 +692,7 @@
             id,
             tmpItem,
             newItem,
-            sc = layer["_msp"].searchContext;
+            sc = layer["_M"].searchContext;
 
             /**
              * item can be an array
@@ -708,7 +708,7 @@
                  * item[i] has son => process the son
                  */
                 if (tmpItem.son) {
-                    id = msp.Util.getId();
+                    id = M.Util.getId();
                     div.append('<span class="father">'+tmpItem.title+' |</span><span id="'+id+'" class="tagcloud"></span><br/>');
                     this.processItem(tmpItem.son, tmpItem, div, layer, id);
                 }
@@ -717,7 +717,7 @@
                     /*
                      * Generate a unique id for class creation
                      */
-                    id = msp.Util.getId();
+                    id = M.Util.getId();
 
                     /*
                      * enumeration
@@ -836,7 +836,7 @@
                         /*
                          * Add a keyword action
                          */
-                        div.append('<span class="father">'+tmpItem.title+' |</span><span id="'+id+'t" class="bold">'+(value || "")+'</span>&nbsp;[<a href="#" id="'+id+'">'+(value ? msp.Util._("Change") : msp.Util._("Set"))+'</a><span id="'+id+'c"> or <a href="#">'+msp.Util._("Clear")+'</a></span>]</span><br/>');
+                        div.append('<span class="father">'+tmpItem.title+' |</span><span id="'+id+'t" class="bold">'+(value || "")+'</span>&nbsp;[<a href="#" id="'+id+'">'+(value ? M.Util._("Change") : M.Util._("Set"))+'</a><span id="'+id+'c"> or <a href="#">'+M.Util._("Clear")+'</a></span>]</span><br/>');
 
                         /*
                          * Hide 'clear' action if value is not set
@@ -871,7 +871,7 @@
                                  */
                                 $('#'+id+'c').hide();
 
-                                $('#'+id).html(msp.Util._("Set"));
+                                $('#'+id).html(M.Util._("Set"));
 
                                 return false;
                             });
@@ -883,8 +883,8 @@
                         (function(id, item, sc, type) {
                             $('#'+id).click(function(e) {
 
-                                msp.Util.askFor({
-                                    title:msp.Util._(item.title),
+                                M.Util.askFor({
+                                    title:M.Util._(item.title),
                                     dataType:type,
                                     value:sc.getValue(item.id),
                                     callback:function(v){
@@ -915,7 +915,7 @@
                                              */
                                             $('#'+id+'c').show();
 
-                                            $('#'+id).html(msp.Util._("Change"));
+                                            $('#'+id).html(M.Util._("Change"));
 
                                         }
 
@@ -943,7 +943,7 @@
              * Roll over each catalogs
              */
             for (j = 0, l = this.registeredCatalogs.length; j < l; j++) {
-                sc = this.registeredCatalogs[j]["_msp"].searchContext;
+                sc = this.registeredCatalogs[j]["_M"].searchContext;
 
                 /**
                  * initialize is set to true => force nextRecord to 1
@@ -969,7 +969,7 @@
                  * Set back search BBOX to the map bounds
                  */
                 if (bounds) {
-                    sc.setBBOX(sc.useGeo ? msp.Map.map.getExtent() : null);
+                    sc.setBBOX(sc.useGeo ? M.Map.map.getExtent() : null);
                 }
             }  
 
@@ -979,9 +979,9 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Catalog._o = this;
+        M.Plugins.Catalog._o = this;
         
         return this;
 
     }
-})(window.msp);
+})(window.M);

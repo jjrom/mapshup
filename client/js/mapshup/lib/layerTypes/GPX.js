@@ -38,7 +38,7 @@
 /**
  * KML layer type
  */
-(function (msp, Map){
+(function (M, Map){
     
     Map.layerTypes["GPX"] = {
 
@@ -85,7 +85,7 @@
             /*
              * Set title
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription);
+            layerDescription.title = M.Util.getTitle(layerDescription);
             
             /*
              * Extend options object with GPX specific properties
@@ -133,4 +133,4 @@
 
         }
     }
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

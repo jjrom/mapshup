@@ -40,15 +40,15 @@
  * Add an "export" action in the LayersManager action list
  * to export vector layers within a well known format (CSV, KML, etc.)
  */
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Export = function() {
+    M.Plugins.Export = function() {
         
         /*
          * Only one Export object instance is created
          */
-        if (msp.Plugins.Export._o) {
-            return msp.Plugins.Export._o;
+        if (M.Plugins.Export._o) {
+            return M.Plugins.Export._o;
         }
         
         /*
@@ -82,7 +82,7 @@
              */
             if (layer && layer.features) {
                 return {
-                    id:msp.Util.getId(),
+                    id:M.Util.getId(),
                     icon:"export.png",
                     title:"Export",
                     tt:"Export layer",
@@ -92,12 +92,12 @@
                          * Do not export empty layers...
                          */
                         if (layer.features.length === 0) {
-                            msp.Util.message("The layer is empty and cannot be exported");
+                            M.Util.message("The layer is empty and cannot be exported");
                         }
                         else {
-                            msp.Util.askFor({
-                                title:msp.Util._("Export")+ ' : '+layer.name,
-                                content:msp.Util._("Choose export format"),
+                            M.Util.askFor({
+                                title:M.Util._("Export")+ ' : '+layer.name,
+                                content:M.Util._("Choose export format"),
                                 dataType:"list",
                                 value:[{
                                     title:"CSV", 
@@ -130,8 +130,8 @@
             /*
              * Create an hidden link to store the export url
              */
-            var hidden = msp.Util.$$('#'+msp.Util.getId()).html('<a href="#" style="diplay:none;"></a>'),
-                umgmt = msp.Plugins.UserManagement,
+            var hidden = M.Util.$$('#'+M.Util.getId()).html('<a href="#" style="diplay:none;"></a>'),
+                umgmt = M.Plugins.UserManagement,
                 userid = -1,
                 scope = this;
             
@@ -167,8 +167,8 @@
             /*
              * Ajax query to prepare the export file
              */
-            msp.Util.ajax({
-                url:msp.Util.getAbsoluteUrl(scope.options.exportServiceUrl+msp.Util.abc),
+            M.Util.ajax({
+                url:M.Util.getAbsoluteUrl(scope.options.exportServiceUrl+M.Util.abc),
                 async:true,
                 dataType:"json",
                 type:"POST",
@@ -189,14 +189,14 @@
                      * and trigger a click on it
                      */
                     if (data.error) {
-                        msp.Util.message(data.error["message"]);
+                        M.Util.message(data.error["message"]);
                     }
                     else {
                         this.target.attr("href", data.url).trigger('click');
                     }
                 }
             },{
-                title:msp.Util._("Export in progress"),
+                title:M.Util._("Export in progress"),
                 cancel:true
             });
 
@@ -254,7 +254,7 @@
                          * Beware of null geometry
                          */
                         if (feature.geometry) {
-                            attributes["wkt"] = msp.Map.Util.p2d(feature.cluster[j].geometry.clone()).toString();
+                            attributes["wkt"] = M.Map.Util.p2d(feature.cluster[j].geometry.clone()).toString();
                         }
                         else {
                             attributes["wkt"] = "";
@@ -277,7 +277,7 @@
                     }
 
                     if (feature.geometry) {
-                        attributes["wkt"] = msp.Map.Util.p2d(feature.geometry.clone()).toString();
+                        attributes["wkt"] = M.Map.Util.p2d(feature.geometry.clone()).toString();
                     }
                     else {
                         attributes["wkt"] = "";
@@ -293,9 +293,9 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Export._o = this;
+        M.Plugins.Export._o = this;
         
         return this;
         
     };
-})(window.msp);
+})(window.M);

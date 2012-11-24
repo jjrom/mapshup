@@ -38,7 +38,7 @@
 /**
  * Google layer type
  */
-(function (msp,Map){
+(function (M,Map){
     
     Map.layerTypes["Google"] = {
 
@@ -93,12 +93,12 @@
              * Set layerDescription googleType to ROADMAP if not
              * already set
              */
-            layerDescription.googleType = msp.Util.getPropertyValue(layerDescription, "googleType", "roadmap");
+            layerDescription.googleType = M.Util.getPropertyValue(layerDescription, "googleType", "roadmap");
 
             /*
              * Set title
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription);
+            layerDescription.title = M.Util.getTitle(layerDescription);
             
             /*
              * Extend options object with Google specific properties
@@ -106,7 +106,7 @@
             $.extend(options,
             {
                 isBaseLayer:true,
-                numZoomLevels:msp.Util.getPropertyValue(layerDescription, "numZoomLevels", msp.Map.map.getNumZoomLevels()),
+                numZoomLevels:M.Util.getPropertyValue(layerDescription, "numZoomLevels", M.Map.map.getNumZoomLevels()),
                 transitionEffect:'resize',
                 type:layerDescription.googleType
             });
@@ -116,11 +116,11 @@
 
         /**
          * MANDATORY
-         * Compute an unique mspID based on layerDescription
+         * Compute an unique MID based on layerDescription
          */
-        getMspID:function(layerDescription) {
-            return msp.Util.crc32(layerDescription.type + (layerDescription.googleType || "roadmap"));
+        getMID:function(layerDescription) {
+            return M.Util.crc32(layerDescription.type + (layerDescription.googleType || "roadmap"));
         }
     }
     
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

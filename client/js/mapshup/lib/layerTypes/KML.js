@@ -38,7 +38,7 @@
 /**
  * KML layer type
  */
-(function (msp,Map){
+(function (M,Map){
     
     Map.layerTypes["KML"] = {
 
@@ -83,7 +83,7 @@
             /*
              * Set title
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription);
+            layerDescription.title = M.Util.getTitle(layerDescription);
             
             /*
              * Extend options object with KML specific properties
@@ -109,11 +109,11 @@
              */
             if (newLayer !== null) {
                 $.ajax({
-                    url:msp.Util.proxify(layerDescription.url),
+                    url:M.Util.proxify(layerDescription.url),
                     async:true,
                     dataType:"text",
                     success: function(data) {
-                        newLayer["_msp"].kml = data;
+                        newLayer["_M"].kml = data;
                     }
                 });
             }
@@ -142,4 +142,4 @@
         }
     }
 
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

@@ -45,20 +45,20 @@
  * here [TODO : set url for document PSC-IF-40-0037-CN v1.0]
  *
  *********************************************/
-(function (msp){
+(function (M){
     
-    msp.Plugins.Catalog = msp.Plugins.Catalog || {};
+    M.Plugins.Catalog = M.Plugins.Catalog || {};
     
     /**
-     * One connector should be initialized for each catalog layer within the _msp.searchContext property
-     * (i.e. layer["_msp"].searchContext.connector = new Connector(layer, options)
+     * One connector should be initialized for each catalog layer within the _M.searchContext property
+     * (i.e. layer["_M"].searchContext.connector = new Connector(layer, options)
      *
      * @input catalog : catalog layer
      * @input options : options object
      * @input registerCallback : callback function called after connector is successfully registered
      * @input filterCallback : callback function called after filter is successfully updated
      */
-    msp.Plugins.Catalog.OpenSearch = function(catalog, options, registerCallback, filterCallback) {
+    M.Plugins.Catalog.OpenSearch = function(catalog, options, registerCallback, filterCallback) {
         
         /*
          * Options
@@ -112,7 +112,7 @@
              * Retrieve the OpenSearch XML description
              */
             $.ajax({
-                url:msp.Util.proxify(msp.Util.getAbsoluteUrl(catalog["_msp"].layerDescription.url)),
+                url:M.Util.proxify(M.Util.getAbsoluteUrl(catalog["_M"].layerDescription.url)),
                 dataType:"xml",
                 success:function(data){
                     
@@ -148,7 +148,7 @@
                                 for (j = 1, k = parts.length; j < k; j++) {
                                     kvps += "?"+parts[j];
                                 }
-                                kvps = msp.Util.extractKVP(kvps);
+                                kvps = M.Util.extractKVP(kvps);
                                 
                             /*
                              * KVP analysis
@@ -203,13 +203,13 @@
                             /*
                              * Get filters from json url description
                              */
-                            if (description.mspDescriptionUrl) {
+                            if (description.MDescriptionUrl) {
                                 
                                 /*
                                  * Get filters
                                  */
                                 $.ajax({
-                                    url:msp.Util.proxify(msp.Util.getAbsoluteUrl(description.mspDescriptionUrl)),
+                                    url:M.Util.proxify(M.Util.getAbsoluteUrl(description.MDescriptionUrl)),
                                     dataType:"json",
                                     success:function(data2){
                                         
@@ -238,7 +238,7 @@
                              * !! IMPORTANT !!
                              * Set the searchUrl
                              */
-                            self.searchUrl = msp.Util.getAbsoluteUrl(msp.Util.repareUrl(url));
+                            self.searchUrl = M.Util.getAbsoluteUrl(M.Util.repareUrl(url));
                             
                             /*
                              * Callback to effectively add the catalog to mapshup
@@ -285,4 +285,4 @@
         }
         
     }
-})(window.msp);
+})(window.M);

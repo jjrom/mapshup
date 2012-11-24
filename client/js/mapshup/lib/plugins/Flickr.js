@@ -44,15 +44,15 @@
  * is loaded BEFORE this plugin
  *
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Flickr = function() {
+    M.Plugins.Flickr = function() {
         
         /*
          * Only one Flickr object instance is created
          */
-        if (msp.Plugins.Flickr._o) {
-            return msp.Plugins.Flickr._o;
+        if (M.Plugins.Flickr._o) {
+            return M.Plugins.Flickr._o;
         }
         
         /**
@@ -72,10 +72,10 @@
              * This action launch a flickr search limited to the map
              * view and constraint with the name
              */
-            if (msp.Plugins.Geonames._o) {
+            if (M.Plugins.Geonames._o) {
                 
-                msp.Plugins.Geonames._o.add([{
-                    id:msp.Util.getId(),
+                M.Plugins.Geonames._o.add([{
+                    id:M.Util.getId(),
                     ic:"flickr.png",
                     ti:"Search for related images",
                     cb:function(toponym) {
@@ -83,13 +83,13 @@
                         /*
                          * Tell user that flickr search is in progress
                          */
-                        msp.mask.add({
-                            title:msp.Util._("Flickr")+' : '+msp.Util._("Searching")+" "+ toponym.name,
+                        M.mask.add({
+                            title:M.Util._("Flickr")+' : '+M.Util._("Searching")+" "+ toponym.name,
                             cancel:true,
-                            layer:msp.Map.addLayer({
+                            layer:M.Map.addLayer({
                                 type:"Flickr",
                                 title:toponym.name+", "+toponym.countryName,
-                                q:msp.Util.encode(toponym.name)
+                                q:M.Util.encode(toponym.name)
                             })
                         });
                         
@@ -111,7 +111,7 @@
         this.getFeatureActions = function(feature) {
 
             return {
-                id:msp.Util.getId(),
+                id:M.Util.getId(),
                 icon:"flickr.png",
                 title:"Flickr",
                 callback:function() {
@@ -121,7 +121,7 @@
                      * If bbox is a point, then add 0.5 degree in all directions
                      */
                     var add = 0.5,
-                    bounds = msp.Map.Util.p2d(feature.geometry.getBounds().clone());
+                    bounds = M.Map.Util.p2d(feature.geometry.getBounds().clone());
                         
                     if (bounds.top === bounds.bottom || bounds.right === bounds.left) {
                         bounds = new OpenLayers.Bounds(bounds.left - add, bounds.bottom - add, bounds.right + add, bounds.top + add)
@@ -130,11 +130,11 @@
                     /*
                      * Tell user that flickr search is in progress
                      */
-                    msp.mask.add({
-                        title:msp.Util._("Flickr")+' : '+msp.Util._("Searching"),
-                        layer:msp.Map.addLayer({
+                    M.mask.add({
+                        title:M.Util._("Flickr")+' : '+M.Util._("Searching"),
+                        layer:M.Map.addLayer({
                             type:"Flickr",
-                            title:msp.Util.stripTags(msp.Map.Util.Feature.getTitle(feature)),
+                            title:M.Util.stripTags(M.Map.Util.Feature.getTitle(feature)),
                             bbox:bounds.toBBOX(),
                             q:""
                         }),
@@ -149,9 +149,9 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Flickr._o = this;
+        M.Plugins.Flickr._o = this;
         
         return this;
         
     };
-})(window.msp);
+})(window.M);

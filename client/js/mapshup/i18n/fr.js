@@ -216,4 +216,4 @@
     i["Zoom here"]="Zoomer ici";
     i["Zoom out"]="Dézoomer";
     i["Zoom on feature"]="Zoomer sur l&#39;objet";
-})(msp.i18n);
+})(M.i18n);

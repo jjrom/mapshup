@@ -38,7 +38,7 @@
 /**
  * Generic layer type
  */
-(function (msp, Map){
+(function (M, Map){
     
     Map.layerTypes["Generic"] = {
 
@@ -61,14 +61,14 @@
             /*
              * Set title
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription);
+            layerDescription.title = M.Util.getTitle(layerDescription);
             
             if (!layerDescription.layer) {
                 return new OpenLayers.Layer.Vector(layerDescription.title, options);
             }
-            layerDescription.layer["_msp"] = options._msp;
+            layerDescription.layer["_M"] = options._M;
             return layerDescription.layer;
         }
     }
 
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

@@ -38,7 +38,7 @@
 /**
  * Bing layer type
  */
-(function (msp, Map){
+(function (M, Map){
     
     Map.layerTypes["Bing"] = {
 
@@ -64,7 +64,7 @@
             $.extend(options,
             {
                 isBaseLayer:true,
-                name:msp.Util.getTitle(layerDescription),
+                name:M.Util.getTitle(layerDescription),
                 key:layerDescription.key,
                 type:layerDescription.bingType,
                 transitionEffect:'resize'
@@ -77,11 +77,11 @@
 
         /**
          * MANDATORY
-         * Compute an unique mspID based on layerDescription
+         * Compute an unique MID based on layerDescription
          */
-        getMspID:function(layerDescription) {
-            return msp.Util.crc32(layerDescription.type + (layerDescription.bingType || ""));
+        getMID:function(layerDescription) {
+            return M.Util.crc32(layerDescription.type + (layerDescription.bingType || ""));
         }
     }
     
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

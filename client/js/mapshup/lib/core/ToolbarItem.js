@@ -40,7 +40,7 @@
  * Toolbar Item
  *
  */
-(function(msp) {
+(function(M) {
     
     /*
      * ToolbarItem options
@@ -67,7 +67,7 @@
      * }
      *
      */
-    msp.ToolbarItem = function(tb, options) {
+    M.ToolbarItem = function(tb, options) {
         
         /*
          * Paranoid mode
@@ -92,7 +92,7 @@
         /*
          * Extra properties container
          */
-        this.first = msp.Util.getPropertyValue(options, "first", false);
+        this.first = M.Util.getPropertyValue(options, "first", false);
         
         /*
          * Html content for the button - replace title
@@ -108,7 +108,7 @@
          * Unique identifier for this element. Automatically created if not given
          * !! THIS ID IS DIFFERENT FROM THE ID OF THE CREATED jquery $d ELEMENT !!
          */
-        this.id = options.id || msp.Util.getId();
+        this.id = options.id || M.Util.getId();
        
         /*
          * Boolean. If true, button is not sensitive to onmouseover event
@@ -175,15 +175,15 @@
              * the button is added at the beginning of the toolbar
              * otherwise it is added at the end of the toolbar
              */
-            uid = msp.Util.getId();
+            uid = M.Util.getId();
             
             if (self.html) {
                 content = self.html;
             }
             else {
-                content = self.title ? msp.Util.shorten(self.title,10,true) : '<img class="middle" alt="" src="'+msp.Util.getImgUrl(self.icon || "empty.png")+'"/>';
+                content = self.title ? M.Util.shorten(self.title,10,true) : '<img class="middle" alt="" src="'+M.Util.getImgUrl(self.icon || "empty.png")+'"/>';
             }
-            content = '<div class="'+(self.nohover ? "" : "hover ")+'item" jtitle="'+(msp.Util._(self.tt) || "")+'" id="'+uid+'">'+content+'</div>';
+            content = '<div class="'+(self.nohover ? "" : "hover ")+'item" jtitle="'+(M.Util._(self.tt) || "")+'" id="'+uid+'">'+content+'</div>';
             self.first ? self.tb.$d.prepend(content) : self.tb.$d.append(content);
             
             /*
@@ -223,10 +223,10 @@
             if (self.tt) {
                 orientation = self.tb.orientation || 'h';
                 if (self.tb.position) {
-                    msp.tooltip.add(self.$d, orientation === 'h'? self.tb.position.substr(0,1) : self.tb.position.substr(1,2));
+                    M.tooltip.add(self.$d, orientation === 'h'? self.tb.position.substr(0,1) : self.tb.position.substr(1,2));
                 }
                 else {
-                    msp.tooltip.add(self.$d, orientation === 'h'? 'n' : 'e');
+                    M.tooltip.add(self.$d, orientation === 'h'? 'n' : 'e');
                 }
             }
             
@@ -300,4 +300,4 @@
       
     };
 
-})(window.msp);
+})(window.M);

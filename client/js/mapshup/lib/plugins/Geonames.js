@@ -42,19 +42,19 @@
  * at least the init() mandatory function.
  *
  * Optional functions are :
- *  getMenuItems() [See msp.js]
+ *  getMenuItems() [See M.js]
  *  getGeonamesMenuItems() [See plugins/geonames.js]
  *  any function defined by the plugin
  */
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Geonames = function() {
+    M.Plugins.Geonames = function() {
         
         /*
          * Only one Context object instance is created
          */
-        if (msp.Plugins.Geonames._o) {
-            return msp.Plugins.Geonames._o;
+        if (M.Plugins.Geonames._o) {
+            return M.Plugins.Geonames._o;
         }
         
         /*
@@ -95,7 +95,7 @@
              *      <div class="header"></div>
              * </div>
              */
-            this.$d = msp.Util.$$('#gnm', msp.$map).addClass("apo").html('<div class="content"><div class="header"></div></div>');
+            this.$d = M.Util.$$('#gnm', M.$map).addClass("apo").html('<div class="content"><div class="header"></div></div>');
                 
             var scope = this,
             popup = {
@@ -110,9 +110,9 @@
                          * Update css top/left property depending on
                          * toponym location on map
                          */
-                        xy = feature ? msp.Map.map.getPixelFromLonLat(feature.geometry.getBounds().getCenterLonLat()) : {
-                            x:(msp.$map.width() - scope.$d.width()) / 2,
-                            y:(msp.$map.height() / 2) - scope.$d.height()
+                        xy = feature ? M.Map.map.getPixelFromLonLat(feature.geometry.getBounds().getCenterLonLat()) : {
+                            x:(M.$map.width() - scope.$d.width()) / 2,
+                            y:(M.$map.height() / 2) - scope.$d.height()
                         };
 
                     /*
@@ -138,7 +138,7 @@
                      */
                     if (scope.layer.getVisibility() && feature) {
                         scope.$d.show();
-                        if ((scope.$d.offset().left < msp.$map.offset().left) || (scope.$d.offset().left + scope.currentWidth > msp.$map.offset().left + msp.$map.width()) || (scope.$d.offset().top < msp.$map.offset().top) || (scope.$d.offset().top + scope.$d.height() > msp.$map.offset().top + msp.$map.height())) {
+                        if ((scope.$d.offset().left < M.$map.offset().left) || (scope.$d.offset().left + scope.currentWidth > M.$map.offset().left + M.$map.width()) || (scope.$d.offset().top < M.$map.offset().top) || (scope.$d.offset().top + scope.$d.height() > M.$map.offset().top + M.$map.height())) {
                             scope.$d.hide();
                         }
                     }
@@ -153,19 +153,19 @@
                             i,
                             l,
                             point = {
-                                xy:msp.Map.Util.d2p(new OpenLayers.Geometry.Point(toponym.lng,toponym.lat)),
+                                xy:M.Map.Util.d2p(new OpenLayers.Geometry.Point(toponym.lng,toponym.lat)),
                                 zoomOn:function(zoomout) {
                                     zoomout = zoomout || false;
                                     var xyCoord = new OpenLayers.LonLat(this.xy.x,this.xy.y);
                                     if (zoomout) {
-                                        msp.Map.map.setCenter(xyCoord, Math.max(msp.Map.map.getZoom() - 1, msp.Map.lowestZoomLevel));
+                                        M.Map.map.setCenter(xyCoord, Math.max(M.Map.map.getZoom() - 1, M.Map.lowestZoomLevel));
                                     }
                                     else {
-                                        if (msp.Map.map.getZoom() < 14) {
-                                            msp.Map.map.setCenter(xyCoord, 14);
+                                        if (M.Map.map.getZoom() < 14) {
+                                            M.Map.map.setCenter(xyCoord, 14);
                                         }
                                         else {
-                                            msp.Map.map.setCenter(xyCoord, msp.Map.map.getZoom() + 1);
+                                            M.Map.map.setCenter(xyCoord, M.Map.map.getZoom() + 1);
                                         }
                                     }
                                 }
@@ -176,7 +176,7 @@
                              * Zoom here
                              */
                             items.push({
-                                id:msp.Util.getId(),
+                                id:M.Util.getId(),
                                 ic:"plus.png",
                                 cb:function() {
                                     point.zoomOn(false);
@@ -187,7 +187,7 @@
                              * Zoom out
                              */
                             items.push({
-                                id:msp.Util.getId(),
+                                id:M.Util.getId(),
                                 ic:"minus.png",
                                 cb:function() {
                                     point.zoomOn(true);
@@ -205,20 +205,20 @@
                              * Close
                              */
                             items.push({
-                                id:msp.Util.getId(),
+                                id:M.Util.getId(),
                                 ic:"x.png",
                                 cb:function() {
                                     scope.$d.hide();
-                                    msp.Map.Util.setVisibility(scope.layer, false);
+                                    M.Map.Util.setVisibility(scope.layer, false);
                                 }
                             });
 
-                            var fcodeName = msp.Util._(toponym.fcodeName),
-                                div = $('.header', scope.$d).html('<span class="title" title="'+ toponym.name + ((fcodeName && fcodeName.length > 0) ? " - " + fcodeName.substr(0,1).toUpperCase() + fcodeName.substr(1, fcodeName.length -1) : "") + '">'+msp.Util.shorten(toponym.name+', '+toponym.countryName, 35)+ '</span> | ');
+                            var fcodeName = M.Util._(toponym.fcodeName),
+                                div = $('.header', scope.$d).html('<span class="title" title="'+ toponym.name + ((fcodeName && fcodeName.length > 0) ? " - " + fcodeName.substr(0,1).toUpperCase() + fcodeName.substr(1, fcodeName.length -1) : "") + '">'+M.Util.shorten(toponym.name+', '+toponym.countryName, 35)+ '</span> | ');
 
                             for (i = 0, l = items.length; i < l; i++) {
                                 (function(item, toponym) {
-                                    div.append('<a href="#" class="image item" id="'+item.id+'">'+ (item.ic ? '<img class="middle" src="'+msp.Util.getImgUrl(item.ic)+'"/>' : item.ti) +'</a>');
+                                    div.append('<a href="#" class="image item" id="'+item.id+'">'+ (item.ic ? '<img class="middle" src="'+M.Util.getImgUrl(item.ic)+'"/>' : item.ti) +'</a>');
                                     $('#'+item.id).click(function(){
                                         item.cb(toponym);
                                         return false;
@@ -237,7 +237,7 @@
                              * layer visibility to true
                              */
                             scope.$d.hide();
-                            msp.Map.Util.setVisibility(scope.layer, true);
+                            M.Map.Util.setVisibility(scope.layer, true);
 
                             /*
                              * Update popup position
@@ -247,13 +247,13 @@
                             /*
                              * Pan to feature only if it's not visible within the current map extent
                              */
-                            if (!msp.Map.map.getExtent().containsBounds(newFeature.geometry.getBounds(),true,true) || !scope.$d.is(':visible')) {
-                                msp.Map.setCenter(newFeature.geometry.getBounds().getCenterLonLat());
+                            if (!M.Map.map.getExtent().containsBounds(newFeature.geometry.getBounds(),true,true) || !scope.$d.is(':visible')) {
+                                M.Map.setCenter(newFeature.geometry.getBounds().getCenterLonLat());
                             }
 
                         }
                         else {
-                            msp.Util.message("&nbsp;"+msp.Util._("Location not found")+"&nbsp;");
+                            M.Util.message("&nbsp;"+M.Util._("Location not found")+"&nbsp;");
                         }
                     }
 
@@ -261,12 +261,12 @@
             }
 
             this.layer = new OpenLayers.Layer.Vector("__WHEREAMI__",{
-                projection:msp.Map.pc,
+                projection:M.Map.pc,
                 displayInLayerSwitcher:false,
                 popup:popup,
                 styleMap: new OpenLayers.StyleMap({
                     "default":new OpenLayers.Style({
-                        externalGraphic:msp.Util.getImgUrl('shadow.png'),
+                        externalGraphic:M.Util.getImgUrl('shadow.png'),
                         graphicXOffset:-8,
                         graphicYOffset:-30,
                         graphicWidth:32,
@@ -284,25 +284,25 @@
                 this.popup.move();
             });
 
-            msp.Map.addLayer({
+            M.Map.addLayer({
                 type:"Generic",
                 title:"__WHEREAMI__",
                 unremovable:true,
-                mspLayer:true,
+                MLayer:true,
                 layer:this.layer
             });
 
             /*
              * Add "Where am i ?" menu item
              */
-            if (msp.menu) {
-                msp.menu.add([
+            if (M.menu) {
+                M.menu.add([
                 {
-                    id:msp.Util.getId(),
+                    id:M.Util.getId(),
                     ic:"whereami.png",
                     ti:"Where am I ?",
                     cb:function() {
-                        scope.whereAmI(msp.Map.Util.p2d(msp.menu.lonLat.clone()));
+                        scope.whereAmI(M.Map.Util.p2d(M.menu.lonLat.clone()));
                     }
                 }]);
             }
@@ -319,8 +319,8 @@
             var featureClassString = this.options.featureClassString || "",
             scope = this;
 
-            msp.Util.ajax({
-                url:msp.Util.proxify(msp.Util.getAbsoluteUrl(this.options.findNearByUrl)+featureClassString+"&lat="+point.lat+"&lng="+point.lon),
+            M.Util.ajax({
+                url:M.Util.proxify(M.Util.getAbsoluteUrl(this.options.findNearByUrl)+featureClassString+"&lat="+point.lat+"&lng="+point.lon),
                 async:true,
                 dataType:"json",
                 success: function(obj, textStatus, XMLHttpRequest) {
@@ -335,10 +335,10 @@
 
                 },
                 error: function(e) {
-                    msp.Util.message("&nbsp;"+msp.Util._("Location not found")+"&nbsp;");
+                    M.Util.message("&nbsp;"+M.Util._("Location not found")+"&nbsp;");
                 }
             },{
-                title:msp.Util._("Search for location name..."),
+                title:M.Util._("Search for location name..."),
                 cancel:true 
             });
         };
@@ -363,10 +363,10 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Geonames._o = this;
+        M.Plugins.Geonames._o = this;
         
         return this;
         
     };
     
-})(window.msp);
+})(window.M);

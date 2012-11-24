@@ -41,16 +41,16 @@
  * Center the map to the location of the user
  *
  *********************************************/
-msp.plugins["LocateMe"] = {
+M.plugins["LocateMe"] = {
 
     getMenuItems: function() {
         return {
-            id:msp.Util.getId(),
-            icon:msp.Util.getImgUrl("gpx.png"),
-            title: msp.Util._("Locate me"),
+            id:M.Util.getId(),
+            icon:M.Util.getImgUrl("gpx.png"),
+            title: M.Util._("Locate me"),
             description:"",
             javascript:function(e) {
-                msp.Map.getControlById("__CONTROL_LOCATEME__").activate();
+                M.Map.getControlById("__CONTROL_LOCATEME__").activate();
                 return false;
             }
 
@@ -79,18 +79,18 @@ msp.plugins["LocateMe"] = {
              */
             var title = "__LAYER_LOCATEME__";
             this.layer = new OpenLayers.Layer.Vector(title, {
-                projection:msp.Map.pc,
+                projection:M.Map.pc,
                 displayInLayerSwitcher:false
             });
 
             /**
              * Add Drawing layer to Map object
              */
-            msp.Map.addLayer({
+            M.Map.addLayer({
                 type:"Generic",
                 title:title,
                 unremovable:true,
-                mspLayer:true,
+                MLayer:true,
                 layer:this.layer
             });
             
@@ -106,11 +106,11 @@ msp.plugins["LocateMe"] = {
                 }
             });
             
-            msp.Map.map.addControl(ctrl);
+            M.Map.map.addControl(ctrl);
             
             ctrl.events.register("locationupdated", this, function(e) {
                 
-                var plugin = msp.plugins["LocateMe"];
+                var plugin = M.plugins["LocateMe"];
                 plugin.layer.removeAllFeatures();
                 plugin.layer.addFeatures([
                     new OpenLayers.Feature.Vector(
@@ -141,7 +141,7 @@ msp.plugins["LocateMe"] = {
                         
                         )
                     ]);
-                msp.Map.map.zoomToExtent(plugin.layer.getDataExtent());
+                M.Map.map.zoomToExtent(plugin.layer.getDataExtent());
             });
 
             return true;

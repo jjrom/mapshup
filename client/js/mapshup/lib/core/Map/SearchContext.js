@@ -39,8 +39,8 @@
 /**
  * Search context function
  * One searchContext should be initialized for each catalog layer within the
- * _msp.searchContext property
- * (i.e. layer["_msp"].searchContext = new msp.plugins["Catalog"].SearchContext(layer,connector,options);)
+ * _M.searchContext property
+ * (i.e. layer["_M"].searchContext = new M.plugins["Catalog"].SearchContext(layer,connector,options);)
  *
  * @input layer : catalog layer
  * @input connector : catalog connector
@@ -56,9 +56,9 @@
  * }
  * 
  */
-(function(msp) {
+(function(M) {
     
-    msp.Map.SearchContext = function(layer, connector, options) {
+    M.Map.SearchContext = function(layer, connector, options) {
 
         /*
          * Paranoid mode
@@ -69,7 +69,7 @@
          * If autoSearch is set to true, search() function is triggered
          * each time an item is added/removed/updated from the items list
          */
-        this.autoSearch = msp.Util.getPropertyValue(options, "autoSearch", false);
+        this.autoSearch = M.Util.getPropertyValue(options, "autoSearch", false);
 
         /**
          * Connector reference
@@ -84,7 +84,7 @@
         /**
          * Next record value
          */
-        this.nextRecord = msp.Util.getPropertyValue(options, "nextRecord", 1);
+        this.nextRecord = M.Util.getPropertyValue(options, "nextRecord", 1);
 
         /**
          * Next record alias value
@@ -94,7 +94,7 @@
         /**
          * Maximum number of records per page
          */
-        this.numRecordsPerPage = msp.Util.getPropertyValue(options, "numRecordsPerPage", 20);
+        this.numRecordsPerPage = M.Util.getPropertyValue(options, "numRecordsPerPage", 20);
         
         /**
          * Maximum number of records per page
@@ -519,9 +519,9 @@
             /*
              * Set extras parameters
              */
-            if (layer["_msp"] && layer["_msp"].layerDescription.extras) {
-                for (key in layer["_msp"].layerDescription.extras) {
-                    extras += "&"+key+"="+layer["_msp"].layerDescription.extras[key];
+            if (layer["_M"] && layer["_M"].layerDescription.extras) {
+                for (key in layer["_M"].layerDescription.extras) {
+                    extras += "&"+key+"="+layer["_M"].layerDescription.extras[key];
                 }
             }
 
@@ -529,13 +529,13 @@
              * Launch an asynchronous search
              * The result is a GeoJSON object
              */
-            msp.Util.ajax({
-                url:msp.Util.proxify(this.connector.searchUrl + this.getSerializedParams() + "&" + self.nextRecordAlias + "=" + nextRecord + extras),
+            M.Util.ajax({
+                url:M.Util.proxify(this.connector.searchUrl + this.getSerializedParams() + "&" + self.nextRecordAlias + "=" + nextRecord + extras),
                 async:true,
                 dataType:"json",
                 success: function(data) {
 
-                    var l, lm = msp.Plugins.LayersManager;
+                    var l, lm = M.Plugins.LayersManager;
                     
                     /*
                      * First check if there is no error
@@ -557,7 +557,7 @@
                         /*
                          * Tells mapshup that features changed
                          */
-                        msp.Map.events.trigger("layersend", {
+                        M.Map.events.trigger("layersend", {
                             action:"features",
                             layer:layer
                         });
@@ -565,12 +565,12 @@
                         /*
                          * Be kind with user
                          */
-                        msp.Util.message(layer.name + " : " + msp.Util._("No resut"));
+                        M.Util.message(layer.name + " : " + M.Util._("No resut"));
                         
                         
                     }
                     else if (data.error) {
-                        msp.Util.message(layer.name + " : " + data.error["message"], -1);
+                        M.Util.message(layer.name + " : " + data.error["message"], -1);
                     }
                     else {
 
@@ -591,8 +591,8 @@
                          * Note: result is in EPSG:4326
                          */
                         var features = new OpenLayers.Format.GeoJSON({
-                            internalProjection:msp.Map.map.projection,
-                            externalProjection:msp.Map.pc
+                            internalProjection:M.Map.map.projection,
+                            externalProjection:M.Map.pc
                         }).read(data);
 
                         
@@ -606,7 +606,7 @@
                             /*
                              * Be kind with users !
                              */
-                            msp.Util.message(msp.Util._(layer.name) + " : " + msp.Util._("No result"));
+                            M.Util.message(M.Util._(layer.name) + " : " + M.Util._("No result"));
                             
                         }
                         else {
@@ -619,13 +619,13 @@
                             /*
                              * Zoom on layer extent
                              */
-                            msp.Map.Util.zoomOn(layer);
+                            M.Map.Util.zoomOn(layer);
                             
                             /*
                              * Show result in LayersManager
                              */
                             if (lm && lm._o) {
-                                lm._o.show(lm._o.get(layer['_msp'].mspID));
+                                lm._o.show(lm._o.get(layer['_M'].MID));
                             }
                             
                         }
@@ -640,13 +640,13 @@
                         /*
                          * Set nextRecord new value
                          */
-                        layer["_msp"].searchContext.nextRecord = nextRecord;
+                        layer["_M"].searchContext.nextRecord = nextRecord;
 
                         /*
                          * Update the totalResults value
                          * If data.totalResults is not set then set totalResults to the number of features
                          */
-                        layer["_msp"].searchContext.totalResults = data.hasOwnProperty("totalResults") ? data.totalResults : l;
+                        layer["_M"].searchContext.totalResults = data.hasOwnProperty("totalResults") ? data.totalResults : l;
                         
                         /*
                          * Endless search - Tricky part
@@ -656,7 +656,7 @@
                          * Otherwise tells LayersManager to refresh features thumbs without removing
                          * previous features (send "featureskeep" action)
                          */
-                        msp.Map.events.trigger("layersend", {
+                        M.Map.events.trigger("layersend", {
                             action:nextRecord === 1 ? "features" : "featureskeep",
                             layer:layer
                         });
@@ -674,7 +674,7 @@
                 }
 
             },{
-                title:msp.Util._("Searching") + " : " + msp.Util._(this.layer.name),
+                title:M.Util._("Searching") + " : " + M.Util._(this.layer.name),
                 cancel:true
             });
 
@@ -693,7 +693,7 @@
             var self = this;
             
             self.useGeo = b;
-            self.setBBOX(self.useGeo ? msp.Map.map.getExtent() : null);
+            self.setBBOX(self.useGeo ? M.Map.map.getExtent() : null);
             if (self.autoSearch) {
                 self.search();
             }
@@ -717,14 +717,14 @@
                 /**
                  * Create the geographical equivalent to the given bounds
                  */
-                var geoBounds = msp.Map.Util.p2d(bounds.clone()),
+                var geoBounds = M.Map.Util.p2d(bounds.clone()),
                 item = {
                     id:"bbox",
-                    title:msp.Util._("Search Area"),
+                    title:M.Util._("Search Area"),
                     son: [{
                         id:"geometry",
                         title:"geometry",
-                        value:msp.Map.Util.convert({
+                        value:M.Map.Util.convert({
                             input:geoBounds,
                             format:"EXTENT",
                             precision:5,
@@ -803,12 +803,12 @@
             else {
                 this.add({
                     id:startDate,
-                    title:msp.Util._("Date"),
+                    title:M.Util._("Date"),
                     value:interval[0]
                 });
                 this.add({
                     id:completionDate,
-                    title:msp.Util._("Date"),
+                    title:M.Util._("Date"),
                     value:interval[1]
                 });
             }
@@ -820,4 +820,4 @@
         return this;
     };
     
-})(window.msp);
+})(window.M);

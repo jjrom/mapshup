@@ -40,7 +40,7 @@
  * Add support to mbtiles (see http://mbtiles.org/)
  * located on server
  */
-(function (msp,Map){
+(function (M,Map){
     
     Map.layerTypes["MBT"] = {
 
@@ -63,7 +63,7 @@
             /*
              * Set title
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription);
+            layerDescription.title = M.Util.getTitle(layerDescription);
             
             /*
              * Extend options object with MBT specific properties
@@ -71,10 +71,10 @@
             $.extend(options,
             {
                 /* MBT can be set as background (isBaseLayer:true) or as overlay */
-                isBaseLayer:msp.Util.getPropertyValue(layerDescription, "isBaseLayer", true),
+                isBaseLayer:M.Util.getPropertyValue(layerDescription, "isBaseLayer", true),
                 sphericalMercator:true,
                 wrapDateLine:true,
-                numZoomLevels:msp.Util.getPropertyValue(layerDescription, "numZoomLevels", msp.Map.map.getNumZoomLevels()),
+                numZoomLevels:M.Util.getPropertyValue(layerDescription, "numZoomLevels", M.Map.map.getNumZoomLevels()),
                 transitionEffect:'resize'
             }
             );
@@ -82,18 +82,18 @@
             /*
              * selectable cannot be overriden
              */
-            options["_msp"].selectable = false;
+            options["_M"].selectable = false;
 
-            return new OpenLayers.Layer.XYZ(layerDescription.title, msp.Util.getAbsoluteUrl(msp.Config["general"].mbtilesServiceUrl+layerDescription.t),options);
+            return new OpenLayers.Layer.XYZ(layerDescription.title, M.Util.getAbsoluteUrl(M.Config["general"].mbtilesServiceUrl+layerDescription.t),options);
 
         },
 
         /**
          * MANDATORY
-         * Compute an unique mspID based on layerDescription
+         * Compute an unique MID based on layerDescription
          */
-        getMspID:function(layerDescription) {
-            return msp.Util.crc32(layerDescription.type + (layerDescription.t || ""));
+        getMID:function(layerDescription) {
+            return M.Util.crc32(layerDescription.type + (layerDescription.t || ""));
         }
     }
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

@@ -42,24 +42,24 @@
  * See http://www.opengeospatial.org/standards/wps
  * 
  */
-(function(msp) {
+(function(M) {
     
      
     /*
-     * Initialize msp
+     * Initialize M
      */
-    msp = msp || {};
+    M = M || {};
     
     /*
-     * Initialize msp.WPS
+     * Initialize M.WPS
      */
-    msp.WPS = function(url) {
+    M.WPS = function(url) {
         
         
         /**
          * WPS Events manager reference
          */
-        this.events = new msp.WPS.Events();
+        this.events = new M.WPS.Events();
         
         /**
          * WPS base url
@@ -87,7 +87,7 @@
         this.serviceProvider = {};
         
         /**
-         * Hashtag of msp.WPS.Process objects stored by unique identifier
+         * Hashtag of M.WPS.Process objects stored by unique identifier
          */
         this.processes = [];
         
@@ -121,7 +121,7 @@
                 /*
                  * Set GetCapabilities url
                  */
-                url = msp.Util.extendUrl(this.url, {
+                url = M.Util.extendUrl(this.url, {
                     service:'WPS',
                     version:self.version,
                     request:'GetCapabilities'
@@ -130,8 +130,8 @@
                 /*
                  * Retrieve and parse GetCapabilities file
                  */
-                msp.Util.ajax({
-                    url:msp.Util.proxify(msp.Util.repareUrl(url), "XML"),
+                M.Util.ajax({
+                    url:M.Util.proxify(M.Util.repareUrl(url), "XML"),
                     async:true,
                     dataType:'xml',
                     success:function(xml) {
@@ -139,10 +139,10 @@
                         self.events.trigger("getcapabilities", self);
                     },
                     error:function(e) {
-                        msp.Util.message(msp.Util._("Error reading Capabilities file"));
+                        M.Util.message(M.Util._("Error reading Capabilities file"));
                     }
                 }, {
-                    title:msp.Util._("WPS") + " : " + msp.Util._("Get capabilities"),
+                    title:M.Util._("WPS") + " : " + M.Util._("Get capabilities"),
                     cancel:true
                 });
             }
@@ -182,7 +182,7 @@
             /*
              * Call DescribeProcess through ajax
              */
-            url = msp.Util.extendUrl(self.url, {
+            url = M.Util.extendUrl(self.url, {
                 service:'WPS',
                 version:self.version,
                 request:'DescribeProcess',
@@ -192,24 +192,24 @@
             /*
              * Retrieve and parse DescribeProcess file
              */
-            msp.Util.ajax({
-                url:msp.Util.proxify(msp.Util.repareUrl(url), "XML"),
+            M.Util.ajax({
+                url:M.Util.proxify(M.Util.repareUrl(url), "XML"),
                 async:true,
                 dataType:'xml',
                 success:function(xml) {
                     var i, l, p, processDescriptions = self.parseDescribeProcess(xml), processes = [];
                     for (i = 0, l = processDescriptions.length; i < l; i++) {
-                        p = new msp.WPS.Process(processDescriptions[i]);
+                        p = new M.WPS.Process(processDescriptions[i]);
                         self.addProcess(p);
                         processes.push(p);
                     }
                     self.events.trigger("describeprocess", processes);
                 },
                 error:function(e) {
-                    msp.Util.message(msp.Util._("Error reading DescribeProcess file"));
+                    M.Util.message(M.Util._("Error reading DescribeProcess file"));
                 }
             }, {
-                title:identifiers.join(',') + " : " + msp.Util._("Get DescribeProcess"),
+                title:identifiers.join(',') + " : " + M.Util._("Get DescribeProcess"),
                 cancel:true
             });
            
@@ -277,12 +277,12 @@
                  *      Abstract
                  *      
                  */
-                if (msp.Util.stripNS(this.nodeName) === 'ServiceIdentification') {
+                if (M.Util.stripNS(this.nodeName) === 'ServiceIdentification') {
                     
                     $(this).children().filter(function() {
-                        var nn = msp.Util.stripNS(this.nodeName);
+                        var nn = M.Util.stripNS(this.nodeName);
                         if (nn === 'Title' || nn === 'Abstract') {
-                            self[msp.Util.lowerFirstLetter(nn)] = $(this).text();
+                            self[M.Util.lowerFirstLetter(nn)] = $(this).text();
                         }
                     });
                 }
@@ -332,7 +332,7 @@
                  *              
                  *      
                  */
-                else if (msp.Util.stripNS(this.nodeName) === 'ServiceProvider') {
+                else if (M.Util.stripNS(this.nodeName) === 'ServiceProvider') {
                     
                     var contact = {}, address = {}, phone = {};
                     
@@ -343,15 +343,15 @@
                     
                     $(this).children().filter(function() {
                         
-                        switch (msp.Util.stripNS(this.nodeName)) {
+                        switch (M.Util.stripNS(this.nodeName)) {
                             /* ServiceContact*/
                             case 'ServiceContact':
                                 $(this).children().each(function() {
-                                    switch(msp.Util.stripNS(this.nodeName)) {
+                                    switch(M.Util.stripNS(this.nodeName)) {
                                         /* ContactInfo*/
                                         case 'ContactInfo':
                                             $(this).children().each(function() {
-                                                switch(msp.Util.stripNS(this.nodeName)) {
+                                                switch(M.Util.stripNS(this.nodeName)) {
                                                     /* Phone */
                                                     case 'Phone':
                                                         phone = self.parseLeaf($(this));                      
@@ -364,13 +364,13 @@
                                             });
                                             break;
                                         default:
-                                            contact[msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName))] = $(this).text();
+                                            contact[M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName))] = $(this).text();
                                             break;
                                     }
                                 });
                                 break;
                             default:
-                                self.serviceProvider[msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName))] = $(this).text();
+                                self.serviceProvider[M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName))] = $(this).text();
                                 break;
                         }
                         
@@ -397,8 +397,8 @@
                  * </wps:ProcessOfferings>
                  * 
                  */
-                else if (msp.Util.stripNS(this.nodeName) === 'Process') {
-                    self.addProcess(new msp.WPS.Process(self.parseLeaf($(this))));
+                else if (M.Util.stripNS(this.nodeName) === 'Process') {
+                    self.addProcess(new M.WPS.Process(self.parseLeaf($(this))));
                 }
                 
             });
@@ -461,16 +461,16 @@
                  * </ProcessDescription>
                  *      
                  */
-                if (msp.Util.stripNS(this.nodeName) === 'ProcessDescription') {
+                if (M.Util.stripNS(this.nodeName) === 'ProcessDescription') {
                     
                     
                     var nn, p = {};
                     
                     /* Retrieve ProcessDescription attributes */
-                    $.extend(p, msp.Util.getAttributes($(this)));
+                    $.extend(p, M.Util.getAttributes($(this)));
                     
                     $(this).children().filter(function() {
-                        nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+                        nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
                         /* Process Inputs and Outupts*/
                         if (nn === 'dataInputs' || nn === 'processOutputs') {
                             p[nn+'Description'] = self.parseDescribePuts($(this).children());
@@ -507,14 +507,14 @@
                 var p = {};
                 
                 /* Get attributes - i.e. minOccurs and maxOccurs for Input */ 
-                $.extend(p, msp.Util.getAttributes($(this)));
+                $.extend(p, M.Util.getAttributes($(this)));
                 
                 /*
                  * Parse each element from current element
                  */
                 $(this).children().filter(function() {
                     
-                    nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+                    nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
 
                     if (nn === 'complexData' || nn === 'complexOutput') {
                         p[nn] = self.parseDescribeComplexPut($(this));
@@ -567,14 +567,14 @@
             var nn, self = this, p = {};
             
             /* Get attributes - i.e. minOccurs and maxOccurs for Input */ 
-            $.extend(p, msp.Util.getAttributes($obj));
+            $.extend(p, M.Util.getAttributes($obj));
                 
             /*
              * Parse each ComplexData (or ComplexOutput) element
              */
             $obj.children().filter(function() {
 
-                nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+                nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
 
                 if (nn === 'default') {
                     p[nn] = self.parseLeaf($(this).children());
@@ -602,17 +602,17 @@
             var nn, p = {};
             
             /* Get attributes - i.e. minOccurs and maxOccurs for Input */ 
-            $.extend(p, msp.Util.getAttributes($obj));
+            $.extend(p, M.Util.getAttributes($obj));
                 
             /*
              * Parse each LiteralData (or LiteralOutput) element
              */
             $obj.children().filter(function() {
-                nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+                nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
                 
                 /* Get DataType ows:reference */
                 if (nn === 'dataType') {
-                    $.extend(p, msp.Util.getAttributes($(this)));
+                    $.extend(p, M.Util.getAttributes($(this)));
                 }
                 
                 /*
@@ -637,7 +637,7 @@
                     
                     $(this).children().filter(function() {
                         
-                        nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+                        nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
 
                         if (nn === 'default') {
                             p['UOMs']['default'] = $(this).children().text();
@@ -671,7 +671,7 @@
                     
                     $(this).children().filter(function() {
                         
-                        nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+                        nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
 
                         if (nn === 'value') {
                             p['allowedValues'].push({value:$(this).text()});
@@ -717,7 +717,7 @@
              */
             $obj.children().filter(function() {
 
-                nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+                nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
 
                 if (nn === 'default') {
                     p[nn] = $(this).children().text();
@@ -746,7 +746,7 @@
             var p = {};
             
             $obj.children().each(function() {
-                p[nolower ? msp.Util.stripNS(this.nodeName) : msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName))] = $(this).text();
+                p[nolower ? M.Util.stripNS(this.nodeName) : M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName))] = $(this).text();
             });           
             
             return p;
@@ -756,7 +756,7 @@
         /**
          * Request 'execute' service on process identified by identifier
          * 
-         * @param {String} identifier : msp.WPS.Process object identifier
+         * @param {String} identifier : M.WPS.Process object identifier
          */
         this.execute = function(identifier) {
             
@@ -776,7 +776,7 @@
         /**
         * Add process to this.processes list
         *
-        * @param {Object} process : msp.WPS.Process object
+        * @param {Object} process : M.WPS.Process object
         */
         this.addProcess = function(process) {
             
@@ -803,7 +803,7 @@
         /**
         * Get process from this.processes list based on its identifier
         *
-        * @param {String} identifier : msp.WPS.Process object identifier
+        * @param {String} identifier : M.WPS.Process object identifier
         */
         this.getProcess = function(identifier) {
             if (!identifier) {
@@ -837,7 +837,7 @@
                 return "";
             }
             
-            return msp.Util.parseTemplate(msp.WPS.infoTemplate, {
+            return M.Util.parseTemplate(M.WPS.infoTemplate, {
                 "title":this.title,
                 "abstract":this["abstract"],
                 "version":this.version,
@@ -862,10 +862,10 @@
      *          identifier: // process unique identifier
      *          title: // process title
      *          abstract: // process description
-     *          wps: // reference to the msp.WPS parent
+     *          wps: // reference to the M.WPS parent
      *      }
      */
-    msp.WPS.Process = function(options) {
+    M.WPS.Process = function(options) {
         
         /**
          * Execute process in asynchronous mode
@@ -873,7 +873,7 @@
         this.async = false;
         
         /**
-         * msp.WPS object reference
+         * M.WPS object reference
          */
         this.wps = null;
         
@@ -903,7 +903,7 @@
         this.outputsProcessDescription = null;
         
         /**
-         * List of inputs (Set by msp.Plugins.WPSClient for example)
+         * List of inputs (Set by M.Plugins.WPSClient for example)
          * 
          * Input stucture 
          *      {
@@ -918,7 +918,7 @@
         this.inputs = [];
         
         /**
-         * List of outputs (Set by msp.Plugins.WPSClient for example)
+         * List of outputs (Set by M.Plugins.WPSClient for example)
          */
         this.outputs = [];
         
@@ -964,7 +964,7 @@
          *          identifier: // process unique identifier
          *          title: // process title
          *          abstract: // process description
-         *          wps: // reference to the msp.WPS parent
+         *          wps: // reference to the M.WPS parent
          *      }
          * 
          */
@@ -1017,7 +1017,7 @@
         
             var i, l, data, template, formatStr, put, outputs = "", inputs = "", self = this;
             
-            data = msp.Util.parseTemplate(msp.WPS.executeRequestTemplate,{
+            data = M.Util.parseTemplate(M.WPS.executeRequestTemplate,{
                 identifier:this.identifier,
                 storeExecute:"false",
                 status:this.async
@@ -1035,7 +1035,7 @@
                  * LiteralData
                  */
                 if (put.type === "LiteralData") {
-                    template = msp.Util.parseTemplate(msp.WPS.literalDataInputTemplate,{
+                    template = M.Util.parseTemplate(M.WPS.literalDataInputTemplate,{
                         identifier:put.identifier,
                         data:put.data,
                         uom:put.uom || ""
@@ -1047,7 +1047,7 @@
                      * Pass data by reference
                      */
                     if (put.fileUrl) {
-                        template = msp.Util.parseTemplate(msp.WPS.complexDataInputReferenceTemplate,{
+                        template = M.Util.parseTemplate(M.WPS.complexDataInputReferenceTemplate,{
                             identifier:put.identifier,
                             reference:put.fileUrl
                         });
@@ -1056,7 +1056,7 @@
                      * Pass data within XML file
                      */
                     else {
-                        template = msp.Util.parseTemplate(msp.WPS.complexDataInputTemplate,{
+                        template = M.Util.parseTemplate(M.WPS.complexDataInputTemplate,{
                             identifier:put.identifier,
                             data:put.data
                         });
@@ -1100,7 +1100,7 @@
                  * LiteralOutput
                  */
                 if (put.type === "LiteralOutput") {
-                    template = msp.Util.parseTemplate(msp.WPS.literalOutputTemplate,{
+                    template = M.Util.parseTemplate(M.WPS.literalOutputTemplate,{
                         identifier:put.identifier
                     });
                 }
@@ -1108,14 +1108,14 @@
                     if (put.mimeType) {
                             formatStr += " mimeType=\""+put.mimeType+"\"";
                     }
-                    template = msp.Util.parseTemplate(msp.WPS.complexOutputTemplate,{
+                    template = M.Util.parseTemplate(M.WPS.complexOutputTemplate,{
                         identifier:put.identifier,
                         asReference:"false",
                         format:formatStr
                     });
                 }
                 else if (put.type === "BoundingBoxOutput") {
-                    template = msp.Util.parseTemplate(msp.WPS.boundingBoxOutputTemplate,{
+                    template = M.Util.parseTemplate(M.WPS.boundingBoxOutputTemplate,{
                         identifier:put.identifier
                     });
                 }
@@ -1125,7 +1125,7 @@
             /*
              * Set Inputs and Outputs
              */
-            data = msp.Util.parseTemplate(data,{
+            data = M.Util.parseTemplate(data,{
                 dataInputs:inputs,
                 dataOutputs:outputs
             });
@@ -1133,8 +1133,8 @@
             /*
              * Launch execute request
              */
-            msp.Util.ajax({
-                url:msp.Util.proxify(msp.Util.repareUrl(self.wps.url), "XML"),
+            M.Util.ajax({
+                url:M.Util.proxify(M.Util.repareUrl(self.wps.url), "XML"),
                 async:true,
                 type:"POST",
                 dataType:"xml",
@@ -1147,10 +1147,10 @@
                     }
                 },
                 error:function(e) {
-                    msp.Util.message(e);
+                    M.Util.message(e);
                 }
             }, {
-                title:this.title + " : " + msp.Util._("Execute"),
+                title:this.title + " : " + M.Util._("Execute"),
                 cancel:true
             });
             
@@ -1189,7 +1189,7 @@
             /*
              * Trap Exception
              */
-            if (msp.Util.stripNS($obj.children()[0].nodeName) === 'ExceptionReport') {
+            if (M.Util.stripNS($obj.children()[0].nodeName) === 'ExceptionReport') {
                 this.parseException(xml);
                 return null;
             }
@@ -1197,14 +1197,14 @@
             /*
              * Retrieve ExecuteResponse statusLocation attribute
              */
-            this.statusLocation = msp.Util.getAttributes($obj.children())["statusLocation"];
+            this.statusLocation = M.Util.getAttributes($obj.children())["statusLocation"];
             
             /*
              * Process <wps:ProcessOutputs> element
              */
             $obj.children().children().filter(function(){
                
-                if (msp.Util.stripNS(this.nodeName) === 'ProcessOutputs') {
+                if (M.Util.stripNS(this.nodeName) === 'ProcessOutputs') {
                    
                    /*
                     * Process Output i.e. all <wps:Output> elements
@@ -1215,7 +1215,7 @@
                         
                         $(this).children().each(function() {
 
-                            nn = msp.Util.lowerFirstLetter(msp.Util.stripNS(this.nodeName));
+                            nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
 
                            /*
                             * Store identifier and data bloc
@@ -1232,13 +1232,13 @@
                                 */
                                 $(this).children().filter(function() {
 
-                                    nn = msp.Util.stripNS(this.nodeName);
+                                    nn = M.Util.stripNS(this.nodeName);
 
                                     if (nn === 'LiteralData') {
                                         p['data']['value'] = $(this).text();
                                     }
                                     else if (nn === 'ComplexData') {
-                                        $.extend(p['data'], msp.Util.getAttributes($(this)));
+                                        $.extend(p['data'], M.Util.getAttributes($(this)));
                                         p['data']['value'] = $(this).children();
                                     }
                                     else if (nn === 'BoundingBox') {
@@ -1258,7 +1258,7 @@
 
                     }); // End of process <wps:Output>
                 
-                } // End if (msp.Util.stripNS(this.nodeName) === 'ProcessOutputs')
+                } // End if (M.Util.stripNS(this.nodeName) === 'ProcessOutputs')
                
             });
             
@@ -1272,7 +1272,7 @@
          * @param {Object} xml
          */
         this.parseException = function(xml) {
-            msp.Util.message("TODO - parse Exception");
+            M.Util.message("TODO - parse Exception");
         }
         
         this.init(options);
@@ -1283,7 +1283,7 @@
     /*
      * WPS events
      */
-    msp.WPS.Events = function() {
+    M.WPS.Events = function() {
 
         /*
          * Set events hashtable
@@ -1350,9 +1350,9 @@
          *
          * @param <String> eventname : Event name => 'getcapabilities'
          * @param <Object> extra : object i.e.
-         *                              - msp.WPS for a 'getcapabilities' event name
-         *                              - msp.WPS.Process for a 'describeprocess' event name
-         *                              - msp.WPS.Process for an 'execute' event name
+         *                              - M.WPS for a 'getcapabilities' event name
+         *                              - M.WPS.Process for a 'describeprocess' event name
+         *                              - M.WPS.Process for an 'execute' event name
          *                              
          */
         this.trigger = function(eventname, obj) {
@@ -1384,7 +1384,7 @@
      *          <h2>Provided by <a href="providerSite" target="_blank">providerName</a></h2>
      *      </div>
      */
-    msp.WPS.infoTemplate = '<div>'+
+    M.WPS.infoTemplate = '<div>'+
         '<h1>$title$</h1>'+
         '<p>$abstract$</p>'+
         '<p>Version $version$</p>'+
@@ -1401,7 +1401,7 @@
      *      $status$ : status ??
      * 
      */
-    msp.WPS.executeRequestTemplate = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
+    M.WPS.executeRequestTemplate = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+
         '<wps:Execute service="WPS" version="1.0.0" '+
             'xmlns:wps="http://www.opengis.net/wps/1.0.0" '+
             'xmlns:ows="http://www.opengis.net/ows/1.1" '+
@@ -1426,7 +1426,7 @@
      *      $data$ : value
      *    
      */
-    msp.WPS.literalDataInputTemplate = '<wps:Input>'+
+    M.WPS.literalDataInputTemplate = '<wps:Input>'+
             '<ows:Identifier>$identifier$</ows:Identifier>'+
             '<wps:Data>'+
                 '<wps:LiteralData uom="$uom$">$data$</wps:LiteralData>'+
@@ -1442,7 +1442,7 @@
      *      $format$ : Input data format
      *      
      */
-    msp.WPS.complexDataInputReferenceTemplate = '<wps:Input>'+
+    M.WPS.complexDataInputReferenceTemplate = '<wps:Input>'+
             '<ows:Identifier>$identifier$</ows:Identifier>'+
             '<wps:Data>'+
                 '<wps:Reference xlink:href="$reference$" $format$/>'+
@@ -1458,7 +1458,7 @@
      *      $data$ : ???
      *      
      */
-    msp.WPS.complexDataInputTemplate = '<wps:Input>'+
+    M.WPS.complexDataInputTemplate = '<wps:Input>'+
             '<ows:Identifier>$identifier$</ows:Identifier>'+
             '<wps:Data>'+
                 '<wps:ComplexData $format$>$data$</wps:ComplexData>'+
@@ -1477,7 +1477,7 @@
      *      
      *
      */
-    msp.WPS.boundingBoxDataInputTemplate = '<wps:Input>'+
+    M.WPS.boundingBoxDataInputTemplate = '<wps:Input>'+
             '<ows:Identifier>$identifier$</ows:Identifier>'+
             '<wps:Data>'+
                 '<wps:BoundingBoxData ows:dimensions="$dimension$" ows:crs="$crs$">'+
@@ -1495,7 +1495,7 @@
      *      $identifier$ : Output identifier
      *  
      */
-    msp.WPS.complexOutputTemplate = '<wps:Output asReference="$asReference$" $format$>'+
+    M.WPS.complexOutputTemplate = '<wps:Output asReference="$asReference$" $format$>'+
             '<ows:Identifier>$identifier$</ows:Identifier>'+
         '</wps:Output>';
                             
@@ -1507,14 +1507,14 @@
      *      $identifier$ : Output identifier
      * 
      */
-    msp.WPS.literalOutputTemplate = '<wps:Output asReference="false">'+
+    M.WPS.literalOutputTemplate = '<wps:Output asReference="false">'+
             '<ows:Identifier>$identifier$</ows:Identifier>'+
         '</wps:Output>';
 
     /**
      * BoundingBoxOutpput template
      */
-    msp.WPS.boundingBoxOutputTemplate = msp.WPS.literalOutputTemplate;
+    M.WPS.boundingBoxOutputTemplate = M.WPS.literalOutputTemplate;
 
     
-})(window.msp);
+})(window.M);

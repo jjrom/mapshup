@@ -40,20 +40,20 @@
  * Connector for CSW ISO catalogs
  *
  *********************************************/
-(function (msp){
+(function (M){
     
-    msp.Plugins.Catalog = msp.Plugins.Catalog || {};
+    M.Plugins.Catalog = M.Plugins.Catalog || {};
     
     /**
-     * One connector should be initialized for each catalog layer within the _msp.searchContext property
-     * (i.e. layer["_msp"].searchContext.connector = new Connector(layer, options)
+     * One connector should be initialized for each catalog layer within the _M.searchContext property
+     * (i.e. layer["_M"].searchContext.connector = new Connector(layer, options)
      *
      * @input catalog : catalog layer
      * @input options : options object
      * @input registerCallback : callback function called after connector is successfully registered
      * @input filterCallback : callback function called after filter is successfully updated
      */
-    msp.Plugins.Catalog.CSWISO = function(catalog, options, registerCallback, filterCallback) {
+    M.Plugins.Catalog.CSWISO = function(catalog, options, registerCallback, filterCallback) {
         
         /*
          * Options
@@ -110,7 +110,7 @@
              */
             this.filters.push({
                 id:"collection",
-                title:msp.Util._("Collection"),
+                title:M.Util._("Collection"),
                 type:"text"
             });
             
@@ -142,4 +142,4 @@
         };
     
     }
-})(window.msp);
+})(window.M);

@@ -38,7 +38,7 @@
 /*********************************************
  * PLUGIN: GetFeatureInfo
  *********************************************/
-msp.plugins["GetFeatureInfo"] = {
+M.plugins["GetFeatureInfo"] = {
 
     layer:null,
     
@@ -50,12 +50,12 @@ msp.plugins["GetFeatureInfo"] = {
     getMenuItems: function() {
         return {
             id:"getFeatureInfo",
-            icon:msp.Util.getImgUrl("info.png"),
+            icon:M.Util.getImgUrl("info.png"),
             title:"Info",
             tt:"Get feature info",
             javascript:function() {
-                msp.menu.hide();
-                msp.plugins["GetFeatureInfo"].getFeatureInfo(msp.menu.lonLat);
+                M.menu.hide();
+                M.plugins["GetFeatureInfo"].getFeatureInfo(M.menu.lonLat);
                 return false;
             }
         }
@@ -76,7 +76,7 @@ msp.plugins["GetFeatureInfo"] = {
         /*
          * This plugin only work if WMS layerType is defined
          */
-        if (!msp.Map.layerTypes["WMS"]) {
+        if (!M.Map.layerTypes["WMS"]) {
             return false;
         }
 
@@ -87,7 +87,7 @@ msp.plugins["GetFeatureInfo"] = {
             displayInLayerSwitcher:false,
             styleMap:new OpenLayers.StyleMap({
                 'default':{
-                    externalGraphic:msp.Util.getImgUrl("plus.png"),
+                    externalGraphic:M.Util.getImgUrl("plus.png"),
                     graphicXOffset:-11,
                     graphicYOffset:-11,
                     graphicWidth:19,
@@ -96,12 +96,12 @@ msp.plugins["GetFeatureInfo"] = {
             })
         });
 
-        this.layer = msp.Map.addLayer({
+        this.layer = M.Map.addLayer({
             type:"Generic",
             title:getFeatureInfoLayer.name,
             layer:getFeatureInfoLayer,
             unremovable:true,
-            mspLayer:true,
+            MLayer:true,
             selectable:true,
             /** By default, getFeatureInfoLayer is hidden */
             hidden:true
@@ -125,14 +125,14 @@ msp.plugins["GetFeatureInfo"] = {
         /*
          * Select feature
          */
-        msp.Map.getControlById("__CONTROL_SELECT__").select(newFeature);
+        M.Map.getControlById("__CONTROL_SELECT__").select(newFeature);
        
         /*
          * Call jFeatureInfo
          */
-        if (!msp.Map.layerTypes["WMS"].getFeatureInfo(lonLat,$('.description', '#jFeatureInfo').empty())) {
-            msp.Map.featureInfo.clear();
-            msp.Util.message(msp.Util._("No information available here"));
+        if (!M.Map.layerTypes["WMS"].getFeatureInfo(lonLat,$('.description', '#jFeatureInfo').empty())) {
+            M.Map.featureInfo.clear();
+            M.Util.message(M.Util._("No information available here"));
         }
         
 

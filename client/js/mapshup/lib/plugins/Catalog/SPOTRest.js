@@ -40,20 +40,20 @@
  * Connector for SPOT REST catalog
  *
  *********************************************/
-(function (msp){
+(function (M){
     
-    msp.Plugins.Catalog = msp.Plugins.Catalog || {};
+    M.Plugins.Catalog = M.Plugins.Catalog || {};
     
     /**
-     * One connector should be initialized for each catalog layer within the _msp.searchContext property
-     * (i.e. layer["_msp"].searchContext.connector = new Connector(layer, options)
+     * One connector should be initialized for each catalog layer within the _M.searchContext property
+     * (i.e. layer["_M"].searchContext.connector = new Connector(layer, options)
      *
      * @input catalog : catalog layer
      * @input options : options object
      * @input registerCallback : callback function called after connector is successfully registered
      * @input filterCallback : callback function called after filter is successfully updated
      */
-    msp.Plugins.Catalog.SPOTRest = function(catalog, options, registerCallback, filterCallback) {
+    M.Plugins.Catalog.SPOTRest = function(catalog, options, registerCallback, filterCallback) {
         
         /*
          * Options
@@ -111,7 +111,7 @@
             icon:"download.png",
             sla:function(a, feature) {
                 if (feature && feature["attributes"]) {
-                    a.attr("target", "_blank").attr("href", msp.Util.repareUrl(feature.layer["_msp"].layerDescription["url"])+'REQUEST=GetRepositoryItem&id='+feature["attributes"].identifier);
+                    a.attr("target", "_blank").attr("href", M.Util.repareUrl(feature.layer["_M"].layerDescription["url"])+'REQUEST=GetRepositoryItem&id='+feature["attributes"].identifier);
                 }
             }
         };
@@ -121,5 +121,5 @@
         };
     
     }
-})(window.msp);
+})(window.M);
 

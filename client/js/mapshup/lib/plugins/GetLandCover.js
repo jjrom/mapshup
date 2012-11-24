@@ -38,7 +38,7 @@
 /*********************************************
  * PLUGIN: GetLandCover
  *********************************************/
-msp.plugins["GetLandCover"] = {
+M.plugins["GetLandCover"] = {
     
     /**
      * Launch a segmentation request to the server
@@ -46,12 +46,12 @@ msp.plugins["GetLandCover"] = {
     getMenuItems: function() {
         return {
             id:"getLandCover",
-            icon:msp.Util.getImgUrl("landcover.png"),
+            icon:M.Util.getImgUrl("landcover.png"),
             title:"Land Cover",
             tt:"Get Land Cover",
             javascript:function() {
-                msp.menu.hide();
-                msp.plugins["GetLandCover"].getLandCover();
+                M.menu.hide();
+                M.plugins["GetLandCover"].getLandCover();
                 return false;
             }
         }
@@ -88,15 +88,15 @@ msp.plugins["GetLandCover"] = {
             json,
             bounds,
             line,
-            self = msp.plugins["GetLandCover"];
+            self = M.plugins["GetLandCover"];
 
         /*
          * Get BING visible tiles
          */
-        var bl = msp.Map.map.baseLayer;
+        var bl = M.Map.map.baseLayer;
 
-        if (bl.CLASS_NAME !== "OpenLayers.Layer.Bing" || bl["_msp"].layerDescription.bingType !== "Aerial") {
-            msp.Util.message(msp.Util._("Warning: this feature only work with Bing Aerial background"));
+        if (bl.CLASS_NAME !== "OpenLayers.Layer.Bing" || bl["_M"].layerDescription.bingType !== "Aerial") {
+            M.Util.message(M.Util._("Warning: this feature only work with Bing Aerial background"));
             return false;
         }
 
@@ -149,8 +149,8 @@ msp.plugins["GetLandCover"] = {
          * Send a POST ajax request to the getLandCover service
          * with the visible tile urls
          */
-        msp.Util.ajax({
-            url:msp.Util.getAbsoluteUrl(self.options.getLandCoverServiceUrl+msp.abc),
+        M.Util.ajax({
+            url:M.Util.getAbsoluteUrl(self.options.getLandCoverServiceUrl+M.abc),
             async:true,
             dataType:"json",
             type:"POST",
@@ -161,7 +161,7 @@ msp.plugins["GetLandCover"] = {
                 alert(data.url);
             }
         },{
-            title:msp.Util._("Retrieving Bing tiles....:)"),
+            title:M.Util._("Retrieving Bing tiles....:)"),
             cancel:true  
         });
 

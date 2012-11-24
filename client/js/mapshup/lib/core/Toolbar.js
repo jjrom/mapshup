@@ -42,9 +42,9 @@
  * Toolbar is populated by items
  *
  */
-(function(msp) {
+(function(M) {
     
-    msp.Toolbar = function(options) {
+    M.Toolbar = function(options) {
         
         /*
          * List of toolbar items
@@ -63,12 +63,12 @@
          *  
          *  Default is no orientation
          */
-        this.orientation = msp.Util.getPropertyValue(options, "orientation", null);
+        this.orientation = M.Util.getPropertyValue(options, "orientation", null);
         
         /*
          * Toolbar div is created within its parent in the DOM
          */
-        this.parent = msp.Util.getPropertyValue(options, "parent", msp.$map.parent());
+        this.parent = M.Util.getPropertyValue(options, "parent", M.$map.parent());
         
         /*
          * Toolbar pre-defined position can be
@@ -80,7 +80,7 @@
          *  
          *  (Default is no position)
          */
-        this.position = msp.Util.getPropertyValue(options, "position", null);
+        this.position = M.Util.getPropertyValue(options, "position", null);
         
         /**
          * Initialize toolbar
@@ -88,35 +88,35 @@
         this.init = function() {
 
             var classes = 'tb', self = this,
-            uid = '_o'+(this.position ? self.position : msp.Util.getId())+'tb';
+            uid = '_o'+(this.position ? self.position : M.Util.getId())+'tb';
             
             /*
              * mapshup can have one and only one toolbar
              * for each position (i.e. nw, ne, nn, sw, se, ss) which
-             * are stored respectively under msp.Toolbar._onwtb, msp.Toolbar._onetb,
-             * msp.Toolbar._onntb,msp.Toolbar._oswtb, msp.Toolbar._osetb and msp.Toolbar._osstb,.
+             * are stored respectively under M.Toolbar._onwtb, M.Toolbar._onetb,
+             * M.Toolbar._onntb,M.Toolbar._oswtb, M.Toolbar._osetb and M.Toolbar._osstb,.
              * 
              * If an already initialized toolbar is requested then
              * it is returned instead of creating an new toolbar
              * 
              * IMPORTANT: note that the orientation is never changed
-             * i.e. if for example msp.Toolbar._onwtb has been initialized as
+             * i.e. if for example M.Toolbar._onwtb has been initialized as
              * a horizontal toolbar, any new nwtb toolbar created will
              * in fact returned this toolbar and thus the orientation parameter
              * will be ignored.
              */
-            if (msp.Toolbar[uid]) {
-                return msp.Toolbar[uid];
+            if (M.Toolbar[uid]) {
+                return M.Toolbar[uid];
             }
             /*
              * Create unique toolbar reference
              */
             else {
-                msp.Toolbar[uid] = self;
+                M.Toolbar[uid] = self;
             }
             
             /*
-             * If position is set then create a toolbar div within #mapcontainer i.e. msp.$map.parent()
+             * If position is set then create a toolbar div within #mapcontainer i.e. M.$map.parent()
              * Otherwise, just create the div without position constraint
              * 
              * Toolbar is a div container of <div class="item"> divs
@@ -129,7 +129,7 @@
              *  </div>
              *  
              */
-            self.$d = msp.Util.$$('#'+msp.Util.getId(), self.parent);
+            self.$d = M.Util.$$('#'+M.Util.getId(), self.parent);
             
             /*
              * Pre-defined toolbar are absolutely positionned
@@ -190,7 +190,7 @@
             /*
              * Create a ToolbarItem
              */
-            tbItem = new msp.ToolbarItem(self, item);
+            tbItem = new M.ToolbarItem(self, item);
             
             /*
              * Add a new item
@@ -256,4 +256,4 @@
       
     };
 
-})(window.msp);
+})(window.M);

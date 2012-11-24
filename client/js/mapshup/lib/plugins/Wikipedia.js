@@ -41,15 +41,15 @@
  * Add a Wikipedia layer that display wikipedia articles
  * as vector features
  */
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Wikipedia = function() {
+    M.Plugins.Wikipedia = function() {
         
         /*
          * Only one Wikipedia object instance is created
          */
-        if (msp.Plugins.Wikipedia._o) {
-            return msp.Plugins.Wikipedia._o;
+        if (M.Plugins.Wikipedia._o) {
+            return M.Plugins.Wikipedia._o;
         }
         
         /*
@@ -85,10 +85,10 @@
             /*
              * Set the Wikipedia layer
              */
-            self.layer = msp.Map.addLayer({
+            self.layer = M.Map.addLayer({
                 type:"Wikipedia",
                 title:"Wikipedia",
-                mspLayer:true,
+                MLayer:true,
                 hidden:self.options.hidden
             });
 
@@ -105,25 +105,25 @@
             /*
              * Set centerLonLat to the current map center lon/lat
              */
-            self.centerLonLat = msp.Map.map.getCenter();
+            self.centerLonLat = M.Map.map.getCenter();
 
             /*
              * Set zoom level to current map zoom level
              */
-            self.zoom = msp.Map.map.getZoom();
+            self.zoom = M.Map.map.getZoom();
 
             /*
              * Register events
              */
-            msp.Map.events.register("moveend", self, self.onMoveEnd);
+            M.Map.events.register("moveend", self, self.onMoveEnd);
             
-            msp.Map.events.register("layersend", self, function(action, layer, scope) {
+            M.Map.events.register("layersend", self, function(action, layer, scope) {
 
                 /*
                  * Each time a layer is added make sure Wikipedia is on top
                  */
                 if (action === "add" && scope.layer) {
-                    msp.Map.Util.setLayerOnTop(scope.layer);
+                    M.Map.Util.setLayerOnTop(scope.layer);
                 }
             });
 
@@ -150,8 +150,8 @@
                  * If the map is sufficiently zoomed, then load Wikipedia stuff...
                  */
                 if (newZoom >= scope.options.minimumZoomLevel) {
-                    if (scope.zoom != newZoom || Math.abs(centerPixel.x - newCenterPixel.x) > (msp.$map.width() / 2) || Math.abs(centerPixel.y - newCenterPixel.y) > (msp.$map.height() / 2)) {
-                        scope.getItems(msp.Map.Util.p2d(map.getExtent()));
+                    if (scope.zoom != newZoom || Math.abs(centerPixel.x - newCenterPixel.x) > (M.$map.width() / 2) || Math.abs(centerPixel.y - newCenterPixel.y) > (M.$map.height() / 2)) {
+                        scope.getItems(M.Map.Util.p2d(map.getExtent()));
                         scope.zoom = newZoom;
                         scope.centerLonLat = map.getCenter();
                     }
@@ -175,13 +175,13 @@
             /**
              * Set loading information
              */
-            msp.Map.events.trigger("loadstart", self.layer);
+            M.Map.events.trigger("loadstart", self.layer);
 
             /**
              * Send ajax url to the searchUrl service
              */
             $.ajax({
-                url:msp.Util.proxify(msp.Util.getAbsoluteUrl(self.options.searchUrl)+"maxRows="+self.options.number+"&lang="+msp.Config.i18n.lang+"&south="+bbox.bottom+"&north="+bbox.top+"&east="+bbox.right+"&west="+bbox.left),
+                url:M.Util.proxify(M.Util.getAbsoluteUrl(self.options.searchUrl)+"maxRows="+self.options.number+"&lang="+M.Config.i18n.lang+"&south="+bbox.bottom+"&north="+bbox.top+"&east="+bbox.right+"&west="+bbox.left),
                 async:true,
                 dataType:"json",
                 success: function(obj) {
@@ -218,7 +218,7 @@
                                 }
                                 innerHTML += '<div align="center"><img src="'+thumbnailURL+'"></div><br/>';
                             }
-                            var pointLatLon = msp.Map.Util.d2p(new OpenLayers.Geometry.Point(obj.geonames[i]['lng'],obj.geonames[i]['lat'])),
+                            var pointLatLon = M.Map.Util.d2p(new OpenLayers.Geometry.Point(obj.geonames[i]['lng'],obj.geonames[i]['lat'])),
                                 feature = new OpenLayers.Feature.Vector(pointLatLon,
                             {
                                 name:decodeURIComponent(obj.geonames[i]['title']),
@@ -230,10 +230,10 @@
 
                         }
                     }
-                    msp.Map.events.trigger("loadend", self.layer);
+                    M.Map.events.trigger("loadend", self.layer);
                 },
                 error: function(e) {
-                    msp.Map.events.trigger("loadend", self.layer);
+                    M.Map.events.trigger("loadend", self.layer);
                 }
             });
 
@@ -242,9 +242,9 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Wikipedia._o = this;
+        M.Plugins.Wikipedia._o = this;
         
         return this;
     };
     
-})(window.msp);
+})(window.M);

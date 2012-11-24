@@ -35,12 +35,12 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-(function (msp, Map){
+(function (M, Map){
     
     Map.layerTypes["Catalog"] = {
    
         /**
-         * icon path relative to the msp.themeDirectory
+         * icon path relative to the M.themeDirectory
          */
         icon:"catalog.png",
 
@@ -92,7 +92,7 @@
              *  2. layerDescription.connector must be defined
              *
              */
-            var plugin = msp.plugins["Catalog"];
+            var plugin = M.plugins["Catalog"];
 
             if (!plugin) {
                 return null;
@@ -101,7 +101,7 @@
             /*
              * Set title
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription);
+            layerDescription.title = M.Util.getTitle(layerDescription);
             
             /*
              * Check mandatory properties
@@ -121,17 +121,17 @@
             /*
              * Repare URL if it is not well formed
              */
-            layerDescription.url = msp.Util.repareUrl(layerDescription.url);
+            layerDescription.url = M.Util.repareUrl(layerDescription.url);
 
             /*
              * Set a random footprint color if it is not defined
              */
-            layerDescription.color = msp.Util.getPropertyValue(layerDescription, "color", msp.Util.randomColor());
+            layerDescription.color = M.Util.getPropertyValue(layerDescription, "color", M.Util.randomColor());
 
             /*
              * Set dedicated catalog options
              */
-            layerDescription.collection = msp.Util.getPropertyValue(layerDescription, "collection", "");
+            layerDescription.collection = M.Util.getPropertyValue(layerDescription, "collection", "");
 
             /**
              * Layer creation
@@ -141,9 +141,9 @@
             /*
              * Add a setTime Function
              */
-            newLayer["_msp"].setTime = function(interval) {
+            newLayer["_M"].setTime = function(interval) {
                 
-                var sc = newLayer["_msp"].searchContext;
+                var sc = newLayer["_M"].searchContext;
                 if (sc) {
 
                     /*
@@ -177,7 +177,7 @@
              * Ask for mandatory connectorName
              */
             var i,l,name,list = [],
-            connectors = msp.plugins["Catalog"].options["connectors"] || [];
+            connectors = M.plugins["Catalog"].options["connectors"] || [];
 
             /**
              * Parse available connectors list
@@ -190,14 +190,14 @@
                 name = connectors[i].name;
 
                 list.push({
-                    title:msp.Util._(name),
-                    value:msp.Util._(name)
+                    title:M.Util._(name),
+                    value:M.Util._(name)
                 });
             }
 
-            msp.Util.askFor({
-                title:msp.Util._("Catalog") + ' : ' + layerDescription.title,
-                content:msp.Util._("What is the format for this catalog ?"),
+            M.Util.askFor({
+                title:M.Util._("Catalog") + ' : ' + layerDescription.title,
+                content:M.Util._("What is the format for this catalog ?"),
                 dataType:"list",
                 value:list,
                 callback:function(v){
@@ -217,16 +217,16 @@
          */
         getInfo:function(layerDescription) {
             return [
-            ["Connector", msp.Util._(layerDescription["connectorName"])]
+            ["Connector", M.Util._(layerDescription["connectorName"])]
             ];
         },
 
         /**
          * MANDATORY
-         * Compute an unique mspID based on layerDescription
+         * Compute an unique MID based on layerDescription
          */
-        getMspID:function(layerDescription) {
-            return msp.Util.crc32(layerDescription.type + layerDescription.connectorName + (msp.Util.repareUrl(layerDescription.url) || ""));
+        getMID:function(layerDescription) {
+            return M.Util.crc32(layerDescription.type + layerDescription.connectorName + (M.Util.repareUrl(layerDescription.url) || ""));
         },
         
         /**
@@ -239,8 +239,8 @@
             
             var sc;
             
-            if (layer && layer["_msp"]) {
-                sc = layer["_msp"].searchContext;
+            if (layer && layer["_M"]) {
+                sc = layer["_M"].searchContext;
                 if (sc) {
                     
                     /*
@@ -256,4 +256,4 @@
             }
         }
     }
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

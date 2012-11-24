@@ -39,7 +39,7 @@
 /**
  * Define GML Map util functions
  */
-(function(msp, Map) {
+(function(M, Map) {
     
     Map.Util = Map.Util || {};
     
@@ -152,7 +152,7 @@
             if (geometry.components) {
                 for (var i = 0, l = geometry.components.length; i < l; i++) {
                     point = geometry.components[i];
-                    point = msp.Map.Util.p2d(new OpenLayers.LonLat(point.x,point.y));
+                    point = M.Map.Util.p2d(new OpenLayers.LonLat(point.x,point.y));
                     gml += point.lon + ' ' + point.lat + ' ';
                 }
             }
@@ -178,7 +178,7 @@
                     component = geometry.components[i];
                     for (var j = 0, k = component.components.length; j < k; j++){
                         point = component.components[j];
-                        point = msp.Map.Util.p2d(new OpenLayers.LonLat(point.x,point.y));
+                        point = M.Map.Util.p2d(new OpenLayers.LonLat(point.x,point.y));
                         gml += point.lon + ' ' + point.lat + ' ';
                     }
                 }
@@ -252,7 +252,7 @@
                 /*
                  * Detect GML type
                  */
-                switch (msp.Util.stripNS(gml[0].nodeName)) {
+                switch (M.Util.stripNS(gml[0].nodeName)) {
                     case 'Point':
                         geoJSON = this.pointToGeoJSON(gml, properties);
                         break;
@@ -285,12 +285,12 @@
          */
         pointToGeoJSON: function(gml, properties) {
             
-            properties = properties || {identifier:msp.Util.getId()};
+            properties = properties || {identifier:M.Util.getId()};
             
             /*
              * First children is gml:posList
              */
-            return JSON.parse(msp.Util.parseTemplate(this.geoJSONTemplate,{
+            return JSON.parse(M.Util.parseTemplate(this.geoJSONTemplate,{
                 geometry:'{"type":"LineString","coordinates":['+Map.Util.posListToGeoJsonGeometry(gml.children().text())+']}',
                 properties:JSON.stringify(properties)
             }));
@@ -312,12 +312,12 @@
          */
         lineStringToGeoJSON: function(gml, properties) {
             
-            properties = properties || {identifier:msp.Util.getId()};
+            properties = properties || {identifier:M.Util.getId()};
             
             /*
              * First children is gml:posList
              */
-            return JSON.parse(msp.Util.parseTemplate(this.geoJSONTemplate,{
+            return JSON.parse(M.Util.parseTemplate(this.geoJSONTemplate,{
                 geometry:'{"type":"LineString","coordinates":['+Map.Util.posListToGeoJsonGeometry(gml.children().text())+']}',
                 properties:JSON.stringify(properties)
             }));
@@ -345,7 +345,7 @@
             
             var geometries = [];
             
-            properties = properties || {identifier:msp.Util.getId()};
+            properties = properties || {identifier:M.Util.getId()};
             
             /*
              * Roll over exterior and interiors
@@ -361,7 +361,7 @@
                 
             });
             
-            return JSON.parse(msp.Util.parseTemplate(this.geoJSONTemplate,{
+            return JSON.parse(M.Util.parseTemplate(this.geoJSONTemplate,{
                 geometry:'{"type":"Polygon","coordinates":['+geometries.join(',')+']}',
                 properties:JSON.stringify(properties)
             }));
@@ -372,5 +372,5 @@
         
     }
     
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);
 

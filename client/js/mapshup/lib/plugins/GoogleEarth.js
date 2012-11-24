@@ -48,15 +48,15 @@
  *      of the license.
  *
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.GoogleEarth = function() {
+    M.Plugins.GoogleEarth = function() {
         
         /*
          * Only one GoogleEarth object instance is created
          */
-        if (msp.Plugins.GoogleEarth._o) {
-            return msp.Plugins.GoogleEarth._o;
+        if (M.Plugins.GoogleEarth._o) {
+            return M.Plugins.GoogleEarth._o;
         }
         
         /**
@@ -132,69 +132,69 @@
                 /*
                  * Show navigation control
                  */
-                navigationControl:msp.Util.getPropertyValue(self.options, "navigationControl", true),
+                navigationControl:M.Util.getPropertyValue(self.options, "navigationControl", true),
 
                 /*
                  * Show atmosphere
                  */
-                atmosphere:msp.Util.getPropertyValue(self.options, "atmosphere", true),
+                atmosphere:M.Util.getPropertyValue(self.options, "atmosphere", true),
 
                 /*
                  * Teleportation
                  */
-                teleport:msp.Util.getPropertyValue(self.options, "teleport", false),
+                teleport:M.Util.getPropertyValue(self.options, "teleport", false),
 
                 /*
                  * Show GE borders layer
                  */
-                borders:msp.Util.getPropertyValue(self.options, "borders", false),
+                borders:M.Util.getPropertyValue(self.options, "borders", false),
 
                 /*
                  * Show GE terrain layer
                  */
-                terrain:msp.Util.getPropertyValue(self.options, "terrain", true),
+                terrain:M.Util.getPropertyValue(self.options, "terrain", true),
 
                 /*
                  * Show GE roads layer
                  */
-                roads:msp.Util.getPropertyValue(self.options, "roads", false),
+                roads:M.Util.getPropertyValue(self.options, "roads", false),
 
                 /*
                  * Show GE buildings layer
                  */
-                buildings:msp.Util.getPropertyValue(self.options, "buildings", false),
+                buildings:M.Util.getPropertyValue(self.options, "buildings", false),
 
                 /*
                  * Show GE low resolution buildings layer
                  */
-                buildingsLR:msp.Util.getPropertyValue(self.options, "buildingsLR", false),
+                buildingsLR:M.Util.getPropertyValue(self.options, "buildingsLR", false),
 
                 /*
                  * Synchronize layers
                  */
-                synchronize:msp.Util.getPropertyValue(self.options, "synchronize", true),
+                synchronize:M.Util.getPropertyValue(self.options, "synchronize", true),
 
                 /*
                  * Synchronize WMS layers
                  */
-                synchronizeWMS:msp.Util.getPropertyValue(self.options, "synchronizeWMS", false),
+                synchronizeWMS:M.Util.getPropertyValue(self.options, "synchronizeWMS", false),
                 
                 /*
                  * Toolbar container position
                  */
-                position:msp.Util.getPropertyValue(self.options, "position", 'ne'),
+                position:M.Util.getPropertyValue(self.options, "position", 'ne'),
                 
                 /*
                  * Toolbar container orientation
                  */
-                orientation:msp.Util.getPropertyValue(self.options, "orientation", 'v'),
+                orientation:M.Util.getPropertyValue(self.options, "orientation", 'v'),
                 
                 /*
                  * Boolean - if true, Google Earth is displayed within a South panel
                  * and can be displayed at the same time of the 3D map
                  * Otherwise it is displayed above the 2D map
                  */
-                embeded:msp.Util.getPropertyValue(self.options, "embeded", false)
+                embeded:M.Util.getPropertyValue(self.options, "embeded", false)
                 
             });
             
@@ -206,8 +206,8 @@
                 /*
                  * Add GoogleEarth to South Panel
                  */
-                self.panelItem = msp.sp.add({
-                    id:msp.Util.getId(),
+                self.panelItem = M.sp.add({
+                    id:M.Util.getId(),
                     title:"3D view",
                     onshow:function() {
                         
@@ -230,7 +230,7 @@
                  * 
                  * !! Add a "nodisplaynone" class to avoid the use of
                  * "display:none" when panel item is switch on/off.
-                 * See msp.sp.setActive(item) for explanation
+                 * See M.sp.setActive(item) for explanation
                  */
                 self.panelItem.$d.addClass("nodisplaynone")
                 self.$d = self.panelItem.$content;
@@ -244,11 +244,11 @@
             else {
                 
                 /*
-                 * 3D map is created under msp.$mcontainer
+                 * 3D map is created under M.$mcontainer
                  */
-                self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$mcontainer);
+                self.$d = M.Util.$$('#'+M.Util.getId(), M.$mcontainer);
                 
-                (new msp.Toolbar({
+                (new M.Toolbar({
                     position:self.options.position, 
                     orientation:self.options.orientation
                     })).add({
@@ -282,9 +282,9 @@
             /*
              * Register events
              */
-            msp.Map.events.register("moveend", self, self.onMoveEnd);
-            msp.Map.events.register("layersend", self, self.onLayersEnd);
-            msp.Map.events.register("visibilitychanged", self, self.onVisibilityChanged);
+            M.Map.events.register("moveend", self, self.onMoveEnd);
+            M.Map.events.register("layersend", self, self.onLayersEnd);
+            M.Map.events.register("visibilitychanged", self, self.onVisibilityChanged);
 
             return this;
             
@@ -301,15 +301,15 @@
                 /*
                  * Display information about google earth initialization
                  */
-                msp.mask.add({
-                    title:msp.Util._("Initializing 3D mode"),
+                M.mask.add({
+                    title:M.Util._("Initializing 3D mode"),
                     cancel:true
                 });
 
                 /*
                  * Set Google Earth language to mapshup language
                  */
-                google.earth.setLanguage(msp.Config["i18n"].lang);
+                google.earth.setLanguage(M.Config["i18n"].lang);
 
                 /*
                  * Create a Google Earth instance within Map3D div
@@ -379,7 +379,7 @@
         };
 
         /**
-         * This function is called after msp.Map.map.layers changed
+         * This function is called after M.Map.map.layers changed
          * (i.e. successfull addLayer or removeLayer)
          *
          * Possible actions are :
@@ -451,7 +451,7 @@
             /*
              * Hide information Mask
              */
-            msp.mask.hide();
+            M.mask.hide();
 
             /*
              * Set this.ge object
@@ -501,8 +501,8 @@
             /*
              * Init layers
              */
-            for (i = 0, l = msp.Map.map.layers.length; i < l; i++) {
-                scope.addLayer(msp.Map.map.layers[i]);
+            for (i = 0, l = M.Map.map.layers.length; i < l; i++) {
+                scope.addLayer(M.Map.map.layers[i]);
             }
 
             /*
@@ -535,13 +535,13 @@
             /*
              * Hide information Mask
              */
-            msp.mask.hide();
+            M.mask.hide();
 
             /*
              * Tell user that unfortunately he will not browse
              * the Earth in 3D :(
              */
-            msp.Util.message(msp.Util._("Error : Google Earth cannot be loaded") + '<br/><a target="_blank" href="http://www.google.com/earth/download/ge/">' + msp.Util._("Perhaps you need to install Google Earth plugin ?") + '</a>', -1);
+            M.Util.message(M.Util._("Error : Google Earth cannot be loaded") + '<br/><a target="_blank" href="http://www.google.com/earth/download/ge/">' + M.Util._("Perhaps you need to install Google Earth plugin ?") + '</a>', -1);
 
         };
     
@@ -574,7 +574,7 @@
              */
             if (!layer.isBaseLayer && layer.displayInLayerSwitcher) {
 
-                kmlString = msp.Map.Util.KML.layerToKML(layer, {
+                kmlString = M.Map.Util.KML.layerToKML(layer, {
                     synchronizeWMS:self.options.synchronizeWMS
                 });
 
@@ -692,7 +692,7 @@
             /*
              * Be kind with users
              */
-            msp.Util.message(msp.Util._("Entering 2D mode"));
+            M.Util.message(M.Util._("Entering 2D mode"));
 
             /*
              * Clear __lastFromGE to insure 2D/3D synchronization
@@ -729,7 +729,7 @@
             /*
              * Be kind with users
              */
-            msp.Util.message(msp.Util._("Entering 3D mode"));
+            M.Util.message(M.Util._("Entering 3D mode"));
 
             /*
              * Fade in Google Earth view
@@ -761,12 +761,12 @@
                 /*
                  * Set the lookAt position in Lat/Lon
                  */
-                self.lookAt = msp.Map.Util.p2d(msp.Map.map.getCenter());
+                self.lookAt = M.Map.Util.p2d(M.Map.map.getCenter());
 
                 /*
                  * Set range from map scale
                  */
-                self.range = msp.Map.map.getScale() / self.getScaleFactor();
+                self.range = M.Map.map.getScale() / self.getScaleFactor();
 
                 /*
                  *More documentation in http://code.google.com/apis/earth/documentation/reference/interface_g_e_view.html
@@ -846,10 +846,10 @@
             /*
              * Set Map position
              */
-            var center = msp.Map.Util.d2p(self.lookAt.clone()),
+            var center = M.Map.Util.d2p(self.lookAt.clone()),
             scale = self.range * self.getScaleFactor(),
-            res = OpenLayers.Util.getResolutionFromScale(scale, msp.Map.map.baseLayer.units),
-            size = msp.Map.map.getSize(),
+            res = OpenLayers.Util.getResolutionFromScale(scale, M.Map.map.baseLayer.units),
+            size = M.Map.map.getSize(),
             w_deg = size.w * res,
             h_deg = size.h * res,
 
@@ -866,28 +866,28 @@
              */
             if (limit) {
 
-                var centerPixel = msp.Map.map.getPixelFromLonLat(msp.Map.map.getCenter()),
-                newCenterPixel = msp.Map.map.getPixelFromLonLat(center),
-                newZoom = msp.Map.map.getZoomForExtent(extent, true);
+                var centerPixel = M.Map.map.getPixelFromLonLat(M.Map.map.getCenter()),
+                newCenterPixel = M.Map.map.getPixelFromLonLat(center),
+                newZoom = M.Map.map.getZoomForExtent(extent, true);
 
                 /*
                  * new map extent differs from the current bounds by at least the quarter
                  * of the map size in pixel reference system => change extent
                  */
-                if (msp.Map.map.getZoom() !== newZoom || Math.abs(centerPixel.x - newCenterPixel.x) > (self.$d.width() / 4) || Math.abs(centerPixel.y - newCenterPixel.y) > (self.$d.height() / 4)) {
+                if (M.Map.map.getZoom() !== newZoom || Math.abs(centerPixel.x - newCenterPixel.x) > (self.$d.width() / 4) || Math.abs(centerPixel.y - newCenterPixel.y) > (self.$d.height() / 4)) {
 
                     /*
                      * Set the value "anti ping-pong" to true value
                      */
                     self.__lastFromGE = true;
 
-                    msp.Map.map.zoomToExtent(extent, true);
+                    M.Map.map.zoomToExtent(extent, true);
 
                 }
 
             }
             else {
-                msp.Map.map.zoomToExtent(extent, true);
+                M.Map.map.zoomToExtent(extent, true);
             }
 
         };
@@ -908,10 +908,10 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.GoogleEarth._o = this;
+        M.Plugins.GoogleEarth._o = this;
         
         return this;
         
     };
     
-})(window.msp);
+})(window.M);

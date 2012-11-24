@@ -40,15 +40,15 @@
  * Allow user to draw Point, Line or Polygons
  * and store it within its own layer 
  */
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Drawing = function() {
+    M.Plugins.Drawing = function() {
         
         /*
          * Only one BackgroundsManager object instance is created
          */
-        if (msp.Plugins.Drawing._o) {
-            return msp.Plugins.Drawing._o;
+        if (M.Plugins.Drawing._o) {
+            return M.Plugins.Drawing._o;
         }
         
         /*
@@ -72,10 +72,10 @@
             /*
              * Add "Drawing" item in menu
              */
-            if (msp.menu) {
-                msp.menu.add([
+            if (M.menu) {
+                M.menu.add([
                 {
-                    id:msp.Util.getId(),
+                    id:M.Util.getId(),
                     ic:"drawing.png",
                     ti:"Draw layer",
                     cb:function() {
@@ -86,7 +86,7 @@
             }
            
             self.layer = new OpenLayers.Layer.Vector("__LAYER_DRAWING__", {
-                projection:msp.Map.pc,
+                projection:M.Map.pc,
                 displayInLayerSwitcher:false,
                 styleMap:new OpenLayers.StyleMap({
                     'default':{
@@ -102,11 +102,11 @@
             /**
              * Add Drawing layer to Map object
              */
-            msp.Map.addLayer({
+            M.Map.addLayer({
                 type:"Generic",
                 title:self.layer.name,
                 unremovable:true,
-                mspLayer:true,
+                MLayer:true,
                 layer:self.layer
             });
 
@@ -126,34 +126,34 @@
                     /*
                      * Show mask
                      */
-                    msp.mask.show(true);
+                    M.mask.show(true);
 
                     /*
                      * Ask user description of newly created feature
                      */
-                    var popup = new msp.Popup({
+                    var popup = new M.Popup({
                         modal:false,
                         noHeader:true,
                         autoSize:true,
                         onClose:function() {
-                            msp.mask.hide();
+                            M.mask.hide();
                         },
-                        body:'<form class="marged"><label>'+msp.Util._("Feature title")+'<br/><input id="featureTitle" type="text"/></label><br/><label>'+msp.Util._("Feature description")+'<br/><textarea id="featureDesc"/></label><div style="margin:10px 0px;"><a href="#" class="button inline colored" id="featureDescV">'+msp.Util._("Validate")+'</a></div></form>'
+                        body:'<form class="marged"><label>'+M.Util._("Feature title")+'<br/><input id="featureTitle" type="text"/></label><br/><label>'+M.Util._("Feature description")+'<br/><textarea id="featureDesc"/></label><div style="margin:10px 0px;"><a href="#" class="button inline colored" id="featureDescV">'+M.Util._("Validate")+'</a></div></form>'
                     });
                     
                     /*
                      * Show drawingDesc
                      */
-                    popup.moveTo(msp.Map.mousePosition);
+                    popup.moveTo(M.Map.mousePosition);
                     popup.show(true);
                     
                     $('#featureDescV').click(function() {
                         var f = event.feature;
                         if (f) {
-                            f.attributes.name = msp.Util.stripTags($('#featureTitle').val());
-                            f.attributes.description = msp.Util.stripTags($('#featureDesc').val());
+                            f.attributes.name = M.Util.stripTags($('#featureTitle').val());
+                            f.attributes.description = M.Util.stripTags($('#featureDesc').val());
                         }
-                        msp.mask.hide();
+                        M.mask.hide();
                         popup.remove();
                         return false;
                     });
@@ -198,16 +198,16 @@
             })(self.layer);
             
             for (key in controls) {
-                msp.Map.map.addControl(controls[key]);
+                M.Map.map.addControl(controls[key]);
             }
 
-            msp.Map.events.register("layersend", self, function(action, layer, scope) {
+            M.Map.events.register("layersend", self, function(action, layer, scope) {
                 
                 /*
                  * Each time a layer is added make sure Drawing layer is on top
                  */
                 if (action === "add" && scope.layer) {
-                    msp.Map.Util.setLayerOnTop(scope.layer);
+                    M.Map.Util.setLayerOnTop(scope.layer);
                 }
             });
 
@@ -225,15 +225,15 @@
             self = this;
             
             if (!self.askPopup) {
-                idPoint = msp.Util.getId();
-                idLine = msp.Util.getId();
-                idPolygon = msp.Util.getId();
-                self.askPopup = new msp.Popup({
+                idPoint = M.Util.getId();
+                idLine = M.Util.getId();
+                idPolygon = M.Util.getId();
+                self.askPopup = new M.Popup({
                     modal:false,
                     noHeader:true,
                     hideOnClose:true,
                     autoSize:true,
-                    body:'<div class="marged"><a href="#" id="'+idPoint+'">'+msp.Util._("Point")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_point.png")+'"/>&nbsp;<a href="#" id="'+idLine+'">'+msp.Util._("Line")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_line.png")+'"/><a href="#" id="'+idPolygon+'">'+msp.Util._("Polygon")+'</a><img class="middle" src="'+msp.Util.getImgUrl("drawing_polygon.png")+'"/></div>'
+                    body:'<div class="marged"><a href="#" id="'+idPoint+'">'+M.Util._("Point")+'</a><img class="middle" src="'+M.Util.getImgUrl("drawing_point.png")+'"/>&nbsp;<a href="#" id="'+idLine+'">'+M.Util._("Line")+'</a><img class="middle" src="'+M.Util.getImgUrl("drawing_line.png")+'"/><a href="#" id="'+idPolygon+'">'+M.Util._("Polygon")+'</a><img class="middle" src="'+M.Util.getImgUrl("drawing_polygon.png")+'"/></div>'
                 });
                 /*
                  * Create action for drawingAsk dialog box
@@ -255,7 +255,7 @@
             /*
              * Show popup to the right position
              */
-            self.askPopup.moveTo(msp.Map.mousePosition);
+            self.askPopup.moveTo(M.Map.mousePosition);
             self.askPopup.show(true);
             
         };
@@ -266,18 +266,18 @@
         this.showStatus = function(type) {
             
             var txt,
-                id = msp.Util.getId(),
+                id = M.Util.getId(),
                 self = this;
             
             if (type === "draw") {
-                txt = msp.Util._("You are in drawing mode")+'<br/><br/><a href="#" class="button" id="'+id+'">'+msp.Util._("Switch to modification mode")+'</a>';
+                txt = M.Util._("You are in drawing mode")+'<br/><br/><a href="#" class="button" id="'+id+'">'+M.Util._("Switch to modification mode")+'</a>';
             }
             else {
-                txt = msp.Util._("You are in modification mode")+'<br/><br/><a href="#" class="button" id="'+id+'">'+msp.Util._("Switch to drawing mode")+'</a>';
+                txt = M.Util._("You are in modification mode")+'<br/><br/><a href="#" class="button" id="'+id+'">'+M.Util._("Switch to drawing mode")+'</a>';
             }
             
             if (!self.infoPopup) {
-                self.infoPopup = new msp.Popup({
+                self.infoPopup = new M.Popup({
                     modal:false,
                     noHeader:true,
                     hideOnClose:true,
@@ -287,7 +287,7 @@
                         /*
                          * Switch back to Map default control
                          */
-                        msp.Map.resetControl(self.control);
+                        M.Map.resetControl(self.control);
                         self.control = null;
 
                         /*
@@ -308,7 +308,7 @@
              * Display popup
              */
             self.infoPopup.show();
-            self.infoPopup.moveTo({x:msp.$map.width() - self.infoPopup.$d.width() / 2 - 100,y:40});
+            self.infoPopup.moveTo({x:M.$map.width() - self.infoPopup.$d.width() / 2 - 100,y:40});
             
             /*
              * Set popup action
@@ -332,17 +332,17 @@
                 return false;
             }
             
-            title = "MyLayer #"+msp.Util.getId();
-            kml = msp.Map.Util.KML.layerToKML(self.layer, {
-                color:msp.Util.randomColor(), 
+            title = "MyLayer #"+M.Util.getId();
+            kml = M.Map.Util.KML.layerToKML(self.layer, {
+                color:M.Util.randomColor(), 
                 opacity:0.4
             });
 
             /*
              * Save KML layer to the server
              */
-            msp.Util.ajax({
-                url:msp.Util.getAbsoluteUrl(msp.Config["general"].saveKMLServiceUrl)+msp.Util.abc,
+            M.Util.ajax({
+                url:M.Util.getAbsoluteUrl(M.Config["general"].saveKMLServiceUrl)+M.Util.abc,
                 async:true,
                 type:"POST",
                 data:{
@@ -352,7 +352,7 @@
                 success: function(data) {
 
                     if (data.error) {
-                        msp.Util.message(data.error["message"]);
+                        M.Util.message(data.error["message"]);
                     }
                     else {
 
@@ -366,10 +366,10 @@
                         /*
                          * Add new layer to the map
                          */
-                        msp.Map.addLayer({
+                        M.Map.addLayer({
                             type:"KML",
                             title:title,
-                            icon:msp.Util.getImgUrl("drawing.png"),
+                            icon:M.Util.getImgUrl("drawing.png"),
                             url:data.url,
                             selectable:true
                         });
@@ -377,11 +377,11 @@
                     }
                 },
                 error: function(e) {
-                    msp.Util.message(msp.Util._("Server error") + " " + msp.Util._("The layer cannot be saved"));
+                    M.Util.message(M.Util._("Server error") + " " + M.Util._("The layer cannot be saved"));
                 }
 
             },{
-                title:msp.Util._("Saving layer") + " : " + msp.Util._(title),
+                title:M.Util._("Saving layer") + " : " + M.Util._(title),
                 cancel:true
             });
 
@@ -400,7 +400,7 @@
             /*
              * First reset control
              */
-            msp.Map.resetControl(self.control);
+            M.Map.resetControl(self.control);
 
             /*
              * Show dialog drawing mode
@@ -426,7 +426,7 @@
                 /*
                  * Hide mask
                  */
-                msp.mask.hide();
+                M.mask.hide();
                 if (self.askPopup) {
                     self.askPopup.hide();
                 }
@@ -434,7 +434,7 @@
                 /*
                  * Set active control to 'type' control
                  */
-                self.control = msp.Map.Util.getControlById(type);
+                self.control = M.Map.Util.getControlById(type);
 
                 if (self.control) {
                     self.control.activate();
@@ -454,13 +454,13 @@
              * Reset control => OpenLayers bug ??
              */
             self.control.deactivate();
-            msp.Map.Util.getControlById("__CONTROL_SELECT__").deactivate();
-            hlt = msp.Map.Util.getControlById("__CONTROL_HIGHLITE__");
+            M.Map.Util.getControlById("__CONTROL_SELECT__").deactivate();
+            hlt = M.Map.Util.getControlById("__CONTROL_HIGHLITE__");
             if (hlt) {
                 hlt.deactivate();
             }
 
-            self.control = msp.Map.Util.getControlById("__CONTROL_MODIFY__");
+            self.control = M.Map.Util.getControlById("__CONTROL_MODIFY__");
 
             /*
              * Change info status
@@ -476,8 +476,8 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Drawing._o = this;
+        M.Plugins.Drawing._o = this;
         
         return this;
     };
-})(window.msp);
+})(window.M);

@@ -37,17 +37,17 @@
  */
 
 /**
- * Define msp.Map events
+ * Define M.Map events
  */
-(function (msp) {
+(function (M) {
     
     /*
      * LayerDescription
      * 
      * @input obj : layer description object
-     * @input jmap : reference to msp.Map object
+     * @input jmap : reference to M.Map object
      */
-    msp.Map.LayerDescription = function(obj, map) {
+    M.Map.LayerDescription = function(obj, map) {
         
         /**
          * Layer description
@@ -55,7 +55,7 @@
         this.obj = obj;
         
         /**
-         * msp.Map reference
+         * M.Map reference
          */
         this.map = map;
         
@@ -119,9 +119,9 @@
         }
         
         /**
-         * Compute a mspID from its type
+         * Compute a MID from its type
          */
-        this.getMspID = function() {
+        this.getMID = function() {
 
             var o = this.obj, layerType = this.map.layerTypes[o.type];
 
@@ -133,11 +133,11 @@
             }
 
             /*
-             * Default MspID is msp.crc32(layerDescription.type + (layerDescription.url || layerDescription.title || ""))
+             * Default MID is M.crc32(layerDescription.type + (layerDescription.url || layerDescription.title || ""))
              * unless specified in the layerType object
              */
-            if ($.isFunction(layerType.getMspID)) {
-                return layerType.getMspID(o);
+            if ($.isFunction(layerType.getMID)) {
+                return layerType.getMID(o);
             }
             else {
                 
@@ -150,12 +150,12 @@
                     /*
                      * Important : split url to remove additionnal parameters (i.e. after "?" char)
                      */
-                    return msp.Util.crc32(o.type + o.url.split('?')[0]);
+                    return M.Util.crc32(o.type + o.url.split('?')[0]);
                     
                 }
             }
             
-            return msp.Util.crc32(o.type + (o.title || ""));
+            return M.Util.crc32(o.type + (o.title || ""));
         };
         
         /**
@@ -180,9 +180,9 @@
                      * Common description
                      */
                     arr = [
-                    ["Title", msp.Util._(this.obj["title"])],
-                    ["Description", msp.Util._(this.obj["description"] || "No description available")],
-                    ["Type", msp.Util._(this.obj["type"])]
+                    ["Title", M.Util._(this.obj["title"])],
+                    ["Description", M.Util._(this.obj["description"] || "No description available")],
+                    ["Type", M.Util._(this.obj["type"])]
                     ];
 
                     /*
@@ -248,7 +248,7 @@
                      */
                     icon: function(feature) {
                         if(feature.cluster) {
-                            return msp.Util.getImgUrl('imgcluster.png');
+                            return M.Util.getImgUrl('imgcluster.png');
                         }
                         else {
                             return feature["attributes"].icon;
@@ -267,7 +267,7 @@
                             return "#669900";
                         }
                         else {
-                            return feature.layer["_msp"].layerDescription.color || "darkgray";
+                            return feature.layer["_M"].layerDescription.color || "darkgray";
                         }
                     },
                     scaledSize: function(feature) {
@@ -337,4 +337,4 @@
        
     }
     
-})(window.msp);
+})(window.M);

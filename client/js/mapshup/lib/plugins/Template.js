@@ -81,20 +81,20 @@
  * Always use a closure to describe a plugin
  *
  * The closure should take only one argument which is
- * the reference to the mapshup object, i.e. window.msp 
+ * the reference to the mapshup object, i.e. window.M 
  *
  */
-(function(msp) {
+(function(M) {
     
     /*
-     * Start defining a "msp.Plugins.Template" object
+     * Start defining a "M.Plugins.Template" object
      */
-    msp.Plugins.Template = function() {
+    M.Plugins.Template = function() {
         
         /*
          * Only one plugin object instance should be created.
          * 
-         * To ensure this, we initialize a unique msp.Plugins.Template._o
+         * To ensure this, we initialize a unique M.Plugins.Template._o
          * object instance on first call (see the end of this file)
          * 
          * If another instance of this object is requested, then the 
@@ -102,8 +102,8 @@
          * a new object instance
          * 
          */
-        if (msp.Plugins.Template._o) {
-            return msp.Plugins.Template._o;
+        if (M.Plugins.Template._o) {
+            return M.Plugins.Template._o;
         }
         
         /**
@@ -148,10 +148,10 @@
              * one or more entries in the main menu (i.e. the circular menu that pops up when
              * you click on the map)
              */
-            if (msp.menu) {
-                msp.menu.add([
+            if (M.menu) {
+                M.menu.add([
                     {
-                        id:msp.Util.getId(),
+                        id:M.Util.getId(),
                         /*
                          * The name of the template icon.
                          * This icon should be put under each theme img directory,
@@ -180,12 +180,12 @@
              * In the following example, the Template set a button in the
              * "North East Vertical" toolbar
              */
-            var tb = new msp.Toolbar('ne', 'v');
-            var btn = new msp.Button({
+            var tb = new M.Toolbar('ne', 'v');
+            var btn = new M.Button({
                 tb:tb,
                 icon:"template.png",
                 tt:"My template button name",
-                container:(new msp.Panel('e',{tb:tb})).add(), //  AddLayer plugin is displayed within an East msp.Panel
+                container:(new M.Panel('e',{tb:tb})).add(), //  AddLayer plugin is displayed within an East M.Panel
                 activable:true,
                 scope:self
             });
@@ -193,8 +193,8 @@
             /**
              * Register changebaselayer
              */
-            msp.Map.map.events.register('changebaselayer', msp.Map.map, function(e){
-                var btn = scope.tb.get(msp.Util.encode(e.layer.id));
+            M.Map.map.events.register('changebaselayer', M.Map.map, function(e){
+                var btn = scope.tb.get(M.Util.encode(e.layer.id));
                 if (btn) {
                     btn.activate(true);
                 }
@@ -207,46 +207,46 @@
              */
             
             /* Called after map has been resized */
-            msp.Map.events.register("resizeend", self, function(scope){
+            M.Map.events.register("resizeend", self, function(scope){
                 // Your code here
             });
 
             /* Called after map extent changed */
-            msp.Map.events.register("moveend", self, function(scope){
+            M.Map.events.register("moveend", self, function(scope){
                 // Your code here
             });
             
             /* Called after a layer is added, removed or updated */
-            msp.Map.events.register("layersend", self, function(layer, scope) {
+            M.Map.events.register("layersend", self, function(layer, scope) {
                 // Your code here
             });
             
             /* Called after a layer starts loading */
-            msp.Map.events.register("loadstart", self, function(layer, scope) {
+            M.Map.events.register("loadstart", self, function(layer, scope) {
                 // Your code here
             });
             
             /* Called after a layer ends loading */
-            msp.Map.events.register("loadend", self, function(layer, scope) {
+            M.Map.events.register("loadend", self, function(layer, scope) {
                 // Your code here
             });
             
             /* Called after a layer visibility changed */
-            msp.Map.events.register("visibilitychanged", self, function(layer, scope) {
+            M.Map.events.register("visibilitychanged", self, function(layer, scope) {
                 // Your code here
             });
             
             /* Called after a layer z-index changed */
-            msp.Map.events.register("indexchanged", self, function(layer,scope){
+            M.Map.events.register("indexchanged", self, function(layer,scope){
                 // Your code here
             });
             
             /*
-             * Initialize a unique msp.Plugins.Template._o
+             * Initialize a unique M.Plugins.Template._o
              */
-            msp.Plugins.Template._o = this;
+            M.Plugins.Template._o = this;
 
             return this;
         }
     };
-})(window.msp); // The closure should only references the mapshup object, i.e. window.msp
+})(window.M); // The closure should only references the mapshup object, i.e. window.M

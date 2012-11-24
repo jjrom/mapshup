@@ -38,7 +38,7 @@
 /**
  * Wikipedia layer type
  */
-(function (msp,Map){
+(function (M,Map){
     
     Map.layerTypes["Wikipedia"] = {
 
@@ -70,24 +70,24 @@
             /*
              * Set title
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription);
+            layerDescription.title = M.Util.getTitle(layerDescription);
             
-            options["_msp"].selectable = msp.Util.getPropertyValue(options, "selectable", this.selectable);
-            options["_msp"].unremovable = true;
+            options["_M"].selectable = M.Util.getPropertyValue(options, "selectable", this.selectable);
+            options["_M"].unremovable = true;
             /**
              * Since this layer is automatically reloaded on each map move,
              * the LayersManager zoomOn capability is not set for this layer
              */
-            options["_msp"].noZoomOn = true;
+            options["_M"].noZoomOn = true;
             options.projection = Map.pc;
             options.styleMap = new OpenLayers.StyleMap({
                 'default':new OpenLayers.Style({
-                    externalGraphic:msp.Util.getImgUrl('wikipedia.png'),
+                    externalGraphic:M.Util.getImgUrl('wikipedia.png'),
                     graphicWidth:24,
                     graphicHeight:24
                 }),
                 'select':new OpenLayers.Style({
-                    externalGraphic:msp.Util.getImgUrl('wikipedia_select.png'),
+                    externalGraphic:M.Util.getImgUrl('wikipedia_select.png'),
                     graphicWidth:24,
                     graphicHeight:24
                 })
@@ -102,4 +102,4 @@
             return new OpenLayers.Layer.Vector(layerDescription.title, options);
         }
     }
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

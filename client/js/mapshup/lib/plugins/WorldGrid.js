@@ -42,15 +42,15 @@
  * Display world grid on top of layers
  *
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.WorldGrid = function() {
+    M.Plugins.WorldGrid = function() {
         
         /*
          * Only one Wikipedia object instance is created
          */
-        if (msp.Plugins.WorldGrid._o) {
-            return msp.Plugins.WorldGrid._o;
+        if (M.Plugins.WorldGrid._o) {
+            return M.Plugins.WorldGrid._o;
         }
         
         /**
@@ -86,18 +86,18 @@
                 /* Allowed intervals */
                 intervals:self.options.intervals || [45, 30, 20, 10, 5, 1],
                 /* Allowed intervals */
-                hidden:msp.Util.getPropertyValue(self.options, "hidden", false),
+                hidden:M.Util.getPropertyValue(self.options, "hidden", false),
                 /* Default label display is degrees/minutes */
                 labelFormat:self.options.labelFormat || "dm",
                 /* Display label or no - default true */
-                labelled:msp.Util.getPropertyValue(self.options, "labelled", true)
+                labelled:M.Util.getPropertyValue(self.options, "labelled", true)
             });
             
             /*
              * Set WorldGrid layer
              */
-            self.layer = new OpenLayers.Layer.Vector(msp.Util._(self.options.title),{
-                projection:msp.Map.pc,
+            self.layer = new OpenLayers.Layer.Vector(M.Util._(self.options.title),{
+                projection:M.Map.pc,
                 displayInLayerSwitcher:true,
                 styleMap:new OpenLayers.StyleMap({
                     'default' :  new OpenLayers.Style({},{
@@ -127,25 +127,25 @@
             /*
              * Add layer to mapshup map
              */
-            msp.Map.addLayer({
+            M.Map.addLayer({
                 type:"Generic",
                 title:self.layer.name,
                 layer:self.layer,
                 unremovable:true,
-                mspLayer:true,
+                MLayer:true,
                 hidden:self.options.hidden
             });
 
             /*
              * Register events
              */
-            msp.Map.events.register("layersend", self, function(action, layer, scope) {
+            M.Map.events.register("layersend", self, function(action, layer, scope) {
 
                 /*
                  * Each time a layer is added make sure streetview layer is on top
                  */
                 if (action === "add" && scope.layer) {
-                    msp.Map.Util.setLayerOnTop(scope.layer);
+                    M.Map.Util.setLayerOnTop(scope.layer);
                 }
                 
             });
@@ -153,12 +153,12 @@
             /*
              * Reprocess the grid each time the map move
              */
-            msp.Map.events.register("moveend", self, self.update);
+            M.Map.events.register("moveend", self, self.update);
             
             /*
              * Initialize grid
              */
-            self.update(msp.Map.map, self);
+            self.update(M.Map.map, self);
             
             return self;
             
@@ -194,7 +194,7 @@
             /*
              * Get the projection objects required
              */
-            var llProj = msp.Map.pc,
+            var llProj = M.Map.pc,
                 mapProj = map.getProjectionObject(),
                 mapRes = map.getResolution();
 
@@ -317,7 +317,7 @@
                     var labelPos = new OpenLayers.Geometry.Point(labelPoint.x,mapBounds.bottom),
                         labelAttrs = {
                         value: lon,
-                        label: scope.options.labelled?msp.Map.Util.getFormattedCoordinate(lon, "lon", scope.options.labelFormat):"",
+                        label: scope.options.labelled?M.Map.Util.getFormattedCoordinate(lon, "lon", scope.options.labelFormat):"",
                         labelAlign: "cb",
                         xOffset: 0,
                         yOffset: 2
@@ -357,7 +357,7 @@
                     var labelPos = new OpenLayers.Geometry.Point(mapBounds.right, labelPoint.y); 
                     var labelAttrs = {
                         value: lat,
-                        label: scope.options.labelled?msp.Map.Util.getFormattedCoordinate(lat, "lat", scope.options.labelFormat):"",
+                        label: scope.options.labelled?M.Map.Util.getFormattedCoordinate(lat, "lat", scope.options.labelFormat):"",
                         labelAlign: "rb",
                         xOffset: -2,
                         yOffset: 2
@@ -373,8 +373,8 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.WorldGrid._o = this;
+        M.Plugins.WorldGrid._o = this;
         
         return this;
     };
-})(window.msp);
+})(window.M);

@@ -45,15 +45,15 @@
  * switch visibility, change opacity, reorder z-index, etc.
  * 
  */
-(function (msp) {
+(function (M) {
 
-    msp.Plugins.RastersManager = function() {
+    M.Plugins.RastersManager = function() {
         
         /**
          * Only one RastersManager object instance is created
          */
-        if (msp.Plugins.RastersManager._o) {
-            return msp.Plugins.RastersManager._o;
+        if (M.Plugins.RastersManager._o) {
+            return M.Plugins.RastersManager._o;
         }
         
         /**
@@ -76,15 +76,15 @@
              *
              */
             $.extend(self.options, {
-                inLM:msp.Util.getPropertyValue(self.options, "inLM", true)
+                inLM:M.Util.getPropertyValue(self.options, "inLM", true)
             });
             
             /*
              * Track layersend events
              */
-            msp.Map.events.register("layersend", self, function(action, layer, scope) {
+            M.Map.events.register("layersend", self, function(action, layer, scope) {
                 
-                if (!layer.isBaseLayer && msp.Map.Util.isRaster(layer)) {
+                if (!layer.isBaseLayer && M.Map.Util.isRaster(layer)) {
                     if (action === "add" || action === "remove") {
                         self.refresh();
                     }
@@ -112,12 +112,12 @@
                  * Create info popup.
                  * popup reference is removed on popup close
                  */
-                self.popup = new msp.Popup({
+                self.popup = new M.Popup({
                     modal:false,
                     onClose:function(scope){
                         scope.popup = null;
                     },
-                    header:'<p>'+msp.Util._("Configure raster layers")+'</p>',
+                    header:'<p>'+M.Util._("Configure raster layers")+'</p>',
                     scope:self
                 });
                 
@@ -145,9 +145,9 @@
             /*
              * Roll over layers
              */
-            for (i = 0, l = msp.Map.map.layers.length; i < l; i++){
-                layer = msp.Map.map.layers[i];
-                if (!layer.isBaseLayer && msp.Map.Util.isRaster(layer) && !layer._tobedestroyed) {
+            for (i = 0, l = M.Map.map.layers.length; i < l; i++){
+                layer = M.Map.map.layers[i];
+                if (!layer.isBaseLayer && M.Map.Util.isRaster(layer) && !layer._tobedestroyed) {
                     layers.push(layer);
                 }
 
@@ -166,7 +166,7 @@
             /*
              * Roll over layer descrpiption properties
              */
-            self.popup.$b.append('<div class="hint">'+msp.Util._("Hint - drag&drop rows to reorder layer display")+'</div><table class="lmrcfg sortable"><thead><tr><th></th><th>'+msp.Util._("Name")+'</th><th>'+msp.Util._("Opacity")+'</th><th>'+msp.Util._("Visibility")+'</th><th></th></tr></thead><tbody></tbody></table>');
+            self.popup.$b.append('<div class="hint">'+M.Util._("Hint - drag&drop rows to reorder layer display")+'</div><table class="lmrcfg sortable"><thead><tr><th></th><th>'+M.Util._("Name")+'</th><th>'+M.Util._("Opacity")+'</th><th>'+M.Util._("Visibility")+'</th><th></th></tr></thead><tbody></tbody></table>');
 
             $tb = $('tbody', self.popup.$b).sortable({
                 revert:true,
@@ -178,19 +178,19 @@
                      * 
                      * Get the layer just below the moved layer
                      */
-                    var layer = msp.Map.Util.getLayerByMspID(ui.item.attr("mspid")),
-                    nLayer = msp.Map.Util.getLayerByMspID(ui.item.next().attr('mspid')),
-                    pLayer = msp.Map.Util.getLayerByMspID(ui.item.prev().attr('mspid'));
+                    var layer = M.Map.Util.getLayerByMID(ui.item.attr("Mid")),
+                    nLayer = M.Map.Util.getLayerByMID(ui.item.next().attr('Mid')),
+                    pLayer = M.Map.Util.getLayerByMID(ui.item.prev().attr('Mid'));
 
                     /*
                      * If no layer is below or over the moved layer then do nothing.
                      * Otherwise, set the moved layer index to its new index
                      */
                     if (nLayer) {
-                        msp.Map.map.setLayerIndex(layer, msp.Map.map.getLayerIndex(nLayer) + 1);
+                        M.Map.map.setLayerIndex(layer, M.Map.map.getLayerIndex(nLayer) + 1);
                     }
                     else if (pLayer) {
-                        msp.Map.map.setLayerIndex(layer, msp.Map.map.getLayerIndex(pLayer) - 1);
+                        M.Map.map.setLayerIndex(layer, M.Map.map.getLayerIndex(pLayer) - 1);
                     }
 
                 }
@@ -198,8 +198,8 @@
             });
             for (i = 0, l = layers.length; i < l; i++) {
                 layer = layers[i];
-                id = layer['_msp'].mspID;
-                $tb.append('<tr mspid="'+id+'"><td><img src="'+layer['_msp'].icon+'" class="middle"/></td><td class="title clickable" id="'+id+'ce">'+msp.Util.shorten(layer.name,20)+'</td><td><div id="'+id+'op" class="element"></div></td><td class="clickable" id="'+id+'vy">'+ msp.Util._(layer.getVisibility() ? "Hide" : "Show") +'</td><td class="clickable remove" id="'+id+'rm">&times;</td></tr>');
+                id = layer['_M'].MID;
+                $tb.append('<tr Mid="'+id+'"><td><img src="'+layer['_M'].icon+'" class="middle"/></td><td class="title clickable" id="'+id+'ce">'+M.Util.shorten(layer.name,20)+'</td><td><div id="'+id+'op" class="element"></div></td><td class="clickable" id="'+id+'vy">'+ M.Util._(layer.getVisibility() ? "Hide" : "Show") +'</td><td class="clickable remove" id="'+id+'rm">&times;</td></tr>');
 
                 (function(id, layer) {
 
@@ -209,7 +209,7 @@
                     $("#"+id+"ce").click(function(e) {
                         e.preventDefault();
                         e.stopPropagation();
-                        msp.Map.zoomTo(layer.getDataExtent() || layer["_msp"].bounds);
+                        M.Map.zoomTo(layer.getDataExtent() || layer["_M"].bounds);
                         return false;
                     });
                     
@@ -234,7 +234,7 @@
                     $("#"+id+"vy").click(function(e) {
                         e.preventDefault();
                         e.stopPropagation();
-                        msp.Map.Util.setVisibility(layer, !layer.getVisibility());
+                        M.Map.Util.setVisibility(layer, !layer.getVisibility());
                         return false;
                     });
                     
@@ -244,7 +244,7 @@
                     $("#"+id+"rm").click(function(e){
                         e.preventDefault();
                         e.stopPropagation();
-                        msp.Map.removeLayer(layer, true);
+                        M.Map.removeLayer(layer, true);
                         return false;
                     });
 
@@ -260,9 +260,9 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.RastersManager._o = this;
+        M.Plugins.RastersManager._o = this;
         
         return this;
         
     };
-})(window.msp);
+})(window.M);

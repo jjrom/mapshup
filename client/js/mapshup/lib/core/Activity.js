@@ -39,16 +39,16 @@
 /**
  * mapshup Activity object
  */
-(function(msp) {
+(function(M) {
     
     
-    msp.Activity = function() {
+    M.Activity = function() {
         
         /*
          * Only one Activity object instance is created
          */
-        if (msp.Activity._o) {
-            return msp.Activity._o;
+        if (M.Activity._o) {
+            return M.Activity._o;
         }
         
         /**
@@ -76,12 +76,12 @@
             /*
              * Set the container
              */
-            this.$c = msp.$container;
+            this.$c = M.$container;
             
             /*
              * Create activity div
              */
-            this.$a = msp.Util.$$('#activity', this.$c).css(
+            this.$a = M.Util.$$('#activity', this.$c).css(
             {
                 'display':'none',
                 'position':'fixed',
@@ -104,13 +104,13 @@
                 'left':'0',
                 'width':'40px',
                 'height':'480px',
-                'background-image': "url('"+msp.Util.getImgUrl('activity.png')+"')" 
+                'background-image': "url('"+M.Util.getImgUrl('activity.png')+"')" 
             });
             
             /*
              * Add event on resize
              */
-            msp.events.register("resizeend", this, function(scope) {
+            M.events.register("resizeend", this, function(scope) {
                 scope.$a.css({
                     'top': scope.$c.offset().top + (scope.$c.height() - scope.$a.height()) / 2,
                     'left': scope.$c.offset().left + (scope.$c.width() - scope.$a.width()) / 2
@@ -166,10 +166,10 @@
         /*
          * Create unique instance
          */
-        msp.Activity._o = this;
+        M.Activity._o = this;
         
         return this;
         
     }
     
-})(window.msp);
+})(window.M);

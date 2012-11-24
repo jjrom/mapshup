@@ -35,7 +35,7 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-(function (msp,Map){
+(function (M,Map){
     
     Map.layerTypes["Pleiades"] = {
 
@@ -81,15 +81,15 @@
             /*
              * Set title
              */
-            layerDescription.title = msp.Util.getTitle(layerDescription)
+            layerDescription.title = M.Util.getTitle(layerDescription)
             
             /*
              * Pleiades layer are unclusterized
              */
-            options["_msp"].clusterized = false;
+            options["_M"].clusterized = false;
 
             return geojson.add(layerDescription, options, "/plugins/cnes/phr2json.php?url=");
 
         }
     }
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

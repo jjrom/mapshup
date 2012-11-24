@@ -41,15 +41,15 @@
  * Assisted Classification of eArth observation ImAges
  *
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.WPSClient = function() {
+    M.Plugins.WPSClient = function() {
         
         /*
          * Only one WPSClient object instance is created
          */
-        if (msp.Plugins.WPSClient._o) {
-            return msp.Plugins.WPSClient._o;
+        if (M.Plugins.WPSClient._o) {
+            return M.Plugins.WPSClient._o;
         }
         
         /*
@@ -110,7 +110,7 @@
                 /*
                  * Create a wps object
                  */
-                wps = new msp.WPS(url);
+                wps = new M.WPS(url);
                 
                 /*
                 * Register GetCapabilites event
@@ -122,18 +122,18 @@
                      */
                     if (!scope.items[url]) {
                         
-                        var id = msp.Util.getId();
+                        var id = M.Util.getId();
                         
                         /*
                          * Create a panel for this WPS
                          */
-                        var panelItem = msp.sp.add({
+                        var panelItem = M.sp.add({
                             id:id,
-                            icon:msp.Util.getImgUrl('configure.png'),
+                            icon:M.Util.getImgUrl('configure.png'),
                             title:wps.title,
                             classes:"wpsclient",
                             mask:true,
-                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes"></div></div><div style="float:right;width:60%;"><div class="describe">'+msp.Util._("No process selected")+'</div><form method="POST" action="#"><div class="puts"></div></form><div class="outputs"></div></div>'
+                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes"></div></div><div style="float:right;width:60%;"><div class="describe">'+M.Util._("No process selected")+'</div><form method="POST" action="#"><div class="puts"></div></form><div class="outputs"></div></div>'
                         });
                         
                         /*
@@ -149,8 +149,8 @@
                         /*
                         * Tell user that a new WPS panel is created
                         */
-                        msp.Util.message(msp.Util._("WPS server successfully added"));
-                        msp.sp.show(panelItem);
+                        M.Util.message(M.Util._("WPS server successfully added"));
+                        M.sp.show(panelItem);
                      
                     }   
                     
@@ -215,7 +215,7 @@
          */
         this.updateCapabilitiesContent = function(item) {
             
-            var id = msp.Util.getId(), process, identifier, $processes;
+            var id = M.Util.getId(), process, identifier, $processes;
             
             /*
              * Set '.info' div
@@ -225,9 +225,9 @@
              * a mapshup message popup
              * 
              */
-            $('.info', item.$d).html('<h1><a href="'+item.wps.url+'" title="'+item.wps.url+'" target="_blank">'+item.wps.title+'</a></h1><p>'+item.wps["abstract"]+' <a href="#" id="'+id+'" class="button inline">&nbsp;+&nbsp;</a></p><br/><h1>'+msp.Util._('Processes')+'</h1>');
+            $('.info', item.$d).html('<h1><a href="'+item.wps.url+'" title="'+item.wps.url+'" target="_blank">'+item.wps.title+'</a></h1><p>'+item.wps["abstract"]+' <a href="#" id="'+id+'" class="button inline">&nbsp;+&nbsp;</a></p><br/><h1>'+M.Util._('Processes')+'</h1>');
             $('#'+id).click(function(){
-                msp.Util.message(item.wps.toHTML(), -1);
+                M.Util.message(item.wps.toHTML(), -1);
                 return false;
             });
             
@@ -240,7 +240,7 @@
              */
             $processes = $('.processes', item.$d);
             for (identifier in item.wps.processes) {
-                id = msp.Util.getId();
+                id = M.Util.getId();
                 process = item.wps.processes[identifier];
                 $processes.append('<a href="#" jtitle="'+process['abstract']+'" id="'+id+'" class="button inline">'+process.title+'</a> ');
                 (function(process,$id, item) {
@@ -250,7 +250,7 @@
                         item.wps.describeProcess(process.identifier);
                         return false;
                     });
-                    msp.tooltip.add($id, 's');
+                    M.tooltip.add($id, 's');
                 })(process,$('#'+id), item);
             }
             
@@ -265,18 +265,18 @@
          * Update content of process description panel contained
          * within 'describe' CSS class
          * 
-         *  @param {Object} process : msp.WPS.Process 
+         *  @param {Object} process : M.WPS.Process 
          */
         this.updateDescribeProcessContent = function(process) {
             
-            var type, putsDescription, i, j, l, id, $id, put, $list, executeId = msp.Util.getId(), item = this.items[process.wps.url];
+            var type, putsDescription, i, j, l, id, $id, put, $list, executeId = M.Util.getId(), item = this.items[process.wps.url];
             
             /*
              * Set '.info' div
              * 
              * Display Process title and abstract.
              */
-            $('.describe', item.$d).html('<h1 title="'+process.identifier+'">'+process.title+'</h1><p>'+process["abstract"]+'</p><div class="execute"><a href="#" id="'+executeId+'" class="button inline" jtitle="'+msp.Util._("Execute process")+'">&nbsp;'+msp.Util._('Execute')+'</a></div>');
+            $('.describe', item.$d).html('<h1 title="'+process.identifier+'">'+process.title+'</h1><p>'+process["abstract"]+'</p><div class="execute"><a href="#" id="'+executeId+'" class="button inline" jtitle="'+M.Util._("Execute process")+'">&nbsp;'+M.Util._('Execute')+'</a></div>');
             
             /*
              * Action on execute button
@@ -285,7 +285,7 @@
                 process.execute();
                 return false;
             });
-            msp.tooltip.add($('#'+executeId), 'n', 20);
+            M.tooltip.add($('#'+executeId), 'n', 20);
             
             /*
              * Set '.puts' div
@@ -319,7 +319,7 @@
              *      </div>      
              * 
              */
-            $('.puts', item.$d).html('<h1>'+msp.Util._('Set inputs')+'</h1><div class="list"></div>');
+            $('.puts', item.$d).html('<h1>'+M.Util._('Set inputs')+'</h1><div class="list"></div>');
             $list = $('.list', $('.puts', item.$d));
             
             /*
@@ -337,7 +337,7 @@
                 for (i = 0, l = putsDescription.length; i < l; i++) {
 
                     put = putsDescription[i];
-                    id = msp.Util.getId();
+                    id = M.Util.getId();
 
                     /*
                      * Create Input or Output div with a CSS 'input' class.
@@ -358,7 +358,7 @@
                      * Add a tooltip on the input title
                      * This tooltip contains input abstract
                      */
-                    msp.tooltip.add($(".title", $id), 'w');
+                    M.tooltip.add($(".title", $id), 'w');
 
                     /*
                      * The hard part...
@@ -419,9 +419,9 @@
                 /*
                  * Add new features within WPSClient layer
                  */
-                geoType = msp.Map.Util.getGeoType(result.data["mimeType"]);
+                geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
                 if (geoType === 'GML') {
-                    this.load(msp.Map.Util.GML.toGeoJSON(result.data.value,{
+                    this.load(M.Map.Util.GML.toGeoJSON(result.data.value,{
                         title:process.title,
                         processid:process.identifier,
                         description:process["abstract"],
@@ -458,14 +458,14 @@
          *   IMPORTANT : jQuery .data() is used to store addtionnal information on value
          *   (for example UOM if specified)
          *   
-         *   @param {Object} process : msp.WPS.Process
+         *   @param {Object} process : M.WPS.Process
          *   @param {Object} put : Input object containing LiteralData
          *   @param {Object} $parent
          *      
          */
         this.displayLiteralData = function(process, put, $parent) {
             
-            var type = 'input', data = put.literalData, id = msp.Util.getId(), $id, $uom, $av, i, l, self = this;
+            var type = 'input', data = put.literalData, id = M.Util.getId(), $id, $uom, $av, i, l, self = this;
             
             /*
              * Store Input type within $parent.data()
@@ -511,7 +511,7 @@
                 $av.trigger('change');
             }
             else {
-                $parent.append('<span id="'+id+'" class="hover" title="'+msp.Util._("Change value")+'">'+(data.defaultValue || msp.Util._("Not set"))+'</span>');
+                $parent.append('<span id="'+id+'" class="hover" title="'+M.Util._("Change value")+'">'+(data.defaultValue || M.Util._("Not set"))+'</span>');
                 $id = $('#'+id);
             }
             
@@ -576,9 +576,9 @@
                  */
                 $id.click(function(e) {
 
-                    msp.Util.askFor({
+                    M.Util.askFor({
                         title:put.title,
-                        content:msp.Util._("Enter a valid")+' <a href="'+data.reference+'" target="_blank">'+data.dataType+'</a>',
+                        content:M.Util._("Enter a valid")+' <a href="'+data.reference+'" target="_blank">'+data.dataType+'</a>',
                         dataType:data.dataType,
                         /* TODO */
                         bounds:data.bounds,
@@ -636,7 +636,7 @@
          *   IMPORTANT : jQuery .data() is used to store addtionnal information on value
          *   (for example UOM if specified)
          *   
-         *   @param {Object} process : msp.WPS.Process
+         *   @param {Object} process : M.WPS.Process
          *   @param {Object} put : Input or Output object containing LiteralData
          *   @param {Object} $parent
          *      
@@ -730,14 +730,14 @@
          *   IMPORTANT : jQuery .data() is used to store addtionnal information on value
          *   (for example UOM if specified)
          *   
-         *   @param {Object} process : msp.WPS.Process
+         *   @param {Object} process : M.WPS.Process
          *   @param {Object} put : Input object containing ComplexData
          *   @param {Object} $parent
          *      
          */
         this.displayComplexData = function(process, put, $parent) {
             
-            var type = 'input', data = put.complexData, id = msp.Util.getId(), idgeoselect = msp.Util.getId(), idgeodraw = msp.Util.getId(), self = this;
+            var type = 'input', data = put.complexData, id = M.Util.getId(), idgeoselect = M.Util.getId(), idgeodraw = M.Util.getId(), self = this;
             
             /*
              * Store Input type within $parent.data()
@@ -747,7 +747,7 @@
             /*
             * Set content i.e. add an 'Upload' action
             */
-            $parent.append('<img class="hover middle" src="'+msp.Util.getImgUrl('upload.png')+'" id="'+id+'" title="'+msp.Util._("Upload")+'"/>');
+            $parent.append('<img class="hover middle" src="'+M.Util.getImgUrl('upload.png')+'" id="'+id+'" title="'+M.Util._("Upload")+'"/>');
             
             /*
              * Ask for value on click
@@ -757,7 +757,7 @@
             .addClass('warning')
             .click(function(e) {
 
-                msp.Util.askFor({
+                M.Util.askFor({
                     title:put.title,
                     dataType:"complexData",
                     defaultFormat:data["default"],
@@ -776,7 +776,7 @@
                              * Update link content 
                              */
                             $('#'+id).attr('title', data.file ? data.file.name : data.fileUrl).addClass('hilite').removeClass('warning');
-                            $('#'+idgeoselect).attr('title',msp.Util._("Select feature on Map")).removeClass('hilite').addClass('warning');
+                            $('#'+idgeoselect).attr('title',M.Util._("Select feature on Map")).removeClass('hilite').addClass('warning');
                             
                             /*
                              * Store file or fileUrl within parent data cache
@@ -802,11 +802,11 @@
              * mimeTypes, then use can also choose one feature within the map :)
              * 
              */
-            if (data["default"] && msp.Map.Util.getGeoType(data["default"].mimeType)) {
+            if (data["default"] && M.Map.Util.getGeoType(data["default"].mimeType)) {
                  
                 $parent
-                .append(' <img src="'+msp.Util.getImgUrl('earth.png')+'" id="'+idgeoselect+'" class="hover middle" title="'+msp.Util._("Select feature on Map")+'"/>')
-                .append(' <img src="'+msp.Util.getImgUrl('drawing.png')+'" id="'+idgeodraw+'" class="hover middle" title="'+msp.Util._("Draw feature on Map")+'"/>');
+                .append(' <img src="'+M.Util.getImgUrl('earth.png')+'" id="'+idgeoselect+'" class="hover middle" title="'+M.Util._("Select feature on Map")+'"/>')
+                .append(' <img src="'+M.Util.getImgUrl('drawing.png')+'" id="'+idgeodraw+'" class="hover middle" title="'+M.Util._("Draw feature on Map")+'"/>');
                 
                 /*
                  * Select geometry within the map
@@ -821,28 +821,28 @@
                     /*
                      * Set a callback function on FeatureInfo
                      */
-                    msp.Map.featureInfo.bypassCallback = function(feature) {
+                    M.Map.featureInfo.bypassCallback = function(feature) {
                         
                         /*
                          * Hide mask
                          */
                         $mask.hide();
-                        msp.Map.featureInfo.bypassCallback = null;
+                        M.Map.featureInfo.bypassCallback = null;
                         
                         /*
                          * Update "Select on map" action display and store feature in the .data() cache
                          */
                         if (feature) {
                             
-                            $('#'+id).attr('title',msp.Util._("Upload")).removeClass('hilite').addClass('warning');
-                            $('#'+idgeoselect).attr('title',msp.Map.Util.Feature.getTitle(feature)).addClass('hilite').removeClass('warning');
+                            $('#'+id).attr('title',M.Util._("Upload")).removeClass('hilite').addClass('warning');
+                            $('#'+idgeoselect).attr('title',M.Map.Util.Feature.getTitle(feature)).addClass('hilite').removeClass('warning');
                             
                             /*
                              * Store file or fileUrl within parent data cache
                              */
                             $parent
                             .removeData('fileUrl')
-                            .data('data', msp.Map.Util.Feature.toGeo(feature, data["default"]))
+                            .data('data', M.Map.Util.Feature.toGeo(feature, data["default"]))
                             .data('format', data["default"]);
                             self.setPuts(process, type);
                             
@@ -853,14 +853,14 @@
                      * Show mask
                      */
                     $mask
-                    .html('<div class="content">'+msp.Util._("Select a feature on map")+' (<a href="#" class="cancel">'+msp.Util._("Cancel")+'<a/>)</div>')
+                    .html('<div class="content">'+M.Util._("Select a feature on map")+' (<a href="#" class="cancel">'+M.Util._("Cancel")+'<a/>)</div>')
                     .show();
                     
                     /*
                      * Add a cancel action
                      */
                     $('.cancel', $mask).click(function(e) {
-                        msp.Map.featureInfo.bypassCallback = null;
+                        M.Map.featureInfo.bypassCallback = null;
                         $mask.hide();
                     });
                     
@@ -895,14 +895,14 @@
          *   
          *      <span id="idv" class="hilite">---</span>
          *   
-         *   For geometrical output (i.e. msp.Map.Util.getGeoType(data["default"].mimeType) is not null)
+         *   For geometrical output (i.e. M.Map.Util.getGeoType(data["default"].mimeType) is not null)
          *   then nothing is appended to $parent container, since geometrical results are directly
          *   displayed within the map
          *   
          *   IMPORTANT : jQuery .data() is used to store additionnal information on value
          *   (for example UOM if specified)
          *   
-         *   @param {Object} process : msp.WPS.Process
+         *   @param {Object} process : M.WPS.Process
          *   @param {Object} put : Input or Output object containing ComplexOutput
          *   @param {Object} $parent
          *      
@@ -920,7 +920,7 @@
             /*
              * Geometrical output options are not displayed within $parent
              */
-            if (msp.Map.Util.getGeoType(data["default"].mimeType)){
+            if (M.Map.Util.getGeoType(data["default"].mimeType)){
                 self.setPuts(process, type);
                 $parent.hide();
             }
@@ -1038,7 +1038,7 @@
                 return this._layer
             }
             
-            this._layer = msp.Map.addLayer({
+            this._layer = M.Map.addLayer({
                 type:"GeoJSON",
                 title:"WPS results",
                 clusterized:false
@@ -1054,12 +1054,12 @@
          */
         this.load = function(data) {
             
-            if (msp.Map.layerTypes["GeoJSON"]) {
+            if (M.Map.layerTypes["GeoJSON"]) {
                 
                 /*
                  * Add new feature(s) and center on it
                  */
-                msp.Map.layerTypes["GeoJSON"].load({
+                M.Map.layerTypes["GeoJSON"].load({
                     data:data,
                     layer:this.getLayer(),
                     zoomOnNew:true
@@ -1072,8 +1072,8 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.WPSClient._o = this;
+        M.Plugins.WPSClient._o = this;
         
         return this;
     };
-})(window.msp);
+})(window.M);

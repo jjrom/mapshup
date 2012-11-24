@@ -39,9 +39,9 @@
 /**
  * Mapshup South panel
  */
-(function (msp) {
+(function (M) {
 
-    msp.SouthPanel = function (options) {
+    M.SouthPanel = function (options) {
         
         /*
          * Paranoid mode
@@ -56,12 +56,12 @@
         /*
          * Panel height
          */
-        this.h = msp.Util.getPropertyValue(options, "h", 300);
+        this.h = M.Util.getPropertyValue(options, "h", 300);
         
         /*
          * Panel width
          */
-        this.w = msp.Util.getPropertyValue(options, "w", '70%');
+        this.w = M.Util.getPropertyValue(options, "w", '70%');
         
         /**
          * Current tabs page number
@@ -87,7 +87,7 @@
          * If true, the panel is display over the map
          * If false, the panel "push" the map
          */
-        this.over = msp.Util.getPropertyValue(options, "over", true);
+        this.over = M.Util.getPropertyValue(options, "over", true);
         
         /*
          * Item container padding
@@ -103,7 +103,7 @@
          */
         this.init = function() {
         
-            var idp = msp.Util.getId(), idn = msp.Util.getId(), self = this;
+            var idp = M.Util.getId(), idn = M.Util.getId(), self = this;
             
             /*
              * mapshup can have one and only one SouthPanel
@@ -112,8 +112,8 @@
              * it is returned instead of creating a new one
              *
              */
-            if (msp.SouthPanel._o) {
-                return msp.SouthPanel._o;
+            if (M.SouthPanel._o) {
+                return M.SouthPanel._o;
             }
             
             /*
@@ -121,15 +121,15 @@
              * with a minimum value of 300px
              */
             if (self.h === -1) {
-                self.h = Math.max(Math.round(2 * msp.$map.height() / 5), 300);
+                self.h = Math.max(Math.round(2 * M.$map.height() / 5), 300);
             }
             
             /*
-             * Create a Panel div within msp.$container
+             * Create a Panel div within M.$container
              * 
              * <div id="..." class="pns"></div>
              */
-            self.$d = msp.Util.$$('#'+msp.Util.getId(), msp.$container).addClass('pns').css({
+            self.$d = M.Util.$$('#'+M.Util.getId(), M.$container).addClass('pns').css({
                 'bottom':-self.h,
                 'height':self.h,
                 /* Force width to 100% if panel "push" the map (i.e. over is false) */
@@ -160,10 +160,10 @@
             /*
              * Panel width follow the width of the map except for "over" panel
              */
-            msp.Map.events.register("resizeend", self, function(scope){
+            M.Map.events.register("resizeend", self, function(scope){
                 
                 if (!scope.over) {
-                    scope.$d.width(msp.$container.width());
+                    scope.$d.width(M.$container.width());
                 }
                 
             });
@@ -171,7 +171,7 @@
             /*
              * Panel width follow the width of the map except for "over" panel
              */
-            msp.Map.events.register("resizeend", self, function(scope){
+            M.Map.events.register("resizeend", self, function(scope){
                 
                 scope.refreshTabs(scope);
                 
@@ -188,7 +188,7 @@
             /*
              * Set a SouthPanel reference
              */
-            msp.SouthPanel._o = self;
+            M.SouthPanel._o = self;
             
             return self;
             
@@ -417,7 +417,7 @@
             /*
              * By default, panel is not removable
              */
-            content.unremovable = msp.Util.getPropertyValue(content, "unremovable", true);
+            content.unremovable = M.Util.getPropertyValue(content, "unremovable", true);
             
             /*
              * If an item with identifier 'id' already exists,
@@ -436,7 +436,7 @@
                 item = {
                     id:content.id,
                     pn:self,
-                    $d:msp.Util.$$('#'+content.id, self.$d).addClass('pnsi'+(self.over ? 't' : '')).css({
+                    $d:M.Util.$$('#'+content.id, self.$d).addClass('pnsi'+(self.over ? 't' : '')).css({
                         'margin':self.padding.top+'px '+ (self.over ? self.padding.right : 0) + 'px '+self.padding.bottom+'px 0px'
                     })
                 }
@@ -444,8 +444,8 @@
                 /*
                  * Append tab to panel
                  */
-                tid = msp.Util.getId();
-                self.$d.append('<a id="'+tid+'t" class="tab vtab">'+(content.icon ? '<img src="'+content.icon+'">&nbsp;' : '')+msp.Util._(content.title)+'</a>');
+                tid = M.Util.getId();
+                self.$d.append('<a id="'+tid+'t" class="tab vtab">'+(content.icon ? '<img src="'+content.icon+'">&nbsp;' : '')+M.Util._(content.title)+'</a>');
                 
                 /*
                  * Set a trigger on tab
@@ -460,7 +460,7 @@
                  * Add close button
                  */
                 if (!content.unremovable) {
-                    msp.Util.addClose(item.$tab, function(e){
+                    M.Util.addClose(item.$tab, function(e){
                         e.stopPropagation();
                         self.remove(item);
                     });
@@ -477,7 +477,7 @@
             /*
              * Update item content
              */
-            id = msp.Util.getId();
+            id = M.Util.getId();
             
             item.$d.html((content.mask ? '<div id="'+id+'mask" class="mask" style="display:none;width:100%;height:'+self.h+'px;"></div>' : '') + '<div id="'+id+'" style="height:'+(self.h - self.padding.top - self.padding.bottom)+'px"'+(content.classes ? ' class="'+content.classes+'"' : '')+'>'+(content.html || "")+'</div>');
             
@@ -601,11 +601,11 @@
              * Show panel
              */
             if (!self.over) {
-                mc = msp.$map.parent(); // msp.$map container reference
-                mch = msp.$map.height();
-                extent = msp.Map.map.getExtent(),
+                mc = M.$map.parent(); // M.$map container reference
+                mch = M.$map.height();
+                extent = M.Map.map.getExtent(),
                 lon = (extent.right + extent.left) / 2;
-                lat = ((((mc.height() - self.h) * (extent.bottom - extent.top)) / msp.$map.height()) + (2 * extent.top)) / 2;
+                lat = ((((mc.height() - self.h) * (extent.bottom - extent.top)) / M.$map.height()) + (2 * extent.top)) / 2;
             }
             
             self.$d.stop().animate({
@@ -630,8 +630,8 @@
                      * Recenter map after its size change (unless panel "over" attribute is set to true)
                      */
                     if (!self.over) {
-                        msp.Map.map.setCenter(new OpenLayers.LonLat(lon, lat), msp.Map.map.getZoom());
-                        msp.events.trigger('resizeend');
+                        M.Map.map.setCenter(new OpenLayers.LonLat(lon, lat), M.Map.map.getZoom());
+                        M.events.trigger('resizeend');
                     }
 
                     /*
@@ -704,11 +704,11 @@
              * Hide panel
              */
             if (!self.over) {
-                mc = msp.$map.parent(); // msp.$map container reference
-                mch = msp.$map.height();
-                extent = msp.Map.map.getExtent(),
+                mc = M.$map.parent(); // M.$map container reference
+                mch = M.$map.height();
+                extent = M.Map.map.getExtent(),
                 lon = (extent.right + extent.left) / 2;
-                lat = ((((mc.height() + self.h) * (extent.bottom - extent.top)) / msp.$map.height()) + (2 * extent.top)) / 2;
+                lat = ((((mc.height() + self.h) * (extent.bottom - extent.top)) / M.$map.height()) + (2 * extent.top)) / 2;
             }
             
             self.$d.stop().animate({
@@ -733,8 +733,8 @@
                      * Recenter map after its size change (unless panel "over" attribute is set to true)
                      */
                     if (!self.over) {
-                        msp.Map.map.setCenter(new OpenLayers.LonLat(lon, lat), msp.Map.map.getZoom());
-                        msp.events.trigger('resizeend');
+                        M.Map.map.setCenter(new OpenLayers.LonLat(lon, lat), M.Map.map.getZoom());
+                        M.events.trigger('resizeend');
                     }
 
                     /*
@@ -820,4 +820,4 @@
         return this.init();
       
     };
-})(window.msp);
+})(window.M);

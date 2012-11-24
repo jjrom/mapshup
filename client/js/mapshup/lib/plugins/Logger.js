@@ -41,15 +41,15 @@
  * Log every move to mapshup database
  *
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Logger = function() {
+    M.Plugins.Logger = function() {
         
         /*
          * Only one Logger object instance is created
          */
-        if (msp.Plugins.Logger._o) {
-            return msp.Plugins.Logger._o;
+        if (M.Plugins.Logger._o) {
+            return M.Plugins.Logger._o;
         }
         
         /*
@@ -66,27 +66,27 @@
              * Default options
              */
             $.extend(this.options, {
-                url:msp.Util.repareUrl(msp.Util.getAbsoluteUrl(this.options.url || "/plugins/logger/logger.php?"))+msp.Util.abc,
+                url:M.Util.repareUrl(M.Util.getAbsoluteUrl(this.options.url || "/plugins/logger/logger.php?"))+M.Util.abc,
                 realtime:this.options.realtime || false
             });
             
             /*
              * Register moveend event
              */
-            msp.Map.events.register("moveend", this, function(map, scope) {
+            M.Map.events.register("moveend", this, function(map, scope) {
         
-                var state = msp.Map.getState(),
-                    projected = msp.Map.Util.p2d(map.getExtent().clone());
+                var state = M.Map.getState(),
+                    projected = M.Map.Util.p2d(map.getExtent().clone());
 
-                if (map.getZoom() <= msp.Map.lowestZoomLevel) {
+                if (map.getZoom() <= M.Map.lowestZoomLevel) {
                     return;
                 }
 
                 /*
                  * Avoid Logger to store re-visited "history" extent
                  */
-                if (msp.Map.doNotLog) {
-                    msp.Map.doNotLog = false;
+                if (M.Map.doNotLog) {
+                    M.Map.doNotLog = false;
                 }
                 
                 /*
@@ -94,7 +94,7 @@
                  * each time baseLayer is changed, 'moveend' is triggered
                  * even if map.getExtent() did not change
                  */
-                if (state.center.equals(msp.Map.currentState.center) && state.center.resolution(msp.Map.currentState.resolution)) {
+                if (state.center.equals(M.Map.currentState.center) && state.center.resolution(M.Map.currentState.resolution)) {
                     return;
                 }
 
@@ -126,7 +126,7 @@
             /*
              * Roll over input query parameters
              */
-            obj.zoom = msp.Map.map.getZoom();
+            obj.zoom = M.Map.map.getZoom();
             
             for (key in obj) {
                 query += "&" + key + "=" + obj[key];
@@ -136,7 +136,7 @@
                 query += "&realtime=true";
             }
 
-            query += "&userid="+msp.Util.getUserInfo().userid;
+            query += "&userid="+M.Util.getUserInfo().userid;
             
             /**
              * Send log data to mapshup database
@@ -145,7 +145,7 @@
              *      _devel/database
              */
             $.ajax({
-                url:msp.Util.proxify(this.options.url+query),
+                url:M.Util.proxify(this.options.url+query),
                 async:true,
                 dataType:"text"
             });
@@ -156,9 +156,9 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Logger._o = this;
+        M.Plugins.Logger._o = this;
         
         return this;
         
     };
-})(window.msp);
+})(window.M);

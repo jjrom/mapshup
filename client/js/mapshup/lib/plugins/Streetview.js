@@ -40,15 +40,15 @@
  * Google Streetview plugin
  * 
  */
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Streetview = function() {
+    M.Plugins.Streetview = function() {
         
         /*
          * Only one Streetview object instance is created
          */
-        if (msp.Plugins.Streetview._o) {
-            return msp.Plugins.Streetview._o;
+        if (M.Plugins.Streetview._o) {
+            return M.Plugins.Streetview._o;
         }
         
         /**
@@ -79,17 +79,17 @@
              * If not, plugin is discarded
              */
             if (typeof google !== "object" || google.maps === undefined) {
-                msp.Util.message(msp.Util._("Google libraries not loaded. Streetview is disabled"));
+                M.Util.message(M.Util._("Google libraries not loaded. Streetview is disabled"));
                 return null;
             }
 
             /*
              * Add "Streetview" item in menu
              */
-            if (msp.menu) {
-                msp.menu.add([
+            if (M.menu) {
+                M.menu.add([
                 {
-                    id:msp.Util.getId(),
+                    id:M.Util.getId(),
                     ic:"streetview.png",
                     ti:"Streetview",
                     cb:function() {
@@ -97,12 +97,12 @@
                         /*
                          * Set lonlat to new position
                          */
-                        self.lonlat = msp.Map.Util.p2d(msp.menu.lonLat.clone());
+                        self.lonlat = M.Map.Util.p2d(M.menu.lonLat.clone());
                         
                         /*
                          * Activate panel item
                          */
-                        msp.sp.show(self.panelItem);
+                        M.sp.show(self.panelItem);
                         
                     }
                 }
@@ -118,13 +118,13 @@
             /*
              * Register events
              */
-            msp.Map.events.register("layersend", self, function(action, layer, scope) {
+            M.Map.events.register("layersend", self, function(action, layer, scope) {
 
                 /*
                  * Each time a layer is added make sure streetview layer is on top
                  */
                 if (action === "add" && scope.svw) {
-                    msp.Map.Util.setLayerOnTop(scope.svw.msp.layer);
+                    M.Map.Util.setLayerOnTop(scope.svw.M.layer);
                 }
                 
             });
@@ -132,9 +132,9 @@
             /*
              * Add Streetview to South Panel
              */
-            self.panelItem = msp.sp.add({
-                id:msp.Util.getId(),
-                icon:msp.Util.getImgUrl('streetview.png'),
+            self.panelItem = M.sp.add({
+                id:M.Util.getId(),
+                icon:M.Util.getImgUrl('streetview.png'),
                 title:"Streetview",
                 onclose:function() {
                     self.lonlat = null;
@@ -143,7 +143,7 @@
                     }
                 },
                 onshow:function() {
-                    self.show(self, self.lonlat || msp.Map.Util.p2d(msp.Map.map.getCenter()));
+                    self.show(self, self.lonlat || M.Map.Util.p2d(M.Map.map.getCenter()));
                 }
             });
             
@@ -167,7 +167,7 @@
         this.initSvw = function() {
             
             var self = this,
-                lonlat = msp.Map.map.getCenter();
+                lonlat = M.Map.map.getCenter();
             
             /*
              * Streetview is already initialized
@@ -182,7 +182,7 @@
             !lonlat ? lonlat = {
                 lat:0,
                 lon:0
-            } : msp.Map.Util.p2d(lonlat);
+            } : M.Map.Util.p2d(lonlat);
 
             /*
              * Create StreetViewPanorama
@@ -190,9 +190,9 @@
             self.svw = new google.maps.StreetViewPanorama(self.$d[0]);
             
             /*
-             * Add msp object to streetview object
+             * Add M object to streetview object
              */
-            self.svw.msp = {
+            self.svw.M = {
                 
                 /*
                  * Array of events
@@ -203,11 +203,11 @@
                  * Create streetview layer
                  */
                 layer:new OpenLayers.Layer.Vector("__LAYER_STREETVIEW__",{
-                    projection:msp.Map.pc,
+                    projection:M.Map.pc,
                     displayInLayerSwitcher:false,
                     styleMap:new OpenLayers.StyleMap({
                         'default' :  new OpenLayers.Style({
-                            externalGraphic : msp.Util.getImgUrl("streetviewarrow.png"),
+                            externalGraphic : M.Util.getImgUrl("streetviewarrow.png"),
                             rotation:"${angle}",
                             pointRadius : 32
                         })
@@ -224,17 +224,17 @@
                     var pointLatLon,
                     feature;
                         
-                    if (scope.msp.layer.getVisibility() && scope.position) {
-                        scope.msp.layer.destroyFeatures();
+                    if (scope.M.layer.getVisibility() && scope.position) {
+                        scope.M.layer.destroyFeatures();
                         pointLatLon = new OpenLayers.Geometry.Point(scope.position.lng(), scope.position.lat());
-                        msp.Map.Util.d2p(pointLatLon);
+                        M.Map.Util.d2p(pointLatLon);
                         feature = (function (yaw) {
                             return new OpenLayers.Feature.Vector(pointLatLon,
                             {
                                 angle:yaw
                             });
                         })(scope.getPov().heading);
-                        scope.msp.layer.addFeatures(feature);
+                        scope.M.layer.addFeatures(feature);
                     }
                 }
                 
@@ -243,47 +243,47 @@
             /*
              * Add streetview layer to mapshup map
              */
-            msp.Map.addLayer({
+            M.Map.addLayer({
                 type:"Generic",
-                title:self.svw.msp.layer.name,
-                layer:self.svw.msp.layer,
+                title:self.svw.M.layer.name,
+                layer:self.svw.M.layer,
                 unremovable:true,
-                mspLayer:true,
+                MLayer:true,
                 hidden:true
             });
 
             /*
              * Update the streeview layer consequently to a position change
              */
-            self.svw.msp.events.push(google.maps.event.addListener(this.svw, "position_changed", function() {
-                this.msp.update(this);
+            self.svw.M.events.push(google.maps.event.addListener(this.svw, "position_changed", function() {
+                this.M.update(this);
             }));
 
             /*
              * Update the streetview layer consequently to a yaw change
              */
-            self.svw.msp.events.push(google.maps.event.addListener(this.svw, "pov_changed", function(){
-                this.msp.update(this);
+            self.svw.M.events.push(google.maps.event.addListener(this.svw, "pov_changed", function(){
+                this.M.update(this);
             }));
 
             /*
              * Update the streetview layer visibility consequently to a streetview visibility change
              */
-            self.svw.msp.events.push(google.maps.event.addListener(this.svw, "visible_changed", function(){
-                msp.Map.Util.setVisibility(this.msp.layer, this.visible);
+            self.svw.M.events.push(google.maps.event.addListener(this.svw, "visible_changed", function(){
+                M.Map.Util.setVisibility(this.M.layer, this.visible);
             }));
 
             /*
              * Trap the error
              */
-            self.svw.msp.events.push(google.maps.event.addListener(this.svw, "error", function(){
+            self.svw.M.events.push(google.maps.event.addListener(this.svw, "error", function(){
                 if (this.errorCode === 603) {
-                    msp.Util.message(msp.Util._("Error : Flash doesn't appear to be supported by your browser"));
+                    M.Util.message(M.Util._("Error : Flash doesn't appear to be supported by your browser"));
                     return;
                 }
                 if (this.errorCode === 600) {
                     
-                    var i,l,event,obj = self.svw.msp;
+                    var i,l,event,obj = self.svw.M;
 
                     /*
                      * Remove the google streetview events
@@ -296,7 +296,7 @@
                     /*
                      * Next remove streetview layer
                      */
-                    msp.Map.removeLayer(obj.layer, false);
+                    M.Map.removeLayer(obj.layer, false);
 
                     /*
                      * Nullify streetview object
@@ -322,7 +322,7 @@
             var self = this;
 
             return {
-                id:msp.Util.getId(),
+                id:M.Util.getId(),
                 icon:"streetview.png",
                 title:"Streetview",
                 tt:"Streetview",
@@ -331,12 +331,12 @@
                     /*
                      * Set lonlat to new position
                      */
-                    self.lonlat = msp.Map.Util.p2d(msp.Map.featureInfo._ll.clone());
+                    self.lonlat = M.Map.Util.p2d(M.Map.featureInfo._ll.clone());
                         
                     /*
                      * Activate panel item
                      */
-                    msp.sp.show(self.panelItem);
+                    M.sp.show(self.panelItem);
                     
                 }
             }
@@ -375,7 +375,7 @@
                     /**
                      * No Streetview panorama available
                      */
-                    msp.Util.message(msp.Util._("No Streetview data around this point"));
+                    M.Util.message(M.Util._("No Streetview data around this point"));
                 }
             });
 
@@ -399,14 +399,14 @@
              * Fullscreen mode
              */
             if (self.$d.height() === self.h) {
-                msp.sp.$d.css('height', msp.$map.height());
-                self.$d.css('height', msp.$map.height());
+                M.sp.$d.css('height', M.$map.height());
+                self.$d.css('height', M.$map.height());
             }
             /*
              * Normal mode
              */
             else {
-                msp.sp.$d.css('height', self.$d.h);
+                M.sp.$d.css('height', self.$d.h);
                 self.$d.css('height', self.$d.h);
             }
 
@@ -421,9 +421,9 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Streetview._o = this;
+        M.Plugins.Streetview._o = this;
         
         return this;
         
     };
-})(window.msp);
+})(window.M);

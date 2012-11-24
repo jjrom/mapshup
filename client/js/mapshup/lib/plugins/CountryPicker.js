@@ -41,15 +41,15 @@
  * Add a list of country in the East panel
  * Click on a country name zoom the map on it
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.CountryPicker = function() {
+    M.Plugins.CountryPicker = function() {
         
         /*
          * Only one CountryPicker object instance is created
          */
-        if (msp.Plugins.CountryPicker._o) {
-            return msp.Plugins.CountryPicker._o;
+        if (M.Plugins.CountryPicker._o) {
+            return M.Plugins.CountryPicker._o;
         }
         
         /**
@@ -86,9 +86,9 @@
             /*
              * Register CountryPicker action within NorthEast Toolbar triggering East panel 
              */
-            tb = new msp.Toolbar(self.options.position, self.options.orientation);
-            pn = new msp.Panel('e',{tb:tb});
-            self.btn = new msp.Button({
+            tb = new M.Toolbar(self.options.position, self.options.orientation);
+            pn = new M.Panel('e',{tb:tb});
+            self.btn = new M.Button({
                 tb:tb,
                 icon:"country.png",
                 tt:"Pick a country",
@@ -102,7 +102,7 @@
                  *      </div>
                  * </div>
                  */
-                container:pn.add('<div class="header">'+msp.Util._("Pick a country")+'</div><div class="body block expdbl jstfy"></div>'), //  AddLayer plugin is displayed within an East msp.Panel
+                container:pn.add('<div class="header">'+M.Util._("Pick a country")+'</div><div class="body block expdbl jstfy"></div>'), //  AddLayer plugin is displayed within an East M.Panel
                 activable:true,
                 scope:self
             });
@@ -119,13 +119,13 @@
              * Thus, the array must be sorted in case we
              * are not in another language
              */
-            msp.Util.sortArray(self.countries, "name");
+            M.Util.sortArray(self.countries, "name");
             
             /*
              * Process the country names alphabetically (use the lang property)
              */
             for (i = 0, l = self.countries.length; i < l; i++) {
-                name = msp.Util._(self.countries[i].name);
+                name = M.Util._(self.countries[i].name);
                 firstLetter = name.substring(1,0);
                 if (firstLetter !== lastFirstLetter) {
                     if (i !== 0) {
@@ -137,7 +137,7 @@
                 else {
                     $b.append('...');
                 }
-                id = msp.Util.getId();
+                id = M.Util.getId();
                 $b.append(' <a href="#" id="'+id+'">'+name+'</a> ');
                 (function(i,id,self) {
                     $('#'+id).click(function() {
@@ -153,8 +153,8 @@
         
         this.centerOn = function(index) {
             var coords = this.countries[index].bbox.split(','),
-                extent = msp.Map.Util.d2p(new OpenLayers.Bounds(coords[0],coords[1],coords[2],coords[3]));
-            msp.Map.map.zoomToExtent(extent);
+                extent = M.Map.Util.d2p(new OpenLayers.Bounds(coords[0],coords[1],coords[2],coords[3]));
+            M.Map.map.zoomToExtent(extent);
         };
 
         this.countries = [{
@@ -1404,9 +1404,9 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.CountryPicker._o = this;
+        M.Plugins.CountryPicker._o = this;
         
         return this;
         
     };        
-})(window.msp);
+})(window.M);

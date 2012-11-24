@@ -37,7 +37,7 @@
  */
 
 /**
- * Define msp.Map events
+ * Define M.Map events
  * 
  * Note on actions. Action name can be :
  * 
@@ -47,9 +47,9 @@
  *   - "features" : when features are added to a layer and replaced eventual existing layer features 
  *   - "featureskeep" : when features are added to existing features within a layer
  */
-(function (msp) {
+(function (M) {
       
-    msp.Map.Events = function(Map) {
+    M.Map.Events = function(Map) {
 
         /*
          * Only one Events object instance is created
@@ -59,7 +59,7 @@
         }
         
         /*
-         * Reference to msp.Map
+         * Reference to M.Map
          */
         this.map = Map.map;
         
@@ -104,7 +104,7 @@
         };
        
         /*
-         * Register an event to msp.Map
+         * Register an event to M.Map
          *
          * @input <String> eventname : Event name => 'resizeend', 'layersend', 'moveend'
          * @input <function> scope : scope related to this event
@@ -177,7 +177,7 @@
                         for (i = 0, l = f.length; i < l; i++) {
                             count += f[i].cluster ? f[i].cluster.length : 1;
                         }
-                        extra.layer["_msp"].count = count;
+                        extra.layer["_M"].count = count;
                     }
                     
                     for (i = 0, l = self.events["layersend"].length; i < l; i++) {
@@ -188,7 +188,7 @@
                          * Update layer index if needed
                          */
                         if (extra.layer && extra.action === "features") {
-                            msp.Map.Util.updateIndex(extra.layer);
+                            M.Map.Util.updateIndex(extra.layer);
                         }
                         
                         if (obj) {
@@ -200,7 +200,7 @@
                     /*
                      * Set mapshup load status
                      */
-                    if (!msp.isLoaded) {
+                    if (!M.isLoaded) {
                         
                         var layer, loading = false;
                         
@@ -209,7 +209,7 @@
                             layer = self.map.layers[i];
                             
                             /* Don't care of mapshup layers */
-                            if (!layer.hasOwnProperty('_msp') || layer["_msp"].mspLayer) {
+                            if (!layer.hasOwnProperty('_M') || layer["_M"].MLayer) {
                                 continue;
                             }
                             
@@ -218,13 +218,13 @@
                                 continue;
                             }
                             
-                            if (!layer._msp.isLoaded) {
+                            if (!layer._M.isLoaded) {
                                 loading = true;
                                 break;
                             }
                         }
                         if (!loading) {
-                            msp.isLoaded = true;
+                            M.isLoaded = true;
                             self.map.restrictedExtent ? self.map.zoomToExtent(self.map.restrictedExtent) : Map.setCenter(Map.Util.d2p(new OpenLayers.LonLat(Map.initialLocation.lon,Map.initialLocation.lat)), Map.initialLocation.zoom, true);
                         }
                     }
@@ -240,7 +240,7 @@
                     /*
                      * Clear layer loaded status
                      */
-                    extra["_msp"].isLoaded = false;
+                    extra["_M"].isLoaded = false;
 
                     /*
                      * The layer has been updated (for example Wikipedia layer)
@@ -262,7 +262,7 @@
                     /*
                      * Clear layer loaded status
                      */
-                    extra["_msp"].isLoaded = true;
+                    extra["_M"].isLoaded = true;
 
                     /*
                      * Update plugins
@@ -313,4 +313,4 @@
         return this;
 
     }
-})(window.msp);
+})(window.M);

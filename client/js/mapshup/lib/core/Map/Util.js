@@ -37,12 +37,12 @@
  */
 
 /**
- * Define msp.Map util functions
+ * Define M.Map util functions
  */
-(function(msp, Map) {
+(function(M, Map) {
     
     /*
-     * Initialize msp.Map.Util
+     * Initialize M.Map.Util
      */
     Map.Util = {};
     
@@ -131,13 +131,13 @@
              * First check if feature is a cluster
              */
             if (feature.cluster && feature.cluster.length > 0) {
-                return msp.Util._(feature.layer.name) + ": " + feature.cluster.length + " " + msp.Util._("entities");
+                return M.Util._(feature.layer.name) + ": " + feature.cluster.length + " " + M.Util._("entities");
             }
 
             /*
              * User can define is own title with layerDescription.featureInfo.title property
              */
-            if (feature.layer && feature.layer["_msp"].layerDescription.featureInfo && feature.layer["_msp"].layerDescription.featureInfo.title) {
+            if (feature.layer && feature.layer["_M"].layerDescription.featureInfo && feature.layer["_M"].layerDescription.featureInfo.title) {
                 
                 /*
                  * The tricky part :
@@ -152,7 +152,7 @@
                  *      will return "Hello my name is Jerome Gasperi"
                  * 
                  */
-                return feature.layer["_msp"].layerDescription.featureInfo.title.replace(/\$+([^\$])+\$/g, function(m,key,value) {
+                return feature.layer["_M"].layerDescription.featureInfo.title.replace(/\$+([^\$])+\$/g, function(m,key,value) {
                     var k = m.replace(/[\$\$]/g, '');
                     return Map.Util.Feature.getValue(feature, k, feature.attributes[k]);
                 });
@@ -199,9 +199,9 @@
             /*
              * Check if keys array is defined
              */
-            if (feature.layer && feature.layer["_msp"].layerDescription.hasOwnProperty("featureInfo")) {
+            if (feature.layer && feature.layer["_M"].layerDescription.hasOwnProperty("featureInfo")) {
                 
-                keys = feature.layer["_msp"].layerDescription.featureInfo.keys || [];
+                keys = feature.layer["_M"].layerDescription.featureInfo.keys || [];
 
                 /*
                  * Roll over the featureInfo.keys associative array.
@@ -254,16 +254,16 @@
              * Paranoid mode
              */
             if (!feature || !key) {
-                return msp.Util._(key);
+                return M.Util._(key);
             }
 
             /*
              * Check if keys array is defined
              * This array has preseance to everything else
              */
-            if (feature.layer["_msp"].layerDescription.hasOwnProperty("featureInfo")) {
+            if (feature.layer["_M"].layerDescription.hasOwnProperty("featureInfo")) {
                 
-                keys = feature.layer["_msp"].layerDescription.featureInfo.keys || [];
+                keys = feature.layer["_M"].layerDescription.featureInfo.keys || [];
                 
                 /*
                  * Roll over the featureInfo.keys associative array.
@@ -287,7 +287,7 @@
                          * Key value is now "v" value if specified
                          */
                         if (keys[k].hasOwnProperty("v")){
-                            return msp.Util._(keys[k].v);
+                            return M.Util._(keys[k].v);
                         }
                         
                         break;
@@ -301,15 +301,15 @@
              * If feature layer got a searchContext then use the connector
              * metadataTranslator array to replace the key
              */
-            c = feature.layer["_msp"].searchContext;
+            c = feature.layer["_M"].searchContext;
             if (c && c.connector) {
-                return msp.Util._(c.connector.metadataTranslator[key] || key);
+                return M.Util._(c.connector.metadataTranslator[key] || key);
             }
 
             /*
              * In any case returns a i18n translated string
              */
-            return msp.Util._(key);
+            return M.Util._(key);
         },
         
         /*
@@ -344,7 +344,7 @@
          */
         toWKT: function(feature) {
             if (feature && feature.geometry) {
-                return msp.Map.Util.p2d(feature.geometry.clone()).toString();
+                return M.Map.Util.p2d(feature.geometry.clone()).toString();
             }
             return "";
         },
@@ -366,7 +366,7 @@
                bounds.extend(features[i].geometry.getBounds());
            }
            
-           msp.Map.zoomTo(bounds);
+           M.Map.zoomTo(bounds);
            
         }
         
@@ -718,20 +718,20 @@
     };
     
     /**
-     * mspID is an unique identifier used to identify
+     * MID is an unique identifier used to identify
      * unambiguisly a specific layer
      */
-    Map.Util.getLayerByMspID = function(mspID){
-        if (!mspID || mspID === "") {
+    Map.Util.getLayerByMID = function(MID){
+        if (!MID || MID === "") {
             return null;
         }
         for (var j = 0, l = Map.map.layers.length; j < l; j++) {
             var layer = Map.map.layers[j];
             /*
-             * We use '==' instead of '===' in case that input mspID is a string
+             * We use '==' instead of '===' in case that input MID is a string
              * and not a numeric
              */
-            if (layer["_msp"] && (layer["_msp"].mspID == mspID)) {
+            if (layer["_M"] && (layer["_M"].MID == MID)) {
                 return layer;
             }
         }
@@ -754,7 +754,7 @@
         
         var i,l,b = false, rasters = ["Image","MBT","SHP","TMS","WMS","WMTS","XYZ"];
       
-        if (!layer || !layer['_msp']) {
+        if (!layer || !layer['_M']) {
             return b;
         }
         
@@ -764,7 +764,7 @@
          * All raster layers are displayed within a single "rasters" tab 
          */
         for (i = 0, l = rasters.length; i < l; i++){
-            if (rasters[i] === layer['_msp']['layerDescription'].type) {
+            if (rasters[i] === layer['_M']['layerDescription'].type) {
                 b = true;
                 break;
             }
@@ -945,7 +945,7 @@
      * This centering is only done if the layer, or part of the added layer,
      * is not already visible in the map view
      *
-     * Note : if the layer has already been loaded then the _msp.initialized attribute
+     * Note : if the layer has already been loaded then the _M.initialized attribute
      * is set to true and the map is not centered any more on this layer even if
      * its content changes
      */
@@ -956,29 +956,29 @@
         /*
          * Paranoid mode
          */
-        if (!layer || !layer["_msp"]) {
+        if (!layer || !layer["_M"]) {
             return false;
         }
         
         /*
          * Only zoom on layer that are initialized
          */
-        if (layer["_msp"].initialized) {
+        if (layer["_M"].initialized) {
 
             /*
              * Vector layers have a getDataExtent() function that returns bounds
-             * Raster layer such as WMS or Image should have a ["_msp"].bounds property
+             * Raster layer such as WMS or Image should have a ["_M"].bounds property
              * set during initialization
              */
-            extent = layer.getDataExtent() || layer["_msp"].bounds;
+            extent = layer.getDataExtent() || layer["_M"].bounds;
             if (extent) {
 
                 /*
                  * Centering is done only if the entire layer or part of the layer
                  * is not visible within the map view
                  */
-                if (!msp.Map.map.getExtent().intersectsBounds(extent, true)) {
-                    msp.Map.zoomTo(extent);
+                if (!M.Map.map.getExtent().intersectsBounds(extent, true)) {
+                    M.Map.zoomTo(extent);
                     return true;
                 }
 
@@ -1033,4 +1033,4 @@
     };
     
     
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

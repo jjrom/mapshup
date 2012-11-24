@@ -39,15 +39,15 @@
 /**
  * Define mapshup events
  */
-(function (msp) {
+(function (M) {
    
-    msp.Events = function() {
+    M.Events = function() {
 
         /*
          * Only one Events object instance is created
          */
-        if (msp.Events._o) {
-            return msp.Events._o;
+        if (M.Events._o) {
+            return M.Events._o;
         }
         
         /*
@@ -126,9 +126,9 @@
         /*
          * Create unique object instance
          */
-        msp.Events._o = this;
+        M.Events._o = this;
         
         return this;
 
     }
-})(window.msp);
+})(window.M);

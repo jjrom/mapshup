@@ -41,15 +41,15 @@
  * Display a welcome window on top of the map
  *
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Welcome = function() {
+    M.Plugins.Welcome = function() {
         
         /*
          * Only one Wikipedia object instance is created
          */
-        if (msp.Plugins.Welcome._o) {
-            return msp.Plugins.Welcome._o;
+        if (M.Plugins.Welcome._o) {
+            return M.Plugins.Welcome._o;
         }
         
         /*
@@ -66,24 +66,24 @@
 
             if (self.options.url) {
 
-                var pn = new msp.Panel('s',{tb:new msp.Toolbar('ss', 'h')}), // Create new South panel
-                    ctn = pn.add('<iframe class="frame" src="'+msp.Util.getAbsoluteUrl(self.options.url)+'" width="100%" height="100%"></iframe>'); // Add container within panel
+                var pn = new M.Panel('s',{tb:new M.Toolbar('ss', 'h')}), // Create new South panel
+                    ctn = pn.add('<iframe class="frame" src="'+M.Util.getAbsoluteUrl(self.options.url)+'" width="100%" height="100%"></iframe>'); // Add container within panel
 
                 /*
                  * Set container content
                  */
-                msp.activity.show();
+                M.activity.show();
                 $('.frame', ctn.$d).load(function() {
-                    msp.activity.hide();
+                    M.activity.hide();
                 });
 
                 /*
                  * Register open elevation action within Toolbar South south toolbar
                  */
-                (new msp.Button({
+                (new M.Button({
                     tt:"Welcome",
                     tb:pn.tb,
-                    title:msp.Util._("Welcome"),
+                    title:M.Util._("Welcome"),
                     container:ctn,
                     close:true,
                     activable:true,
@@ -93,7 +93,7 @@
                      */
                     onshow:function(btn) {
                         if (!btn._init) {
-                            msp.Map.setCenter(msp.Map.Util.d2p(new OpenLayers.LonLat(msp.Map.initialLocation.lon,msp.Map.initialLocation.lat)), msp.Map.initialLocation.zoom, true);
+                            M.Map.setCenter(M.Map.Util.d2p(new OpenLayers.LonLat(M.Map.initialLocation.lon,M.Map.initialLocation.lat)), M.Map.initialLocation.zoom, true);
                             btn._init = true;
                         }
                     }
@@ -111,8 +111,8 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Welcome._o = this;
+        M.Plugins.Welcome._o = this;
         
         return this;
     };
-})(window.msp);
+})(window.M);

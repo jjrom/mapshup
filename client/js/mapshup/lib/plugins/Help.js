@@ -41,15 +41,15 @@
  * Display help info on top of the map
  *
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Help = function() {
+    M.Plugins.Help = function() {
         
         /*
          * Only one Help object instance is created
          */
-        if (msp.Plugins.Help._o) {
-            return msp.Plugins.Help._o;
+        if (M.Plugins.Help._o) {
+            return M.Plugins.Help._o;
         }
         
         /*
@@ -67,7 +67,7 @@
             /*
              * Get help items from configuration
              */
-            c = msp.Config["help"] || {};
+            c = M.Config["help"] || {};
             c.items = c.items || [];
             l = c.items.length;
             
@@ -81,18 +81,18 @@
             /*
              * Create the help container over everything else
              */
-            self.$d = msp.Util.$$('#'+msp.Util.getId(),$('#mwrapper')).addClass("overall help").hide();
+            self.$d = M.Util.$$('#'+M.Util.getId(),$('#mwrapper')).addClass("overall help").hide();
             
             /*
              * Add a close button to the Help panel
              */
-            msp.Util.addClose(self.$d);
+            M.Util.addClose(self.$d);
             
             /*
              * Register action within header
              */
-            (new msp.Toolbar({
-                parent:$('.leftBar', msp.$header), 
+            (new M.Toolbar({
+                parent:$('.leftBar', M.$header), 
                 classes:'shr'
             })).add({
                 icon:"help.png",
@@ -151,8 +151,8 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Help._o = this;
+        M.Plugins.Help._o = this;
         
         return this;
     };
-})(window.msp);
+})(window.M);

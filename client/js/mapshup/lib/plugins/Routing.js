@@ -40,15 +40,15 @@
  * Plugin - Routing
  *
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Routing = function() {
+    M.Plugins.Routing = function() {
         
         /*
          * Only one Routing object instance is created
          */
-        if (msp.Plugins.Routing._o) {
-            return msp.Plugins.Routing._o;
+        if (M.Plugins.Routing._o) {
+            return M.Plugins.Routing._o;
         }
         
         /**
@@ -85,11 +85,11 @@
             /*
              * Add a distance layer
              */
-            msp.Map.addLayer({
+            M.Map.addLayer({
                 type:"Generic",
                 title:this.resultLayer.name,
                 unremovable:true,
-                mspLayer:true,
+                MLayer:true,
                 layer:this.resultLayer
             });
 
@@ -119,36 +119,36 @@
             /*
              * Add a distance layer
              */
-            msp.Map.addLayer({
+            M.Map.addLayer({
                 type:"Generic",
                 title:this.endsLayer.name,
                 unremovable:true,
-                mspLayer:true,
+                MLayer:true,
                 layer:this.endsLayer
             });
             
             /*
-             * Add items to msp.menu
+             * Add items to M.menu
              */
-            if (msp.menu) {
+            if (M.menu) {
                 
                 /**
                  * Search all catalogs within the map view
                  */       
-                msp.menu.add([{
-                    id:msp.Util.getId(),
+                M.menu.add([{
+                    id:M.Util.getId(),
                     ic:"routingstartpoint.png",
                     ti:"Set start point",
                     cb:function() {
-                        self.setStartPoint(msp.menu.lonLat.clone());
+                        self.setStartPoint(M.menu.lonLat.clone());
                     }
                 },
                 {
-                    id:msp.Util.getId(),
+                    id:M.Util.getId(),
                     ic:"routingendpoint.png",
                     ti:"Set end point",
                     cb:function() {
-                        self.setEndPoint(msp.menu.lonLat.clone());
+                        self.setEndPoint(M.menu.lonLat.clone());
                     }
                 }]);
                 
@@ -177,7 +177,7 @@
             self.endsLayer.addFeatures(new OpenLayers.Feature.Vector((new OpenLayers.Geometry.Point(point.lon, point.lat)),{
                 color:"green"
             }));
-            self.startPoint = msp.Map.Util.p2d(point);
+            self.startPoint = M.Map.Util.p2d(point);
 
             /**
              * Compute routing if an end point is defined
@@ -186,7 +186,7 @@
                 /**
                  * Add end point - red
                  */
-                tmpPoint = msp.Map.Util.d2p(self.endPoint.clone());
+                tmpPoint = M.Map.Util.d2p(self.endPoint.clone());
                 self.endsLayer.addFeatures(new OpenLayers.Feature.Vector((new OpenLayers.Geometry.Point(tmpPoint.lon, tmpPoint.lat)),{
                     color:"red"
                 }));
@@ -215,7 +215,7 @@
             self.endsLayer.addFeatures(new OpenLayers.Feature.Vector((new OpenLayers.Geometry.Point(point.lon, point.lat)),{
                 color:"red"
             }));
-            self.endPoint = msp.Map.Util.p2d(point);
+            self.endPoint = M.Map.Util.p2d(point);
 
             /**
              * Compute routing if a start point is defined
@@ -224,7 +224,7 @@
                 /**
                  * Add start point - green
                  */
-                tmpPoint = msp.Map.util.d2p(self.startPoint.clone());
+                tmpPoint = M.Map.util.d2p(self.startPoint.clone());
                 self.endsLayer.addFeatures(new OpenLayers.Feature.Vector((new OpenLayers.Geometry.Point(tmpPoint.lon, tmpPoint.lat)),{
                     color:"green"
                 }));
@@ -242,8 +242,8 @@
             /**
              * Get routing
              */
-            msp.Util.ajax({
-                url:msp.Util.proxify(msp.Util.repareUrl(msp.Util.getAbsoluteUrl(self.options.url))+"method="+method+"&startpoint="+startPoint.lon+":"+startPoint.lat+"&endpoint="+endPoint.lon+":"+endPoint.lat),
+            M.Util.ajax({
+                url:M.Util.proxify(M.Util.repareUrl(M.Util.getAbsoluteUrl(self.options.url))+"method="+method+"&startpoint="+startPoint.lon+":"+startPoint.lat+"&endpoint="+endPoint.lon+":"+endPoint.lat),
                 async:true,
                 dataType:"json",
                 success:function(data){
@@ -252,12 +252,12 @@
                         geojson = (new OpenLayers.Format.GeoJSON()).read(data)
                     self.resultLayer.destroyFeatures();
                     for (i = 0, l = geojson.length; i < l; i++) {
-                        msp.Map.Util.d2p(geojson[i].geometry);
+                        M.Map.Util.d2p(geojson[i].geometry);
                         self.resultLayer.addFeatures(geojson[i]);
                     }
                 }
             },{
-                title:msp.Util._("Compute shortest path..."),
+                title:M.Util._("Compute shortest path..."),
                 cancel:true
             });
 
@@ -266,9 +266,9 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Routing._o = this;
+        M.Plugins.Routing._o = this;
         
         return this;
     };
     
-})(window.msp);
+})(window.M);

@@ -1192,7 +1192,7 @@ a.tab img {
 }
 
 /*
- * A drag&drop zone - see msp.DDZone
+ * A drag&drop zone - see M.DDZone
  */
 .ddzone {
     border: 2px dashed #BBBBBB;

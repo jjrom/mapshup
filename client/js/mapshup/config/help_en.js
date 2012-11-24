@@ -61,7 +61,7 @@
         },
         // Header
         {
-            html:'<h1>Header</h1><p>Click on one of the <span class="hilite">capital letter</span> right to the search bar <span class="hilite">to change the map background</span> accordingly.</p><p>Click the share button <img class="middle" src="'+msp.Util.getImgUrl("share.png")+'"/> to save the current context and <span class="hilite">share the map</span> through <span class="hilite">facebook, twitter or by email</span>.</p><p>If you are <span class="hilite">logged</span> to the application, your map <span class="hilite">context will be automatically saved</span> when the browser is closed. Thus, when you reconnect to the application, you will get your context back !</p>',
+            html:'<h1>Header</h1><p>Click on one of the <span class="hilite">capital letter</span> right to the search bar <span class="hilite">to change the map background</span> accordingly.</p><p>Click the share button <img class="middle" src="'+M.Util.getImgUrl("share.png")+'"/> to save the current context and <span class="hilite">share the map</span> through <span class="hilite">facebook, twitter or by email</span>.</p><p>If you are <span class="hilite">logged</span> to the application, your map <span class="hilite">context will be automatically saved</span> when the browser is closed. Thus, when you reconnect to the application, you will get your context back !</p>',
             position:{
                 top:'50px',
                 left:'450px',
@@ -88,4 +88,4 @@
         ]
     };
     
-})(window.msp.Config);
+})(window.M.Config);

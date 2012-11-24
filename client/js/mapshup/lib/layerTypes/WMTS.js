@@ -38,7 +38,7 @@
 /**
  * WMTS layer type
  */
-(function (msp,Map){
+(function (M,Map){
     
     Map.layerTypes["WMTS"] = {
         
@@ -79,7 +79,7 @@
             /*
              * Repare URL if it is not well formed
              */
-            layerDescription.url = msp.Util.repareUrl(layerDescription.url);
+            layerDescription.url = M.Util.repareUrl(layerDescription.url);
             
             /*
              * Generate tileMatrix
@@ -101,7 +101,7 @@
                 version:"1.0.0",
                 wrapDateLine:true,
                 /* WMTS can be set as background (isBaseLayer:true) or as overlay */
-                isBaseLayer:msp.Util.getPropertyValue(layerDescription, "isBaseLayer", false),
+                isBaseLayer:M.Util.getPropertyValue(layerDescription, "isBaseLayer", false),
                 attribution:layerDescription.attribution || null
             });
             
@@ -109,11 +109,11 @@
             
             /*
             $.ajax({
-                url:msp.Util.proxify(layerDescription.url),
+                url:M.Util.proxify(layerDescription.url),
                 async:true,
                 dataType:"xml",
                 success:function(data, textStatus, XMLHttpRequest) {
-                console.log(msp.Util.getCapabilities(XMLHttpRequest, new OpenLayers.Format.WMTSCapabilities()));
+                console.log(M.Util.getCapabilities(XMLHttpRequest, new OpenLayers.Format.WMTSCapabilities()));
                 }
             });
             */
@@ -122,12 +122,12 @@
         
         /**
          * MANDATORY
-         * Compute an unique mspID based on layerDescription
+         * Compute an unique MID based on layerDescription
          */
-        getMspID:function(layerDescription) {
-            return msp.Util.crc32(layerDescription.type + (msp.Util.repareUrl(layerDescription.url) || "") + (layerDescription.layer || "") + (layerDescription.matrixSet || ""));
+        getMID:function(layerDescription) {
+            return M.Util.crc32(layerDescription.type + (M.Util.repareUrl(layerDescription.url) || "") + (layerDescription.layer || "") + (layerDescription.matrixSet || ""));
         }
         
     }
     
-})(window.msp, window.msp.Map);
+})(window.M, window.M.Map);

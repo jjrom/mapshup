@@ -39,15 +39,15 @@
  * DrawBox plugin.
  * Allow user to draw a Box 
  */
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.DrawBox = function() {
+    M.Plugins.DrawBox = function() {
         
         /*
          * Only one DrawBox object instance is created
          */
-        if (msp.Plugins.DrawBox._o) {
-            return msp.Plugins.DrawBox._o;
+        if (M.Plugins.DrawBox._o) {
+            return M.Plugins.DrawBox._o;
         }
         
         /*
@@ -64,17 +64,17 @@
             $.extend(self.options,{
                 title:options.title || "Draw box",
                 icon:options.icon || "drawbox.png",
-                deleteOnClick:msp.Util.getPropertyValue(self.options, "deleteOnClick", false), 
+                deleteOnClick:M.Util.getPropertyValue(self.options, "deleteOnClick", false), 
                 callback:options.callback
             });
             
             /*
              * Add "DrawBox" item in menu
              */
-            if (msp.menu) {
-                msp.menu.add([
+            if (M.menu) {
+                M.menu.add([
                 {
-                    id:msp.Util.getId(),
+                    id:M.Util.getId(),
                     ic:self.options.icon,
                     ti:self.options.title,
                     cb:function() {
@@ -85,7 +85,7 @@
             }
            
             self.layer = new OpenLayers.Layer.Vector("__LAYER_DRAWBOX__", {
-                projection:msp.Map.pc,
+                projection:M.Map.pc,
                 displayInLayerSwitcher:false,
                 styleMap:new OpenLayers.StyleMap({
                     'default':{
@@ -105,11 +105,11 @@
             /**
              * Add Drawing layer to Map object
              */
-            msp.Map.addLayer({
+            M.Map.addLayer({
                 type:"Generic",
                 title:self.layer.name,
                 unremovable:true,
-                mspLayer:true,
+                MLayer:true,
                 selectable:self.options.deleteOnClick ? true : false,
                 hilitable:false,
                 layer:self.layer
@@ -118,7 +118,7 @@
             if (self.options.deleteOnClick) {
                 self.layer.events.on({
                     "beforefeatureselected":function(event) {
-                        msp.Map.featureInfo.clear();
+                        M.Map.featureInfo.clear();
                         self.layer.destroyFeatures();
                         
                         /*
@@ -152,21 +152,21 @@
                          * General callback
                          */
                         if ($.isFunction(self.options.callback)) {
-                            self.options.callback(event.feature, msp.Map.Util.p2d(g).toBBOX());
+                            self.options.callback(event.feature, M.Map.Util.p2d(g).toBBOX());
                         }
                         
                         /*
                          * On the fly callback
                          */
                         if ($.isFunction(self._callback)) {
-                            self._callback(event.feature, msp.Map.Util.p2d(g).toBBOX());
+                            self._callback(event.feature, M.Map.Util.p2d(g).toBBOX());
                         }
                     }
                     
                     /*
                     * Switch back to Map default control
                     */
-                    msp.Map.resetControl(self.control);
+                    M.Map.resetControl(self.control);
 
                 }
             });
@@ -185,15 +185,15 @@
             /*
              * Add box control to Map.map object
              */
-            msp.Map.map.addControl(self.control);
+            M.Map.map.addControl(self.control);
             
-            msp.Map.events.register("layersend", self, function(action, layer, scope) {
+            M.Map.events.register("layersend", self, function(action, layer, scope) {
                 
                 /*
                  * Each time a layer is added make sure Drawing layer is on top
                  */
                 if (action === "add" && scope.layer) {
-                    msp.Map.Util.setLayerOnTop(scope.layer);
+                    M.Map.Util.setLayerOnTop(scope.layer);
                 }
             });
 
@@ -223,7 +223,7 @@
             /*
              * First reset control
              */
-            msp.Map.resetControl(self.control);
+            M.Map.resetControl(self.control);
             self.control.activate();
             
         };
@@ -231,8 +231,8 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.DrawBox._o = this;
+        M.Plugins.DrawBox._o = this;
         
         return this;
     };
-})(window.msp);
+})(window.M);

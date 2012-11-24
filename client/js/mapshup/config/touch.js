@@ -63,4 +63,4 @@
         key:"AmraZAAcRFVn6Vbxk_TVhhVZNt66x4_4SV_EvlfzvRC9qZ_2y6k1aNsuuoYS0UYy",
         bingType:"Road"
     });
-})(window.msp.Config);
+})(window.M.Config);

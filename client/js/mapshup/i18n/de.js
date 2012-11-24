@@ -129,4 +129,4 @@
 	i["Zoom here"]="Hierher zoomen";
 	i["Zoom out"]="Verkleinern";
 	i["Zoom on feature"]="Auf Gebiet zoomen";
-})(msp.i18n);
+})(M.i18n);

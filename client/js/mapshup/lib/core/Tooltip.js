@@ -39,7 +39,7 @@
 /*
  * Tooltip object
  */
-(function (msp) {
+(function (M) {
 
     /**
      * Create Tooltip object
@@ -47,13 +47,13 @@
      * @input {jquery DOM Element} domelement : jquery DOM Element containing a jtitle attribute
      * @input {String} direction : direction of tooltip ('n','s','e','w')
      */
-    msp.Tooltip = function () {
+    M.Tooltip = function () {
         
         /*
          * Only one Tooltip object instance is created
          */
-        if (msp.Tooltip._o) {
-            return msp.Tooltip._o;
+        if (M.Tooltip._o) {
+            return M.Tooltip._o;
         }
         
         /*
@@ -64,7 +64,7 @@
             /*
              * jTooltip div reference
              */
-            this.$t = msp.Util.$$('#tooltip');
+            this.$t = M.Util.$$('#tooltip');
 
             /*
              * Reference to the current element
@@ -89,7 +89,7 @@
             /*
              * Add events on domelement for non touch device
              */
-            if (!msp.Util.device.touch) {
+            if (!M.Util.device.touch) {
 
                 domelement.hover(function(){
 
@@ -194,10 +194,10 @@
         /*
          * Create unique instance
          */
-        msp.Tooltip._o = this;
+        M.Tooltip._o = this;
         
         return this;
         
     }
     
-})(window.msp);
+})(window.M);

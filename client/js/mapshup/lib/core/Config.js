@@ -42,17 +42,17 @@
  * Each property is described within
  * the Config/default.js file
  */
-(function(msp) {
+(function(M) {
     
     /*
-     * Initialize msp
+     * Initialize M
      */
-    msp = msp || {};
+    M = M || {};
    
     /*
-     * Initilaze msp.Config
+     * Initilaze M.Config
      */
-    msp.Config = {
+    M.Config = {
 
         /**
          * General Configuration
@@ -203,7 +203,7 @@
             /*
              * If the Map is not initialized, do nothing
              */
-            if (!msp.Map) {
+            if (!M.Map) {
                 return false;
             }
             
@@ -230,7 +230,7 @@
                     /*
                      * The layer is present in the context layer list. No need to remove it
                      */
-                    if ((new msp.Map.LayerDescription(self.layers[i], msp.Map)).getMspID() === (new msp.Map.LayerDescription(lds[j], msp.Map)).getMspID()) {
+                    if ((new M.Map.LayerDescription(self.layers[i], M.Map)).getMID() === (new M.Map.LayerDescription(lds[j], M.Map)).getMID()) {
                         b = false;
                         break;
                     }
@@ -268,7 +268,7 @@
                     /*
                      * The layer already exist - update it
                      */
-                    if ((new msp.Map.LayerDescription(lds[i], msp.Map)).getMspID() === (new msp.Map.LayerDescription(self.layers[j], msp.Map)).getMspID()) {
+                    if ((new M.Map.LayerDescription(lds[i], M.Map)).getMID() === (new M.Map.LayerDescription(self.layers[j], M.Map)).getMID()) {
                         b = false;
                         break;
                     }
@@ -305,4 +305,4 @@
         }
         
     }
-})(window.msp);
+})(window.M);

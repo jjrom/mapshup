@@ -51,15 +51,15 @@
  *   500=>Water (20);
  *
  *********************************************/
-(function(msp) {
+(function(M) {
     
-    msp.Plugins.Slacker = function() {
+    M.Plugins.Slacker = function() {
         
         /*
          * Only one Slacker object instance is created
          */
-        if (msp.Plugins.Slacker._o) {
-            return msp.Plugins.Slacker._o;
+        if (M.Plugins.Slacker._o) {
+            return M.Plugins.Slacker._o;
         }
         
         /*
@@ -86,7 +86,7 @@
                     min:0, 
                     max:100
                 },
-                value:msp.Util.getPropertyValue(options, "value", 0)
+                value:M.Util.getPropertyValue(options, "value", 0)
             });
             
             /*
@@ -116,7 +116,7 @@
              *      </div>
              * </div>
              */
-            self.$d = msp.Util.$$('#slacker', $('#mwrapper')).addClass('shadow').html('<div class="container"><table><tr></tr></table></div>');
+            self.$d = M.Util.$$('#slacker', $('#mwrapper')).addClass('shadow').html('<div class="container"><table><tr></tr></table></div>');
             
             /*
              * Insert slacker panel between theBar and map
@@ -132,7 +132,7 @@
                    'top':$t.offset().top + self.$d.height()
                 });
             }
-            msp.$header.removeClass('shadow');
+            M.$header.removeClass('shadow');
             
             /*
              * Roll over classes
@@ -186,7 +186,7 @@
                         self.values[e.key] = -1;
                         self.search();
                     });
-                    msp.tooltip.add($('#'+id+'v'), "n");
+                    M.tooltip.add($('#'+id+'v'), "n");
                     
                     /*
                      * Set original value
@@ -201,7 +201,7 @@
                         self.values[e.key] = v;
                     }
                     
-                })(msp.Util.getId(), self.options.elements[element], self.$d);
+                })(M.Util.getId(), self.options.elements[element], self.$d);
 	
             }
             
@@ -219,14 +219,14 @@
             /*
              * No Search plugin, no slacker
              */
-            if (!msp.Plugins.Search) {
+            if (!M.Plugins.Search) {
                 return false;
             }
             
             /*
              * Get Search plugin instance
              */            
-            sp = msp.Plugins.Search._o;
+            sp = M.Plugins.Search._o;
             if (!sp) {
                 return false;
             }
@@ -254,7 +254,7 @@
          */
         this.getParams = function() {
         
-            var params = "", key, self = msp.Plugins.Slacker._o;
+            var params = "", key, self = M.Plugins.Slacker._o;
             
             if (!self) {
                 return null;
@@ -276,8 +276,8 @@
         /*
          * Set unique instance
          */
-        msp.Plugins.Slacker._o = this;
+        M.Plugins.Slacker._o = this;
         
         return this;
     };
-})(window.msp);
+})(window.M);
