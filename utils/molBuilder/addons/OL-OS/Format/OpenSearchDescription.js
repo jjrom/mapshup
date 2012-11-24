@@ -95,8 +95,8 @@ OpenLayers.Format.OpenSearchDescription = OpenLayers.Class(OpenLayers.Format.XML
             var type = urlNodes[i].getAttribute("type");
             var format = this.mimeTypes[type];
             var rel = urlNodes[i].getAttribute("rel");
-            if (rel && (rel === "jeobdesc" || rel === "mspdesc")) {
-                desc.mspDescriptionUrl = urlNodes[i].getAttribute("template");
+            if (rel && (rel === "jeobdesc" || rel === "mspdesc" || rel === "mapshup")) {
+                desc.MDescriptionUrl = urlNodes[i].getAttribute("template");
             }
             else if (format) { // Only add recognized formats
                 URL.URLTemplate = urlNodes[i].getAttribute("template");
