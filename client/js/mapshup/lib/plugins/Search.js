@@ -284,6 +284,8 @@
          *                              type: // sub type for this OpenSearch service
          *                              msg: // boolean - true to display message when successfully load service
          *                                                false otherwise (default true)
+         *                              layer:// if set, result is displayed within the given
+         *                                       layer instead of being displayed in a new layer 
          *                           }
          */
         this.add = function(url, options) {
@@ -372,6 +374,7 @@
                      * Add new service
                      */
                     self.services[this.origin] = M.Util.clone(d);
+                    self.services[this.origin].layer = options.layer;
                     
                     /*
                      * Add an entry in the suggest panel, set it active and
@@ -459,48 +462,75 @@
             /*
              * Empty val, no search except if additional parameters are set
              */
-            if (self.$input.val() === "" && a.params === "") {
+            if (self.getValue() === "" && a.params === "") {
                 return false;
             }
             
             /*
-             * Add layer
+             * If service is added to an existing layer,
+             * then the result is displayed within that layer...
+             */
+            if (service.layer) {
+                
+                var sc = service.layer["_M"].searchContext;
+                
+                /*
+                 * Clear other search parameters except Time and BBOX
+                 */
+                sc.clear(true);
+                
+                /*
+                 * Launch search with the input value
+                 */
+                sc.setSearchTerms(self.getValue());
+                sc.search();
+                
+                /*
+                 * Don't forget to clear the search terms again !
+                 */
+                sc.clear();
+                
+                return false;
+            }
+            
+            /*
+             * Create a new layer
              * 
              * This is a bit tricky...We first need to check that layer does not exist
              * before add it
-             */
+             */ 
             layerDescription = {
                 type:service.type,
                 url:info.url + a.params, // concatenate url with additional parameters
                 pagination:info.pagination,
-                title:a.title || self.$input.val(), // if input value is not set
+                title:a.title || self.getValue(), // if input value is not set
                 q:self.getValue()
             };
-            
+
             /*
-             * Extend layerDescription with input options
-             */
+            * Extend layerDescription with input options
+            */
             $.extend(layerDescription, service.options);
             layer = M.Map.Util.getLayerByMID((new M.Map.LayerDescription(layerDescription, M.Map)).getMID());
-            
+
             /*
-             * Layer already exist -> replace features
-             */
+            * Layer already exist -> replace features
+            */
             if (layer) {
-                
+
                 /*
-                 * Set new layerDescription
-                 */
+                * Set new layerDescription
+                */
                 $.extend(layer["_M"].layerDescription,layerDescription);
-                
+
                 /*
-                 * Refresh layer name
-                 */
+                * Refresh layer name
+                */
                 layer.name = layerDescription.title;
-                
+
                 /*
-                 * Refresh features
-                 */
+                * Refresh features
+                */
                 lt = M.Map.layerTypes[layer["_M"].layerDescription.type];
                 if ($.isFunction(lt.refresh)) {
                     lt.refresh(layer);
@@ -508,13 +538,13 @@
             }
             else {
                 /*
-                 * Add layer and store it for post processing 
-                 */
+                * Add layer and store it for post processing 
+                */
                 layer = M.Map.addLayer(layerDescription);
 
                 /*
-                 * Add a setTime Function
-                 */
+                * Add a setTime Function
+                */
                 if (service.options.changeOnTime) {
                     layer["_M"].setTime = function(interval) {
                         self.search(service, getParams);
@@ -522,7 +552,6 @@
                     M.timeLine.add(layer);
                 }
             }
-            
             
             /*
              * Tell user that search is in progress

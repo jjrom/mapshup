@@ -126,7 +126,7 @@
                         *   - (optionaly) the url to the json description of the parameters
                         */
                         var format = new OpenLayers.Format.OpenSearchDescription(),
-                            description = format.read(data);
+                        description = format.read(data);
                         
                         /*
                          * WARNING : only GeoJSON format is supported !!
@@ -137,18 +137,18 @@
                              * Extract base url and KVP from the URLTemplate
                              */
                             var j,
-                                k,
-                                key,
-                                kvps = "",
-                                parts = description.formats["GeoJSON"].URLTemplate.split("?"),
-                                // url is the first part of the URLTemplate i.e. everything before '?'
-                                url = parts[0]+"?";
+                            k,
+                            key,
+                            kvps = "",
+                            parts = description.formats["GeoJSON"].URLTemplate.split("?"),
+                            // url is the first part of the URLTemplate i.e. everything before '?'
+                            url = parts[0]+"?";
                                 
-                                // Other kvps are the rest of the URLTemplate
-                                for (j = 1, k = parts.length; j < k; j++) {
-                                    kvps += "?"+parts[j];
-                                }
-                                kvps = M.Util.extractKVP(kvps);
+                            // Other kvps are the rest of the URLTemplate
+                            for (j = 1, k = parts.length; j < k; j++) {
+                                kvps += "?"+parts[j];
+                            }
+                            kvps = M.Util.extractKVP(kvps);
                                 
                             /*
                              * KVP analysis
@@ -198,6 +198,22 @@
                                     self.nextRecordAlias = key;
                                 }
                                 
+                                /*
+                                 * If searchTerms is set, then add also an entry in the search Bar
+                                 * (See Search.js Plugin)
+                                 * 
+                                 * Note that the added entry is linked with the catalog layer so
+                                 * that search within the bar are displayed within the same layer
+                                 * as the search done with the layer search action
+                                 */
+                                if (kvps[key].indexOf('searchTerms') === 1) {
+                                    self.searchKeyAlias = key
+                                    if (M.Plugins.Search && M.Plugins.Search._o) {
+                                        M.Plugins.Search._o.add(catalog["_M"].layerDescription.url, {
+                                            layer:catalog
+                                        });
+                                    }
+                                }
                             }
                             
                             /*

@@ -292,12 +292,17 @@
 
         /**
          * Clear the search context
+         * 
+         * @param {boolean} notTime : if set to true, time filter is not cleared
          */
-        this.clear = function() {
+        this.clear = function(notTime) {
             this.items = [];
             this.setGeo(this.useGeo);
+            if (notTime) {
+                this.setTime(M.timeLine.getInterval());
+            }
         };
-
+        
         /**
          * Return the items array as an HTTP GET key/value pairs string
          */
@@ -810,6 +815,33 @@
                     id:completionDate,
                     title:M.Util._("Date"),
                     value:interval[1]
+                });
+            }
+        };
+        
+        /**
+         * Set searchTerms for full text search
+         * 
+         * @param {String} searchTerms 
+         */
+        this.setSearchTerms = function(searchTerms) {
+            
+            /*
+             * Set startDate and completionDate
+             */
+            var searchKey = this.connector.searchKeyAlias ? this.connector.searchKeyAlias : 'q';
+            
+            /**
+             * startDate is null => remove startDate item from the SearchContext
+             */
+            if (!searchTerms) {
+                this.remove(searchKey, null);
+            }
+            else {
+                this.add({
+                    id:searchKey,
+                    title:M.Util._("searchTerms"),
+                    value:searchTerms
                 });
             }
         };
