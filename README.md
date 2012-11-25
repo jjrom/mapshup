@@ -15,6 +15,8 @@ It brings on an unique map a mashup of different services - Earth Observation da
 OpenStreetMap/Bing/Google maps services, news feed, wikipedia articles, photos and videos from social networks,
 etc. - to easily build a comprehensive "information context" and help decision making for end users.
 
+![mapshup](https://raw.github.com/jjrom/mapshup/master/utils/stuff/2012.11.23%20-%20mapshup.004.jpg)
+
 Mapshup is based on standard web technologies  (i.e. javascript/css/HTML5). The user interface is designed to
 work both on desktop and on touch devices through a web browser.
 
