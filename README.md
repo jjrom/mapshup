@@ -4,8 +4,9 @@ mapshup
 Short story
 -----------
 
-* Try the demo at http://engine.mapshup.info
-* See mapshup in video at http://vimeo.com/45164288
+* mapshup demo - http://engine.mapshup.info
+* mapshup keynote - https://speakerdeck.com/jjrom/mapshup
+* mapshup in video - http://vimeo.com/45164288
 
 Long story
 ----------
@@ -32,3 +33,7 @@ switcher, the share button, the help button, the login information).
 The user interface is designed to be easy to use on touch devices. As a consequence every functionality is
 accessible through one single touch and "hidden" menu are avoided as possible, making the user experience very
 intuitive
+
+Architecture
+------------
+![mapshup architecture](https://raw.github.com/jjrom/mapshup/master/utils/stuff/2012.11.23%20-%20mapshup.008.jpg)
