@@ -394,6 +394,9 @@
 
                 /** Total number of feature within layer (see "layersend" event) */
                 count:0,
+                
+                /** True : layer is editable which means that feature can be modified and/or deleted individually */
+                editable:M.Util.getPropertyValue(layerDescription, "editable", false),
 
                 /** By default, a layer is not in a group */
                 group:null,
@@ -1448,24 +1451,24 @@
 
 
                 M.Util.askFor({
-                        title:M.Util._("Delete layer"),
-                        content:M.Util._("Do you really want to remove layer")+" "+layer.name,
-                        dataType:"list",
-                        value:[{
-                                title:M.Util._("Yes"), 
-                                value:"y"
-                            },
-                            {
-                                title:M.Util._("No"), 
-                                value:"n"
-                            }
-                            ],
-                       callback:function(v){
-                            if (v === "y") {
-                                M.Map.removeLayer(layer);
-                            }
+                    title:M.Util._("Delete layer"),
+                    content:M.Util._("Do you really want to remove layer")+" "+layer.name,
+                    dataType:"list",
+                    value:[{
+                        title:M.Util._("Yes"), 
+                        value:"y"
+                    },
+                    {
+                        title:M.Util._("No"), 
+                        value:"n"
+                    }
+                    ],
+                    callback:function(v){
+                        if (v === "y") {
+                            M.Map.removeLayer(layer);
                         }
-                    });
+                    }
+                });
               
                 return false;
             }
