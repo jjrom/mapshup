@@ -4,11 +4,10 @@ mapshup
 Project info
 ------------
 
-* Source - https://github.com/jjrom/mapshup
-* Demo - http://engine.mapshup.info
-* Keynote - https://speakerdeck.com/jjrom/mapshup
-* Video - http://vimeo.com/45164288
-* Twitter - https://twitter.com/mapshup
+* [Download the sources](https://github.com/jjrom/mapshup)
+* [Try the demo](http://engine.mapshup.info)
+* See [mapshup in video](http://vimeo.com/45164288) or take a look at the [Keynote](https://speakerdeck.com/jjrom/mapshup)
+* Follow [mapshup on Twitter](https://twitter.com/mapshup)
 
 What is mapshup ?
 -----------------
