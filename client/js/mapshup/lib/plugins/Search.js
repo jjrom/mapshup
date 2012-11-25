@@ -201,6 +201,8 @@
                      */
                     return self.search(count > 1 ? null : service);
                 }
+                
+                return true;
             });
             
             /*

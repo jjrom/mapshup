@@ -445,6 +445,8 @@
             }, !info.sessionid ? {
                 title:M.Util._("Login")
             } : null);
+            
+            return true;
         };
 
         /*

@@ -461,7 +461,7 @@
             
             if (!this.result.plots || this.result.plots.length === 0) {
                 return;
-            };
+            }
             
             /*
              * Empty elevation div

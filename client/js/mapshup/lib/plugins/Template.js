@@ -89,7 +89,7 @@
     /*
      * Start defining a "M.Plugins.Template" object
      */
-    M.Plugins.Template = function() {
+    M.Plugins.Template = function(options) {
         
         /*
          * Only one plugin object instance should be created.
@@ -248,5 +248,9 @@
 
             return this;
         }
+        
+        return this.init(options);
+        
     };
+    
 })(window.M); // The closure should only references the mapshup object, i.e. window.M

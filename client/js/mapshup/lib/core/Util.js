@@ -530,7 +530,7 @@
                 default:
                     codec = "video/mp4";
                     break;
-            };
+            }
   
             /*
              * Show parent Mask

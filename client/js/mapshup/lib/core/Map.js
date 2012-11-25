@@ -261,8 +261,8 @@
          * This fonction is the entry point to add any kind of layers
          * The add*Layer functions should not be called directly
          *
-         *  @param {object} layerDescription : layer description object (see layerTypes js files)
-         *  @param {Object} options : options can be
+         *  @param {object} _layerDescription : layer description object (see layerTypes js files)
+         *  @param {Object} _options : options can be
          *          {boolean} noDeletionCheck : if 'true', user is not request if the added layer replace an existing one
          *          {boolean} forceInitialized : if true, the layer["_M"].initialized is set to true and thus the map
          *                                      is not zoom on layer after load

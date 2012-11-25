@@ -312,6 +312,7 @@
              */
             self.svw.setPosition(new google.maps.LatLng(lonlat.lat,lonlat.lon));
             
+            return self.svw;
         };
         
         /**

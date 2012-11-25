@@ -73,7 +73,7 @@
          */
         featureToGML: function(feature, schema) {
             
-            var gml = '';
+            var i, l, gml = '';
             
             /*
              * Roll over each component. A component contain
@@ -99,7 +99,7 @@
                 }
                 else if (gt === "OpenLayers.Geometry.MultiLineString") {
                     if (feature.geometry.components) {
-                        for (var i = 0, l = feature.geometry.components.length; i < l; i++) {
+                        for (i = 0, l = feature.geometry.components.length; i < l; i++) {
                             gml += this.geometryLineStringToGML(feature.geometry.components[i]);
                         }
                     }
@@ -109,7 +109,7 @@
                 }
                 else if (gt === "OpenLayers.Geometry.MultiPolygon") {
                     if (feature.geometry.components) {
-                        for (var i = 0, l = feature.geometry.components.length; i < l; i++) {
+                        for (i = 0, l = feature.geometry.components.length; i < l; i++) {
                             gml += this.geometryPolygonToGML(feature.geometry.components[i]);
                         }
                     }
