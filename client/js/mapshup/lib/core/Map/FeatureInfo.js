@@ -453,8 +453,8 @@
          * Select feature and get its information
          * Called by "onfeatureselect" events
          * 
-         * @input feature : 
-         * @input _triggered : if true the feature selection has been triggered
+         * @param feature : 
+         * @param _triggered : if true the feature selection has been triggered
          *                     automatically and not by a user click
          *                     This attribute is set to true by Catalog plugins
          *                     when feature is selected by clicking on the search result panel

@@ -169,7 +169,7 @@
          * This function should be called by plugins
          * that require additionnal item in the menu
          * 
-         * @input items : array of menu items
+         * @param items : array of menu items
          * 
          * Menu item structure :
          * {
@@ -280,7 +280,7 @@
         /*
          * Remove an item from the menu
          * 
-         * @input id : id of item to remove
+         * @param id : id of item to remove
          * 
          */
         this.remove = function(id) {

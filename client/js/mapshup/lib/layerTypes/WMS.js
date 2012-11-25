@@ -250,8 +250,8 @@
          * On success, "callback" function is called with an array
          * of layerDescription object as input parameter
          * 
-         * @input layerDescription: layerDescription object of a WMS server
-         * @input callback : function to be called on success with an array of layerDescription
+         * @param layerDescription: layerDescription object of a WMS server
+         * @param callback : function to be called on success with an array of layerDescription
          *                   as input parameter (e.g. plugins["AddLayer"].displayLayersInfo(a))
          */
         update: function(layerDescription, callback) {
@@ -530,8 +530,8 @@
         /**
          * Launch a getFeatureInfo on all queryables WMS layers
          *
-         * @input {OpenLayers.LonLat} lonLat : clicked point in map coordinates
-         * @input {jquery div} div : div container to write in
+         * @param {OpenLayers.LonLat} lonLat : clicked point in map coordinates
+         * @param {jquery div} div : div container to write in
          */
         getFeatureInfo: function(lonLat, div) {
 

@@ -43,7 +43,7 @@
     
     
     /*
-     * @input {Object} options : timeLine options
+     * @param {Object} options : timeLine options
      *                   {
      *                      enable://true to enable timeLine, false otherwise
      *                      absolutes:{
@@ -104,7 +104,7 @@
          * Initialize TimeLine 
          * TimeLine is located immediatly below mapshup header
          * 
-         * @input {Object} options : timeLine options
+         * @param {Object} options : timeLine options
          *                   {
          *                      enable://true to enable timeLine, false otherwise
          *                      disablable://true to allow user to disable timeline

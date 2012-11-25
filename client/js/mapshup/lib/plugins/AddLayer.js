@@ -206,7 +206,7 @@
         /*
          * Guess the layer type from url
          *
-         * @input {String} url : url to resolve
+         * @param {String} url : url to resolve
          */
         this.guess = function(url) {
 
@@ -275,7 +275,7 @@
         /**
          * Upload files to server
          *
-         * @input {Array} files : array of files to upload
+         * @param {Array} files : array of files to upload
          * 
          */
         this.upload = function(files) {
@@ -501,7 +501,7 @@
         /*
          * Display layer(s) description within popup
          * 
-         * @input a : layer description (can be an array or an individual)
+         * @param a : layer description (can be an array or an individual)
          * 
          */
         this.getInfo = function(a) {

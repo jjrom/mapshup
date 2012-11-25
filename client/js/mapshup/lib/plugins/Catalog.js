@@ -186,7 +186,7 @@
         /**
          * Add a catalog
          *
-         * @input layer (type:"Catalog")
+         * @param layer (type:"Catalog")
          * @output boolean : true if the catalog is successfully added or already added
          *                   false otherwise
          *
@@ -441,7 +441,7 @@
         /**
          * Remove a catalog
          *
-         * @input {OpenLayers.Layer} catalog : catalog to be removed
+         * @param {OpenLayers.Layer} catalog : catalog to be removed
          * @output boolean : true if the catalog is successfully unregistered
          */ 
         this.remove = function(catalog) {
@@ -933,7 +933,7 @@
         /**
          * Launch a search over all catalogs
          *
-         * @input <boolean> initialize: if true set nextRecord to 1 for each catalog (optional)
+         * @param <boolean> initialize: if true set nextRecord to 1 for each catalog (optional)
          */
         this.searchAll = function (bounds,initialize) {
             

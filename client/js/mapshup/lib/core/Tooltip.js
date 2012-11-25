@@ -44,8 +44,8 @@
     /**
      * Create Tooltip object
      * 
-     * @input {jquery DOM Element} domelement : jquery DOM Element containing a jtitle attribute
-     * @input {String} direction : direction of tooltip ('n','s','e','w')
+     * @param {jquery DOM Element} domelement : jquery DOM Element containing a jtitle attribute
+     * @param {String} direction : direction of tooltip ('n','s','e','w')
      */
     M.Tooltip = function () {
         
@@ -76,9 +76,9 @@
         /**
          * Add a tooltip
          * 
-         * @input {jquery DOM Element} domelement : jquery DOM Element containing a jtitle attribute
-         * @input {String} direction : direction of tooltip ('n','s','e','w')
-         * @input {integer} offset : offset in pixel to add
+         * @param {jquery DOM Element} domelement : jquery DOM Element containing a jtitle attribute
+         * @param {String} direction : direction of tooltip ('n','s','e','w')
+         * @param {integer} offset : offset in pixel to add
          */
         this.add = function(domelement, direction, offset) {
         

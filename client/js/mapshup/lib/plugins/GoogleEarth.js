@@ -800,7 +800,7 @@
         /**
          *  Set Map position from GE move
          *
-         *  @input {boolean} limit : if set to true, Map extent is changed only
+         *  @param {boolean} limit : if set to true, Map extent is changed only
          *  if the new map extent differs from the current bounds by at least the quarter
          *  of the map size in pixel reference system
          */

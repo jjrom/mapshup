@@ -232,8 +232,8 @@
         /**
          * Set layer time filter
          * 
-         * @input <OpenLayers.Layer> layer : target layer
-         * @input <array> interval : interval (see TimeLine.js)
+         * @param <OpenLayers.Layer> layer : target layer
+         * @param <array> interval : interval (see TimeLine.js)
          */
         setTime:function(layer, interval) {
             

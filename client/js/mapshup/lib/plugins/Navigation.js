@@ -230,7 +230,7 @@
                      *          the last inserted then it's a bit tricky :)  
                      * 
                      * 
-                     * @input state : state to be added to the navigation history (states) array
+                     * @param state : state to be added to the navigation history (states) array
                      */
                     this.add = function(state) {
                         

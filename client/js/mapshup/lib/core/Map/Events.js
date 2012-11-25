@@ -106,9 +106,9 @@
         /*
          * Register an event to M.Map
          *
-         * @input <String> eventname : Event name => 'resizeend', 'layersend', 'moveend'
-         * @input <function> scope : scope related to this event
-         * @input <function> handler : handler attached to this event
+         * @param <String> eventname : Event name => 'resizeend', 'layersend', 'moveend'
+         * @param <function> scope : scope related to this event
+         * @param <function> handler : handler attached to this event
          */
         this.register = function(eventname , scope, handler) {
 
@@ -153,8 +153,8 @@
         /*
          * Trigger handlers related to an event
          *
-         * @input <String> eventname : Event name => 'resizeend', 'layersend', 'moveend'
-         * @input <Object> extra : options object or layer object (optional)
+         * @param <String> eventname : Event name => 'resizeend', 'layersend', 'moveend'
+         * @param <Object> extra : options object or layer object (optional)
          */
         this.trigger = function(eventname, extra) {
 

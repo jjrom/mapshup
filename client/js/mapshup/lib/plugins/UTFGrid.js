@@ -252,7 +252,7 @@
         /*
          * Display items info
          * 
-         * @input {Array} items : array of item
+         * @param {Array} items : array of item
          *          {
          *              attributes: // object of attributes
          *                  { data://, id://}

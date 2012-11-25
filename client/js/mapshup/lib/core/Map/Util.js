@@ -57,7 +57,7 @@
          * 
          * Icon is assumed to be a square image of 75x75 px displayed within NorthPanel
          *
-         * @input {OpenLayers.Feature} feature : input feature
+         * @param {OpenLayers.Feature} feature : input feature
          *
          */
         getIcon:function(feature) {
@@ -114,7 +114,7 @@
         /**
          * Return feature title if it's defined within layerDescription.featureInfo.title property
          *
-         * @input {OpenLayers.Feature} feature : input feature
+         * @param {OpenLayers.Feature} feature : input feature
          */
         getTitle:function(feature) {
 
@@ -181,9 +181,9 @@
          * If layerDescription.featureInfo.keys array is set and if a value attribute is set for "key"
          * then input value is transformed according to the "value" definition
          *
-         * @input {OpenLayers.Feature} feature : feature reference
-         * @input {String} key : key attribute name
-         * @input {String} value : value of the attribute
+         * @param {OpenLayers.Feature} feature : feature reference
+         * @param {String} key : key attribute name
+         * @param {String} value : value of the attribute
          */
         getValue:function(feature, key, value) {
 
@@ -243,8 +243,8 @@
         /*
          * Replace input key into its "human readable" equivalent defined in layerDescription.featureInfo.keys associative array
          *
-         * @input {String} key : key to replace
-         * @input {OpenLayers.Feature} feature : feature reference
+         * @param {String} key : key to replace
+         * @param {OpenLayers.Feature} feature : feature reference
          */
         translate:function(key, feature) {
 
@@ -457,8 +457,8 @@
     /**
      * Return an array of unclusterized features
      * 
-     * @input layer : layer containing clusterizes or unclusterized features
-     * @input options: options for sorting 
+     * @param layer : layer containing clusterizes or unclusterized features
+     * @param options: options for sorting 
      *                 {
      *                      attribute: // name of the attribute to sort
      *                      order: // order of sorting - 'a' (default) for ascending and 'd' for descending

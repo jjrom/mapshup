@@ -48,10 +48,10 @@
      * One connector should be initialized for each catalog layer within the _M.searchContext property
      * (i.e. layer["_M"].searchContext.connector = new Connector(layer, options)
      *
-     * @input catalog : catalog layer
-     * @input options : options object
-     * @input registerCallback : callback function called after connector is successfully registered
-     * @input filterCallback : callback function called after filter is successfully updated
+     * @param catalog : catalog layer
+     * @param options : options object
+     * @param registerCallback : callback function called after connector is successfully registered
+     * @param filterCallback : callback function called after filter is successfully updated
      */
     M.Plugins.Catalog.SPOTRest = function(catalog, options, registerCallback, filterCallback) {
         

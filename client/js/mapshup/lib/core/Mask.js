@@ -86,7 +86,7 @@
         /**
          * Abort request id
          *
-         * @input <string> id : request identifier - if not provided, all requests are aborted
+         * @param <string> id : request identifier - if not provided, all requests are aborted
          */
         this.abort = function(id) {
 
@@ -139,7 +139,7 @@
         /**
          * Add an item to the Mask
          *
-         * @input <object> obj : structure
+         * @param <object> obj : structure
          * {
          *      title: (Line of text to be displayed on the Mask)
          *      cancel: (true => user can cancel the request / false => not possible) OPTIONAL
@@ -232,7 +232,7 @@
         /**
          * Show the Mask
          * 
-         * @input a : boolean - if true do not show the activity indicator
+         * @param a : boolean - if true do not show the activity indicator
          */
         this.show = function(a) {
             this.$m.show();

@@ -67,8 +67,8 @@
         /*
          * Register an event to jMap
          *
-         * @input <String> eventname : Event name => 'resizeend'
-         * @input <function> handler : handler attached to this event
+         * @param <String> eventname : Event name => 'resizeend'
+         * @param <function> handler : handler attached to this event
          */
         this.register = function(eventname , scope, handler) {
             
@@ -105,7 +105,7 @@
         /*
          * Trigger handlers related to an event
          *
-         * @input <String> eventname : Event name => 'resizeend'
+         * @param <String> eventname : Event name => 'resizeend'
          */
         this.trigger = function(eventname) {
             

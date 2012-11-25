@@ -298,10 +298,10 @@
         /**
          * Retrieve mapshup default lang file
          * 
-         * @input kvp: Key value pair object.
+         * @param kvp: Key value pair object.
          *             If kvp["lang"] is defined, it superseed the default lang configuration
          * 
-         * @input ctx: Context
+         * @param ctx: Context
          */
         setLang:function(kvp, ctx) {
             
@@ -401,10 +401,10 @@
         /*
          * mapshup initialisation
          * 
-         * @input kvp : Key Value pair object
+         * @param kvp : Key Value pair object
          *              If kvp["lat"] && kvp["lon"] is defined, it superseed the default location configuration
          * 
-         * @input ctx: Context
+         * @param ctx: Context
          */
         init:function(kvp, ctx) {
             

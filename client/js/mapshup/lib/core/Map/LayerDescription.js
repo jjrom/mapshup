@@ -44,8 +44,8 @@
     /*
      * LayerDescription
      * 
-     * @input obj : layer description object
-     * @input jmap : reference to M.Map object
+     * @param obj : layer description object
+     * @param jmap : reference to M.Map object
      */
     M.Map.LayerDescription = function(obj, map) {
         

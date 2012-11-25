@@ -228,8 +228,8 @@
         /**
          * Add an OpenSearch service
          * 
-         * @input {String} url : url to an OpenSearch XML service description
-         * @input {Object} options : options object (optional)
+         * @param {String} url : url to an OpenSearch XML service description
+         * @param {Object} options : options object (optional)
          *                           {
          *                              type: // sub type for this OpenSearch service
          *                              msg: // boolean - true to display message when successfully load service
@@ -373,8 +373,8 @@
          * Launch a search. If no service is specified,
          * user is asked to choose a set service
          * 
-         * @input service : service to search in
-         * @input getParams : additional parameters to add to the search service (function returning "&key1=val1&key2=val2&...")
+         * @param service : service to search in
+         * @param getParams : additional parameters to add to the search service (function returning "&key1=val1&key2=val2&...")
          */
         this.search = function(service, getParams) {
 

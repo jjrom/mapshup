@@ -243,7 +243,7 @@
         /*
          * Activate or deactivate item
          * 
-         * @input b : boolean - true to activate, false to deactivate
+         * @param b : boolean - true to activate, false to deactivate
          */
         this.activate = function(b) {
             

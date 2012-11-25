@@ -211,7 +211,7 @@
         /**
          * Update tabs position and ul left position
          * 
-         * @input scope : reference to this object
+         * @param scope : reference to this object
          */
         this.refreshTabs = function(scope) {
             
@@ -359,7 +359,7 @@
         /**
          * Update tabs position
          * 
-         * @input scope : reference to this object
+         * @param scope : reference to this object
          */
         this.updateTabs = function(scope) {
             
@@ -389,7 +389,7 @@
         /**
          * Add an item to the panel
          * 
-         * @input content : content structure :
+         * @param content : content structure :
          *        {
          *          id: // Unique identifier for this item - MANDATORY
          *          title: // Text to display within title tab - OPTIONAL
@@ -560,7 +560,7 @@
         /*
          * Show the panel
          * 
-         * @input item : jquery object id to display within this panel
+         * @param item : jquery object id to display within this panel
          */
         this.show = function(item) {
             
@@ -676,7 +676,7 @@
         /*
          * Hide the panel
          * 
-         * @input item : item to hide
+         * @param item : item to hide
          */
         this.hide = function(item) {
             

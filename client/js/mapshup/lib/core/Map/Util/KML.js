@@ -51,8 +51,8 @@
         /*
          * Return a KML string from an OpenLayers layer
          *
-         * @input {OpenLayers.Layer} layer : OpenLayers layer
-         * @input {Object} options : options for color/opacity
+         * @param {OpenLayers.Layer} layer : OpenLayers layer
+         * @param {Object} options : options for color/opacity
          *
          * @return {String} a kml representation of the input layer
          */
@@ -210,8 +210,8 @@
          *  is assumed to be an elevation value in meters. This value is added
          *  to the geometry (see GPX format)
          *
-         * @input {OpenLayers.Feature} feature : a feature in map coordinates
-         * @input {Object} options : options for color/opacity
+         * @param {OpenLayers.Feature} feature : a feature in map coordinates
+         * @param {Object} options : options for color/opacity
          * 
          * @return {String} a KML Placemark
          */
@@ -397,7 +397,7 @@
         /**
          * Return a KML <Style>...</Style> string from feature
          *
-         * @input {OpenLayers.Feature} feature : a feature in map coordinates
+         * @param {OpenLayers.Feature} feature : a feature in map coordinates
          * 
          * @return {String} a KML <Style>...</Style> string
          */
@@ -531,8 +531,8 @@
          * Take an hexadecimal HTML color (i.e. #RRGGBB)
          * and convert it into Hexadecimal KML color scheme i.e. AABBGGRR
          *
-         * @input {String} color : an HTML color #RRGGBB
-         * @input {float} opacity : opacity (0 to 1)
+         * @param {String} color : an HTML color #RRGGBB
+         * @param {float} opacity : opacity (0 to 1)
          */
         color2KML: function(color, opacity) {
 
@@ -567,7 +567,7 @@
          *      feature.geometry.components[].x
          *      feature.geometry.components[].y
          *
-         * @input {OpenLayers.Feature} feature : a feature in map coordinates
+         * @param {OpenLayers.Feature} feature : a feature in map coordinates
          * @return {String} a KML Placemark
          */
         imageToKML: function(layer) {
@@ -611,7 +611,7 @@
          *      feature.geometry.components[].x
          *      feature.geometry.components[].y
          *
-         * @input {OpenLayers.Feature} feature : a feature in map coordinates
+         * @param {OpenLayers.Feature} feature : a feature in map coordinates
          * @return {String} a KML Placemark
          */
         wmsToKML: function(layer) {

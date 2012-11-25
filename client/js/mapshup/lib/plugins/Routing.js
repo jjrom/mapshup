@@ -160,7 +160,7 @@
         /**
          * Set start point for routing
          *
-         * @input point: start point in Map projection
+         * @param point: start point in Map projection
          */
         this.setStartPoint = function(point) {
 
@@ -197,7 +197,7 @@
         /**
          * Set end point for routing
          *
-         * @input point: end point in Map projection
+         * @param point: end point in Map projection
          */
         this.setEndPoint = function(point) {
 

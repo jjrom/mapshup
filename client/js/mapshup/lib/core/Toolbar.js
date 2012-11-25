@@ -160,7 +160,7 @@
          * Add an item to the toolbar
          * (i.e. a <div class="item"> in this.$d
          *
-         * @input {Object} obj : item
+         * @param {Object} obj : item
          * 
          *  {
          *      activable: // boolean - if true, click on button set or unset 'activate' class
@@ -207,8 +207,8 @@
         /*
          * Activate ToolbarItem identified by id
          * 
-         * @input id : item to activate/deactivate
-         * @input activate: true to activate, false to deactivate
+         * @param id : item to activate/deactivate
+         * @param activate: true to activate, false to deactivate
          */
         this.activate = function(id, activate) {
             

@@ -212,7 +212,7 @@
                 /*
                  * Add a raster layer to rasterItem
                  * 
-                 * @input layer: raster layer to add
+                 * @param layer: raster layer to add
                  */
                 self.add = function(layer) {
                         
@@ -510,7 +510,7 @@
         /**
          * Update tabs position and ul left position
          * 
-         * @input scope : reference to this object
+         * @param scope : reference to this object
          */
         this.refreshTabs = function(scope) {
             
@@ -621,7 +621,7 @@
         /**
          * Add a vector item to the panel
          * 
-         * @input content : item content structure
+         * @param content : item content structure
          *      {
          *          icon: // icon to display in the title tab - OPTIONAL
          *          title: // text to display in the title tab - OPTIONAL
@@ -982,7 +982,7 @@
         /**
          * Hilite selected feature
          * 
-         * @input {OpenLayers.Feature} f
+         * @param {OpenLayers.Feature} f
          */
         this.hilite = function(f) {
             
@@ -1007,7 +1007,7 @@
         /**
          * Scroll feature thumbWrapper
          * 
-         * @input {OpenLayers.Feature} feature to scroll to
+         * @param {OpenLayers.Feature} feature to scroll to
          */
         this.scrollTo = function(f) {
             
@@ -1114,9 +1114,9 @@
         /*
          * Set a new thumbs array from a features array 
          * 
-         * @input item 
-         * @input features
-         * @input boolean update : true to update, false to refresh
+         * @param item 
+         * @param features
+         * @param boolean update : true to update, false to refresh
          */
         this.setFeatures = function(item, features, update) {
             
@@ -1285,7 +1285,7 @@
         /*
          * Update visibility indicator for a given layer
          * 
-         * @input item
+         * @param item
          */
         this.updateVisibility = function(layer) {
             
@@ -1327,7 +1327,7 @@
         /*
          * Show the panel
          * 
-         * @input id : jquery object id to display within this panel
+         * @param id : jquery object id to display within this panel
          */
         this.show = function(item) {
             
@@ -1378,7 +1378,7 @@
         /*
          * Hide the panel
          * 
-         * @input item : item to hide
+         * @param item : item to hide
          */
         this.hide = function(item) {
             

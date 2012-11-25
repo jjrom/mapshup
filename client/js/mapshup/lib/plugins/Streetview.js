@@ -345,7 +345,7 @@
         /**
          * Show streetview
          *
-         * @input lonlat : LonLat in map.displayProjection coordinates
+         * @param lonlat : LonLat in map.displayProjection coordinates
          */
         this.show = function(scope, lonLat) {
             

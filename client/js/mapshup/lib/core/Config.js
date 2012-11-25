@@ -108,8 +108,8 @@
         /**
          * Add content to properties
          *
-         *  @input <string> propertyName : name of the property
-         *  @input <object> content : content to be added
+         *  @param <string> propertyName : name of the property
+         *  @param <object> content : content to be added
          */
         add: function(propertyName, content) {
 
@@ -193,7 +193,7 @@
          * 
          * Update Config object layers with input layer description list
          * 
-         * @input lds : layer description
+         * @param lds : layer description
          */
         update: function(lds) {
             

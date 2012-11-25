@@ -231,8 +231,8 @@
         /**
          * Append a close button to input div
          * 
-         * @input $d : jquery object reference
-         * @input callback : callback function to call on click on close
+         * @param $d : jquery object reference
+         * @param callback : callback function to call on click on close
          */
         addClose: function($d, callback) {
             
@@ -265,8 +265,8 @@
         /**
          * Return GetCapabilities from an OGC service
          * 
-         * @input XMLHttRequestObj : the XMLHttpRequest object
-         * @input format : format of the GetCapabilities file.
+         * @param XMLHttRequestObj : the XMLHttpRequest object
+         * @param format : format of the GetCapabilities file.
          *                 can be one of :
          *                      new OpenLayers.Format.WFSCapabilities()
          *                      new OpenLayers.Format.WMSCapabilities()
@@ -292,7 +292,7 @@
         /**
          * Return the length of an associative array
          * 
-         * @input h : associative array
+         * @param h : associative array
          */
         getHashSize: function (h) {
             var v,r = 0;
@@ -305,7 +305,7 @@
         /**
          * Return a unique title from layerDescription
          * 
-         * @input typeName : input layerDescription object
+         * @param typeName : input layerDescription object
          */
         getTitle: function(layerDescription) {
             layerDescription = layerDescription || {};
@@ -333,8 +333,8 @@
         /**
         * Extend URL parameters with newParams object
         *
-        * @input {String} url : url
-        * @input {Object} newParams : 
+        * @param {String} url : url
+        * @param {Object} newParams : 
         *
         * @return {String} new URL
         */
@@ -469,7 +469,7 @@
          * Add a "display video" action to the given jquery 'a'
          * A click on 'a' will open the within within a fullscreen popup
          * 
-         * @input video : object describing video i.e. 
+         * @param video : object describing video i.e. 
          *                  {
          *                      title://Video title
          *                      url://url to the video
@@ -570,7 +570,7 @@
          * Convert an input string into the right type
          * (for example "1" will be converted to an integer "true" to a boolean...etc)
          * 
-         * @input {String} string : string to convert
+         * @param {String} string : string to convert
          */
         stringToRealType:function(string) {
             
@@ -596,7 +596,7 @@
         /*
          * Return all node attributes without namespaces
          * 
-         * @input obj : a jquery element
+         * @param obj : a jquery element
          */
         getAttributes:function(obj) {
             
@@ -615,7 +615,7 @@
         /*
          * Return nodeName without namespace
          * 
-         * @input nodeName : a nodeName (e.g. "toto", "ns:toto", etc.)
+         * @param nodeName : a nodeName (e.g. "toto", "ns:toto", etc.)
          */
         stripNS:function(nodeName) {
             if (!nodeName) {
@@ -628,7 +628,7 @@
         /**
          * Strip HTML tags from input string
          *
-         * @input <String> html : an html input string
+         * @param <String> html : an html input string
          */
         stripTags: function(html) {
             var tmp = document.createElement("DIV");
@@ -1084,7 +1084,7 @@
         /**
          * Return a unique id
          * 
-         * @input string : f - fileName
+         * @param string : f - fileName
          */
         getImgUrl: function(f) {
             
@@ -1415,8 +1415,8 @@
         /**
          * Add pagination info to an input url
          *
-         * @input {String} url : url to paginate
-         * @input {Object} pagination : pagination info
+         * @param {String} url : url to paginate
+         * @param {Object} pagination : pagination info
          *                  {
          *                      nextRecord:{
          *                          name: // name of the nextRecord key
@@ -1444,8 +1444,8 @@
         /**
          * Return a "proxified" version of input url
          *
-         * @input {String} url : url to proxify
-         * @input {String} returntype : force HTTP header to the return type //optional
+         * @param {String} url : url to proxify
+         * @param {String} returntype : force HTTP header to the return type //optional
          */
         proxify: function(url, returntype) {
             return this.getAbsoluteUrl(M.Config["general"].proxyUrl)+this.abc+(returntype ? "&returntype="+returntype : "")+"&url="+encodeURIComponent(url);
@@ -1478,9 +1478,9 @@
          *
          *      will return "Hello my name is Jerome Gasperi"
          *
-         * @input {String} template : template with keys to process
-         * @input {Object} keys : object containing the property keys/values
-         * @input {Object} modifiers : object containing the property keys
+         * @param {String} template : template with keys to process
+         * @param {Object} keys : object containing the property keys/values
+         * @param {Object} modifiers : object containing the property keys
          */
         parseTemplate: function (template, keys, modifiers) {
 
@@ -1571,9 +1571,9 @@
         /**
          * Reduce the length of a string "str" to "sizemax"
          *
-         * @input {String} str : String to reduce
-         * @input {Integer} sizemax : maximum length of the returned string
-         * @input {boolean} end : 'true'  the end of str is shrinked
+         * @param {String} str : String to reduce
+         * @param {Integer} sizemax : maximum length of the returned string
+         * @param {boolean} end : 'true'  the end of str is shrinked
          *                        'false' the middle of str is shrinked
          */
         shorten: function(str,sizemax,end) {

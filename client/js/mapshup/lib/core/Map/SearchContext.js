@@ -42,9 +42,9 @@
  * _M.searchContext property
  * (i.e. layer["_M"].searchContext = new M.plugins["Catalog"].SearchContext(layer,connector,options);)
  *
- * @input layer : catalog layer
- * @input connector : catalog connector
- * @input options : possible options are
+ * @param layer : catalog layer
+ * @param connector : catalog connector
+ * @param options : possible options are
  * {
  *      autosearch : true to set an auto search mode
  *      nextRecord : next record value
@@ -207,7 +207,7 @@
         /**
          * Add an item to the items array
          *
-         * @input newItem
+         * @param newItem
          */
         this.add = function(newItem) {
 
@@ -414,7 +414,7 @@
          * If fatherId is null then it is assumes that 'id' is already
          * at father level
          * 
-         * @input <boolean> noauto : if true, autosearch is deactivated
+         * @param <boolean> noauto : if true, autosearch is deactivated
          */
         this.remove = function(id, fatherId, noauto) {
             
@@ -502,7 +502,7 @@
         /**
          * Launch a search request on this SearchContext
          *
-         * @input <int> nextRecord : nextRecord to search (optional)
+         * @param <int> nextRecord : nextRecord to search (optional)
          */
         this.search = function(nextRecord) {
 
@@ -685,7 +685,7 @@
         /*
          * Set use of search bbox 
          * 
-         * @input <booelean> b: true to use search bbox. false otherwise
+         * @param <booelean> b: true to use search bbox. false otherwise
          * 
          */
         this.setGeo = function(b) {
@@ -702,7 +702,7 @@
         /**
          * Set the bbox to the given bounds
          *
-         * @input <OpenLayers.Bounds> bounds : bounds in map projection
+         * @param <OpenLayers.Bounds> bounds : bounds in map projection
          */
         this.setBBOX = function(bounds){
 
@@ -740,7 +740,7 @@
         /**
          * Set filter to the given value
          *
-         * @input <OpenLayers.Bounds> bounds : bounds in map projection
+         * @param <OpenLayers.Bounds> bounds : bounds in map projection
          */
         this.setFilter = function(id, value) {
 
@@ -781,7 +781,7 @@
         /**
          * Set time interval
          * 
-         * @input interval : array of 2 ISO 8601 date
+         * @param interval : array of 2 ISO 8601 date
          */
         this.setTime = function(interval) {
             

@@ -237,8 +237,8 @@
          * On success, "callback" function is called with an array
          * of layerDescription object as input parameter
          * 
-         * @input layerDescription: layerDescription object of a WFS server
-         * @input callback : function to be called on success with an array of layerDescription
+         * @param layerDescription: layerDescription object of a WFS server
+         * @param callback : function to be called on success with an array of layerDescription
          *                   as input parameter (e.g. plugins["LayersManager_AddFactory"].displayLayersInfo(a))
          */
         update: function(layerDescription, callback) {
@@ -397,7 +397,7 @@
         /**
          * Return an array of layerDescription derived from capabilities information
          *
-         * @input {Object} layerDescription
+         * @param {Object} layerDescription
          */
         getLayerDescriptions: function(layerDescription) {
 

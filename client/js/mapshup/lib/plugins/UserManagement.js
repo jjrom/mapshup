@@ -169,7 +169,7 @@
          * This function should be called by plugins
          * that require additionnal item userBar
          * 
-         * @input items : array of menu items
+         * @param items : array of menu items
          * 
          * Item structure :
          * {
