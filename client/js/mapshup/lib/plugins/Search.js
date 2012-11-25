@@ -208,7 +208,7 @@
                          */
                         else {
                             if(active.length > 0){
-                                active.click();
+                                active.trigger('click');
                                 self.$suggest.hide();
                             }
                         }
