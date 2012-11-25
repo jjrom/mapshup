@@ -547,11 +547,6 @@
             self._triggered = false;
             
             /*
-             * Hide menu
-             */
-            //M.menu.hide();
-            
-            /*
              * Set the current selected object
              */
             self.selected = feature;
@@ -576,8 +571,6 @@
              */
             ran = M.Map.layerTypes[feature.layer["_M"].layerDescription["type"]].resolvedUrlAttributeName;
             if (ran) {
-                
-                //extent = feature.geometry.getBounds().clone(); // Add container within panel
                 
                 /*
                  * Add a new item to South Panel
