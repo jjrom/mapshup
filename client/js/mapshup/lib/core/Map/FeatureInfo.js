@@ -748,20 +748,6 @@
         /**
          * Set info popup html content
          * 
-         *  ___________________________
-         * |          .title           | .header
-         * |___________________________|
-         * |___________________________| .tabs
-         * |  ________                 |
-         * | |        | |              | .body
-         * | |        | |   .info      |
-         * | | .thumb | |              |
-         * | |        | |              |
-         * | |________| |              |
-         * |  .actions  |              |
-         * |___________________________|
-         * 
-         * 
          * 1. feature got a quicklook property
          *  ___________________________
          * |          .title           | .header
@@ -1044,7 +1030,6 @@
             return true;
             
         };
-        
         
         /*
          * Create unique object instance
