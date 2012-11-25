@@ -59,12 +59,17 @@
         this.services = [];
         
         /**
+         * Minimum number of characters before launching a search
+         */
+        this.minChars = 3;
+        
+        /**
          * Initialize plugin
          */
         this.init = function(options) {
 
             var sb,d,i,l,
-            id = M.Util.getId(),
+            id1 = M.Util.getId(),
             self = this;
             
             /*
@@ -75,23 +80,46 @@
             /*
              * Set default options
              */
-            $.extend(self.options,
-            {
+            $.extend(self.options, {
                 services:self.options.services || []
-            }
-            );
+            });
             
             /*
              * Create the search bar within mapshup header
              */
-            sb = $('.searchBar', M.$header).html('<form method="get" action="#"><input id="'+id+'" name="q" type="text" size="40" placeholder="'+M.Util._("Search / Add a layer url")+'"/></form>');
-            self.$input = $('#'+id);
+            sb = $('.searchBar', M.$header).html('<form method="get" action="#"><input id="'+id1+'" name="q" type="text" size="40" placeholder="'+M.Util._("Search / Add a layer url")+'" autocomplete="off"/></form>');
+            self.$input = $('#'+id1);
             
             /*
              * Computation for leftBar position
              * to avoid different positionning between browsers
              */
             $('.leftBar', self.$header).css('left', sb.offset().left + sb.outerWidth());
+            
+            /*
+             * Create the search suggestion panel
+             * 
+             * The suggestion panel is displayed below the searchBar
+             * 
+             * Suggestion panel contains one entry per search engine
+             *   
+             *   <div id="'+id2+'" class="as-results">
+             *      <ul class="as-list">
+             *          <li id="as-result-item-0" class="as-result-item">Flickr</li>
+             *          <li id="as-result-item-1" class="as-result-item">Geonames</li>
+             *          ...etc...
+             *      </ul>
+             *   </div>
+             *  
+             *
+             */
+            self.$suggest = M.Util.$$('#'+M.Util.getId()).addClass('searchSuggest')
+            .html('<div class="as-results"><ul class="as-list"></ul></div>')
+            .css({
+                'top':sb.offset().top + sb.outerHeight(),
+                'left':sb.offset().left,
+                'min-width':sb.outerWidth()
+            }).hide();
             
             /*
              * Select input text on focus
@@ -101,108 +129,129 @@
             });
             
             /*
-             * Launch a search when user hits 'return' or 'tab' key
+             * Tracks when user type text within searchBar
+             * 
+             *  - If more than 3 characters are typed, then suggest bar is shown
+             *  - If focus is lost, then suggest bar is hidden
+             *  - If 'tab' or 'return' are pressed, then search is launch on the selected search
+             *    engine in suggest.
+             *  - Use 'key up' or 'key down' to select the search engine within suggest bar
+             *  
              */
-            self.$input.keypress(function(event) {
+            self.$input
+            .blur(function(e){
+                e.preventDefault();
+                self.$suggest.hide();
+            })
+            .keydown(function(e){
+                switch(e.keyCode) {
+                    case 13: case 16: case 91:
+                        e.preventDefault();
+                        self.$suggest.hide();
+                        break;
+                }
+            })
+            .keyup(function(e) {
                 
-                if (event.keyCode === 13 || event.keyCode === 9) {
-                    
-                    var lonlat,s,count = 0,v = $.trim($(this).val()),key, service = null, c = v.split(' ');
-                    
-                    /*
-                     * Nothing to search
-                     */
-                    if (v.length === 0) {
-                        return false;
-                    }
-                    
-                    /*
-                     * Some input value analysis
-                     * 
-                     * 1. Coordinates case
-                     * A valid Lat/Lon coordinates couple is composed of 2 float
-                     * The first one with a value between -90 and 90 and the second
-                     * one with a value between -180 and 180
-                     */
-                    if (c.length === 2) {
+                var active, lonlat, v = self.getValue(), c = v.split(' ');
+                
+                switch(e.keyCode) {
+                    case 38: // up
+                        e.preventDefault();
+                        self.moveSelection("up");
+                        break;
+                    case 40: // down
+                        e.preventDefault();
+                        self.moveSelection("down");
+                        break;
+                    case 8:  // delete
+                        self.getValue().length >= self.minChars ? self.$suggest.show() : self.$suggest.hide();
+                        break;
+                    case 9: case 188: case 13: // tab comma or return
                         
-                        if ($.isNumeric(c[0]) && $.isNumeric(c[1])) {
-                            
-                            lonlat = new OpenLayers.LonLat(c[1],c[0]);
-                            
-                            /*
-                             * Tell user we zoom the map
-                             */
-                            M.Util.message(M.Map.Util.getFormattedLonLat(lonlat, M.Config["general"].coordinatesFormat));
-                               
-                            /*
-                             * Latitude/longitude to map projection
-                             */
-                            M.Map.map.setCenter(M.Map.Util.d2p(lonlat), 14);
-                            
-                            return false;
-                        }
-                    }
-                    
-                    
-                    /* 
-                     * 2. Url case
-                     * 
-                     * If value is a valid url, then call AddLayer plugin if defined
-                     * 
-                     */
-                    if (M.Util.isUrl(v)) {
-                        if (M.Plugins.AddLayer && M.Plugins.AddLayer._o) {
-                            M.Plugins.AddLayer._o.guess(v);
-                            return false;
-                        }
-                    }
-                    
-                    /* 
-                     * 3. Keywords shortcut case
-                     * 
-                     * If value is a keyword, then check if it is prefixed with
-                     * a valid shortcut. If so, automatically set the search
-                     * engine acordingly instead of asking the user
-                     * 
-                     * Shortcut is a one string prefix immediately followed by ':' character
-                     */
-                    s = c[0].substring(0,2);
-                    
-                    /*
-                     * Search for this shortcut within search services
-                     */
-                    for (key in self.services) {
+                        active = $("li.active:first", self.$suggest);
                         
                         /*
-                         * Store the service
+                         * 1. url case - guess what it is 
                          */
-                        service = self.services[key];
-                        count++;
+                        if (M.Util.isUrl(v) && M.Plugins.AddLayer && M.Plugins.AddLayer._o) {
+                            M.Plugins.AddLayer._o.guess(v);
+                            self.$suggest.hide();
+                        }
+                        /* 
+                         * 2. Coordinates case
+                         * A valid Lat/Lon coordinates couple is composed of 2 float
+                         * The first one with a value between -90 and 90 and the second
+                         * one with a value between -180 and 180
+                         */
+                        else if (c.length === 2) {
                         
-                        if (self.services[key].shortcut) {
-                            if (s === self.services[key].shortcut + ':') {
-                                
+                            if ($.isNumeric(c[0]) && $.isNumeric(c[1])) {
+                            
+                                lonlat = new OpenLayers.LonLat(c[1],c[0]);
+                            
                                 /*
-                                 * Remove shortcut from the input bar
+                                 * Tell user we zoom the map
                                  */
-                                self.$input.val(v.substring(2,v.length));
+                                M.Util.message(M.Map.Util.getFormattedLonLat(lonlat, M.Config["general"].coordinatesFormat));
+
+                                /*
+                                 * Latitude/longitude to map projection
+                                 */
+                                M.Map.map.setCenter(M.Map.Util.d2p(lonlat), 14);
                                 
-                                return self.search(service);
-                                
-                            }   
+                            }
+                        }
+
+                        /*
+                         * Normal case - launch search
+                         */
+                        else {
+                            if(active.length > 0){
+                                active.click();
+                                self.$suggest.hide();
+                            }
+                        }
+                        e.preventDefault();
+                        break;
+                    case 27: case 16: case 91: // escape, shift, command
+                        e.preventDefault();
+                        self.$suggest.hide();
+                        break;
+                    default:
+                        
+                        /*
+                         * Ignore if the following keys are pressed: [del] [shift] [capslock] [Command]
+                         */
+                        if(e.keyPressCode === 46 || (e.keyPressCode > 8 && e.keyPressCode < 32) ){
+                            return;
                         }
                         
-                    }
-                    
-                    /*
-                     * 4. Normal keywords case
-                     * Automatically search if only one service is present
-                     */
-                    return self.search(count > 1 ? null : service);
+                        /* 
+                        * Some input value analysis
+                        * 
+                        * If value is a valid url, 
+                        * Or if value is a valid coordinates pair
+                        * Then hide the suggest panel
+                        * 
+                        */
+                        if (M.Util.isUrl(v) || (c.length === 2 && $.isNumeric(c[0]) && $.isNumeric(c[1]))) {
+                            self.$suggest.hide();
+                        }
+                        /*
+                         * Otherwise set value
+                         */
+                        else if (v.length >= self.minChars) {
+                            self.$suggest.show();
+                            $('.val', self.$suggest).each(function(){
+                                $(this).html(v);
+                            });
+                        }
+                        else {
+                            self.$suggest.hide();
+                        }
+                        break;
                 }
-                
-                return true;
             });
             
             /*
@@ -217,14 +266,13 @@
                 d = self.options.services[i];
                 self.add(d.url,{
                     type:d.stype,
-                    shortcut:d.shortcut,
                     msg:false,
                     options:d.options || {}
                 });
             }
 
             return this;
-
+            
         };
         
         /**
@@ -236,8 +284,6 @@
          *                              type: // sub type for this OpenSearch service
          *                              msg: // boolean - true to display message when successfully load service
          *                                                false otherwise (default true)
-         *                              shortcut: // prefix to check for when analyzing
-         *                                           search keyword to determine the search engine
          *                           }
          */
         this.add = function(url, options) {
@@ -267,7 +313,7 @@
                      * Use the OpenLayers.Format.OpenSearchDescription reader
                      * to decode data result
                      */
-                    var type,
+                    var lis, type,
                     d = self.reader.read(data);
                     
                     /*
@@ -320,14 +366,25 @@
                      */
                     d.title = d.name;
                     d.value = this.origin; // Value === origin
-                    d.icon = d.icon ? M.Util.getImgUrl(d.icon) : null;
-                    d.shortcut = options.shortcut;
                     d.options = options.options || {};
                     
                     /*
                      * Add new service
                      */
                     self.services[this.origin] = M.Util.clone(d);
+                    
+                    /*
+                     * Add an entry in the suggest panel, set it active and
+                     * attach a click event on it to launch search
+                     */
+                    $('ul', self.$suggest).prepend('<li class="as-result-item">'+M.Util._("Search")+' <span class="val"></span> '+M.Util._("in")+' <em>'+d.title+'</em></li>');
+                    lis = $('li', self.$suggest).removeClass('active');
+                    
+                    lis.filter(':first')
+                    .addClass('active')
+                    .click(function(){
+                        self.search(self.services[d.value]);
+                    });
                     
                     /*
                      * Tell user that service is loaded
@@ -344,33 +401,30 @@
             });
             
         };
-
-        /*
-         * Ask user to choose a search service
-         */
-        this.choose = function() {
-            
-            var self = this;
-            
-            M.Util.askFor({
-                title:M.Util._("Choose a search service"),
-                dataType:"list",
-                value:self.services,
-                callback:function(v){
-                
-                    /*
-                     * If input text box is not empty, launch search
-                     */
-                    if(self.$input.val().length > 1) {
-                        self.search(self.services[v]);
-                    }
-                }  
-            });
-            
-            return false;
         
+        /**
+         * Change selected search engine
+         * 
+         * @param {String} direction ('up' or 'down')
+         */
+        this.moveSelection = function(direction){
+            if($(':visible', this.$suggest).length > 0){
+                    
+                var lis = $('li', this.$suggest),
+                start = direction === 'down' ? lis.eq(0) : lis.filter(':last'),
+                active = $('li.active:first', this.$suggest);
+                        
+                if(active.length > 0){
+                    start = direction === 'down' ? active.next() : active.prev();
+                }
+                lis.removeClass('active');
+                start.addClass('active');
+            }
+            else if (this.getValue().length > 0) {
+                this.$suggest.show();
+            }
         };
-
+        
         /**
          * Launch a search. If no service is specified,
          * user is asked to choose a set service
@@ -386,7 +440,7 @@
              * If no input service is set, then ask user
              */
             if (!service) {
-                return self.choose();
+                return false;
             }
             
             /*
@@ -420,7 +474,7 @@
                 url:info.url + a.params, // concatenate url with additional parameters
                 pagination:info.pagination,
                 title:a.title || self.$input.val(), // if input value is not set
-                q:self.$input.val()
+                q:self.getValue()
             };
             
             /*
@@ -510,7 +564,7 @@
             /*
              * Avoid XSS vulnerability
              */
-            self.$input.val(M.Util.stripTags($.trim(self.$input.val())));
+            self.$input.val(M.Util.stripTags(self.getValue()));
            
             /*
              * Get time
@@ -615,7 +669,14 @@
                 pagination:pagination
             };
         };
-
+        
+        /**
+         * Return input value
+         */
+        this.getValue = function() {
+            return $.trim(this.$input.val());
+        };
+        
         /*
          * Set unique instance
          */

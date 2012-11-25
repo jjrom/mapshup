@@ -559,22 +559,18 @@
             {
                 url:"/plugins/flickr/opensearch.xml",
                 /* Sub type Flickr */
-                stype:"Flickr",
-                shortcut:'p'
+                stype:"Flickr"
             },
             {
                 url:"/plugins/youtube/opensearch.xml",
                 /* Sub type Youtube */
-                stype:"Youtube",
-                shortcut:'v'
+                stype:"Youtube"
             },
             {
-                url:"/plugins/geonames/opensearch.xml",
-                shortcut:'t'
+                url:"/plugins/geonames/opensearch.xml"
             },
             {
-                url:"/plugins/wikipedia/opensearch.xml",
-                shortcut:'w'
+                url:"/plugins/wikipedia/opensearch.xml"
             }
             ]
         }

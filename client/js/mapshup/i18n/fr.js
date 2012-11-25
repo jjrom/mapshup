@@ -97,6 +97,7 @@
     i["Hide this layer"]="Masquer cette couche";
     i["Hide thematic metadata"]="Masquer les informations thématiques";
     i["Images"]="Images";
+    i["in"]="dans";
     i["Initializing 3D mode"]="Initialisation du mode 3D";
     i["Item"]="Element";
     i["Layer"]="Couche";

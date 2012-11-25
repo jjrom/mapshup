@@ -1149,10 +1149,10 @@ a.tab img {
 }
 
 .small {
-   font-size:0.8em;
+    font-size:0.8em;
 }
 .smaller {
-   font-size:0.5em;
+    font-size:0.5em;
 }
 
 .padded {
@@ -1193,7 +1193,7 @@ a.tab img {
 
 /*
  * A drag&drop zone - see M.DDZone
- */
+*/
 .ddzone {
     border: 2px dashed #BBBBBB;
     border-radius: 5px 5px 5px 5px;
@@ -1742,4 +1742,38 @@ td.clear {
 .wpsclient .hilite {
     background-color:olivedrab;
     padding:4px;
+}
+
+/*
+ * Search suggest is above mask
+*/
+.searchSuggest {
+    position:absolute;
+    background-color: #fff;
+    box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
+    -o-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
+    z-index:36000;
+}
+li.as-result-item {
+    margin: 0 0 0 0;
+    padding: 5px 12px;
+    border: 1px solid #fff;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+li:first-child.as-result-item {
+    margin: 0;
+}
+li.as-result-item.active {
+    background-color:#f3961c;
+    color: #fff;
+}
+li.as-result-item em, li.as-result-item .val {
+    font-weight:bold;
+    background-color:#666;
+    color:#fff;
+    padding: 0 5px;
 }

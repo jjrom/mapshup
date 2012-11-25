@@ -95,6 +95,7 @@ Hide
 Hide thematic metadata
 Hide this layer
 Images
+in
 Initializing 3D mode
 Item
 Layer
