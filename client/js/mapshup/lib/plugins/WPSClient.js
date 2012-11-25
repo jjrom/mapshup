@@ -1041,7 +1041,17 @@
             this._layer = M.Map.addLayer({
                 type:"GeoJSON",
                 title:"WPS results",
-                clusterized:false
+                clusterized:false,
+                ol:{
+                    styleMap: new OpenLayers.StyleMap({
+                        'default':{
+                            strokeColor:'white',
+                            strokeWidth: 1,
+                            fillColor:'red',
+                            fillOpacity: 0.2
+                        }
+                    })
+                }
             });
             
             return this._layer;
