@@ -139,14 +139,14 @@
         /*
          * Overide FeatureInfo setBody() function
          */
-        setFeatureInfoBody: function(feature, $d) {
+        setFeatureInfoBody: function(feature, $info) {
 
             /*
              * Construct an embeded youtube object
              */
             if (feature.attributes["url"]) {
                 var vid = M.Util.extractKVP(feature.attributes["url"]).v;
-                $d.append('<div class="thumb"><object width="250" height="250"><param value="http://www.youtube.com/v/'+vid+'&amp;feature=youtube_gdata_player" name="movie"><param value="transparent" name="wmode"><param value="true" name="allowfullscreen"><embed width="250" height="250" allowfullscreen="true" wmode="transparent" type="application/x-shockwave-flash" src="http://www.youtube.com/v/'+vid+'&amp;feature=youtube_gdata_player"></object></div>');
+                $info.append('<div class="padded center"><object width="540" height="350"><param value="http://www.youtube.com/v/'+vid+'&amp;feature=youtube_gdata_player" name="movie"><param value="transparent" name="wmode"><param value="true" name="allowfullscreen"><embed width="540" height="350" allowfullscreen="true" wmode="transparent" type="application/x-shockwave-flash" src="http://www.youtube.com/v/'+vid+'&amp;feature=youtube_gdata_player"></object></div>');
             }
 
         },
