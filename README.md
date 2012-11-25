@@ -1,15 +1,17 @@
 mapshup
 =======
 
-Short story
------------
+Project info
+------------
 
-* mapshup demo - http://engine.mapshup.info
-* mapshup keynote - https://speakerdeck.com/jjrom/mapshup
-* mapshup in video - http://vimeo.com/45164288
+* Source - https://github.com/jjrom/mapshup
+* Demo - http://engine.mapshup.info
+* Keynote - https://speakerdeck.com/jjrom/mapshup
+* Video - http://vimeo.com/45164288
+* Twitter - https://twitter.com/mapshup
 
-Long story
-----------
+What is mapshup ?
+-----------------
 Mapshup provides an innovative and efficient access to Geospatial web services.
 It brings on an unique map a mashup of different services - Earth Observation data catalogs,
 OpenStreetMap/Bing/Google maps services, news feed, wikipedia articles, photos and videos from social networks,
