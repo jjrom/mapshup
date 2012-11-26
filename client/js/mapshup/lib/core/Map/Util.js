@@ -77,6 +77,7 @@
              *    - attributes icon
              *    - attributes thumbnail
              *    - feature style externalGraphic
+             *    - icon based on type (i.e. point, line or polygon)
              *    - generic image 
              * 
              */
@@ -105,6 +106,23 @@
                 defaultStyle = feature.style || style.defaultStyle;
                 if (defaultStyle.externalGraphic) {
                     return Map.Util.KML.resolveStyleAttribute(feature, style, defaultStyle.externalGraphic);
+                }
+            }
+            
+            /*
+             * Icon based on type (point, linestring, polygon)
+             */
+            if (feature.geometry) {
+                switch (feature.geometry.CLASS_NAME.replace("OpenLayers.Geometry.", "")) {
+                    case "MultiPolygon": case "Polygon":
+                        return M.Util.getImgUrl("polygon.png");
+                        break;
+                    case "MultiLineString": case "LineString":
+                        return M.Util.getImgUrl("line.png");
+                        break;
+                    case "MultiPoint": case "Point":
+                        return M.Util.getImgUrl("point.png");
+                        break;
                 }
             }
             
@@ -356,17 +374,17 @@
          */
         zoomOn: function(features) {
             
-           if (!$.isArray(features)) {
-               features = [features];
-           } 
+            if (!$.isArray(features)) {
+                features = [features];
+            } 
            
-           var i, l, bounds = new OpenLayers.Bounds();
+            var i, l, bounds = new OpenLayers.Bounds();
            
-           for (i = 0, l = features.length; i < l; i++) {
-               bounds.extend(features[i].geometry.getBounds());
-           }
+            for (i = 0, l = features.length; i < l; i++) {
+                bounds.extend(features[i].geometry.getBounds());
+            }
            
-           M.Map.zoomTo(bounds);
+            M.Map.zoomTo(bounds);
            
         }
         
