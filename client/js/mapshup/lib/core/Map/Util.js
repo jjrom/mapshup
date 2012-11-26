@@ -458,11 +458,12 @@
      * Return an array of unclusterized features
      * 
      * @param layer : layer containing clusterizes or unclusterized features
-     * @param options: options for sorting 
+     * @param options: options for sorting or reprojecting in display projection
      *                 {
      *                      attribute: // name of the attribute to sort
      *                      order: // order of sorting - 'a' (default) for ascending and 'd' for descending
      *                      type: // attribute type - 'd' for date, 'n' for number, 't' for text (default)
+     *                      toDisplayProjection: // true to reproject features to display projection
      *                 }
      * 
      */
@@ -506,12 +507,28 @@
                         /*
                          * Add a new entry to features array
                          */
-                        features.push(feature.cluster[j]);
-                       
+                        features.push(options.toDisplayProjection ? feature.cluster[j].clone() : feature.cluster[j]);
+                        
                     }
                 }
                 else {
-                    features.push(feature);
+                    features.push(options.toDisplayProjection ? feature.clone() : feature);
+                }
+            }
+        }
+        
+        /*
+         * Reproject ?
+         */
+        if (options.toDisplayProjection) {
+            for (i = 0, l = features.length; i <l; i++) {
+                if (features.components) {
+                    for (j = 0, m = features.components.length; j < m; j++) {
+                        this.p2d(features.components[j].geometry);
+                    }
+                }
+                else {
+                    this.p2d(features[i].geometry);
                 }
             }
         }
