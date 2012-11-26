@@ -101,6 +101,7 @@
                 autoSize:true,
                 classes:'fipopup apo',
                 followMap:true,
+                centered:false,
                 onClose:function() {
                     self.clear();
                 }
