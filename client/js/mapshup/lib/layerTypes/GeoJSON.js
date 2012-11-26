@@ -112,7 +112,7 @@
                 Map.events.trigger("layersend", {
                     action:"features",
                     layer:newLayer
-                });
+                });        
 
             });
             
@@ -121,7 +121,11 @@
              * read from data description
              */
             if (layerDescription.hasOwnProperty("data")) {
-                if (!self.load(layerDescription.data, layerDescription, newLayer)) {
+                if (!self.load({
+                    data:layerDescription.data,
+                    layerDescription:layerDescription, 
+                    layer:newLayer
+                })) {
                 //M.Map.removeLayer(newLayer, false);
                 }
             }
@@ -334,7 +338,7 @@
                         data:data, 
                         layerDescription:layerDescription, 
                         layer:this.layer
-                        })) {
+                    })) {
                             
                         /*
                         * Tell mapshup that layer is loaded
