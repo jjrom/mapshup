@@ -63,6 +63,7 @@ lib/plugins/Distance.js
 lib/plugins/Drawing.js
 lib/plugins/DrawBox.js
 lib/plugins/Export.js // NOTOUCH
+lib/plugins/FeatureEdition.js
 lib/plugins/Flickr.js
 lib/plugins/Geonames.js
 #lib/plugins/GetFeatureInfo.js

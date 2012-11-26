@@ -171,7 +171,7 @@
                      * Compute the true number of features layer i.e.
                      * including features hidden within clusters 
                      */
-                    if (extra.layer.features) {
+                    if (extra.layer && extra.layer.features) {
                         var count = 0,
                             f = extra.layer.features;
                         for (i = 0, l = f.length; i < l; i++) {
