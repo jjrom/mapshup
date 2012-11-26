@@ -145,7 +145,7 @@
         geometryLineStringToGML: function(geometry) {
             
             var point, gml = '';
-            console.log(geometry);
+            
             /*
              * LineString geometry get a "components" array of points
              */
@@ -291,7 +291,7 @@
              * First children is gml:posList
              */
             return JSON.parse(M.Util.parseTemplate(this.geoJSONTemplate,{
-                geometry:'{"type":"LineString","coordinates":['+Map.Util.posListToGeoJsonGeometry(gml.children().text())+']}',
+                geometry:'{"type":"Point","coordinates":['+Map.Util.posListToGeoJsonGeometry(gml.children().text())+']}',
                 properties:JSON.stringify(properties)
             }));
             
