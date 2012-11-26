@@ -740,30 +740,31 @@ a.tab:hover
 }
 
 .fi {
-    font-size:2em;
     width:100%;
     height:100%;
+    text-align:center;
 }
 .fi .header {
+    font-size:2em;
     padding:50px;
     text-transform:uppercase;
-    text-align:center;
 }
 .fi .title {
     overflow:hidden;
     text-overflow:ellipsis;
 }
 .fi .ql {
-    text-align:center;
+    margin:20px;
     border-right: 3px dashed #fff;
 }
 .fi .info {
+    font-size:1.5em;
     text-align: justify;
-    padding-left:30px;
-    padding-right:30px;
-    overflow-y: auto;
+    padding:0px 30px;
+    /*overflow-y: auto;*/
 }
 .fi .info table {
+    margin-left:10px;
     width:90%;
 }
 .fi td {
