@@ -65,11 +65,6 @@
             self.options = options || {};
 
             /*
-             * Default export service url
-             */
-            self.options.exportServiceUrl = self.options.exportServiceUrl || "/utilities/export.php?";
-
-            /*
              * Add "Drawing" item in menu
              */
             if (M.menu) {
@@ -209,8 +204,14 @@
                 if (action === "add" && scope.layer) {
                     M.Map.Util.setLayerOnTop(scope.layer);
                 }
+                
             });
 
+            /*
+             * Initialize a GeoJSON format reader
+             */
+            self.GeoJSONFormat = new OpenLayers.Format.GeoJSON();
+            
             return self;
             
         };
@@ -295,7 +296,7 @@
                         /*
                          * Save layer
                          */
-                        self.saveLayer();
+                        self.updateLayer();
 
                     }
                 });
@@ -326,12 +327,77 @@
         };
         
         /*
-         * Save layer in KML
+         * Add features do active layer
+         */
+        this.updateLayer = function() {
+            
+            var geojson, self = this;
+            
+            try {
+                geojson = JSON.parse(self.GeoJSONFormat.write(M.Map.Util.getFeatures(self.layer, {
+                    toDisplayProjection:true
+                })));
+                
+                /*
+                * Empty the drawing layer
+                */
+                self.layer.destroyFeatures();
+                
+            }
+            catch (e) {
+                M.Util.message("Error : cannot update layer");
+                return false;
+            }
+            
+            M.Map.layerTypes["GeoJSON"].load({
+                data:geojson,
+                layer:this.getActiveLayer()
+            });
+            
+            return true;
+            
+        };
+        
+        /*
+         * Return current layer
+         */
+        this.getActiveLayer = function() {
+            
+            /*
+             * Initialize layer
+             */
+            if (!this._activeLayer) {
+                this._activeLayer = M.Map.addLayer({
+                    type:"GeoJSON",
+                    title:"My layer #"+M.Util.sequence++,
+                    clusterized:false,
+                    MID:M.Util.crc32((new Date()).toString() + Math.random()),
+                    icon:M.Util.getImgUrl("drawing.png"),
+                    editable:true,
+                    ol:{
+                        styleMap: new OpenLayers.StyleMap({
+                            'default':{
+                                strokeColor:'white',
+                                strokeWidth: 1,
+                                fillColor:M.Util.randomColor(),
+                                fillOpacity: 0.2,
+                                pointRadius:5
+                            }
+                        })
+                    }
+                });
+            }
+            
+            return this._activeLayer;
+            
+        };
+        
+        /*
+         * Save layer in GeoJSON
          */
         this.saveLayer = function() {
 
-            var title,kml,
-            self = this;
+            var title, geojson, self = this;
                 
             if (self.layer.features.length === 0) {
                 return false;
@@ -347,11 +413,13 @@
              * Save KML layer to the server
              */
             M.Util.ajax({
-                url:M.Util.getAbsoluteUrl(M.Config["general"].saveKMLServiceUrl)+M.Util.abc,
+                url:M.Util.getAbsoluteUrl(M.Config["general"].saveStreamServiceUrl)+M.Util.abc,
                 async:true,
                 type:"POST",
                 data:{
-                    s:encodeURIComponent(kml)
+                    s:encodeURIComponent(geojson),
+                    format:'kml',
+                    uid:'drawned'
                 },
                 dataType:"json",
                 success: function(data) {
@@ -372,10 +440,11 @@
                          * Add new layer to the map
                          */
                         M.Map.addLayer({
-                            type:"KML",
+                            type:"GeoJSON",
                             title:title,
                             icon:M.Util.getImgUrl("drawing.png"),
                             url:data.url,
+                            editable:true,
                             selectable:true
                         });
 
