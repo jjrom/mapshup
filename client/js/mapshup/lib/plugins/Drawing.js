@@ -133,19 +133,17 @@
                      */
                     var popup = new M.Popup({
                         modal:false,
+                        centered:false,
                         noHeader:true,
                         autoSize:true,
+                        followMap:false,
+                        mapXY:event.feature.geometry.getBounds().getCenterLonLat(),
                         onClose:function() {
                             M.mask.hide();
                         },
                         body:'<form class="marged"><label>'+M.Util._("Feature title")+'<br/><input id="featureTitle" type="text"/></label><br/><label>'+M.Util._("Feature description")+'<br/><textarea id="featureDesc"/></label><div style="margin:10px 0px;"><a href="#" class="button inline colored" id="featureDescV">'+M.Util._("Validate")+'</a></div></form>'
                     });
-                    
-                    /*
-                     * Show drawingDesc
-                     */
-                    popup.moveTo(M.Map.mousePosition);
-                    popup.show(true);
+                    popup.show();
                     
                     $('#featureDescV').click(function() {
                         var f = event.feature;
@@ -153,8 +151,10 @@
                             f.attributes.name = M.Util.stripTags($('#featureTitle').val());
                             f.attributes.description = M.Util.stripTags($('#featureDesc').val());
                         }
+                        if (popup) {
+                            popup.remove();
+                        }
                         M.mask.hide();
-                        popup.remove();
                         return false;
                     });
 
@@ -230,9 +230,11 @@
                 idPolygon = M.Util.getId();
                 self.askPopup = new M.Popup({
                     modal:false,
+                    centered:false,
                     noHeader:true,
                     hideOnClose:true,
                     autoSize:true,
+                    mapXY:M.Map.map.getLonLatFromPixel(M.Map.mousePosition),
                     body:'<div class="marged"><a href="#" id="'+idPoint+'">'+M.Util._("Point")+'</a><img class="middle" src="'+M.Util.getImgUrl("drawing_point.png")+'"/>&nbsp;<a href="#" id="'+idLine+'">'+M.Util._("Line")+'</a><img class="middle" src="'+M.Util.getImgUrl("drawing_line.png")+'"/><a href="#" id="'+idPolygon+'">'+M.Util._("Polygon")+'</a><img class="middle" src="'+M.Util.getImgUrl("drawing_polygon.png")+'"/></div>'
                 });
                 /*
@@ -255,7 +257,6 @@
             /*
              * Show popup to the right position
              */
-            self.askPopup.moveTo(M.Map.mousePosition);
             self.askPopup.show(true);
             
         };
@@ -266,8 +267,8 @@
         this.showStatus = function(type) {
             
             var txt,
-                id = M.Util.getId(),
-                self = this;
+            id = M.Util.getId(),
+            self = this;
             
             if (type === "draw") {
                 txt = M.Util._("You are in drawing mode")+'<br/><br/><a href="#" class="button" id="'+id+'">'+M.Util._("Switch to modification mode")+'</a>';
@@ -279,6 +280,7 @@
             if (!self.infoPopup) {
                 self.infoPopup = new M.Popup({
                     modal:false,
+                    centered:false,
                     noHeader:true,
                     hideOnClose:true,
                     autoSize:true,
@@ -308,7 +310,10 @@
              * Display popup
              */
             self.infoPopup.show();
-            self.infoPopup.moveTo({x:M.$map.width() - self.infoPopup.$d.width() / 2 - 100,y:40});
+            self.infoPopup.moveTo({
+                x:M.$map.width() - self.infoPopup.$d.width() / 2 - 100,
+                y:40
+            });
             
             /*
              * Set popup action
