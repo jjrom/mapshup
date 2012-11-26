@@ -1114,9 +1114,9 @@
         /*
          * Set a new thumbs array from a features array 
          * 
-         * @param item 
-         * @param features
-         * @param boolean update : true to update, false to refresh
+         * @param {Object} item 
+         * @param {OpenLayers.Features} features
+         * @param {boolean} update : true to update, false to refresh
          */
         this.setFeatures = function(item, features, update) {
             
