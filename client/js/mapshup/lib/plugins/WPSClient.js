@@ -1064,18 +1064,14 @@
          */
         this.load = function(data) {
             
-            if (M.Map.layerTypes["GeoJSON"]) {
-                
-                /*
-                 * Add new feature(s) and center on it
-                 */
-                M.Map.layerTypes["GeoJSON"].load({
-                    data:data,
-                    layer:this.getLayer(),
-                    zoomOnNew:true
-                });
-                
-            }
+            /*
+             * Add new feature(s) and center on it
+             */
+            M.Map.layerTypes["GeoJSON"].load({
+                data:data,
+                layer:this.getLayer(),
+                zoomOnNew:true
+            });
             
         };
         
