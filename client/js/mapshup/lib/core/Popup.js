@@ -59,6 +59,11 @@
         this.classes = options.classes;
         
         /*
+         * True to have popup horizontally centered on the map
+         */
+        this.centered = M.Util.getPropertyValue(options, "centered", true);
+        
+        /*
          * Function callback called after popup is removed
          */
         this.onClose = options.onClose;
@@ -114,8 +119,9 @@
         this.followMap = M.Util.getPropertyValue(options, "followMap", false);
         
         /*
-         * Attach popup to the specified {OpenLayers.LonLat} map coordinates
-         * This option is onlu used if 'followMap' is true
+         * Display popup to the specified {OpenLayers.LonLat} map coordinates
+         * If 'followMap' is set to true, then popup is anchored to this coordinates
+         * when map moves
          */
         this.mapXY = options.mapXY;
         
@@ -234,6 +240,10 @@
             /*
              * Compute position on init
              */
+            if (self.mapXY) {
+                this.setMapXY(self.mapXY);
+            }
+            
             self.updatePosition(self);
             
             return self;
@@ -276,7 +286,7 @@
             /*
              * Center popup if needed
              */
-            if (scope.center) {
+            if (scope.centered) {
                 scope.center(scope);
             }
             
@@ -284,17 +294,7 @@
              * Follow map
              */
             if (scope.followMap && scope.mapXY) {
-                
-                var xy = M.Map.map.getPixelFromLonLat(scope.mapXY);
-                    
-                /*
-                 * Set action info menu position
-                 */
-                scope.$d.css({
-                    'left': xy.x - 31, //'left': xy.x - self.$d.outerWidth() + 31,
-                    'top': xy.y - scope.$d.outerHeight() - 12 // 'top': xy.y + 12
-                });
-                
+                scope.setMapXY(scope.mapXY);
             }
             
         };
@@ -340,8 +340,32 @@
          * 
          */
         this.setMapXY = function(mapXY) {
+            
             this.mapXY = mapXY;
-            this.updatePosition(this);
+            
+            var xy = M.Map.map.getPixelFromLonLat(this.mapXY);
+                    
+            /*
+             * Set action info menu position
+             * 
+             * If popup has an 'apo' class, then it is display
+             * so the popup anchor is under mapXY
+             * 
+             * Otherwise the popup is centered on mapXY
+             */
+            if (this.$d.hasClass('apo')) {
+                this.$d.css({
+                    'left': xy.x - 31, //'left': xy.x - self.$d.outerWidth() + 31,
+                    'top': xy.y - this.$d.outerHeight() - 12 // 'top': xy.y + 12
+                });
+            }
+            else {
+                this.$d.css({
+                    'left': xy.x - (this.$d.outerWidth() / 2),
+                    'top': xy.y - (this.$d.outerHeight() / 2)
+                });
+            }
+           
         };
         
         /**
@@ -451,17 +475,13 @@
         
         /**
          * Show popup
-         * 
-         * @param {boolean} noUpdate : if set to true, popup is not centered on show
          */
-        this.show = function(noUpdate) {
+        this.show = function() {
             this.$d.show();
             this.$m.show();
-            if (!noUpdate) {
-                this.updatePosition(this);
-            }
             
             if (this.followMap) {
+                
                 /*
                 * Move the map to ensure that feature info panel is completely
                 * visible
