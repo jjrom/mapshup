@@ -305,7 +305,7 @@
         /**
          * Return a unique title from layerDescription
          * 
-         * @param typeName : input layerDescription object
+         * @param layerDescription : input layerDescription object
          */
         getTitle: function(layerDescription) {
             layerDescription = layerDescription || {};
