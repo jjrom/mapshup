@@ -539,7 +539,7 @@
 
                     });
                 }
-
+                
 
                 /*
                  * Set the visibility of the layer depending on the "hidden" property
