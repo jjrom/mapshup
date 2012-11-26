@@ -1041,14 +1041,15 @@
             this._layer = M.Map.addLayer({
                 type:"GeoJSON",
                 title:"WPS results",
-                clusterized:false,
+                clusterized:false, // Very important !
                 ol:{
                     styleMap: new OpenLayers.StyleMap({
                         'default':{
                             strokeColor:'white',
                             strokeWidth: 1,
                             fillColor:'red',
-                            fillOpacity: 0.2
+                            fillOpacity: 0.2,
+                            pointRadius:5
                         }
                     })
                 }
@@ -1063,7 +1064,7 @@
          * @param {String} data : a GeoJSON string
          */
         this.load = function(data) {
-            
+            console.log(data);
             /*
              * Add new feature(s) and center on it
              */
