@@ -148,9 +148,13 @@
     c["general"].rssToGeoRSSServiceUrl = "/utilities/rss2georss.php?url=";
 
     /**
-     * Save KML service url. Must be terminated by "?" or "&"
+     * Save stream service url.
+     * Stream service url has 3 input parameters :
+     *   - "s" value is the encoded stream
+     *   - "format" value is the stream format ('json' or 'kml')
+     *   - "uid" value is a unique identifier (optional - create by server if not set) 
      */
-    c["general"].saveKMLServiceUrl = "/utilities/saveKML.php?";
+    c["general"].saveStreamServiceUrl = "/utilities/saveStream.php?";
 
     /**
      * Reprojection service url. Must be terminated by "?" or "&"

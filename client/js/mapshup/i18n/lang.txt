@@ -27,6 +27,8 @@ Choose export format
 Choose the catalog type
 Checking
 Clear
+Click on a feature to modify it
+Click on the map to draw a feature
 Click the mouse left button to define the measure point
 Click to zoom
 close
@@ -177,8 +179,7 @@ Start tracking
 Stop tracking
 Streets
 Streetview
-Switch to drawing mode
-Switch to modification mode
+Switch drawing/modification
 Tags
 The layer cannot be saved
 The layer is empty and cannot be exported

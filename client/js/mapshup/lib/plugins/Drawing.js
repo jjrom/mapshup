@@ -265,20 +265,14 @@
         /*
          * Show drawing info dialog
          */
-        this.showStatus = function(type) {
+        this.showStatus = function() {
             
-            var txt,
-            id = M.Util.getId(),
-            self = this;
-            
-            if (type === "draw") {
-                txt = M.Util._("You are in drawing mode")+'<br/><br/><a href="#" class="button" id="'+id+'">'+M.Util._("Switch to modification mode")+'</a>';
-            }
-            else {
-                txt = M.Util._("You are in modification mode")+'<br/><br/><a href="#" class="button" id="'+id+'">'+M.Util._("Switch to drawing mode")+'</a>';
-            }
+            var self = this;
             
             if (!self.infoPopup) {
+                
+                var id = M.Util.getId();
+                
                 self.infoPopup = new M.Popup({
                     modal:false,
                     centered:false,
@@ -288,24 +282,48 @@
                     onClose: function() {
 
                         /*
+                         * Empty drawing layer
+                         */
+                        self.layer.destroyFeatures();
+                        
+                        /*
                          * Switch back to Map default control
                          */
                         M.Map.resetControl(self.control);
                         self.control = null;
 
-                        /*
-                         * Save layer
-                         */
-                        self.updateLayer();
-
-                    }
+                    },
+                    body:'<div class="t marged"></div><div class="center marged"><a href="#" class="button inline twitter" id="'+id+'">'+M.Util._("Switch drawing/modification")+'</a></div><br/><br/><div class="padded center"><a href="#" class="button validate inline s">'+M.Util._("Save")+'</a> <a href="#" class="button inline c">'+M.Util._("Cancel")+'</a></div>'
+                });
+                
+                /*
+                * Set popup action
+                */
+                $('#'+id).click(function() {
+                    self.status === "draw" ? self.startModifying() : self.startDrawing();
+                    return false;
+                });
+               
+                /*
+                 * Save layer
+                 */
+                $('.s', self.infoPopup.$d).click(function(){
+                    self.updateLayer();
+                    self.infoPopup.hide();
+                });
+                
+                /*
+                 * Close popup
+                 */
+                $('.c', self.infoPopup.$d).click(function(){
+                    self.infoPopup.hide();
                 });
             }
             
             /*
              * Set popup body
              */
-            self.infoPopup.$b.html('<div class="marged">'+txt+'</div>');
+            $('.t', self.infoPopup.$b).html(self.status === "draw" ? M.Util._("Click on the map to draw a feature") : M.Util._("Click on a feature to modify it"));
             
             /*
              * Display popup
@@ -314,14 +332,6 @@
             self.infoPopup.moveTo({
                 x:M.$map.width() - self.infoPopup.$d.width() / 2 - 100,
                 y:40
-            });
-            
-            /*
-             * Set popup action
-             */
-            $('#'+id).click(function() {
-                type === "draw" ? self.startModifying() : self.startDrawing();
-                return false;
             });
             
         };
@@ -353,6 +363,8 @@
                 data:geojson,
                 layer:this.getActiveLayer()
             });
+            
+            this.saveLayer();
             
             return true;
             
@@ -397,20 +409,24 @@
          */
         this.saveLayer = function() {
 
-            var title, geojson, self = this;
+            var title, geojson, self = this, l = self.getActiveLayer();
                 
-            if (self.layer.features.length === 0) {
+            if (l.features.length === 0) {
                 return false;
             }
             
-            title = "MyLayer #"+M.Util.getId();
-            kml = M.Map.Util.KML.layerToKML(self.layer, {
-                color:M.Util.randomColor(), 
-                opacity:0.4
-            });
-
+            try {
+                geojson = self.GeoJSONFormat.write(M.Map.Util.getFeatures(l, {
+                    toDisplayProjection:true
+                }));
+            }
+            catch (e) {
+                M.Util.message("Error : cannot save layer on server");
+                return false;
+            }
+            
             /*
-             * Save KML layer to the server
+             * Save GeoJSON layer to the server
              */
             M.Util.ajax({
                 url:M.Util.getAbsoluteUrl(M.Config["general"].saveStreamServiceUrl)+M.Util.abc,
@@ -418,8 +434,8 @@
                 type:"POST",
                 data:{
                     s:encodeURIComponent(geojson),
-                    format:'kml',
-                    uid:'drawned'
+                    format:'json',
+                    uid:l['_M'].layerDescription.MID
                 },
                 dataType:"json",
                 success: function(data) {
@@ -428,26 +444,7 @@
                         M.Util.message(data.error["message"]);
                     }
                     else {
-
-                        /*
-                         * Empty the drawing layer
-                         */
-                        if (self && self.layer) {
-                            self.layer.destroyFeatures();
-                        }
-
-                        /*
-                         * Add new layer to the map
-                         */
-                        M.Map.addLayer({
-                            type:"GeoJSON",
-                            title:title,
-                            icon:M.Util.getImgUrl("drawing.png"),
-                            url:data.url,
-                            editable:true,
-                            selectable:true
-                        });
-
+                        l['_M'].layerDescription.url = data.url;
                     }
                 },
                 error: function(e) {
@@ -470,7 +467,7 @@
         this.startDrawing = function(type) {
 
             var self = this;
-
+            
             /*
              * First reset control
              */
@@ -479,7 +476,8 @@
             /*
              * Show dialog drawing mode
              */
-            self.showStatus("draw");
+            self.status = "draw"
+            self.showStatus();
                 
             /*
              * Drawn object type is not defined => ask user
@@ -521,8 +519,7 @@
          */
         this.startModifying = function() {
 
-            var hlt,
-            self = this;
+            var hlt, self = this;
 
             /*
              * Reset control => OpenLayers bug ??
@@ -539,7 +536,8 @@
             /*
              * Change info status
              */
-            self.showStatus("modify");
+            self.status = "modify";
+            self.showStatus();
             
             /*
              * Activate control

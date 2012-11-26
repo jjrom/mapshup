@@ -28,6 +28,8 @@
     i["Choose export format"]="Choisir le format d'export";
     i["Choose the catalog type"]="Choix du type de catalogue";
     i["Clear"]="Effacer";
+    i["Click on a feature to modify it"]="Cliquer sur une géométrie pour la modifier";
+    i["Click on the map to draw a feature"]="Cliquer sur la carte pour ajouter une géométrie";
     i["Click the mouse left button to define the measure point"]="Cliquez sur le bouton gauche de la souris pour définir le point de mesure";
     i["Click to zoom"]="Cliquer pour zoomer";
     i["close"]="fermer";
@@ -181,8 +183,7 @@
     i["Stop tracking"]="Stopper le suivi";
     i["Streets"]="Rues";
     i["Streetview"]="Streetview";
-    i["Switch to drawing mode"]="Passer en mode dessin";
-    i["Switch to modification mode"]="Passer en mode modification";
+    i["Switch drawing/modification"]="Basculer dessin/modification";
     i["Tags"]="Tags";
     i["The layer cannot be saved"]="La couche ne peut pas être sauvegardée";
     i["The layer is empty and cannot be exported"]="La couche est vide et ne peut pas être exportée";
