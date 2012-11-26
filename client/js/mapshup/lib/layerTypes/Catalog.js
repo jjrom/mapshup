@@ -226,7 +226,7 @@
          * Compute an unique MID based on layerDescription
          */
         getMID:function(layerDescription) {
-            return M.Util.crc32(layerDescription.type + layerDescription.connectorName + (M.Util.repareUrl(layerDescription.url) || ""));
+            return layerDescription.MID || M.Util.crc32(layerDescription.type + layerDescription.connectorName + (M.Util.repareUrl(layerDescription.url) || ""));
         },
         
         /**

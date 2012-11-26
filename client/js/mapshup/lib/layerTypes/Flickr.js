@@ -223,7 +223,7 @@
          * Compute an unique MID based on layerDescription
          */
         getMID:function(layerDescription) {
-            return M.Util.crc32(layerDescription.type + (layerDescription.title || "") + (layerDescription.userID || "") + (layerDescription.q || "") + (layerDescription.machineTags || ""));
+            return layerDescription.MID || M.Util.crc32(layerDescription.type + (layerDescription.title || "") + (layerDescription.userID || "") + (layerDescription.q || "") + (layerDescription.machineTags || ""));
         }
     }
 })(window.M, window.M.Map);

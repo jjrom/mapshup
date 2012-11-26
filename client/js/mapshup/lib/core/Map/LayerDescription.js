@@ -126,6 +126,14 @@
             var o = this.obj, layerType = this.map.layerTypes[o.type];
 
             /*
+             * Layerdescrition.MID has preseance over everything else
+             * This is used to force MID on specific layers (drawing for example)
+             */
+            if (o.MID) {
+                return o.MID;
+            }
+            
+            /*
              * Layer type does not exists => return null
              */
             if (!layerType) {

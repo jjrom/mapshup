@@ -90,6 +90,9 @@
          * Compute an unique MID based on layerDescription
          */
         getMID:function(layerDescription) {
+            if (layerDescription.MID) {
+                return layerDescription.MID;
+            } 
             var str = layerDescription.url;
             if (typeof layerDescription.url === "object") {
                 str = layerDescription.url.toString();

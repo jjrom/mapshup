@@ -90,7 +90,7 @@
          * Compute an unique MID based on layerDescription
          */
         getMID:function(layerDescription) {
-            return M.Util.crc32(layerDescription.type + (layerDescription.url || ""));
+            return layerDescription.MID || M.Util.crc32(layerDescription.type + (layerDescription.url || ""));
         }
     }
 })(window.M, window.M.Map);
