@@ -236,7 +236,7 @@
                     hideOnClose:true,
                     autoSize:true,
                     mapXY:M.Map.map.getLonLatFromPixel(M.Map.mousePosition),
-                    body:'<div class="marged"><a href="#" id="'+idPoint+'">'+M.Util._("Point")+'</a><img class="middle" src="'+M.Util.getImgUrl("drawing_point.png")+'"/>&nbsp;<a href="#" id="'+idLine+'">'+M.Util._("Line")+'</a><img class="middle" src="'+M.Util.getImgUrl("drawing_line.png")+'"/><a href="#" id="'+idPolygon+'">'+M.Util._("Polygon")+'</a><img class="middle" src="'+M.Util.getImgUrl("drawing_polygon.png")+'"/></div>'
+                    body:'<div class="marged"><a href="#" id="'+idPoint+'">'+M.Util._("Point")+'</a><img class="middle" src="'+M.Util.getImgUrl("point.png")+'"/>&nbsp;<a href="#" id="'+idLine+'">'+M.Util._("Line")+'</a><img class="middle" src="'+M.Util.getImgUrl("line.png")+'"/><a href="#" id="'+idPolygon+'">'+M.Util._("Polygon")+'</a><img class="middle" src="'+M.Util.getImgUrl("polygon.png")+'"/></div>'
                 });
                 /*
                  * Create action for drawingAsk dialog box
