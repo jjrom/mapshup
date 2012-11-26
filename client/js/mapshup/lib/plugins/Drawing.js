@@ -87,7 +87,7 @@
                     'default':{
                         pointRadius:5,
                         strokeColor:'white',
-                        strokeWidth: 1,
+                        strokeWidth: 2,
                         fillColor:'black',
                         fillOpacity: 0.3
                     }

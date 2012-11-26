@@ -230,18 +230,19 @@
              * layerDescription got an 'icon'  => use it as symbol
              * for point representation
              */
-            else if (obj.icon) {
+            /*else if (obj.icon) {
                 icon = obj.icon;
             }
-
+            */
             /*
              * Set the default style
              */
             var styleDefault = new OpenLayers.Style(OpenLayers.Util.applyDefaults({
-                pointRadius: icon ? 20 : "${scaledSize}",
+                pointRadius: icon ? 10 : "${scaledSize}",
                 externalGraphic: icon,
-                fillOpacity: icon ? 1 : opacity,
-                strokeColor:"#222222",
+                fillOpacity: opacity,
+                graphicOpacity: 1,
+                strokeColor:"#fff",
                 strokeWidth:2,
                 fillColor:"${color}"
             }, OpenLayers.Feature.Vector.style["default"]), {
@@ -301,7 +302,7 @@
                                 return feature.cluster[main].attributes[obj.filterOn] * 5;
                             }
                             /*
-                             * filterOn is not defined => return twice the normal scale
+                             * filterOn is not defined => return fourth time the normal scale
                              */
                             else {
                                 return 20
@@ -322,7 +323,7 @@
                              * filterOn is not defined => return a normal scale
                              */
                             else {
-                                return 10;
+                                return 5;
                             }
                         }
                     }
@@ -334,11 +335,10 @@
              */
             return new OpenLayers.StyleMap({
                 "default": styleDefault,
-                "select": icon ? {
-                    pointRadius:30
-                } : {
+                "select": {
+                    pointRadius:10,
                     strokeColor:"#ffff00",
-                    fillOpacity: opacity <= 0.9 ? opacity + 0.1 : opacity - 0.1
+                    fillOpacity:opacity <= 0.9 ? opacity + 0.1 : opacity - 0.1
                 }
             });
         };
