@@ -1007,7 +1007,7 @@
         /**
          * Scroll feature thumbWrapper
          * 
-         * @param {OpenLayers.Feature} feature to scroll to
+         * @param {OpenLayers.Feature} f : feature to scroll to
          */
         this.scrollTo = function(f) {
             
