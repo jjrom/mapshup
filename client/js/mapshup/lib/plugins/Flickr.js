@@ -90,6 +90,8 @@
                                 type:"Flickr",
                                 title:toponym.name+", "+toponym.countryName,
                                 q:encodeURIComponent(toponym.name)
+                            },{
+                                noDeletionCheck:true
                             })
                         });
                         
