@@ -89,7 +89,7 @@
                             layer:M.Map.addLayer({
                                 type:"Flickr",
                                 title:toponym.name+", "+toponym.countryName,
-                                q:M.Util.encode(toponym.name)
+                                q:encodeURIComponent(toponym.name)
                             })
                         });
                         
