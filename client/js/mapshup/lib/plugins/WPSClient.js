@@ -788,8 +788,6 @@
                             
                             self.setPuts(process, type);
                             
-                            alert("TODO : format ?");
-
                         }
                         
                     }
@@ -1067,7 +1065,7 @@
          * @param {String} data : a GeoJSON string
          */
         this.load = function(data) {
-            console.log(data);
+            
             /*
              * Add new feature(s) and center on it
              */
