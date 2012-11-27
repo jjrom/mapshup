@@ -802,9 +802,10 @@
             .append('<div class="fi"><div class="header"><div class="title"></div></div><div class="body"></div></div>');
     
             /*
-             * Add a close button to the Help panel
+             * Add a close button to the info panel
              */
             M.Util.addClose($target,function(){
+                M.activity.hide();
                 $target.remove();
             });
             
@@ -823,7 +824,21 @@
              * Set header
              */
             $('.title', $target).attr('title', feature.layer.name + ' | ' + title).html(title);      
-             
+            
+            /*
+             * Show activity indicator during image loading
+             */
+            if (ql) {
+                var image = new Image();
+                image.src = ql;
+                M.activity.show();
+                $(image).load(function() {
+                    M.activity.hide();
+                }).error(function () {
+                    M.activity.hide();
+                });
+            }
+            
             /*
              * Set body and tabs reference
              */
