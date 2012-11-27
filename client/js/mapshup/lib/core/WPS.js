@@ -1034,7 +1034,7 @@
                 /*
                  * LiteralData
                  */
-                if (put.type === "LiteralData") {
+                if (put.type === "LiteralData" && put.data) {
                     template = M.Util.parseTemplate(M.WPS.literalDataInputTemplate,{
                         identifier:put.identifier,
                         data:put.data,
@@ -1049,13 +1049,13 @@
                     if (put.fileUrl) {
                         template = M.Util.parseTemplate(M.WPS.complexDataInputReferenceTemplate,{
                             identifier:put.identifier,
-                            reference:put.fileUrl
+                            reference:encodeURIComponent(put.fileUrl)
                         });
                     }
                     /*
                      * Pass data within XML file
                      */
-                    else {
+                    else if (put.data) {
                         template = M.Util.parseTemplate(M.WPS.complexDataInputTemplate,{
                             identifier:put.identifier,
                             data:put.data
