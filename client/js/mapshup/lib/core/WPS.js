@@ -1049,7 +1049,7 @@
                     if (put.fileUrl) {
                         template = M.Util.parseTemplate(M.WPS.complexDataInputReferenceTemplate,{
                             identifier:put.identifier,
-                            reference:encodeURIComponent(put.fileUrl)
+                            reference:put.fileUrl
                         });
                     }
                     /*
@@ -1444,9 +1444,7 @@
      */
     M.WPS.complexDataInputReferenceTemplate = '<wps:Input>'+
             '<ows:Identifier>$identifier$</ows:Identifier>'+
-            '<wps:Data>'+
-                '<wps:Reference xlink:href="$reference$" $format$/>'+
-            '</wps:Data>'+
+            '<wps:Reference xlink:href="$reference$" $format$/>'+
         '</wps:Input>';
                             
     /**
