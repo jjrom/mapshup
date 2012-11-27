@@ -408,25 +408,49 @@
                 result = process.result[i];
                 
                 /*
-                * Searh within jQuery data('identifier')
-                */
-                $outputsList.each(function(){
-                    if ($(this).data('identifier') === result.identifier) {
-                        $('#'+$(this).attr('id')+'v').html(result.data.value);
-                    }
-                });
-                
-                /*
-                 * Add new features within WPSClient layer
+                 * Two cases : data is directly accessible within the result,
+                 * or data is accessible through an url (reference)
                  */
-                geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
-                if (geoType === 'GML') {
-                    this.load(M.Map.Util.GML.toGeoJSON(result.data.value,{
-                        title:process.title,
-                        processid:process.identifier,
-                        description:process["abstract"],
-                        time:(new Date()).toISOString()
-                    }));
+                if (result.data) {
+                    
+                    /*
+                     * Searh within jQuery data('identifier')
+                     */
+                    $outputsList.each(function(){
+                        if ($(this).data('identifier') === result.identifier && result.data) {
+                            $('#'+$(this).attr('id')+'v').html(result.data.value);
+                        }
+                    });
+
+                    /*
+                     * Add new features within WPSClient layer
+                     */
+                    geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
+                    if (geoType === 'GML') {
+                        this.load(M.Map.Util.GML.toGeoJSON(result.data.value,{
+                            title:process.title,
+                            processid:process.identifier,
+                            description:process["abstract"],
+                            time:(new Date()).toISOString()
+                        }));
+                    }
+                    
+                }
+                /*
+                 * Reference result
+                 */
+                else if (result.reference) {
+                    var id = M.Util.getId(),
+                        popup = new M.Popup({
+                        modal:false,
+                        noHeader:true,
+                        autoSize:true,
+                        body:process.title + ' <a id="'+id+'" href="'+result.reference.href+'" class="button inline colored" target="_blank">'+ M.Util._("Download result") + '</a>'
+                    }).show();
+                    $('#'+id).click(function(){
+                        popup.hide();
+                    });
+                    
                 }
                 
             }
