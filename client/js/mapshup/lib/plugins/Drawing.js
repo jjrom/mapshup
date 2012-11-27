@@ -205,6 +205,13 @@
                     M.Map.Util.setLayerOnTop(scope.layer);
                 }
                 
+                /*
+                 * Be carefull to nullify activeLayer if it is remove 
+                 */
+                if (action === "remove" && scope._activeLayer && scope._activeLayer.id === layer.id) {
+                    scope._activeLayer = null;
+                }
+                
             });
 
             /*
