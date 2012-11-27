@@ -158,10 +158,10 @@
             if (self.modal) {
                 
                 /*
-                 * Set popup over the mask
+                 * Set popup over the mask and over activity
                  */
                 self.$d.css({
-                    'z-index':'38000'
+                    'z-index':'38600'
                 });
                 
                 self.$m = M.Util.$$('#modmask',M.$container)
