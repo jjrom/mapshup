@@ -1015,18 +1015,34 @@
          */
         this.execute = function() {
         
-            var i, l, data, template, formatStr, put, outputs = "", inputs = "", self = this;
+            var i, l, data, template, formatStr, put, outputs = "", inputs = "", storeExecute = false, self = this;
             
+            /*
+             * If the first output is a ComplexOutput and its mimeType is not a
+             * Geographical mimeType, then storeExecute on server instead of streamed it
+             */
+            for (i = 0, l = this.outputs.length; i < l; i++ ) {
+                if (this.outputs[i].type === 'ComplexOutput') {
+                    if (!M.Map.Util.getGeoType(this.outputs[i].mimeType)) {
+                        storeExecute = "true";
+                        break;
+                    }
+                }
+            }
+            
+            /*
+             * Initialize process request
+             */
             data = M.Util.parseTemplate(M.WPS.executeRequestTemplate,{
                 identifier:this.identifier,
-                storeExecute:"false",
+                storeExecute:storeExecute,
                 status:this.async
             });
             
             /*
              * Process Inputs
              */
-            for (i  = 0, l = this.inputs.length; i < l; i++ ) {
+            for (i = 0, l = this.inputs.length; i < l; i++ ) {
                 put = this.inputs[i];
                 template = "";
                 formatStr ="";
@@ -1108,9 +1124,13 @@
                     if (put.mimeType) {
                             formatStr += " mimeType=\""+put.mimeType+"\"";
                     }
+                    /*
+                     * If mimeType is not a Geographical mimeType, then request data
+                     * as reference
+                     */
                     template = M.Util.parseTemplate(M.WPS.complexOutputTemplate,{
                         identifier:put.identifier,
-                        asReference:"false",
+                        asReference: M.Map.Util.getGeoType(put.mimeType) ? "false" : "true",
                         format:formatStr
                     });
                 }
