@@ -1200,6 +1200,11 @@
          *              </wps:Output>
          *          </wps:ProcessOutputs>
          *      </wps:ExecuteResponse>
+         *      
+         *  Note : if "asReference" is set to true in the request, then the <wps:Data> element is replaced by 
+         *  
+         *     <wps:Reference href="http://constellation-wps.geomatys.com/cstl-wrapper/wps/output/8ef6ecdf-5f62-4bcd-b0ac-2cae2adcbb43" mimeType="image/png"></wps:Reference>
+         *
          * 
          */
         this.parseExecuteResponse = function(xml) {
@@ -1243,6 +1248,9 @@
                             if (nn === 'identifier') {
                                 p[nn] = $(this).text();
                             }
+                            /*
+                             * Execute request with asReference="false"
+                             */
                             else if (nn === 'data') {
 
                                 p['data'] = {};
@@ -1264,14 +1272,15 @@
                                     else if (nn === 'BoundingBox') {
                                     // TODO    
                                     }
-                                    else if (nn === 'Reference') {
-                                    // TODO    
-                                    }
-
                                 });
 
                             }
-
+                            /*
+                             * Execute request with asReference="true"
+                             */
+                            else if (nn === 'reference') {
+                                p['reference'] = M.Util.getAttributes($(this));
+                            }
                         });
                         
                         result.push(p);
