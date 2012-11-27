@@ -279,6 +279,7 @@
                     noHeader:true,
                     hideOnClose:true,
                     autoSize:true,
+                    unbounded:true,
                     onClose: function() {
 
                         /*
@@ -331,7 +332,7 @@
             self.infoPopup.show();
             self.infoPopup.moveTo({
                 x:M.$map.width() - self.infoPopup.$d.width() / 2 - 100,
-                y:40
+                y:5
             });
             
         };
