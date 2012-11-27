@@ -139,6 +139,8 @@
                             title:M.Util.stripTags(M.Map.Util.Feature.getTitle(feature)),
                             bbox:bounds.toBBOX(),
                             q:""
+                        },{
+                            noDeletionCheck:true
                         }),
                         cancel:true
                     });
