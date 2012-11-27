@@ -225,7 +225,7 @@
              * a mapshup message popup
              * 
              */
-            $('.info', item.$d).html('<h1><a href="'+item.wps.url+'" title="'+item.wps.url+'" target="_blank">'+item.wps.title+'</a></h1><p>'+item.wps["abstract"]+' [<a href="#" id="'+id+'">&nbsp;'+M.Util._("more")+'&nbsp;</a>]</p><br/><h1>'+M.Util._('Processes')+'</h1>');
+            $('.info', item.$d).html('<h1><a href="'+item.wps.url+'" title="'+item.wps.url+'" target="_blank">'+item.wps.title+'</a></h1><p>'+M.Util.shorten(item.wps["abstract"], 100, true)+' [<a href="#" id="'+id+'">&nbsp;'+M.Util._("more")+'&nbsp;</a>]</p><br/><h1>'+M.Util._('Processes')+'</h1>');
             $('#'+id).click(function(){
                 M.Util.message(item.wps.toHTML(), -1);
                 return false;
