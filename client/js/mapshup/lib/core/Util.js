@@ -765,7 +765,11 @@
              *      supportedFormat:  // optional
              *      maximumMegaBytes: // optional
              *      file: // File object - optional 
-             *      fileUrl: // Url to file - optional 
+             *      fileUrl: // Url to file - optional
+             *      upload: // Set to true to upload selected file on server
+             *                 before sending back result to callback function
+             *                 In this case, callback function will always get
+             *                 a fileUrl back 
              *     
              * Structure of supportedFormat is
              * 
@@ -808,10 +812,50 @@
                 
                 popup.append('<p class="big center padded"><br/><a href="#" class="button inline validate" id="'+id+'">'+M.Util._("Set")+'</a></p>', 'body');
                 $('#'+id).click(function(){
-                    if ($.isFunction(options.callback)) {
-                        options.callback(data);
+                    
+                    /*
+                     * If options.upload is set to true, then
+                     * the dropped file is uploaded to the server
+                     * This is equivalent to transform a local 'file'
+                     * to a 'fileUrl' - callback function is then
+                     * call with a 'fileUrl'
+                     * This 
+                     *  
+                     */
+                    if (options.upload && data.file) {
+                        self.upload(data.file,{
+                            formats:options.supportedFormats,
+                            maximumMegabytes:options.maximumMegaBytes,
+                            callback:function(items) {
+                                
+                                /*
+                                 * Only one file has been dropped, but the result
+                                 * can contains more than one item (it is the case for
+                                 * jpeg dropped files for example, where mapshup automatically
+                                 * associate a "Photography" layer referenced by a second item
+                                 * 
+                                 * In this case, we pick up the first item
+                                 */
+                                if ($.isArray(items)) {
+                                    if ($.isFunction(options.callback)) {
+                                        options.callback({
+                                            fileUrl:items[0].url
+                                        });
+                                    }
+                                    popup.remove();
+                                }
+                                else {
+                                    M.Util.message("Error : cannot upload file on server");
+                                }
+                            }
+                        });
                     }
-                    popup.remove(); 
+                    else {
+                        if ($.isFunction(options.callback)) {
+                            options.callback(data);
+                        }
+                        popup.remove();
+                    }
                 });
                 
                 /*
@@ -1311,6 +1355,36 @@
         },
         
         /**
+         * Check if input mimeType is supported
+         * 
+         * @param {Array} formats : // Array of {mimeType://}
+         * @param {String} mimeType
+         */
+        isSupportedMimeType:function(formats, mimeType) {
+            
+            formats = formats || [];
+            
+            var i, l = formats.length;
+            
+            /*
+             * If no supportedFormats are defined, then
+             * it supposes that every format is supported
+             */
+            if (l === 0) {
+                return true;
+            }
+
+            for (i = 0; i < l; i++) {
+                if (formats[i].mimeType.toLowerCase() === mimeType.toLowerCase()) {
+                    return true;
+                }
+            }
+            
+            return false;
+            
+        },
+        
+        /**
          * Check if a string is a valid ISO8601 date or interval
          * i.e. YYYY-MM-DDTHH:mm:ss or YYYY-MM-DDTHH:mm:ss/YYYY-MM-DDTHH:mm:ss
          */
@@ -1677,6 +1751,137 @@
         
         lowerFirstLetter:function(string) {
             return string.charAt(0).toLowerCase() + string.slice(1);
+        },
+        
+        /**
+         * Upload files to server
+         *
+         * @param {Array} files : array of files to upload
+         * @param {Object} options : upload options
+         *                          {
+         *                              formats: // Array of {mimeType:}
+         *                              maximumMegabytes: // max size for uploaded file // MANDATORY
+         *                              callback: callback function on successfull upload
+         *                          }
+         * 
+         */
+        upload:function(files, options) {
+
+            var i, l, form, validFiles = [], self = this;
+            
+            options = options || {};
+            
+            /*
+             * input files should be an array
+             */
+            if (!$.isArray(files)) {
+                files = [files];
+            }
+            
+            /*
+             * Tell user that we are processing things !
+             */
+            M.mask.add({
+                title:this._("Upload files")+"...",
+                cancel:false
+            });
+
+            /*
+             * Roll over files and check validity
+             */
+            $(files).each(function(key, file) {
+
+                /*
+                 * mimeType checking
+                 */
+                if (!self.isSupportedMimeType(options.formats, file.type)) {
+                    self.message(M.Util._("Error : mimeType is not supported")+ ' ['+file.type+']');
+                    return false;
+                }
+                /*
+                 * size checking
+                 */
+                if (file.size/1048576 > options.maximumMegabytes) {
+                    self.message(M.Util._("Error : file is to big")+ ' ['+file.name+']');
+                    return false;
+                }
+                
+                /*
+                 * Add a valid file
+                 */
+                validFiles.push(file);
+                
+                return true;
+            });
+            
+            /*
+             * Upload validFiles
+             */
+            if (validFiles.length > 0) {
+
+                /*
+                 * Work-around for Safari occasionally hanging when doing a
+                 * file upload.  For some reason, an additional HTTP request for a blank
+                 * page prior to sending the form will force Safari to work correctly.
+                 *
+                 * See : http://www.smilingsouls.net/Blog/20110413023355.html
+                 */
+                $.get('./blank.html');
+
+                var http = new XMLHttpRequest();
+
+                /*
+                 * Listen the end of the process
+                 */
+                http.onreadystatechange = function() {
+
+                    var result;
+                    
+                    /*
+                     * End of the process is readyState 4
+                     * Successfull status is 200 or 0 (for localhost)
+                     */
+                    if (http.readyState === 4 && (http.status === 200 || http.status === 0)) {
+
+                        M.mask.hide();
+
+                        result = JSON.parse(http.responseText);
+
+                        /*
+                         * In case of success, roll over processed items
+                         */
+                        if (result.error) {
+                            M.Util.message(result.error["message"]);
+                        }
+                        else {
+                            if (result.items) {
+                                if ($.isFunction(options.callback)) {
+                                    options.callback(result.items);
+                                }
+                            }
+                        }
+                    }
+                };
+
+                if (typeof(FormData) !== 'undefined') {
+
+                    form = new FormData();
+                    form.append('path', '/');
+
+                    for (i = 0, l = files.length; i < l; i++) {
+                        form.append('file[]', files[i]);
+                    }
+                    
+                    http.open('POST', M.Util.getAbsoluteUrl(M.Config["upload"].serviceUrl)+M.Util.abc+"&magic=true");
+                    http.send(form);
+                } else {
+                    M.Util.message('Error : your browser does not support HTML5 Drag and Drop');
+                }
+            }
+            else {
+                M.Util.message('Error : this file type is not allowed');
+                M.mask.hide();
+            }
         }
         
     };

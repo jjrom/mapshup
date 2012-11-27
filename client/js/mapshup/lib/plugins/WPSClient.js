@@ -765,10 +765,13 @@
                     supportedFormats:data.supported,
                     file:$parent.data('file'),
                     fileUrl:$parent.data('fileUrl'),
+                    upload:true, // Upload data to server to get a fileURL
                     callback:function(data){
                        
                         /*
                          * Data can be either a File object or an url
+                         * Note that if upload is set to true in askFor parameter,
+                         * then data should only be a fileUrl
                          */
                         if (data.file || data.fileUrl) {
                             

@@ -182,15 +182,21 @@
                         url = e.originalEvent.dataTransfer.getData('Text');
                         if (M.Util.isUrl(url)) {
                             self.fileUrl = url;
+                            
+                            /*
+                             * Refresh popup content
+                             */
+                            self.setContent();
                             self.success({
                                 fileUrl:self.fileUrl
-                                });
+                            });
+                            
                         }
                     }
                     else if (files.length > 1) {
                         M.Util.message(M.Util._("Error : drop only one file at a time"));
                     }
-                    else if (!self.isFormatSupported(files[0].type)) {
+                    else if (!M.Util.isSupportedMimeType(self.supportedFormats, files[0].type)) {
                         M.Util.message(M.Util._("Error : mimeType is not supported")+ ' ['+files[0].type+']');
                     }
                     else if (files[0].size/1048576 > self.maximumMegabytes) {
@@ -201,15 +207,16 @@
                     */
                     else {
                         self.file = files[0];
+                        
+                        /*
+                         * Refresh popup content
+                         */
+                        self.setContent();
+                    
                         self.success({
                             file:self.file
-                            });
+                        });
                     }
-                    
-                    /*
-                     * Refresh popup content
-                     */
-                    self.setContent();
                     
                 });
             
@@ -249,37 +256,12 @@
                  * ...followed by all droppable supported formats
                  */
                 if (l > 0) {
-                    this.$d.append('<br/><p class="smaller">'+M.Util._("Supported mimeTypes")+'</p>');
+                    this.$d.append('<br/><p class="smaller bold">'+M.Util._("Supported mimeTypes")+'</p>');
                     for (i = 0; i < l; i++) {
-                        this.$d.append('<p class="smaller">'+this.supportedFormats[i].mimeType+'</p>');
+                        this.$d.append('<font class="smaller">'+this.supportedFormats[i].mimeType+'</font>  ');
                     }
                 }
             }
-            
-        };
-        
-        /**
-         * Check if input mimeType is supported
-         */
-        this.isFormatSupported = function(mimeType) {
-            
-            var i, l = this.supportedFormats.length;
-            
-            /*
-             * If no supportedFormats are defined, then
-             * it supposes that every format is supported
-             */
-            if (l === 0) {
-                return true;
-            }
-
-            for (i = 0; i < l; i++) {
-                if (this.supportedFormats[i].mimeType.toLowerCase() === mimeType.toLowerCase()) {
-                    return true;
-                }
-            }
-            
-            return false;
             
         };
         
