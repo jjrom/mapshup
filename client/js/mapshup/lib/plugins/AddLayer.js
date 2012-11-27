@@ -282,10 +282,8 @@
 
             var i,
             form,
-            id,
             http,
             validFiles = [],
-            ids = "",
             count = 0,
             scope = this,
             cpt = {
@@ -312,10 +310,7 @@
                  * Some server protection
                  * Disallow files that are nothing to do with layers
                  */
-                var c,
-                i,
-                extension = file.name.split('.').pop().toLowerCase(),
-                isValid = false;
+                var c,i,extension = file.name.split('.').pop().toLowerCase();
                     
                 for (i = scope.options.allowedExtensions.length; i--;) {
 
@@ -324,7 +319,6 @@
                      */
                     if (file.fileSize > scope.options.allowedMaxSize) {
                         M.Util.message(M.Util._("Error : file is to big"));
-                        isValid = false;
                         return false;
                     }
 
@@ -333,13 +327,10 @@
                      */
                     if (extension === scope.options.allowedExtensions[i]) {
 
-                        isValid = true;
-
                         c = cpt.hasOwnProperty(extension) ? cpt.extension : 1;
 
                         if (count++ >= c) {
                             M.Util.message(M.Util._("Error : only one file at a time is allowed"));
-                            isValid = false;
                             return false;
                         }
 
@@ -347,10 +338,6 @@
 
                         break;
                     }
-                }
-                if (isValid) {
-                    id = M.Util.getId();
-                    ids += ids !== "" ? "," + id : id;
                 }
                 
                 return true;
@@ -361,12 +348,6 @@
              * Upload validFiles
              */
             if (validFiles.length > 0) {
-
-
-                /*
-                 * If ids is set
-                 */
-                ids = ids !== undefined ? "&ids="+ids : "";
 
                 /*
                  * Work-around for Safari occasionally hanging when doing a
@@ -431,7 +412,7 @@
                         form.append('file[]', files[i]);
                     }
                     
-                    http.open('POST', M.Util.getAbsoluteUrl(scope.options.uploadServiceUrl)+M.Util.abc+ids+"&magic=true");
+                    http.open('POST', M.Util.getAbsoluteUrl(scope.options.uploadServiceUrl)+M.Util.abc+"&magic=true");
                     http.send(form);
                 } else {
                     M.Util.message('Error : your browser does not support HTML5 Drag and Drop');

@@ -99,13 +99,6 @@ if (abcCheck($_REQUEST)) {
         $count = count($_FILES['file']['name']);
 
         /*
-         * ids string is a comma separated list of file id
-         */
-        if (isset($_REQUEST["ids"])) {
-            $ids = split(",", $_REQUEST["ids"]);
-        }
-
-        /*
          * Array of localized items - e.g. JPEG images with
          * location specified in EXIF tag
          */
@@ -122,10 +115,8 @@ if (abcCheck($_REQUEST)) {
             $url = -1;
             $file = null;
             $type = "unknown";
-            $id = $ids[$i] ? $ids[$i] : '';
             $error = null;
             $ignore = false;
-            $remove = false;
             $infos = array(
                 'type'=>MSP_UNKNOWN
             );
@@ -257,8 +248,7 @@ if (abcCheck($_REQUEST)) {
              * Push items
              */
             $item = array(
-                'type' => $infos['type'],
-                'id' => $id
+                'type' => $infos['type']
             );
             
             /*
