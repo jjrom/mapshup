@@ -592,12 +592,13 @@ a.tab:hover
 
 /* Popup fixed size */
 .pona {
-    top:50px;
+    top:150px;
     width:500px;
 }
 
 /* Popup auto size */
 .poa {
+    top:150px;
     width:auto;
     max-width:500px;
     height:auto;
@@ -1681,7 +1682,7 @@ td.clear {
 }
 
 .ui-slider-range {
-    background:#4099FF !important;
+    background:olivedrab !important;
 }
 
 .ui-slider-handle {
