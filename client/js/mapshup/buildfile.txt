@@ -9,6 +9,7 @@ lib/core/ToolbarItem.js
 lib/core/Mask.js
 lib/core/Tooltip.js
 lib/core/Menu.js
+lib/core/TabPaginator.js
 lib/core/SouthPanel.js
 lib/core/Popup.js
 lib/core/DDZone.js
