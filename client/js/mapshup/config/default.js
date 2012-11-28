@@ -414,35 +414,6 @@
     });
 
     /**
-     * Google Earth plugin
-     *
-     * options :
-     *      navigation : true to display navigation control // default true
-     *      atmosphere : true to display atmosphere // default true
-     *      borders : true to display borders layer // default false
-     *      terrain : true to display terrain layer // default true;
-     *      roads : true to display roads layer // default false
-     *      buildings : true to display buildings layer // default false;
-     *      buildingsLR : true to display low resolution buildings layer // default false
-     *      teleport : true to go instantaneously to location, else fly to location // default false
-     *      synchronize : true to synchronize layer between 2D and 3D // default true
-     *      synchronizeWMS : true to synchronize WMS layers between 2D and 3D - EXPERIMENTAL // default false
-     *      position: // position of the toolbar button - default ne
-     *      orientation // orientation of the toolbar button - default v
-     *      embeded: // Boolean - if true, Google Earth is displayed within a South panel
-     *                  and can be displayed at the same time of the 3D map
-     *                  Otherwise it is displayed above the 2D map
-     *                  Default false
-     */
-    c.add("plugins", {
-        name:"GoogleEarth",
-        options:{
-            synchronizeWMS:false,
-            buildings:false
-        }
-    });
-
-    /**
      * Options:
      *      position: // Toolbar position (nw, ne, sw, se) - default se
      *      orientation: // Toolbar orientation (h, v) - default v
@@ -577,6 +548,35 @@
                 url:"/plugins/wikipedia/opensearch.xml"
             }
             ]
+        }
+    });
+
+    /**
+     * Google Earth plugin
+     *
+     * options :
+     *      navigation : true to display navigation control // default true
+     *      atmosphere : true to display atmosphere // default true
+     *      borders : true to display borders layer // default false
+     *      terrain : true to display terrain layer // default true;
+     *      roads : true to display roads layer // default false
+     *      buildings : true to display buildings layer // default false;
+     *      buildingsLR : true to display low resolution buildings layer // default false
+     *      teleport : true to go instantaneously to location, else fly to location // default false
+     *      synchronize : true to synchronize layer between 2D and 3D // default true
+     *      synchronizeWMS : true to synchronize WMS layers between 2D and 3D - EXPERIMENTAL // default false
+     *      position: // position of the toolbar button - default ne
+     *      orientation // orientation of the toolbar button - default v
+     *      embeded: // Boolean - if true, Google Earth is displayed within a South panel
+     *                  and can be displayed at the same time of the 3D map
+     *                  Otherwise it is displayed above the 2D map
+     *                  Default false
+     */
+    c.add("plugins", {
+        name:"GoogleEarth",
+        options:{
+            synchronizeWMS:false,
+            buildings:false
         }
     });
 
