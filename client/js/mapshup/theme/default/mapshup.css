@@ -1459,26 +1459,6 @@ div.olControlMousePosition {
     opacity:0.8;
     filter:progid:DXImageTransform.Microsoft.Alpha(opacity=80);
 }
-
-.lm .rtools {
-    position:absolute;
-    cursor:pointer;
-    bottom:5px;
-    right:5px;
-    z-index:100;
-}
-.lm .rtools img {
-    height:24px !important;
-    width:24px !important;
-}
-.lm .rtools .item {
-    text-align:center;
-    white-space:nowrap;
-    line-height:24px;
-    padding:6px 7px 5px 7px;
-    height:24px;
-}
-
 .lmrcfg .element {
     width:100px;
 }
