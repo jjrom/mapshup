@@ -107,7 +107,7 @@
                 e.stopPropagation();
                 self.goTo(self.page - 1);
             }).css({
-                left:self.left+'px'
+                left:self.left
             });
             self.$next = $('#'+idn).click(function(e){
                 e.preventDefault();
@@ -224,7 +224,7 @@
              */
             if (self.target.items[first]) {
                 self.target.items[first].$tab.css({
-                    left:self.$next.is(':visible') ? self.$next.position().left + self.$next.outerWidth() : 0
+                    left:self.$next.is(':visible') ? self.$next.position().left + self.$next.outerWidth() : self.left
                 }).show();
             }
             
