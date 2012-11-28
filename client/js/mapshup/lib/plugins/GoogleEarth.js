@@ -115,7 +115,7 @@
             /*
              * !! Google Earth needs to be loaded !!
              */
-            if (typeof google != "object" || google.earth === undefined) {
+            if (typeof google !== "object" || google.earth === undefined) {
                 return null;
             }
 
