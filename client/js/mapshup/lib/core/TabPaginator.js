@@ -71,6 +71,10 @@
          */
         this.$container = options.$container || M.$container;
         
+        /**
+         * CSS left position in pixel relative to the map container
+         */
+        this.left = options.left || 0;
         
         /**
          * Current tabs page number
@@ -103,7 +107,7 @@
                 e.stopPropagation();
                 self.goTo(self.page - 1);
             }).css({
-                left:'0px'
+                left:self.left+'px'
             });
             self.$next = $('#'+idn).click(function(e){
                 e.preventDefault();
