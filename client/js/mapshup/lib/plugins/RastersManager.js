@@ -194,7 +194,7 @@
             /*
              * Roll over layer descrpiption properties
              */
-            self.popup.$b.append('<div class="center big padded">' + M.Util._("Drag&drop rows to reorder layer display") + '</div><table class="lmrcfg sortable"><thead><tr><th></th><th></th><th></th><th></th><th></th></tr></thead><tbody></tbody></table>');
+            self.popup.$b.append('<div class="center big padded">' + M.Util._("Drag&drop rows to reorder layer display") + '</div><table class="lmrcfg sortable"><thead><tr><th></th><th></th><th></th><th></th></tr></thead><tbody></tbody></table>');
 
             $tb = $('tbody', self.popup.$b).sortable({
                 revert: true,
@@ -227,7 +227,7 @@
             for (i = 0, l = layers.length; i < l; i++) {
                 layer = layers[i];
                 id = layer['_M'].MID;
-                $tb.append('<tr MID="' + id + '"><td><img src="' + layer['_M'].icon + '" class="middle square"/></td><td class="title clickable" id="' + id + 'ce">' + M.Util.shorten(layer.name, 20) + '</td><td><div id="' + id + 'op" style="width:100px;"></div></td><td class="clickable" id="' + id + 'vy"><img class="middle" src="'+M.Util.getImgUrl("hide.png")+'"/></td><td class="clickable remove" id="' + id + 'rm"><img class="middle" src="'+M.Util.getImgUrl("trash.png")+'"/></td></tr>');
+                $tb.append('<tr MID="' + id + '"><td><img id="' + id + 'ce" src="' + layer['_M'].icon + '" class="clickable middle square" title="'+layer.name+'"/></td><td><div id="' + id + 'op" style="width:100px;"></div></td><td class="clickable" id="' + id + 'vy"><img class="middle" src="'+M.Util.getImgUrl("hide.png")+'"/></td><td class="clickable remove" id="' + id + 'rm"><img class="middle" src="'+M.Util.getImgUrl("trash.png")+'"/></td></tr>');
 
                 (function(id, layer) {
 
