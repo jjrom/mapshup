@@ -336,7 +336,6 @@
             return new OpenLayers.StyleMap({
                 "default": styleDefault,
                 "select": {
-                    pointRadius:10,
                     strokeColor:"#ffff00",
                     fillOpacity:opacity <= 0.9 ? opacity + 0.1 : opacity - 0.1
                 }
