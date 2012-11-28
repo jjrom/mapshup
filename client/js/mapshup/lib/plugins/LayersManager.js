@@ -912,7 +912,7 @@
              * Raster and non raster are treated differently
              */
             if (M.Map.Util.isRaster(layer)) {
-                $('#' + layer['_M'].MID + 'vy').html(M.Util._(layer.getVisibility() ? "Hide" : "Show"));
+                $('#' + layer['_M'].MID + 'vy').html('<img class="middle" src="'+M.Util.getImgUrl(M.Util._(layer.getVisibility() ? "hide.png" : "show.png"))+'"/>');
             }
             else {
 
