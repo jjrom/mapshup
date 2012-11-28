@@ -184,23 +184,20 @@
                          * The first one with a value between -90 and 90 and the second
                          * one with a value between -180 and 180
                          */
-                        else if (c.length === 2) {
+                        else if (c.length === 2 && $.isNumeric(c[0]) && $.isNumeric(c[1])) {
                         
-                            if ($.isNumeric(c[0]) && $.isNumeric(c[1])) {
-                            
-                                lonlat = new OpenLayers.LonLat(c[1],c[0]);
-                            
-                                /*
-                                 * Tell user we zoom the map
-                                 */
-                                M.Util.message(M.Map.Util.getFormattedLonLat(lonlat, M.Config["general"].coordinatesFormat));
+                            lonlat = new OpenLayers.LonLat(c[1],c[0]);
 
-                                /*
-                                 * Latitude/longitude to map projection
-                                 */
-                                M.Map.map.setCenter(M.Map.Util.d2p(lonlat), 14);
-                                
-                            }
+                            /*
+                             * Tell user we zoom the map
+                             */
+                            M.Util.message(M.Map.Util.getFormattedLonLat(lonlat, M.Config["general"].coordinatesFormat));
+
+                            /*
+                             * Latitude/longitude to map projection
+                             */
+                            M.Map.map.setCenter(M.Map.Util.d2p(lonlat), 14);
+                            
                         }
 
                         /*
