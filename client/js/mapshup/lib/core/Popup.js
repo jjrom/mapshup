@@ -270,8 +270,6 @@
          */
         this.updatePosition = function(scope) {
             
-            var $c = M.$container;
-            
             scope = scope || this;
             
             /*
