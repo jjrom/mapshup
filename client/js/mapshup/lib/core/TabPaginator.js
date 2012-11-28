@@ -120,7 +120,7 @@
                 
                 var i, l, item, $ul, $p, $n;
                 
-                scope.paginator.refresh();
+                scope.refresh();
                 
                /*
                 * Reinitialize ul positions and update pagination
@@ -129,23 +129,7 @@
                     for (i = 0, l = scope.target.items.length; i < l; i++) {
                         item = scope.target.items[i];
                         $ul = $('ul',item.$d).css('left', 0);
-                        $p = $('#'+item.id+'p'),
-                        $n = $('#'+item.id+'n');
-
-                        if ($('li', $ul).size() > 0) {
-
-                            /*
-                             * Display previous 
-                             */
-                            $('li a', $ul).first().offset().left < 0 ? $p.show() : $p.hide();
-
-                            /*
-                             * Display next
-                             */
-                            $('li a', $ul).last().offset().left > $('.thumbsWrapper',item.$d).width() ? $n.show() : $n.hide();
-
-                        }
-                        
+                        scope.updatePaginate(item);
                     }
                 }
             });
@@ -292,6 +276,31 @@
             
             self.refresh();
           
+        };
+    
+        /*
+         * Update pagination visibility
+         */
+        this.updatePaginate = function(item) {
+            
+            var $ul = $('ul', item.$d),
+            $p = $('#'+item.id+'p'),
+            $n = $('#'+item.id+'n');
+            
+            if ($('li', $ul).size() > 0) {
+            
+                /*
+                 * Display previous 
+                 */
+                $('li a', $ul).first().offset().left < 0 ? $p.show() : $p.hide();
+
+                /*
+                 * Display next
+                 */
+                $('li a', $ul).last().offset().left > $('.thumbsWrapper',item.$d).width() ? $n.show() : $n.hide();
+            
+            }
+            
         };
         
         return this.init();
