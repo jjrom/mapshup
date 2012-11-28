@@ -122,7 +122,7 @@
              */
             M.Map.events.register("resizeend", self, function(scope){
                 
-                var i, l, item, $ul, $p, $n;
+                var i, l, item;
                 
                 scope.refresh();
                 
@@ -132,7 +132,7 @@
                 if (scope.target && scope.target.items) {
                     for (i = 0, l = scope.target.items.length; i < l; i++) {
                         item = scope.target.items[i];
-                        $ul = $('ul',item.$d).css('left', 0);
+                        $('ul',item.$d).css('left', 0);
                         scope.updatePaginate(item);
                     }
                 }
