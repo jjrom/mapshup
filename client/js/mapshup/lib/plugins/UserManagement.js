@@ -380,9 +380,7 @@
                                 ],
                                 callback:function(v){
                                     if (v === "y") {
-                                        if (M.Util.Cookie.get("context")) {
-                                            M.Map.loadContext(data.context);
-                                        }
+                                        M.Map.loadContext(data.context);
                                     }
                                 }
                             });
