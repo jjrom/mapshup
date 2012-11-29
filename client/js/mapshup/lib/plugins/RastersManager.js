@@ -200,7 +200,7 @@
                 revert: true,
                 revertDuration: 10,
                 stop: function(e, ui) {
-
+                    
                     /*
                      * Reorder raster layer z-indexes
                      * 
@@ -227,7 +227,7 @@
             for (i = 0, l = layers.length; i < l; i++) {
                 layer = layers[i];
                 id = layer['_M'].MID;
-                $tb.append('<tr MID="' + id + '"><td><img id="' + id + 'ce" src="' + layer['_M'].icon + '" class="clickable middle square" title="'+layer.name+'"/></td><td><div id="' + id + 'op" style="width:100px;"></div></td><td class="clickable" id="' + id + 'vy"><img class="middle" src="'+M.Util.getImgUrl("hide.png")+'"/></td><td class="clickable remove" id="' + id + 'rm"><img class="middle" src="'+M.Util.getImgUrl("trash.png")+'"/></td></tr>');
+                $tb.prepend('<tr MID="' + id + '"><td><img id="' + id + 'ce" src="' + layer['_M'].icon + '" class="clickable middle square" title="'+layer.name+'"/></td><td><div id="' + id + 'op" style="width:100px;"></div></td><td class="clickable" id="' + id + 'vy"><img class="middle" src="'+M.Util.getImgUrl("hide.png")+'"/></td><td class="clickable remove" id="' + id + 'rm"><img class="middle" src="'+M.Util.getImgUrl("trash.png")+'"/></td></tr>');
 
                 (function(id, layer) {
 
