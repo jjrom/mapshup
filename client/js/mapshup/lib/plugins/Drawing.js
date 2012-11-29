@@ -39,17 +39,12 @@
  * Drawing plugin.
  * Allow user to draw Point, Line or Polygons
  * and store it within its own layer 
+ * 
+ * WARNING : Multiple Drawing object can be created
  */
 (function(M) {
     
     M.Plugins.Drawing = function() {
-        
-        /*
-         * Only one BackgroundsManager object instance is created
-         */
-        if (M.Plugins.Drawing._o) {
-            return M.Plugins.Drawing._o;
-        }
         
         /*
          * Init plugin
@@ -63,24 +58,29 @@
              * Init options
              */
             self.options = options || {};
-
+            $.extend(self.options,{
+                title:options.title || "Draw layer",
+                icon:options.icon || "drawing.png",
+                inMenu:M.Util.getPropertyValue(self.options, "inMenu", true),
+                showInfo:M.Util.getPropertyValue(self.options, "showInfo", true),
+                onFeatureAdded:$.isFunction(options.onFeatureAdded) ? options.onFeatureAdded : self.onFeatureAdded
+            });
+            
             /*
              * Add "Drawing" item in menu
              */
-            if (M.menu) {
-                M.menu.add([
-                {
+            if (M.menu && self.options.inMenu) {
+                M.menu.add([{
                     id:M.Util.getId(),
-                    ic:"drawing.png",
-                    ti:"Draw layer",
+                    ic:self.options.icon,
+                    ti:self.options.title,
                     cb:function() {
                         self.askType();
                     }
-                }
-                ]);
+                }]);
             }
            
-            self.layer = new OpenLayers.Layer.Vector("__LAYER_DRAWING__", {
+            self.layer = new OpenLayers.Layer.Vector(M.Util.getId(), {
                 projection:M.Map.pc,
                 displayInLayerSwitcher:false,
                 styleMap:new OpenLayers.StyleMap({
@@ -110,55 +110,9 @@
              */
             self.layer.events.on({
                 "sketchcomplete": function(event) {
-                    
-                    /*
-                     * Hide ask popup if any
-                     */
-                    if (self.askPopup) {
-                        self.askPopup.hide();
+                    if ($.isFunction(self.options.onFeatureAdded)) {
+                        self.options.onFeatureAdded(event);
                     }
-
-                    /*
-                     * Show mask
-                     */
-                    M.mask.show(true);
-
-                    /*
-                     * Ask user description of newly created feature
-                     */
-                    var popup = new M.Popup({
-                        modal:false,
-                        centered:false,
-                        noHeader:true,
-                        autoSize:true,
-                        followMap:false,
-                        mapXY:event.feature.geometry.getBounds().getCenterLonLat(),
-                        onClose:function() {
-                            M.mask.hide();
-                        },
-                        body:'<form class="marged"><label>'+M.Util._("Feature title")+'<br/><input id="featureTitle" type="text"/></label><br/><label>'+M.Util._("Feature description")+'<br/><textarea id="featureDesc"/></label><div style="margin:10px 0px;"><a href="#" class="button inline colored" id="featureDescV">'+M.Util._("Validate")+'</a></div></form>'
-                    });
-                    popup.show();
-                    
-                    $('#featureDescV').click(function() {
-                        var f = event.feature;
-                        if (f) {
-                            f.attributes.name = M.Util.stripTags($('#featureTitle').val());
-                            f.attributes.description = M.Util.stripTags($('#featureDesc').val());
-                        }
-                        if (popup) {
-                            popup.remove();
-                        }
-                        M.mask.hide();
-                        return false;
-                    });
-
-                    /*
-                     * Initialize value
-                     */
-                    $('#featureTitle').val("").focus();
-                    $('#featureDesc').val("");
-
                 }
             });
 
@@ -206,7 +160,7 @@
                 }
                 
                 /*
-                 * Be carefull to nullify activeLayer if it is remove 
+                 * Be carefull to nullify activeLayer if it is removed
                  */
                 if (action === "remove" && scope._activeLayer && scope._activeLayer.id === layer.id) {
                     scope._activeLayer = null;
@@ -227,7 +181,7 @@
          * Ask feature type to user
          * 
          */
-        this.askType = function() {
+        this.askType = function(fromStatus) {
             
             var idPoint,idLine,idPolygon,
             self = this;
@@ -248,15 +202,15 @@
                  * Create action for drawingAsk dialog box
                  */
                 $('#'+idPoint).click(function() {
-                    self.startDrawing("__CONTROL_DRAWPOINT__");
+                    self.startDrawing({type:"__CONTROL_DRAWPOINT__"});
                     return false;
                 });
                 $('#'+idLine).click(function() {
-                    self.startDrawing("__CONTROL_DRAWLINE__");
+                    self.startDrawing({type:"__CONTROL_DRAWLINE__"});
                     return false;
                 });
                 $('#'+idPolygon).click(function() {
-                    self.startDrawing("__CONTROL_DRAWPOLYGON__");
+                    self.startDrawing({type:"__CONTROL_DRAWPOLYGON__"});
                     return false;
                 });
             }
@@ -264,8 +218,9 @@
             /*
              * Show popup to the right position
              */
-            self.askPopup.show(true);
-            self.askPopup.setMapXY(M.Map.map.getLonLatFromPixel(M.Map.mousePosition));
+            self.askPopup.show();
+            self.askPopup.setMapXY(fromStatus ? M.Map.map.getCenter() : M.Map.map.getLonLatFromPixel(M.Map.mousePosition));
+            
         };
         
         /*
@@ -275,6 +230,10 @@
             
             var self = this;
             
+            if (!self.options.showInfo) {
+                return;
+            }
+        
             if (!self.infoPopup) {
                 
                 var id = M.Util.getId();
@@ -300,14 +259,14 @@
                         self.control = null;
 
                     },
-                    body:'<div class="t marged"></div><div class="center marged"><a href="#" class="button inline twitter" id="'+id+'">'+M.Util._("Switch drawing/modification")+'</a></div><br/><br/><div class="padded center"><a href="#" class="button validate inline s">'+M.Util._("Save")+'</a> <a href="#" class="button inline c">'+M.Util._("Cancel")+'</a></div>'
+                    body:'<span class="marged">'+M.Util._("You are in drawing mode")+'&nbsp;&nbsp;<a href="#" class="button inline t" id="'+id+'">'+M.Util._("modify")+'</a> <a href="#" class="button validate inline s">'+M.Util._("Save")+'</a></span>'
                 });
                 
                 /*
                 * Set popup action
                 */
                 $('#'+id).click(function() {
-                    self.status === "draw" ? self.startModifying() : self.startDrawing();
+                    self.status === "draw" ? self.startModifying() : self.startDrawing({fromStatus:true});
                     return false;
                 });
                
@@ -319,18 +278,12 @@
                     self.infoPopup.hide();
                 });
                 
-                /*
-                 * Close popup
-                 */
-                $('.c', self.infoPopup.$d).click(function(){
-                    self.infoPopup.hide();
-                });
             }
             
             /*
              * Set popup body
              */
-            $('.t', self.infoPopup.$b).html(self.status === "draw" ? M.Util._("Click on the map to draw a feature") : M.Util._("Click on a feature to modify it"));
+            $('.t', self.infoPopup.$b).html(self.status === "draw" ? M.Util._("modify") : M.Util._("draw"));
             
             /*
              * Display popup
@@ -341,6 +294,7 @@
                 y:5
             });
             
+            return;
         };
         
         /*
@@ -470,10 +424,17 @@
         
         /**
          * Enter drawing mode
+         * 
+         * @param {Object} options {
+         *                              type: drawing type 
+         *                              fromStatus: if true, display askType popup
+         *                                          below the infoPopup
          */
-        this.startDrawing = function(type) {
+        this.startDrawing = function(options) {
 
             var self = this;
+            
+            options = options || {};
             
             /*
              * First reset control
@@ -489,12 +450,12 @@
             /*
              * Drawn object type is not defined => ask user
              */
-            if (!type) {
+            if (!options.type) {
 
                 /*
                  * Display the '#drawingAsk' 
                  */
-                self.askType();
+                self.askType(options.fromStatus);
 
             }
             /*
@@ -513,7 +474,7 @@
                 /*
                  * Set active control to 'type' control
                  */
-                self.control = M.Map.Util.getControlById(type);
+                self.control = M.Map.Util.getControlById(options.type);
 
                 if (self.control) {
                     self.control.activate();
@@ -551,11 +512,66 @@
              */
             self.control.activate();
         };
-        
-        /*
-         * Set unique instance
+    
+        /**
+         * Function called when a feature is added
+         * This function can be superseed during Plugin
+         * initialization
+         * 
+         * @param {Object} event
+         * 
          */
-        M.Plugins.Drawing._o = this;
+        this.onFeatureAdded = function(event) {
+            
+            /*
+            * Hide ask popup if any
+            */
+            if (this.askPopup) {
+                this.askPopup.hide();
+            }
+
+            /*
+             * Show mask
+             */
+            M.mask.show(true);
+
+            /*
+             * Ask user description of newly created feature
+             */
+            var popup = new M.Popup({
+                modal: false,
+                centered: false,
+                noHeader: true,
+                autoSize: true,
+                followMap: false,
+                mapXY: event.feature.geometry.getBounds().getCenterLonLat(),
+                onClose: function() {
+                    M.mask.hide();
+                },
+                body: '<form class="marged"><label>' + M.Util._("Feature title") + '<br/><input id="featureTitle" type="text"/></label><br/><label>' + M.Util._("Feature description") + '<br/><textarea id="featureDesc"/></label><div style="margin:10px 0px;"><a href="#" class="button inline colored" id="featureDescV">' + M.Util._("Validate") + '</a></div></form>'
+            });
+            popup.show();
+
+            $('#featureDescV').click(function() {
+                var f = event.feature;
+                if (f) {
+                    f.attributes.name = M.Util.stripTags($('#featureTitle').val());
+                    f.attributes.description = M.Util.stripTags($('#featureDesc').val());
+                }
+                if (popup) {
+                    popup.remove();
+                }
+                M.mask.hide();
+                return false;
+            });
+
+            /*
+             * Initialize value
+             */
+            $('#featureTitle').val("").focus();
+            $('#featureDesc').val("");
+
+        };
         
         return this;
     };
