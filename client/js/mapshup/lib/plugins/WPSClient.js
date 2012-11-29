@@ -376,7 +376,7 @@
                         this.displayComplexOutput(process, put, $id);
                     }
                     else if (put.boundingBoxData) {
-                        $id.append("// TODO");
+                        this.displayBoundingBoxData(process, put, $id);
                     }
 
                 }
@@ -804,6 +804,7 @@
                              */
                             $('#'+id).attr('title', data.file ? data.file.name : data.fileUrl).addClass('hilite').removeClass('warning');
                             $('#'+idgeoselect).attr('title',M.Util._("Select feature on Map")).removeClass('hilite').addClass('warning');
+                            $('#'+idgeodraw).attr('title',M.Util._("Draw feature on Map")).removeClass('hilite').addClass('warning');
                             
                             /*
                              * Store file or fileUrl within parent data cache
@@ -828,10 +829,10 @@
              * 
              */
             if (data["default"] && M.Map.Util.getGeoType(data["default"].mimeType)) {
-                 
-                $parent
-                .append(' <img src="'+M.Util.getImgUrl('earth.png')+'" id="'+idgeoselect+'" class="hover middle" title="'+M.Util._("Select feature on Map")+'"/>')
-                .append(' <img src="'+M.Util.getImgUrl('drawing.png')+'" id="'+idgeodraw+'" class="hover middle" title="'+M.Util._("Draw feature on Map")+'"/>');
+                
+                var drawingPlugin = M.Plugins.Drawing && M.Plugins.Drawing._o ? M.Plugins.Drawing._o : null;
+                
+                $parent.append(' <img src="'+M.Util.getImgUrl('earth.png')+'" id="'+idgeoselect+'" class="hover middle" title="'+M.Util._("Select feature on Map")+'"/>');
                 
                 /*
                  * Select geometry within the map
@@ -860,6 +861,7 @@
                         if (feature) {
                             
                             $('#'+id).attr('title',M.Util._("Upload")).removeClass('hilite').addClass('warning');
+                            $('#'+idgeodraw).attr('title',M.Util._("Draw feature on Map")).removeClass('hilite').addClass('warning');
                             $('#'+idgeoselect).attr('title',M.Map.Util.Feature.getTitle(feature)).addClass('hilite').removeClass('warning');
                             
                             /*
@@ -893,16 +895,142 @@
                 });
                 
                 /*
-                 * Draw geometry within the map
+                 * Directly draw geometry on map
                  */
-                $('#'+idgeodraw)
-                .removeClass('hilite')
-                .addClass('warning')
-                .click(function(e) {
-                    alert("This function is not available yet");
-                });
+                if (drawingPlugin) {
+                
+                    $parent.append(' <img src="'+M.Util.getImgUrl('drawing.png')+'" id="'+idgeodraw+'" class="hover middle" title="'+M.Util._("Draw feature on Map")+'"/>');
+                    
+                    var $mask = self.items[process.wps.url].panelItem.$mask;
+                    
+                    /*
+                     * Draw geometry within the map
+                     */
+                    $('#'+idgeodraw)
+                    .removeClass('hilite')
+                    .addClass('warning')
+                    .click(function(e) {
+
+                        /*
+                        * Show mask
+                        */
+                       $mask
+                       .html('<div class="content">'+M.Util._("Draw a feature on map")+' (<a href="#" class="cancel">'+M.Util._("Cancel")+'<a/>)</div>')
+                       .show();
+
+                       /*
+                        * Add a cancel action
+                        */
+                       $('.cancel', $mask).click(function(e) {
+                           M.Map.resetControl();
+                           $mask.hide();
+                       });
+                   
+                        /*
+                         * Trigger Drawing plugin 
+                         * Set the bypassOnFeatureAdded
+                         */
+                        drawingPlugin.bypass(function(event) {
+                            
+                            /*
+                             * Update "Select on map" action display and store feature in the .data() cache
+                             */
+                            if (event.feature) {
+
+                                $('#' + id).attr('title', M.Util._("Upload")).removeClass('hilite').addClass('warning');
+                                $('#'+idgeoselect).attr('title',M.Util._("Select feature on Map")).removeClass('hilite').addClass('warning');
+                                $('#' + idgeodraw).attr('title', M.Map.Util.Feature.getTitle(event.feature)).addClass('hilite').removeClass('warning');
+
+                                /*
+                                 * Store file or fileUrl within parent data cache
+                                 */
+                                $parent.removeData('fileUrl').data('data', M.Map.Util.Feature.toGeo(event.feature, data["default"])).data('format', data["default"]);
+                                self.setPuts(process, type);
+
+                            }
+                        
+                            $mask.hide();
+                            
+                        });
+                    
+                        drawingPlugin.askType();
+                        
+                    });
+                
+                }
                 
             }
+            
+        };
+    
+        /**
+         * Append form for BoundingBoxData within $parent container 
+         * 
+         *  Structure of BoundingBoxData 
+         * 
+         *      {
+         *          default:CRS1
+         *          supported[CRS1, CRS2, CRS...]
+         *      }
+         *   
+         *   @param {Object} process : M.WPS.Process
+         *   @param {Object} put : Input object containing ComplexData
+         *   @param {Object} $parent
+         *      
+         */
+        this.displayBoundingBoxData = function(process, put, $parent) {
+            
+            var type = 'input', data = put.complexData, idgeoselect = M.Util.getId(), idgeodraw = M.Util.getId(), self = this;
+            
+            /*
+             * Store Input type within $parent.data()
+             */
+            $parent.data('type', 'BoundingBoxData');
+            
+            $parent.append(' <img src="' + M.Util.getImgUrl('earth.png') + '" id="' + idgeoselect + '" class="hover middle" title="' + M.Util._("Set map view") + '"/>')
+                    .append(' <img src="' + M.Util.getImgUrl('drawing.png') + '" id="' + idgeodraw + '" class="hover middle" title="' + M.Util._("Draw bounding box on map") + '"/>');
+
+            /*
+             * Draw bounding box within the map
+             */
+            $('#' + idgeodraw)
+                    .removeClass('hilite')
+                    .addClass('warning')
+                    .click(function(e) {
+
+                        var $mask = self.items[process.wps.url].panelItem.$mask;
+
+                        /*
+                         * Show mask
+                         */
+                        $mask.html('<div class="content">' + M.Util._("Draw a bounding box on map") + ' (<a href="#" class="cancel">' + M.Util._("Cancel") + '<a/>)</div>').show();
+                        
+                        /*
+                         * Open DrawBox
+                         */
+                        
+                        if (M.Plugins.DrawBox)
+                        /*
+                         * Add a cancel action
+                         */
+                        $('.cancel', $mask).click(function(e) {
+                            
+                            $mask.hide();
+                        });
+
+                        return false;
+            });
+
+            /*
+             * Draw geometry within the map
+             */
+            $('#' + idgeodraw)
+                    .removeClass('hilite')
+                    .addClass('warning')
+                    .click(function(e) {
+                alert("This function is not available yet");
+            });
+               
             
         };
         
