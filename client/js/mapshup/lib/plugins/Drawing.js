@@ -40,11 +40,17 @@
  * Allow user to draw Point, Line or Polygons
  * and store it within its own layer 
  * 
- * WARNING : Multiple Drawing object can be created
  */
 (function(M) {
     
     M.Plugins.Drawing = function() {
+        
+        /*
+         * Only one Drawing object instance is created
+         */
+        if (M.Plugins.Drawing._o) {
+            return M.Plugins.Drawing._o;
+        }
         
         /*
          * Init plugin
@@ -61,9 +67,7 @@
             $.extend(self.options,{
                 title:options.title || "Draw layer",
                 icon:options.icon || "drawing.png",
-                inMenu:M.Util.getPropertyValue(self.options, "inMenu", true),
-                showInfo:M.Util.getPropertyValue(self.options, "showInfo", true),
-                onFeatureAdded:$.isFunction(options.onFeatureAdded) ? options.onFeatureAdded : self.onFeatureAdded
+                inMenu:M.Util.getPropertyValue(self.options, "inMenu", true)
             });
             
             /*
@@ -110,9 +114,7 @@
              */
             self.layer.events.on({
                 "sketchcomplete": function(event) {
-                    if ($.isFunction(self.options.onFeatureAdded)) {
-                        self.options.onFeatureAdded(event);
-                    }
+                    self.onFeatureAdded(self, event);
                 }
             });
 
@@ -230,7 +232,7 @@
             
             var self = this;
             
-            if (!self.options.showInfo) {
+            if (self.hideInfo) {
                 return;
             }
         
@@ -250,7 +252,7 @@
                         /*
                          * Empty drawing layer
                          */
-                        self.layer.destroyFeatures();
+                        self.clear();
                         
                         /*
                          * Switch back to Map default control
@@ -312,7 +314,7 @@
                 /*
                 * Empty the drawing layer
                 */
-                self.layer.destroyFeatures();
+                self.clear();
                 
             }
             catch (e) {
@@ -518,16 +520,25 @@
          * This function can be superseed during Plugin
          * initialization
          * 
+         * @param {Object} scope (this object)
          * @param {Object} event
          * 
          */
-        this.onFeatureAdded = function(event) {
+        this.onFeatureAdded = function(scope, event) {
+            
+            /*
+             * Of byPassOnFeatureAdded is set use it instead
+             * of normal onFeatureAdded function (see WPSClient)
+             */
+            if ($.isFunction(scope.bypassOnFeatureAdded)) {
+                return scope.bypassOnFeatureAdded(event);
+            }
             
             /*
             * Hide ask popup if any
             */
-            if (this.askPopup) {
-                this.askPopup.hide();
+            if (scope.askPopup) {
+                scope.askPopup.hide();
             }
 
             /*
@@ -570,8 +581,22 @@
              */
             $('#featureTitle').val("").focus();
             $('#featureDesc').val("");
-
+            
+            return;
+            
         };
+        
+        /*
+         * Clear drawing layer
+         */
+        this.clear = function() {
+            this.layer.destroyFeatures();
+        };
+    
+        /*
+         * Set unique instance
+         */
+        M.Plugins.Drawing._o = this;
         
         return this;
     };
