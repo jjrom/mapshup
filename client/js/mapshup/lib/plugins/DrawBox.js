@@ -72,7 +72,7 @@
             /*
              * Add "DrawBox" item in menu
              */
-            if (M.menu && self.option.inMenu) {
+            if (M.menu && self.options.inMenu) {
                 M.menu.add([
                 {
                     id:M.Util.getId(),
