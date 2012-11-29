@@ -63,6 +63,7 @@
             self.options = options || {};
             $.extend(self.options,{
                 title:options.title || "Draw box",
+                inMenu:M.Util.getPropertyValue(self.options, "inMenu", false),
                 icon:options.icon || "drawbox.png",
                 deleteOnClick:M.Util.getPropertyValue(self.options, "deleteOnClick", false), 
                 callback:options.callback
@@ -71,7 +72,7 @@
             /*
              * Add "DrawBox" item in menu
              */
-            if (M.menu) {
+            if (M.menu && self.option.inMenu) {
                 M.menu.add([
                 {
                     id:M.Util.getId(),
