@@ -377,7 +377,7 @@
                      * Add an entry in the suggest panel, set it active and
                      * attach a click event on it to launch search
                      */
-                    $('ul', self.$suggest).prepend('<li class="as-result-item">'+M.Util._("Search")+' <span class="val"></span> '+M.Util._("in")+' <em>'+d.title+'</em></li>');
+                    $('ul', self.$suggest).prepend('<li class="as-result-item"><img src="'+M.Util.getImgUrl(d.icon||"default_search.png")+'" class="middle"/>&nbsp;&nbsp;'+M.Util._("Search")+' <span class="val"></span> '+M.Util._("in")+' <em>'+d.title+'</em></li>');
                     lis = $('li', self.$suggest).removeClass('active');
                     
                     lis.filter(':first')

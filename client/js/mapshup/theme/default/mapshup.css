@@ -1722,6 +1722,10 @@ li.as-result-item {
     border-bottom: 1px solid #ddd;
     cursor: pointer;
 }
+li.as-result-item img {
+    width:32px;
+    height:32px;
+}
 
 li:first-child.as-result-item {
     margin: 0;
