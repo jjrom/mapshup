@@ -594,6 +594,26 @@
         };
     
         /*
+         * ByPass the onFeatureAdded function
+         * See WPSClient
+         * @param {type} fct
+         */
+        this.bypass = function(fct) {
+            
+            var self = this;
+ 
+            self.clear();
+            self.hideInfo = true;
+            self.bypassOnFeatureAdded = function(event) {
+                fct(event);
+                self.bypassOnFeatureAdded = null;
+                self.hideInfo = false;
+                M.Map.resetControl(self.control);
+                self.control = null;
+            }               
+        }
+    
+        /*
          * Set unique instance
          */
         M.Plugins.Drawing._o = this;
