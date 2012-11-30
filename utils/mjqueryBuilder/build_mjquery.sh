@@ -55,14 +55,15 @@ cat $jquerydir/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.min.js >> $mjque
 cat $jquerydir/jquery-ui-touchpunch/jquery-ui-touchpunch.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/mousewheel/jquery.mousewheel.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/idTabs/jquery.idTabs.min.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/mscrollbar/jquery.mCustomScrollbar.min.js >> $mjquerydir/mjquery.js.tmp
-
-echo "Building mjquery.css"
-cat $jquerydir/mscrollbar/jquery.mCustomScrollbar.css > $mjquerydir/mjquery.css
+cat $jquerydir/nanoscroller/jquery.nanoscroller.js >> $mjquerydir/mjquery.js.tmp
 
 echo "Compress mjquery.js"
 java -jar ../packer/compiler.jar $mjquerydir/mjquery.js.tmp > $mjquerydir/mjquery.js.tmp2
 cat ./license.txt $mjquerydir/mjquery.js.tmp2 > $mjquerydir/mjquery.js
+
+echo "Compress mjquery.css"
+cat $jquerydir/nanoscroller/nanoscroller.css > $mjquerydir/mjquery.css.tmp
+java -jar ../packer/yuicompressor-2.4.2.jar $mjquerydir/mjquery.css.tmp > $mjquerydir/mjquery.css
 
 echo "Building mjquery.jqplot.js"
 cat $jquerydir/jqplot/jquery.jqplot.min.js > $mjquerydir/mjquery.jqplot.js.tmp
@@ -88,9 +89,9 @@ java -jar ../packer/compiler.jar $mjquerydir/mjquery.jqplot.js.tmp > $mjquerydir
 cat ./license.txt $mjquerydir/mjquery.jqplot.js.tmp2 > $mjquerydir/mjquery.jqplot.js
 
 /bin/rm $mjquerydir/mjquery.js.tmp*
+/bin/rm $mjquerydir/mjquery.css.tmp*
 /bin/rm $mjquerydir/mjquery.jqplot.js.tmp*
 
 echo "Copy images in mjquery directory"
-cp $jquerydir/mscrollbar/mCSB_buttons.png $mjquerydir/
 echo "Done !"
 
