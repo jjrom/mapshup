@@ -141,7 +141,7 @@
                             title:wps.title,
                             classes:"wpsclient",
                             mask:true,
-                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes"></div></div><div style="float:right;width:60%;"><div class="describe">'+M.Util._("No process selected")+'</div><form method="POST" action="#"><div class="puts"></div></form><div class="outputs"></div></div>'
+                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes nano"><div class="content"></div></div></div><div style="float:right;width:60%;"><div class="describe">'+M.Util._("No process selected")+'</div><form method="POST" action="#"><div class="puts nano"></div></form><div class="outputs"></div></div>'
                         });
                         
                         /*
@@ -252,7 +252,7 @@
             for (identifier in item.wps.processes) {
                 id = M.Util.getId();
                 process = item.wps.processes[identifier];
-                $processes.append('<a href="#" jtitle="'+process['abstract']+'" id="'+id+'" class="button inline">'+process.title+'</a> ');
+                $('.content', $processes).append('<a href="#" jtitle="'+process['abstract']+'" id="'+id+'" class="button inline">'+process.title+'</a> ');
                 (function(process,$id, item) {
                     $id.click(function() {
                         $('a', $(this).parent()).removeClass('active');
@@ -267,7 +267,7 @@
             /*
              * Add a nice scrollbar :)
              */
-            //$processes.mCustomScrollbar();
+            $processes.nanoScroller();
             
         };
         
@@ -279,7 +279,7 @@
          */
         this.updateDescribeProcessContent = function(process) {
             
-            var type, putsDescription, i, j, l, id, $id, put, $list, executeId = M.Util.getId(), item = this.items[process.wps.url];
+            var type, putsDescription, i, j, l, id, $id, put, $puts, $list, executeId = M.Util.getId(), item = this.items[process.wps.url];
             
             /*
              * Set '.info' div
@@ -329,8 +329,8 @@
              *      </div>      
              * 
              */
-            $('.puts', item.$d).html('<h1>'+M.Util._('Set inputs')+'</h1><div class="list"></div>');
-            $list = $('.list', $('.puts', item.$d));
+            $puts = $('.puts', item.$d).html('<h1>'+M.Util._('Set inputs')+'</h1><div class="list content"></div>');
+            $list = $('.list', $puts);
             
             /*
              * Roll over dataInputs and processOutputs
@@ -395,7 +395,7 @@
             /*
              * Add nice scrollbars :)
              */
-            //$inputsList.mCustomScrollbar();
+            $puts.nanoScroller();
         
         };
         

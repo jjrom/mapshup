@@ -1677,7 +1677,6 @@ td.clear {
     height:100px;
     width:auto;
     line-height:35px;
-    overflow:auto;
 }
 .wpsclient .processes a.active {
     background-color:#f00;
