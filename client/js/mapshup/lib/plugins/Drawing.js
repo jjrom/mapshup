@@ -79,6 +79,7 @@
                     ic:self.options.icon,
                     ti:self.options.title,
                     cb:function() {
+                        self.clear();
                         self.askType();
                     }
                 }]);
