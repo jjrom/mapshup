@@ -209,7 +209,7 @@
             /*
              * Initialize skeleton
              */
-            self.popup.$b.html('<span class="title">'+M.Util.stripTags(M.Map.Util.Feature.getTitle(feature))+'</span><br/><span class="tools"></span>');
+            self.popup.$b.html('<span class="title">'+M.Map.Util.Feature.getTitle(feature)+'</span><br/><span class="tools"></span>');
             
             $f = $('.tools', self.popup.$b);
             

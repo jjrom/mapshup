@@ -1305,7 +1305,7 @@
                                 /*
                                  * Title is first 'name' or 'title' or 'identifier' or 'id'
                                  */
-                                self.$featureHilite.html(M.Map.Util.Feature.getTitle(e.feature)).attr("hilited", "hilited").show();
+                                self.$featureHilite.html(M.Util.stripTags(M.Map.Util.Feature.getTitle(e.feature))).attr("hilited", "hilited").show();
 
                             }
                             
