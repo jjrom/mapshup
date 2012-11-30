@@ -66,15 +66,10 @@
  *   2. the plugin description (i.e. this file) is called "Template.js" and
  *   stored under the client/js/mapshup/lib/plugins directory 
  *   
- *   3. If the plugin "Template" needs specific CSS, the dedicated css file should
- *   be names "Template.css" and stored under the plugins directory of each theme
- *   (i.e. under client/js/mapshup/theme/.../plugins
+ *   3. For developpement, Template.js should be declared within the index.html file
  *   
- *   4. For developpement, both Template.js and Template.css files should be declared
- *   within the index.html file
- *   
- *   5. For operational site (see utils/packer/pack.sh), both Template.js and Template.css
- *   files should be declared within the client/js/mapshup/buildfile.txt file
+ *   4. For operational site (see utils/packer/pack.sh), Template.js file should be
+ *   declared within the client/js/mapshup/buildfile.txt file
  */
 
 /*
