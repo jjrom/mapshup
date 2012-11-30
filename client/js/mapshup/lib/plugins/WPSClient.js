@@ -141,7 +141,7 @@
                             title:wps.title,
                             classes:"wpsclient",
                             mask:true,
-                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes nano"><div class="content"></div></div></div><div style="float:right;width:60%;"><div class="describe">'+M.Util._("No process selected")+'</div><form method="POST" action="#"><div class="puts nano"></div></form><div class="outputs"></div></div>'
+                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes nano"><div class="content"></div></div></div><div style="float:right;width:60%;"><div class="describe">'+M.Util._("No process selected")+'</div><form method="POST" action="#"><div class="puts"></div></form><div class="outputs"></div></div>'
                         });
                         
                         /*
@@ -279,7 +279,7 @@
          */
         this.updateDescribeProcessContent = function(process) {
             
-            var type, putsDescription, i, j, l, id, $id, put, $puts, $list, executeId = M.Util.getId(), item = this.items[process.wps.url];
+            var type, putsDescription, i, j, l, id, $id, put, $list, executeId = M.Util.getId(), item = this.items[process.wps.url];
             
             /*
              * Set '.info' div
@@ -321,7 +321,7 @@
              * 
              * HTML structures :
              *      <div class="puts">
-             *          <div class="list">
+             *          <div class="list nano">
              *              <span id="id">
              *                  <span class="title paddedright">Title (or identifier if title is null)</span>
              *              </span>
@@ -329,8 +329,7 @@
              *      </div>      
              * 
              */
-            $puts = $('.puts', item.$d).html('<h1>'+M.Util._('Set inputs')+'</h1><div class="list content"></div>');
-            $list = $('.list', $puts);
+            $list = $('.list', $('.puts', item.$d).html('<h1>'+M.Util._('Set inputs')+'</h1><div class="list nano"><div class="content"></div></div>'));
             
             /*
              * Roll over dataInputs and processOutputs
@@ -356,7 +355,7 @@
                      * execute query.
                      * 
                      */
-                    $list.append('<span id="'+id+'" class="'+type+'"><span class="title" jtitle="'+put['abstract']+'">'+(put['title'] || put['identifier'])+'&nbsp;:&nbsp;</span></span> ');
+                    $('.content', $list).append('<span id="'+id+'" class="'+type+'"><span class="title" jtitle="'+put['abstract']+'">'+(put['title'] || put['identifier'])+'&nbsp;:&nbsp;</span></span> ');
 
                     /*
                      * Attach Input identifier to the 'input' div
@@ -395,7 +394,7 @@
             /*
              * Add nice scrollbars :)
              */
-            $puts.nanoScroller();
+            $list.nanoScroller();
         
         };
         

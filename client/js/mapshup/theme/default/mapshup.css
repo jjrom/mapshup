@@ -1699,7 +1699,6 @@ td.clear {
     padding:5px 5px 5px 15px;
     height:100px;
     line-height:35px;
-    overflow:auto;
 }
 .wpsclient .hilite {
     background-color:olivedrab;
