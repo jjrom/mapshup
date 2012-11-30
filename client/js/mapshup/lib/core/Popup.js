@@ -64,6 +64,11 @@
         this.centered = M.Util.getPropertyValue(options, "centered", true);
         
         /*
+         * True to add a close button to popup
+         */
+        this.addCloseButton = M.Util.getPropertyValue(options, "addCloseButton", true);
+        
+        /*
          * Function callback called after popup is removed
          */
         this.onClose = options.onClose;
@@ -215,10 +220,12 @@
             /*
              * Add a close button
              */
-            M.Util.addClose(self.$d, function(e){
-                self.hideOnClose ? self.hide() : self.remove();
-            });
-            
+            if (self.addCloseButton) {
+                M.Util.addClose(self.$d, function(e){
+                    self.hideOnClose ? self.hide() : self.remove();
+                });
+            }
+        
             /*
              * Compute popup position on window resize
              */
