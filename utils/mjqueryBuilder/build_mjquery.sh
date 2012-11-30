@@ -56,29 +56,39 @@ cat $jquerydir/jquery-ui-touchpunch/jquery-ui-touchpunch.min.js >> $mjquerydir/m
 cat $jquerydir/mousewheel/jquery.mousewheel.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/idTabs/jquery.idTabs.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/mscrollbar/jquery.mCustomScrollbar.min.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jqplot/jquery.jqplot.min.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jqplot/plugins/jqplot.canvasTextRenderer.min.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jqplot/plugins/jqplot.highlighter.min.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jqplot/plugins/jqplot.cursor.min.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSliderMouseTouch.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSliderDraggable.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSliderHandle.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSliderBar.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSliderLabel.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSlider.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/jQDateRangeSliderHandle.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/mjQDateRangeSlider.js >> $mjquerydir/mjquery.js.tmp
 
 echo "Building mjquery.css"
-cat $jquerydir/jqplot/jquery.jqplot.min.css > $mjquerydir/mjquery.css
-cat $jquerydir/mscrollbar/jquery.mCustomScrollbar.css >> $mjquerydir/mjquery.css
+cat $jquerydir/mscrollbar/jquery.mCustomScrollbar.css > $mjquerydir/mjquery.css
 
-echo "Compress mjquery"
-java -jar ./yuicompressor-2.4.2.jar $mjquerydir/mjquery.js.tmp --type js > $mjquerydir/mjquery.js.tmp2
+echo "Compress mjquery.js"
+java -jar ../packer/compiler.jar $mjquerydir/mjquery.js.tmp > $mjquerydir/mjquery.js.tmp2
 cat ./license.txt $mjquerydir/mjquery.js.tmp2 > $mjquerydir/mjquery.js
+
+echo "Building mjquery.jqplot.js"
+cat $jquerydir/jqplot/jquery.jqplot.min.js > $mjquerydir/mjquery.jqplot.js.tmp
+cat $jquerydir/jqplot/plugins/jqplot.canvasTextRenderer.min.js >> $mjquerydir/mjquery.jqplot.js.tmp
+cat $jquerydir/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js >> $mjquerydir/mjquery.jqplot.js.tmp
+cat $jquerydir/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js >> $mjquerydir/mjquery.jqplot.js.tmp
+cat $jquerydir/jqplot/plugins/jqplot.highlighter.min.js >> $mjquerydir/mjquery.jqplot.js.tmp
+cat $jquerydir/jqplot/plugins/jqplot.cursor.min.js >> $mjquerydir/mjquery.jqplot.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderMouseTouch.js >> $mjquerydir/mjquery.jqplot.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderDraggable.js >> $mjquerydir/mjquery.jqplot.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderHandle.js >> $mjquerydir/mjquery.jqplot.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderBar.js >> $mjquerydir/mjquery.jqplot.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderLabel.js >> $mjquerydir/mjquery.jqplot.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSlider.js >> $mjquerydir/mjquery.jqplot.js.tmp
+cat $jquerydir/jQRangeSlider/jQDateRangeSliderHandle.js >> $mjquerydir/mjquery.jqplot.js.tmp
+cat $jquerydir/jQRangeSlider/mjQDateRangeSlider.js >> $mjquerydir/mjquery.jqplot.js.tmp
+
+echo "Building mjquery.jqplot.css"
+cat $jquerydir/jqplot/jquery.jqplot.min.css > $mjquerydir/mjquery.jqplot.css
+
+echo "Compress mjquery.jqplot.js"
+java -jar ../packer/compiler.jar $mjquerydir/mjquery.jqplot.js.tmp > $mjquerydir/mjquery.jqplot.js.tmp2
+cat ./license.txt $mjquerydir/mjquery.jqplot.js.tmp2 > $mjquerydir/mjquery.jqplot.js
+
 /bin/rm $mjquerydir/mjquery.js.tmp*
+/bin/rm $mjquerydir/mjquery.jqplot.js.tmp*
 
 echo "Copy images in mjquery directory"
 cp $jquerydir/mscrollbar/mCSB_buttons.png $mjquerydir/
