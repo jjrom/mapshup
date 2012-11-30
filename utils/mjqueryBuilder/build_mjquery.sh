@@ -62,8 +62,8 @@ java -jar ../packer/compiler.jar $mjquerydir/mjquery.js.tmp > $mjquerydir/mjquer
 cat ./license.txt $mjquerydir/mjquery.js.tmp2 > $mjquerydir/mjquery.js
 
 echo "Compress mjquery.css"
-cat $jquerydir/nanoscroller/nanoscroller.css > $mjquerydir/mjquery.css.tmp
-java -jar ../packer/yuicompressor-2.4.2.jar $mjquerydir/mjquery.css.tmp > $mjquerydir/mjquery.css
+cat $jquerydir/nanoscroller/nanoscroller.css > $mjquerydir/mjquerytmp.css
+java -jar ../packer/yuicompressor-2.4.2.jar $mjquerydir/mjquerytmp.css > $mjquerydir/mjquery.css
 
 echo "Building mjquery.jqplot.js"
 cat $jquerydir/jqplot/jquery.jqplot.min.js > $mjquerydir/mjquery.jqplot.js.tmp
@@ -89,7 +89,7 @@ java -jar ../packer/compiler.jar $mjquerydir/mjquery.jqplot.js.tmp > $mjquerydir
 cat ./license.txt $mjquerydir/mjquery.jqplot.js.tmp2 > $mjquerydir/mjquery.jqplot.js
 
 /bin/rm $mjquerydir/mjquery.js.tmp*
-/bin/rm $mjquerydir/mjquery.css.tmp*
+/bin/rm $mjquerydir/mjquerytmp.css
 /bin/rm $mjquerydir/mjquery.jqplot.js.tmp*
 
 echo "Copy images in mjquery directory"
