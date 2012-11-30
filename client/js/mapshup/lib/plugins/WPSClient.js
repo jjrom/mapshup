@@ -923,6 +923,9 @@
                         */
                        $('.cancel', $mask).click(function(e) {
                            M.Map.resetControl();
+                           if (drawingPlugin.askPopup) {
+                               drawingPlugin.askPopup.hide();
+                           }
                            $mask.hide();
                        });
                    
