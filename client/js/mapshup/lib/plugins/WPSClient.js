@@ -1211,6 +1211,7 @@
                 type:"GeoJSON",
                 title:"WPS results",
                 clusterized:false, // Very important !
+                editable:true,
                 ol:{
                     styleMap: new OpenLayers.StyleMap({
                         'default':{
