@@ -761,7 +761,15 @@
          */
         this.displayComplexData = function(process, put, $parent) {
             
-            var type = 'input', data = put.complexData, id = M.Util.getId(), idgeoselect = M.Util.getId(), idgeodraw = M.Util.getId(), self = this;
+            var type = 'input',
+                    data = put.complexData,
+                    id = M.Util.getId(),
+                    idgeoselect = M.Util.getId(),
+                    idgeodraw = M.Util.getId(),
+                    drawText = M.Util._("Draw feature on Map"),
+                    selectText = M.Util._("Select feature on Map"),
+                    uploadText = M.Util._("Upload"),
+                    self = this;
             
             /*
              * Store Input type within $parent.data()
@@ -771,7 +779,7 @@
             /*
             * Set content i.e. add an 'Upload' action
             */
-            $parent.append('<img class="hover middle" src="'+M.Util.getImgUrl('upload.png')+'" id="'+id+'" title="'+M.Util._("Upload")+'"/>');
+            $parent.append('<img class="hover middle" src="'+M.Util.getImgUrl('upload.png')+'" id="'+id+'" title="'+uploadText+'"/>');
             
             /*
              * Ask for value on click
@@ -803,8 +811,8 @@
                              * Update link content 
                              */
                             $('#'+id).attr('title', data.file ? data.file.name : data.fileUrl).addClass('hilite').removeClass('warning');
-                            $('#'+idgeoselect).attr('title',M.Util._("Select feature on Map")).removeClass('hilite').addClass('warning');
-                            $('#'+idgeodraw).attr('title',M.Util._("Draw feature on Map")).removeClass('hilite').addClass('warning');
+                            $('#'+idgeoselect).attr('title',selectText).removeClass('hilite').addClass('warning');
+                            $('#'+idgeodraw).attr('title',drawText).removeClass('hilite').addClass('warning');
                             
                             /*
                              * Store file or fileUrl within parent data cache
@@ -832,7 +840,7 @@
                 
                 var drawingPlugin = M.Plugins.Drawing && M.Plugins.Drawing._o ? M.Plugins.Drawing._o : null;
                 
-                $parent.append(' <img src="'+M.Util.getImgUrl('earth.png')+'" id="'+idgeoselect+'" class="hover middle" title="'+M.Util._("Select feature on Map")+'"/>');
+                $parent.append(' <img src="'+M.Util.getImgUrl('earth.png')+'" id="'+idgeoselect+'" class="hover middle" title="'+selectText+'"/>');
                 
                 /*
                  * Select geometry within the map
@@ -860,8 +868,8 @@
                          */
                         if (feature) {
                             
-                            $('#'+id).attr('title',M.Util._("Upload")).removeClass('hilite').addClass('warning');
-                            $('#'+idgeodraw).attr('title',M.Util._("Draw feature on Map")).removeClass('hilite').addClass('warning');
+                            $('#'+id).attr('title',uploadText).removeClass('hilite').addClass('warning');
+                            $('#'+idgeodraw).attr('title',drawText).removeClass('hilite').addClass('warning');
                             $('#'+idgeoselect).attr('title',M.Map.Util.Feature.getTitle(feature)).addClass('hilite').removeClass('warning');
                             
                             /*
@@ -880,7 +888,7 @@
                      * Show mask
                      */
                     $mask
-                    .html('<div class="content">'+M.Util._("Select a feature on map")+' (<a href="#" class="cancel">'+M.Util._("Cancel")+'<a/>)</div>')
+                    .html('<div class="content">'+selectText+' (<a href="#" class="cancel">'+M.Util._("Cancel")+'<a/>)</div>')
                     .show();
                     
                     /*
@@ -899,7 +907,7 @@
                  */
                 if (drawingPlugin) {
                 
-                    $parent.append(' <img src="'+M.Util.getImgUrl('drawing.png')+'" id="'+idgeodraw+'" class="hover middle" title="'+M.Util._("Draw feature on Map")+'"/>');
+                    $parent.append(' <img src="'+M.Util.getImgUrl('drawing.png')+'" id="'+idgeodraw+'" class="hover middle" title="'+drawText+'"/>');
                     
                     var $mask = self.items[process.wps.url].panelItem.$mask;
                     
@@ -915,7 +923,7 @@
                         * Show mask
                         */
                        $mask
-                       .html('<div class="content">'+M.Util._("Draw a feature on map")+' (<a href="#" class="cancel">'+M.Util._("Cancel")+'<a/>)</div>')
+                       .html('<div class="content">'+drawText+' (<a href="#" class="cancel">'+M.Util._("Cancel")+'<a/>)</div>')
                        .show();
 
                        /*
@@ -940,8 +948,8 @@
                              */
                             if (event.feature) {
 
-                                $('#' + id).attr('title', M.Util._("Upload")).removeClass('hilite').addClass('warning');
-                                $('#'+idgeoselect).attr('title',M.Util._("Select feature on Map")).removeClass('hilite').addClass('warning');
+                                $('#' + id).attr('title', uploadText).removeClass('hilite').addClass('warning');
+                                $('#'+idgeoselect).attr('title', selectText).removeClass('hilite').addClass('warning');
                                 $('#' + idgeodraw).attr('title', M.Map.Util.Feature.getTitle(event.feature)).addClass('hilite').removeClass('warning');
 
                                 /*
