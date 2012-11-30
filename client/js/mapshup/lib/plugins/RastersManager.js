@@ -129,6 +129,7 @@
                     noHeader:true,
                     autoSize:true,
                     generic:false,
+                    addCloseButton:false,
                     onClose: function(scope) {
                         scope.popup = null;
                         scope.launcher.activate(false);
@@ -194,7 +195,7 @@
             /*
              * Roll over layer descrpiption properties
              */
-            self.popup.$b.append('<div class="center big padded">' + M.Util._("Drag&drop rows to reorder layer display") + '</div><table class="lmrcfg sortable"><thead><tr><th></th><th></th><th></th><th></th></tr></thead><tbody></tbody></table>');
+            self.popup.$b.append('<table class="lmrcfg sortable"><thead style="text-align:center;"><tr><th>'+M.Util._("Icon")+'</th><th>'+M.Util._("Opacity")+'</th><th></th><th></th></tr></thead><tbody></tbody></table>');
 
             $tb = $('tbody', self.popup.$b).sortable({
                 revert: true,
