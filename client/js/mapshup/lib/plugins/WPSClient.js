@@ -312,9 +312,9 @@
              * HTML structures :
              *      <div class="puts">
              *          <div class="list">
-             *              <div id="id">
+             *              <span id="id">
              *                  <span class="title paddedright">Title (or identifier if title is null)</span>
-             *              </p>
+             *              </span>
              *          </div>
              *      </div>      
              * 
@@ -346,7 +346,7 @@
                      * execute query.
                      * 
                      */
-                    $list.append('<div id="'+id+'" class="'+type+'"><span class="title paddedright" jtitle="'+put['abstract']+'">'+(put['title'] || put['identifier'])+' :</span></div>');
+                    $list.append('<span id="'+id+'" class="'+type+'"><span class="title" jtitle="'+put['abstract']+'">'+(put['title'] || put['identifier'])+'&nbsp;:&nbsp;</span></span> ');
 
                     /*
                      * Attach Input identifier to the 'input' div
@@ -358,7 +358,7 @@
                      * Add a tooltip on the input title
                      * This tooltip contains input abstract
                      */
-                    M.tooltip.add($(".title", $id), 'w');
+                    M.tooltip.add($(".title", $id), 's');
 
                     /*
                      * The hard part...
@@ -445,7 +445,7 @@
                         modal:false,
                         noHeader:true,
                         autoSize:true,
-                        body:process.title + ' <a id="'+id+'" href="'+result.reference.href+'" class="button inline colored" target="_blank">'+ M.Util._("Download result") + '</a>'
+                        body:process.title + ' <a id="'+id+'" href="'+result.reference.href+'" class="button inline colored paddedright" target="_blank">'+ M.Util._("Download result") + '</a>'
                     }).show();
                     $('#'+id).click(function(){
                         popup.hide();
@@ -1089,12 +1089,7 @@
                 $parent.hide();
             }
             else {
-            
-                /*
-                 * Store Input type within $parent.data()
-                 */
-                $parent.append('<span id="'+id+'v" class="bold">---</span>');
-
+           
                 /*
                  * Add output to process
                  */
