@@ -118,6 +118,14 @@
                 wps.events.register("getcapabilities", this, function(scope, wps) {
                     
                     /*
+                     * Verify that WPS is really set
+                     */
+                    if (!wps.title) {
+                        M.Util.message(wps.url + " : " + M.Util._("not available"));
+                        return false;
+                    }
+                
+                    /*
                      * Avoid multiple getcapabilities respawn
                      */
                     if (!scope.items[url]) {
@@ -155,6 +163,8 @@
                     }   
                     
                     scope.updateCapabilitiesContent(scope.items[url]);
+                    
+                    return true;
                     
                 });
                 
