@@ -582,14 +582,14 @@
 
     /**
      * Distance plugin
+     *   
+     *   options :
+     *      elevationServiceUrl : Default is "http://maps.google.com/maps/api/elevation/json?sensor=false&"
+     *      samples : number of points to compute elevation (default 30)
      */
     c.add("plugins",
     {
-        name:"Distance",
-        options:{
-            elevationServiceUrl:"http://maps.google.com/maps/api/elevation/json?sensor=false&",
-            elevationSamples:30
-        }
+        name:"Distance"
     });
 
     /*

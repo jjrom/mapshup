@@ -80,16 +80,15 @@
              * Init options
              */
             self.options = options || {};
-            
+            $.extend(self.options,{
+                elevationServiceUrl:M.Util.getPropertyValue(options, "elevationServiceUrl", "http://maps.google.com/maps/api/elevation/json?sensor=false&"),
+                samples:M.Util.getPropertyValue(options, "samples", 30)
+            });
+        
             /*
              * Generate a unique id for elevation panel
              */
             self.uid = M.Util.getId();
-            
-            /**
-             * Default options values
-             */
-            self.options.samples = self.options.samples || 30;
             
             /*
              * Measure distance control
@@ -228,7 +227,7 @@
                 scope.refreshElevation();
             });
             
-            return true;
+            return this;
         };
 
         /** Plugin specific */
@@ -239,11 +238,12 @@
          * is displayed along an elevation profile
          */
         this.display = function(vertices) {
-
+            
             /*
-             * Elevation is computed
+             * Elevation is computed only if a service is defined and
+             * jQplot is part of mapshup build
              */
-            if (this.options.elevationServiceUrl) {
+            if (this.options.elevationServiceUrl && $.isFunction($.jqplot)) {
 
                 /*
                  * First transform array of vertices into a google elevation path
@@ -422,7 +422,7 @@
              * Simple distance display
              */
             else {
-                M.Util.message(self.result.title);
+                M.Util.message(this.result.title);
             }
         };
 
