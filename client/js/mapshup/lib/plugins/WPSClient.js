@@ -953,7 +953,7 @@
                             
                         });
                     
-                        drawingPlugin.askType();
+                        drawingPlugin.askType(true);
                         
                     });
                 
