@@ -602,7 +602,7 @@
 
                     M.Util.askFor({
                         title:put.title,
-                        content:M.Util._("Enter a valid")+' <a href="'+data.reference+'" target="_blank">'+data.dataType+'</a>',
+                        content:put["abstract"] + '<br/><br/>' + M.Util._("Enter a valid")+' <a href="'+data.reference+'" target="_blank">'+data.dataType+'</a>',
                         dataType:data.dataType,
                         /* TODO */
                         bounds:data.bounds,
