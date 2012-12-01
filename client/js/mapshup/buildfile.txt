@@ -5,7 +5,6 @@ lib/core/TimeLine.js
 lib/core/Events.js
 lib/core/Activity.js
 lib/core/Toolbar.js
-lib/core/ToolbarItem.js
 lib/core/Mask.js
 lib/core/Tooltip.js
 lib/core/Menu.js
