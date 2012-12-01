@@ -205,7 +205,7 @@
                          */
                         else {
                             if(active.length > 0){
-                                active.trigger('click');
+                                active.trigger('mousedown');
                                 self.$suggest.hide();
                             }
                         }
@@ -375,14 +375,17 @@
                     
                     /*
                      * Add an entry in the suggest panel, set it active and
-                     * attach a click event on it to launch search
+                     * attach a mousedown event on it to launch search
+                     * 
+                     * Note that mousedown event is used instead of click event
+                     * to ensure that blur event do not stop click resolution
                      */
                     $('ul', self.$suggest).prepend('<li class="as-result-item"><img src="'+M.Util.getImgUrl(d.icon||"default_search.png")+'" class="middle"/>&nbsp;&nbsp;'+M.Util._("Search")+' <span class="val"></span> '+M.Util._("in")+' <em>'+d.title+'</em></li>');
                     lis = $('li', self.$suggest).removeClass('active');
                     
                     lis.filter(':first')
                     .addClass('active')
-                    .click(function(){
+                    .mousedown(function(){
                         self.search(self.services[d.value]);
                     });
                     
