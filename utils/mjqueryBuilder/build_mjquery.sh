@@ -56,6 +56,14 @@ cat $jquerydir/jquery-ui-touchpunch/jquery-ui-touchpunch.min.js >> $mjquerydir/m
 cat $jquerydir/mousewheel/jquery.mousewheel.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/idTabs/jquery.idTabs.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/nanoscroller/jquery.nanoscroller.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderMouseTouch.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderDraggable.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderHandle.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderBar.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderLabel.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSlider.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/jQDateRangeSliderHandle.js >> $mjquerydir/mjquery.js.tmp
+cat $jquerydir/jQRangeSlider/mjQDateRangeSlider.js >> $mjquerydir/mjquery.js.tmp
 
 echo "Compress mjquery.js"
 java -jar ../packer/compiler.jar $mjquerydir/mjquery.js.tmp > $mjquerydir/mjquery.js.tmp2
@@ -72,14 +80,6 @@ cat $jquerydir/jqplot/plugins/jqplot.canvasAxisLabelRenderer.min.js >> $mjqueryd
 cat $jquerydir/jqplot/plugins/jqplot.canvasAxisTickRenderer.min.js >> $mjquerydir/mjquery.jqplot.js.tmp
 cat $jquerydir/jqplot/plugins/jqplot.highlighter.min.js >> $mjquerydir/mjquery.jqplot.js.tmp
 cat $jquerydir/jqplot/plugins/jqplot.cursor.min.js >> $mjquerydir/mjquery.jqplot.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSliderMouseTouch.js >> $mjquerydir/mjquery.jqplot.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSliderDraggable.js >> $mjquerydir/mjquery.jqplot.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSliderHandle.js >> $mjquerydir/mjquery.jqplot.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSliderBar.js >> $mjquerydir/mjquery.jqplot.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSliderLabel.js >> $mjquerydir/mjquery.jqplot.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSlider.js >> $mjquerydir/mjquery.jqplot.js.tmp
-cat $jquerydir/jQRangeSlider/jQDateRangeSliderHandle.js >> $mjquerydir/mjquery.jqplot.js.tmp
-cat $jquerydir/jQRangeSlider/mjQDateRangeSlider.js >> $mjquerydir/mjquery.jqplot.js.tmp
 
 echo "Building mjquery.jqplot.css"
 cat $jquerydir/jqplot/jquery.jqplot.min.css > $mjquerydir/mjquery.jqplot.css
