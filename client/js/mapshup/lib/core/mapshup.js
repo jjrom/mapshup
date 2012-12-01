@@ -143,7 +143,7 @@
      */
     window.M = {
         
-        VERSION_NUMBER:'mapshup 2.0',
+        VERSION_NUMBER:'mapshup 2.2',
         
         /**
          * Plugin objects are defined within M.Plugins
