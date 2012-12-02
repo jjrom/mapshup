@@ -240,10 +240,10 @@
              * If file or url had been dropped - show file info
              */
             if (this.file) {
-                this.$d.html(this.file.name+'<br/><p class="smaller">'+M.Util._("Size")+': '+this.getSize()+'MB</p>');
+                this.$d.html(M.Util.shorten(this.file.name, 30)+'<br/><p class="smaller">'+M.Util._("Size")+': '+this.getSize()+'MB</p>');
             }
             else if (this.fileUrl){
-                this.$d.html(this.fileUrl);
+                this.$d.html(M.Util.shorten(this.fileUrl, 30));
             }
             else {
                 
