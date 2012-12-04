@@ -243,16 +243,18 @@
             
             /*
             * Add "switch layer visibility"
+            * Only if the layer is displayed within LayersManager !
             */
-            tools.push({
-                id:M.Util.getId(),
-                icon:"hide.png",
-                title:"Hide the parent layer",
-                callback:function(a, f) {
-                    M.Map.Util.setVisibility(f.layer, false);
-                }
-            });
-            
+            if (feature.layer.displayInLayerSwitcher) {
+                tools.push({
+                    id: M.Util.getId(),
+                    icon: "hide.png",
+                    title: "Hide the parent layer",
+                    callback: function(a, f) {
+                        M.Map.Util.setVisibility(f.layer, false);
+                    }
+                });
+            }
             /*
              * services defines specific tools and should contains optional properties
              *      - download : to add a download action
