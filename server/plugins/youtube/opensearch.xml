@@ -4,5 +4,5 @@
 	<LongName>Youtube</LongName>
 	<Description>Youtube</Description>
         <Image height="32" width="32" type="image/x-icon">youtube.png</Image>
-	<Url type="application/json" template="http://engine.mapshup.info/s/plugins/youtube/search.php?q={searchTerms}&amp;bbox={geo:box?}"/>
+	<Url type="application/json" template="/plugins/youtube/search.php?q={searchTerms}&amp;bbox={geo:box?}"/>
 </OpenSearchDescription>
