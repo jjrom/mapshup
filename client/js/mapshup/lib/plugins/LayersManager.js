@@ -172,7 +172,7 @@
                              * Do not show panel during mapshup initialization
                              */
                             if (M.isLoaded) {
-                                scope.show(item);
+                                //scope.show(item);
                             }
                         }
 
