@@ -480,10 +480,16 @@
                 sc.clear(true);
                 
                 /*
-                 * Launch search with the input value
+                 * Launch search with a callback function
                  */
                 sc.setSearchTerms(self.getValue());
-                sc.search();
+                sc.search({
+                    callback:function(scope,layer){
+                        if (layer && layer["_M"].layerDescription.zoomOnSearchTerms) {
+                            M.Map.zoomTo(layer.getDataExtent());
+                        }
+                    }
+                });
                 
                 /*
                  * Don't forget to clear the search terms again !
