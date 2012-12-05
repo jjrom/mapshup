@@ -435,6 +435,20 @@
                 layer["_M"].searchContext.search(s.nextRecord);
 
             }
+        
+            /*
+             * If layer got a searchOnLoad boolean set to true within layerDescription,
+             * then launch search
+             */
+            else if (layer["_M"].layerDescription.searchOnLoad) {
+
+                /*
+                 * Launch unitary search -
+                 */
+                layer["_M"].searchContext.search();
+
+            }
+        
             return true;
         };
 
