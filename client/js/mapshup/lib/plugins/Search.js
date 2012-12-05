@@ -537,14 +537,15 @@
                 }
             }
             else {
+                
                 /*
-                * Add layer and store it for post processing 
-                */
+                 * Add layer and store it for post processing 
+                 */
                 layer = M.Map.addLayer(layerDescription);
 
                 /*
-                * Add a setTime Function
-                */
+                 * Add a setTime Function
+                 */
                 if (service.options.changeOnTime) {
                     layer["_M"].setTime = function(interval) {
                         self.search(service, getParams);

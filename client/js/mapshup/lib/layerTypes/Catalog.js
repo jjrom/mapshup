@@ -230,11 +230,12 @@
         },
         
         /**
-         * Set layer time filter
+         * Set layer time filter TODO REMOVE ????
          * 
          * @param <OpenLayers.Layer> layer : target layer
          * @param <array> interval : interval (see TimeLine.js)
          */
+/*
         setTime:function(layer, interval) {
             
             var sc;
@@ -242,18 +243,11 @@
             if (layer && layer["_M"]) {
                 sc = layer["_M"].searchContext;
                 if (sc) {
-                    
-                    /*
-                     * Update time interval
-                     */
                     sc.setTime(interval);
-                    
-                    /*
-                     * Launch search
-                     */
                     sc.search();
                 }
             }
         }
+        */
     }
 })(window.M, window.M.Map);

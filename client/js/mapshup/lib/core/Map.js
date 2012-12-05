@@ -566,7 +566,7 @@
                 if (newLayer.isBaseLayer && !this.hasNonEmptyBaseLayer) {
                     this.map.setBaseLayer(newLayer);
                     this.removeLayer(this.Util.getLayerByMID("EmptyBaseLayer"), false);
-                    this.hasNonEmptyBaseLayer = true
+                    this.hasNonEmptyBaseLayer = true;
                 }
 
                 /*
