@@ -99,6 +99,16 @@
          * Array of available search filters
          */
         this.filters = [];
+        
+        /**
+         * Start date alias (used by setTime(interval) function in SearchContext)
+         */
+        this.startDateAlias = "startDate";
+        
+        /**
+         * Start date alias (used by setTime(interval) function in SearchContext)
+         */
+        this.completionDateAlias = "completionDate";
 
         /**
          * Metadata translation HasMap

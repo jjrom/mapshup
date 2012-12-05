@@ -333,7 +333,7 @@
                  * No value defined at item level => get the son values
                  */
                 else {
-
+                    
                     /*
                      * Roll over item's sons
                      */
@@ -795,8 +795,8 @@
             /*
              * Set startDate and completionDate
              */
-            startDate = self.connector.startDateAlias ? self.connector.startDateAlias : 'startDate';
-            completionDate = self.connector.completionDateAlias ? self.connector.completionDateAlias : 'completionDate';
+            startDate = self.connector.startDateAlias;
+            completionDate = self.connector.completionDateAlias;
             
             /**
              * startDate is null => remove startDate item from the SearchContext
@@ -806,16 +806,20 @@
                 self.remove(completionDate, null);
             }
             else {
-                this.add({
-                    id:startDate,
-                    title:M.Util._("Date"),
-                    value:interval[0]
-                });
-                this.add({
-                    id:completionDate,
-                    title:M.Util._("Date"),
-                    value:interval[1]
-                });
+                if (startDate) {
+                    this.add({
+                        id:startDate,
+                        title:M.Util._("Date"),
+                        value:interval[0]
+                    });
+                }
+                if (completionDate) {
+                    this.add({
+                        id:completionDate,
+                        title:M.Util._("Date"),
+                        value:interval[1]
+                    });
+                }
             }
         };
         
