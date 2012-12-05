@@ -843,7 +843,7 @@
                         //
                         // Launch unitary search
                         //
-                        layer["_M"].searchContext.search(s.nextRecord);
+                        layer["_M"].searchContext.search({nextRecord:s.nextRecord});
 
                     }
                     

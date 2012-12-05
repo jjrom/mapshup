@@ -385,7 +385,7 @@
             /*
              * Launch a search
              */
-            return this.search(p);
+            return this.search({nextRecord:p});
         };
 
         /**
@@ -409,7 +409,7 @@
             /*
              * Launch a search
              */
-            return this.search(p);
+            return this.search({nextRecord:p});
 
         };
 
@@ -507,19 +507,27 @@
         /**
          * Launch a search request on this SearchContext
          *
-         * @param <int> nextRecord : nextRecord to search (optional)
+         * @param <Obj> options : options structure
+         *                          {
+         *                              nextRecord // (optional)
+         *                              callback // function to call after search (optional)
+         *                          }
          */
-        this.search = function(nextRecord) {
+        this.search = function(options) {
 
-            var key,
-            extras = "",
-            layer = this.layer,
-            self = this;
-
+            var key, nextRecord, _callback, extras = "", layer = this.layer, self = this;
+            
+            options = options || {};
+            
             /*
              * Set nextRecord
              */
-            nextRecord = nextRecord || 1;
+            nextRecord = options.nextRecord || 1;
+            
+            /*
+             * Set local _callback
+             */
+            _callback = $.isFunction(options.callback) ? options.callback : null; 
 
             /*
              * Set extras parameters
@@ -631,6 +639,13 @@
                              */
                             if (lm && lm._o) {
                                 lm._o.show(lm._o.get(layer['_M'].MID));
+                            }
+                        
+                            /*
+                             * Launch local _callback if defined
+                             */
+                            if (_callback) {
+                                _callback(self.scope,layer);
                             }
                             
                         }
