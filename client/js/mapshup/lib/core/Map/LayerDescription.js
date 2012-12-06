@@ -217,7 +217,7 @@
 
             var icon = null, // Determines if point must be represented by an icon
                 obj = this.obj, // Object reference
-                opacity = obj.opacity || 0.1; // Set opacity - 0.1 by default
+                opacity = obj.opacity || 0.4; // Set opacity - 0.4 by default
 
             /*
              * Features got a 'icon' attribute => use it as symbol
@@ -226,24 +226,22 @@
             if (obj.hasIconAttribute) {
                 icon = "${icon}";
             }
-            /*
-             * layerDescription got an 'icon'  => use it as symbol
-             * for point representation
-             */
-            /*else if (obj.icon) {
-                icon = obj.icon;
-            }
-            */
+            
             /*
              * Set the default style
              */
             var styleDefault = new OpenLayers.Style(OpenLayers.Util.applyDefaults({
                 pointRadius: icon ? 10 : "${scaledSize}",
-                externalGraphic: icon,
+                externalGraphic:icon,
                 fillOpacity: opacity,
                 graphicOpacity: 1,
-                strokeColor:"#fff",
-                strokeWidth:2,
+                strokeColor:"${color}",
+                strokeWidth:1,
+                label:"${label}",
+                fontSize:20,
+                fontColor:'#fff',
+                fontStrokeColor:'#fff',
+                fontStrokeWidth:0,
                 fillColor:"${color}"
             }, OpenLayers.Feature.Vector.style["default"]), {
 
@@ -263,7 +261,19 @@
                             return feature["attributes"].icon;
                         }
                     },
-
+                    
+                    /*
+                     * Label for clusters
+                     */
+                    label: function(feature) {
+                        if(feature.cluster) {
+                            return feature.cluster.length;
+                        }
+                        else {
+                            return '';
+                        }
+                    },
+                        
                     /*
                      * Clusters have a different color than normal objects
                      */
@@ -273,11 +283,12 @@
                          * Cluster case
                          */
                         if(feature.cluster) {
-                            return "#669900";
+                            return "#666";
                         }
                         else {
-                            return feature.layer["_M"].layerDescription.color || "darkgray";
+                            return feature["attributes"].color || feature.layer["_M"].layerDescription.color || "darkgray";
                         }
+                    
                     },
                     scaledSize: function(feature) {
 
@@ -302,10 +313,10 @@
                                 return feature.cluster[main].attributes[obj.filterOn] * 5;
                             }
                             /*
-                             * filterOn is not defined => return fourth time the normal scale
+                             * filterOn is not defined => return proportional to cluster size
                              */
                             else {
-                                return 20
+                                return 15 + Math.min(feature.cluster.length * 2, 40);
                             }
                         }
                         /*
@@ -323,7 +334,7 @@
                              * filterOn is not defined => return a normal scale
                              */
                             else {
-                                return 5;
+                                return 15;
                             }
                         }
                     }
