@@ -197,7 +197,10 @@
      *      {
      *          enable://true to enable timeLine, false otherwise
      *          disablable://true to allow user to disable timeline
-     *          position:// 'top' or 'bottom'
+     *          position:{
+     *              top: // in pixels (not set if bottom is set)
+     *              bottom: // in pixels (not set if bottom is set)
+     *          },
      *          absolutes:{
      *              min:// TimeLine minimum bounds year
      *              max:// TimeLine maximum bounds year

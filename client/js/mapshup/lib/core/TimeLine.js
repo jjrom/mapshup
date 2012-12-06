@@ -46,6 +46,10 @@
      * @param {Object} options : timeLine options
      *                   {
      *                      enable://true to enable timeLine, false otherwise
+     *                      position:{
+     *                          top: // in pixels (not set if bottom is set)
+     *                          bottom: // in pixels (not set if bottom is set)
+     *                      },
      *                      absolutes:{
      *                          min:// TimeLine minimum year selectable
      *                          max:// TimeLine maximum year selectable
@@ -101,11 +105,6 @@
         this._tw = 0;
         
         /*
-         * Initial TimeLine position
-         */
-        this.position = 'top';
-        
-        /*
          * Initialize TimeLine 
          * TimeLine is located immediatly below mapshup header
          * 
@@ -155,8 +154,10 @@
             /*
              * Position
              */
-            self.position = options.position || self.position;
-            console.log(self.position);
+            self.position = options.position || {
+                top:0
+            };
+            
             $.extend(options, {
                 disablable:M.Util.getPropertyValue(options, "disablable", false),
                 bounds:options.bounds || {
@@ -295,16 +296,16 @@
             /*
              * Move map object
              */
-            if (self.position === 'top') {
-                self.$d.css('top', $('#theBar').offset().top + $('#theBar').height());
+            if (self.position.hasOwnProperty('top')) {
+                self.$d.css('top', self.position.top + $('#theBar').offset().top + $('#theBar').height());
                 $('.map').css({
-                    'top':$('.map').offset().top + self.$d.height()
+                    'top':$('.map').offset().top + self.position.top + self.$d.height()
                 });
             }
-            else {
-                self.$d.css('bottom', 0);
+            else if (self.position.hasOwnProperty('bottom')) {
+                self.$d.css('bottom', self.position.bottom);
                 $('.map').css({
-                    'bottom':self.$d.height()
+                    'bottom':self.position.bottom + self.$d.height()
                 });
             } 
         
