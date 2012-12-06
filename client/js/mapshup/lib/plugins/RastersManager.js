@@ -84,7 +84,7 @@
                 tt: "Show raster layers",
                 scope: self,
                 callback: function(scope, item) {
-                    !scope.popup ? scope.show() : scope.hide();
+                    !scope.popup || !$(scope.popup.$d).is(':visible') ? scope.show() : scope.hide();
                 }
             });
 
@@ -98,7 +98,7 @@
                         scope.show();
                     }
                     else if (action === "remove"){
-                            scope.refresh();
+                        scope.refresh();
                     }
                 }
 
@@ -130,8 +130,8 @@
                     autoSize:true,
                     generic:false,
                     addCloseButton:false,
+                    hideOnClose:true,
                     onClose: function(scope) {
-                        scope.popup = null;
                         scope.launcher.activate(false);
                     },
                     header: '<p>' + M.Util._("Configure raster layers") + '</p>'
@@ -158,7 +158,6 @@
             if (this.popup) {
                 this.popup.hide();
             }
-            this.popup = null;
             this.launcher.activate(false);
         };
     
@@ -168,7 +167,7 @@
         this.refresh = function() {
             
             /*
-             * Parnoid mode
+             * Paranoid mode
              */
             if (!this.popup) {
                 return false;
