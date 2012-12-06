@@ -93,7 +93,7 @@
              * Cluster strategy
              */
             if (options["_M"].clusterized && !options.hasOwnProperty("strategies")) {
-                options.strategies = [new OpenLayers.Strategy.Cluster(new OpenLayers.Strategy.Cluster(Map.clusterOpts))];
+                options.strategies = [new OpenLayers.Strategy.Cluster(Map.clusterOpts)];
             }
             
             /*
