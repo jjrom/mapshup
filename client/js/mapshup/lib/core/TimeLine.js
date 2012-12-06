@@ -101,6 +101,11 @@
         this._tw = 0;
         
         /*
+         * Initial TimeLine position
+         */
+        this.position = 'top';
+        
+        /*
          * Initialize TimeLine 
          * TimeLine is located immediatly below mapshup header
          * 
@@ -108,6 +113,7 @@
          *                   {
          *                      enable://true to enable timeLine, false otherwise
          *                      disablable://true to allow user to disable timeline
+         *                      position: // top or bottom
          *                      absolutes:{
          *                          min:// TimeLine minimum year selectable
          *                          max:// TimeLine maximum year selectable
@@ -137,11 +143,31 @@
                 self.enabled = false;
                 return false;
             }
-            
+        
             /*
              * Set absolutes values
              */
-            self.absolutes = options.absolutes;
+            self.absolutes = options.absolutes || {
+                min:1990,
+                max:(new Date()).getFullYear() + 1
+            };
+            
+            /*
+             * Position
+             */
+            self.position = options.position || self.position;
+            console.log(self.position);
+            $.extend(options, {
+                disablable:M.Util.getPropertyValue(options, "disablable", false),
+                bounds:options.bounds || {
+                    min:new Date(2000,0,1),
+                    max:new Date()
+                },
+                values:options.values || {
+                    min:new Date(2011,0,1),
+                    max:new Date()
+                }
+            });
             
             /*
              * Create timeLine object
@@ -269,9 +295,18 @@
             /*
              * Move map object
              */
-            $('.map').css({
-                'top':$('.map').offset().top + self.$d.height()
-            });
+            if (self.position === 'top') {
+                self.$d.css('top', $('#theBar').offset().top + $('#theBar').height());
+                $('.map').css({
+                    'top':$('.map').offset().top + self.$d.height()
+                });
+            }
+            else {
+                self.$d.css('bottom', 0);
+                $('.map').css({
+                    'bottom':self.$d.height()
+                });
+            } 
         
             /*
              * Recompute size when window is resized

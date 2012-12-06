@@ -197,6 +197,7 @@
      *      {
      *          enable://true to enable timeLine, false otherwise
      *          disablable://true to allow user to disable timeline
+     *          position:// 'top' or 'bottom'
      *          absolutes:{
      *              min:// TimeLine minimum bounds year
      *              max:// TimeLine maximum bounds year
@@ -216,19 +217,6 @@
      */
     c["general"].timeLine = {
         enable:true, //true to enable timeLine, false otherwise
-        disablable:false,
-        absolutes:{
-            min:1990,
-            max:(new Date()).getFullYear() + 1
-        },
-        bounds:{
-            min:new Date(2000,0,1),
-            max:new Date()
-        },
-        values:{
-            min:new Date(2011,0,1),
-            max:new Date()
-        }
     };
 
     /**

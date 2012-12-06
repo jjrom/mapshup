@@ -127,7 +127,7 @@
             });
             
             $t = $('#timeLine');
-            if ($t.length > 0) {
+            if ($t.length > 0 && M.timeLine.position === 'top') {
                 $t.css({
                    'top':$t.offset().top + self.$d.height()
                 });
