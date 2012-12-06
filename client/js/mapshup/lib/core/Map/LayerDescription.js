@@ -217,7 +217,7 @@
 
             var icon = null, // Determines if point must be represented by an icon
                 obj = this.obj, // Object reference
-                opacity = obj.opacity || 0.4; // Set opacity - 0.4 by default
+                opacity = obj.opacity || 0.1; // Set opacity - 0.1 by default
 
             /*
              * Features got a 'icon' attribute => use it as symbol
@@ -235,7 +235,7 @@
                 externalGraphic:icon,
                 fillOpacity: opacity,
                 graphicOpacity: 1,
-                strokeColor:"${color}",
+                strokeColor:"#000",
                 strokeWidth:1,
                 label:"${label}",
                 fontSize:20,
