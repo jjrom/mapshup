@@ -31,6 +31,7 @@
     i["Click on a feature to modify it"]="Cliquer sur une géométrie pour la modifier";
     i["Click on the map to draw a feature"]="Cliquer sur la carte pour ajouter une géométrie";
     i["Click the mouse left button to define the measure point"]="Cliquez sur le bouton gauche de la souris pour définir le point de mesure";
+    i["Click to show it"]="Cliquer pour afficher";
     i["Click to zoom"]="Cliquer pour zoomer";
     i["close"]="fermer";
     i["Close"]="Fermer";
@@ -101,6 +102,8 @@
     i["Images"]="Images";
     i["in"]="dans";
     i["Initializing 3D mode"]="Initialisation du mode 3D";
+    i["is empty"]="est vide";
+    i["is hidden"]="est masqué";
     i["Item"]="Element";
     i["Layer"]="Couche";
     i["Layer added"]="Couche ajoutée";

@@ -308,7 +308,7 @@
                  *      <div>
                  *  </div>
                  */
-                $d = M.Util.$$('#' + id, self.$d).addClass("thumbs images").html('<div class="thumbsWrapper"><ul></ul></div><div class="previous"><a href="#" id="' + uid + 'p" title="' + M.Util._("Previous page") + '">&laquo;</a></div><div class="next"><a href="#" id="' + uid + 'n" title="' + M.Util._("Next page") + '">&raquo;</a></div><div id="' + uid + 'm2" class="mask"><h2>' + M.Util._("This layer is empty") + '</h2></div><div id="' + uid + 'm" class="mask maskh"><h2>' + M.Util._("This layer is hidden") + '</h2>(Click to show it)</div>');
+                $d = M.Util.$$('#' + id, self.$d).addClass("thumbs images").html('<div class="thumbsWrapper"><ul></ul></div><div class="previous"><a href="#" id="' + uid + 'p" title="' + M.Util._("Previous page") + '">&laquo;</a></div><div class="next"><a href="#" id="' + uid + 'n" title="' + M.Util._("Next page") + '">&raquo;</a></div><div id="' + uid + 'm2" class="mask"><h2>' + M.Util._(content.title) + ' ' + M.Util._("is empty") + '</h2></div><div id="' + uid + 'm" class="mask maskh"><h2>' + M.Util._(content.title) + ' ' + M.Util._("is hidden") + '</h2>(' + M.Util._("Click to show it") + ')</div>');
 
                 /*
                  * Append tab to panel

@@ -30,6 +30,7 @@ Clear
 Click on a feature to modify it
 Click on the map to draw a feature
 Click the mouse left button to define the measure point
+Click to show it
 Click to zoom
 close
 Close
@@ -100,6 +101,8 @@ Images
 in
 Initializing 3D mode
 Item
+is empty
+is hidden
 Layer
 Layer added
 Layer detection in progress...
