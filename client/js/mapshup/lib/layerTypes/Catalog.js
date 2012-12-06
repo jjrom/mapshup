@@ -133,6 +133,13 @@
              */
             layerDescription.collection = M.Util.getPropertyValue(layerDescription, "collection", "");
 
+            /*
+             * Cluster strategy
+             */
+            if (options["_M"].clusterized) {
+                options.strategies = [new OpenLayers.Strategy.Cluster(Map.clusterOpts)];
+            }
+        
             /**
              * Layer creation
              */
