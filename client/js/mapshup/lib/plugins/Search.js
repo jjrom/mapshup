@@ -433,11 +433,17 @@
          * user is asked to choose a set service
          * 
          * @param service : service to search in
-         * @param getParams : additional parameters to add to the search service (function returning "&key1=val1&key2=val2&...")
-         */
-        this.search = function(service, getParams) {
+         * @param options : {
+         *                      getParams: additional parameters to add to the search service (function returning "&key1=val1&key2=val2&...")
+         *                      searchTerms: bypass input searchTerms
+         *                  }
+         *
+         */     
+        this.search = function(service, options) {
 
             var a, lt, info, layer, layerDescription, self = this;
+            
+            options = options || {};
             
             /*
              * If no input service is set, then ask user
@@ -449,7 +455,7 @@
             /*
              * Paranoid mode
              */
-            a = $.isFunction(getParams) ? getParams() : {
+            a = $.isFunction(options.getParams) ? options.getParams() : {
                 params:""
             };
             
@@ -462,7 +468,7 @@
             /*
              * Empty val, no search except if additional parameters are set
              */
-            if (self.getValue() === "" && a.params === "") {
+            if (self.getValue() === "" && a.params === "" && !options.searchTerms) {
                 return false;
             }
             
@@ -482,7 +488,7 @@
                 /*
                  * Launch search with a callback function
                  */
-                sc.setSearchTerms(self.getValue());
+                sc.setSearchTerms(options.searchTerms || self.getValue());
                 sc.search({
                     callback:function(scope,layer){
                         if (layer && layer["_M"].layerDescription.zoomOnSearchTerms) {
@@ -554,7 +560,7 @@
                  */
                 if (service.options.changeOnTime) {
                     layer["_M"].setTime = function(interval) {
-                        self.search(service, getParams);
+                        self.search(service, {getParams:getParams});
                     };
                     M.timeLine.add(layer);
                 }

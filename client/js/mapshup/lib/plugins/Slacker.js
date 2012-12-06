@@ -244,7 +244,7 @@
              */
             sp.$input.val("");
             
-            sp.search(service, self.getParams);
+            sp.search(service, {getParams:self.getParams});
             
             return true;
         };
