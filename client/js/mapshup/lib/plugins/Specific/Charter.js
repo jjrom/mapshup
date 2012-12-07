@@ -35,13 +35,11 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-/*
+/**
  * Plugin for the "International Charter Space And Major Disasters" catalog
  *      See http://www.disasterschartercatalog.org
  * 
- * Jerome Gasperi @ CNES
- * 
- * @param {Object} M
+ * Jerome Gasperi - CNES
  */
 (function(M) {
 
