@@ -42,16 +42,16 @@
  * This plugin requires layerTypes/Catalog.js
  *********************************************/
 (function(M) {
-    
+
     M.Plugins.Catalog = function() {
-        
+
         /*
          * Only one Catalog object instance is created
          */
         if (M.Plugins.Catalog._o) {
             return M.Plugins.Catalog._o;
         }
-        
+
         /**
          * List of registered catalogs as an array of layers
          */
@@ -63,7 +63,7 @@
         this.init = function(options) {
 
             var self = this;
-            
+
             /*
              * Init options
              */
@@ -73,42 +73,42 @@
              * Default options
              */
             $.extend(self.options, {
-                nextRecord:self.options.nextRecord || 1,
-                connectors:self.options.connectors || []
+                nextRecord: self.options.nextRecord || 1,
+                connectors: self.options.connectors || []
             });
 
             /*
              * Store unique identifier for search menu
              */
             self._menuId = M.Util.getId();
-            
+
             /*
              * Add a "Search" action to the geonames menu
              * This action launch a search on all registered catalogs
              * on a 1x1 square degrees box around the toponym
              */
             if (M.Plugins.Geonames && M.Plugins.Geonames._o) {
-                
+
                 /**
                  * Search all catalogs within the map view
-                 */       
+                 */
                 M.Plugins.Geonames._o.add([{
-                    id:M.Util.getId(),
-                    ic:"search.png",
-                    ti:"Search in catalogs",
-                    cb:function(toponym) {
-                        
-                        /**
-                         * Create a buffer around clicked point
-                         */
-                        self.searchAll(M.Map.Util.d2p(new OpenLayers.Bounds(toponym.lng - 1, toponym.lat - 1, toponym.lng + 1,toponym.lat + 1)),true);
-                        return false;
-                        
-                    }
-                }]);
-                
+                        id: M.Util.getId(),
+                        ic: "search.png",
+                        ti: "Search in catalogs",
+                        cb: function(toponym) {
+
+                            /**
+                             * Create a buffer around clicked point
+                             */
+                            self.searchAll(M.Map.Util.d2p(new OpenLayers.Bounds(toponym.lng - 1, toponym.lat - 1, toponym.lng + 1, toponym.lat + 1)), true);
+                            return false;
+
+                        }
+                    }]);
+
             }
-            
+
             /*
              * Remove layer event
              */
@@ -122,60 +122,60 @@
                 }
 
             });
-            
+
             /*
              * Update search BBOX on map move
              */
             M.Map.events.register("moveend", self, function(map, scope) {
-                
-                var i,l,m;
+
+                var i, l, m;
                 /*
                  * Update search BBOX for non initial layers
                  */
                 for (i = 0, l = scope.registeredCatalogs.length; i < l; i++) {
-                    
+
                     /*
                      * Important : if search attribute is set, then BBOX should not be updated
                      * the first time
                      */
                     m = scope.registeredCatalogs[i]._M;
-                    
+
                     if (!m.layerDescription.search) {
                         m.searchContext.setBBOX(M.Map.map.getExtent());
                     }
                     else {
                         delete m.layerDescription.search;
                     }
-                    
+
                 }
-                
+
             });
-            
+
             return true;
         };
-        
+
         /**
          * This method is called by LayersManager plugin
          * Add a "Search" action to the LayersManager menu item
          */
         this.getLayerActions = function(layer) {
-            
+
             var self = this;
-            
+
             /**
              * layers of type catalogs get a "Search" action
              */
             if (layer && layer["_M"].layerDescription.type === "Catalog") {
                 return [
-                {
-                    id:M.Util.getId(),
-                    icon:"search.png",
-                    title:"Search",
-                    tt:"Search",
-                    callback:function() {
-                        self.show(layer);
+                    {
+                        id: M.Util.getId(),
+                        icon: "search.png",
+                        title: "Search",
+                        tt: "Search",
+                        callback: function() {
+                            self.show(layer);
+                        }
                     }
-                }
                 ]
             }
             else {
@@ -192,7 +192,7 @@
          *
          */
         this.add = function(layer) {
-            
+
             /*
              * Layer is null => return false
              */
@@ -203,10 +203,10 @@
             /*
              * Get layer _M object
              */
-            var i,l,c,options,
-            _M = layer["_M"],
-            scope = this,
-            name = _M.layerDescription.connectorName;
+            var i, l, c, options,
+                    _M = layer["_M"],
+                    scope = this,
+                    name = _M.layerDescription.connectorName;
 
             /*
              * This should not be possible...
@@ -227,41 +227,41 @@
             for (i = 0, l = scope.options.connectors.length; i < l; i++) {
                 if (scope.options.connectors[i].name === name) {
                     options = this.options.connectors[i].options || {};
-                    
+
                     /*
                      * This is the tricky part
                      *
                      * First create a function that return the M.Plugins.Catalog.<name> connector
                      */
-                    c = (new Function('return M.Plugins.Catalog.'+name))();
-                    
+                    c = (new Function('return M.Plugins.Catalog.' + name))();
+
                     /*
                      * If connector object does not exist, nothing is registered
                      */
                     if (!c) {
                         return false;
                     }
-                    
+
                     /*
                      * Create a new connector
                      */
-                    c = new c(layer, options, function(connector){
+                    c = new c(layer, options, function(connector) {
                         scope.register(scope, connector);
                     }, function(layer) {
                         scope.updateFilters(layer);
                     });
-                    
+
                     /*
                      * Callback to effectively add the catalog to mapshup
                      */
                     if (c.register()) {
                         scope.register(scope, c);
                     }
-                    
+
                     return true;
                 }
             }
-            
+
             return false;
 
         };
@@ -276,8 +276,8 @@
                 return false;
             }
 
-            var s,i,j,l,m,add,_M,filters,cFilters,
-            layer = connector.catalog;
+            var s, i, j, l, m, add, _M, filters, cFilters,
+                    layer = connector.catalog;
 
             /*
              * !! Layer was removed before registration !!
@@ -287,11 +287,11 @@
                 connector.catalog = null;
                 return false;
             }
-            
+
             _M = layer["_M"];
             filters = _M.layerDescription["filters"];
             cFilters = connector.filters;
-            
+
             /*
              * If layer layerDescription set filters, add it to
              * the layer connector
@@ -319,18 +319,18 @@
 
                         /*
                          * Superseed filter
-                         */ 
+                         */
                         if (filters[i].id === cFilters[j].id) {
                             cFilters[j] = filters[i];
                             add = false;
                             break;
-                        } 
+                        }
 
                     }
 
                     /*
-                      * Filter wasn't already defined - add it to connector filters
-                      */
+                     * Filter wasn't already defined - add it to connector filters
+                     */
                     if (add) {
                         cFilters.push(filters[i]);
                     }
@@ -347,25 +347,25 @@
              * Initialize an empty searchContext
              */
             if (!_M.searchContext) {
-                
+
                 /*
                  * Set new SearchContext
-                 */ 
+                 */
                 _M.searchContext = new M.Map.SearchContext(layer, connector, {
-                    autoSearch:false,
-                    nextRecord:_M.layerDescription.nextRecord || scope.options.nextRecord,
-                    nextRecordAlias:connector.nextRecordAlias,
-                    numRecordsPerPage:_M.layerDescription.numRecordsPerPage || M.Config["general"].numRecordsPerPage, 
-                    numRecordsPerPageAlias:connector.numRecordsPerPageAlias,
-                    callback:_M.layerDescription.hasOwnProperty("callback") ? _M.layerDescription.callback : null, 
-                    scope:scope
+                    autoSearch: false,
+                    nextRecord: _M.layerDescription.nextRecord || scope.options.nextRecord,
+                    nextRecordAlias: connector.nextRecordAlias,
+                    numRecordsPerPage: _M.layerDescription.numRecordsPerPage || M.Config["general"].numRecordsPerPage,
+                    numRecordsPerPageAlias: connector.numRecordsPerPageAlias,
+                    callback: _M.layerDescription.hasOwnProperty("callback") ? _M.layerDescription.callback : null,
+                    scope: scope
                 });
 
                 /*
                  * Set BBOX to current map view
                  */
                 _M.searchContext.setBBOX(M.Map.map.getExtent());
-                
+
                 /*
                  * Clean layerDescription.nextRecord and layerDescription.numRecordsPerPage to avoid confusion
                  */
@@ -387,41 +387,41 @@
              * Register catalog within connector catalogs array
              */
             scope.registeredCatalogs.push(layer);
-            
+
             /*
              * Add searchAll action to M.menu
              */
             if (M.menu) {
-                
+
                 if (scope.registeredCatalogs.length === 1) {
-                
+
                     /**
                      * Search all catalogs within the map view
-                     */       
+                     */
                     M.menu.add([{
-                        id:scope.menuId,
-                        ic:"search.png",
-                        ti:"Search in catalogs",
-                        cb:function() {
-                            scope.searchAll(null, true);
-                        }
-                    }]);
-                
+                            id: scope.menuId,
+                            ic: "search.png",
+                            ti: "Search in catalogs",
+                            cb: function() {
+                                scope.searchAll(null, true);
+                            }
+                        }]);
+
                 }
-                
+
             }
-            
+
             /*
              * Update filters
              */
             scope.updateFilters(layer);
-            
+
             /*
              * If layer got a searchContext within layerDescription,
              * then launch search
              */
             s = layer["_M"].layerDescription.search;
-            
+
             if (s) {
 
                 /*
@@ -432,23 +432,22 @@
                 /*
                  * Launch unitary search -
                  */
-                layer["_M"].searchContext.search({nextRecord:s.nextRecord});
+                layer["_M"].searchContext.search({nextRecord: s.nextRecord});
 
             }
-        
+
             /*
-             * If layer got a searchOnLoad boolean set to true within layerDescription,
-             * then launch search
+             * If layer got a searchOnLoad within layerDescription then launch search
              */
-            else if (layer["_M"].layerDescription.searchOnLoad) {
+            else if (layer["_M"].layerDescription.hasOwnProperty("searchOnLoad")) {
 
                 /*
                  * Launch unitary search -
                  */
-                layer["_M"].searchContext.search();
+                layer["_M"].searchContext.search({callback: layer["_M"].layerDescription.searchOnLoad});
 
             }
-        
+
             return true;
         };
 
@@ -457,9 +456,9 @@
          *
          * @param {OpenLayers.Layer} catalog : catalog to be removed
          * @output boolean : true if the catalog is successfully unregistered
-         */ 
+         */
         this.remove = function(catalog) {
-            
+
             /*
              * Roll over catalogs description within the connector
              */
@@ -480,7 +479,7 @@
                         return false;
                     }
 
-                    this.registeredCatalogs.splice(j,1);
+                    this.registeredCatalogs.splice(j, 1);
 
                     /*
                      * Remove the search panel
@@ -488,7 +487,7 @@
                     if (catalog['_M'].searchContext.btn) {
                         catalog['_M'].searchContext.btn.remove();
                     }
-                    
+
                     /*
                      * Remove searchAll action from M.menu
                      */
@@ -498,12 +497,12 @@
 
                             /**
                              * Search all catalogs within the map view
-                             */       
+                             */
                             M.menu.remove(this.menuId);
                         }
 
                     }
-                    
+
                     /**
                      * Catalog is removed
                      */
@@ -516,74 +515,74 @@
              */
             return false;
         };
-        
+
         /*
          * Show layer filters
          */
         this.show = function(layer) {
-            
+
             /*
              * Paranoid mode
              */
             if (!layer) {
                 return false;
             }
-            
+
             var id1 = M.Util.getId(),
-                id2 = M.Util.getId(),
-                sc = layer["_M"].searchContext,
-                self = this;
-            
+                    id2 = M.Util.getId(),
+                    sc = layer["_M"].searchContext,
+                    self = this;
+
             /*
              * Paranoid mode
              */
             if (!sc) {
                 return false;
             }
-            
+
             /*
              * Only one search popup can be opened at a time
              */
             if (self.sp && $.isFunction(self.sp.remove)) {
                 self.sp.remove();
             }
-            
+
             /*
              * Set search popup
              */
             self.sp = new M.Popup({
-                modal:false,
-                classes:"sp",
-                header:'<p>'+layer.name+'</p>',
-                body:'<div class="description search"><div class="father">'+M.Util._("Limit search to map view extent")+'&nbsp;&nbsp;<input class="usegeo" type="checkbox" name="usegeo" '+(sc.useGeo ? "checked" : "")+'/></div><div class="filters"></div><div class="launch"><a href="#" class="button inline" id="'+id1+'">'+M.Util._("Reset filters")+'</a><a href="#" class="button facebook inline" id="'+id2+'">&nbsp;&nbsp;search&nbsp;&nbsp;</a></div></div>'
+                modal: false,
+                classes: "sp",
+                header: '<p>' + layer.name + '</p>',
+                body: '<div class="description search"><div class="father">' + M.Util._("Limit search to map view extent") + '&nbsp;&nbsp;<input class="usegeo" type="checkbox" name="usegeo" ' + (sc.useGeo ? "checked" : "") + '/></div><div class="filters"></div><div class="launch"><a href="#" class="button inline" id="' + id1 + '">' + M.Util._("Reset filters") + '</a><a href="#" class="button facebook inline" id="' + id2 + '">&nbsp;&nbsp;search&nbsp;&nbsp;</a></div></div>'
             });
-            
+
             /*
              * Clear all filters
              */
-            $('#'+id1).click(function(){
+            $('#' + id1).click(function() {
                 sc.clear();
                 self.updateFilters(layer);
             });
-                    
+
             /*
              * Launch search
              */
-            $('#'+id2).click(function() {
-                
+            $('#' + id2).click(function() {
+
                 self.sp.remove();
-                
+
                 /*
                  * Set BBOX
                  */
                 if (sc.useGeo) {
                     sc.setBBOX(M.Map.map.getExtent());
                 }
-                
+
                 sc.search();
                 return false;
             });
-            
+
             /*
              * Change search bbox on usegeo check 
              */
@@ -593,23 +592,23 @@
                  * Swap search restriction between map view extent or to full extent
                  */
                 sc.setGeo($(this).attr("checked") === "checked" ? true : false);
-                
+
             });
 
             /*
              * Show search popup
              */
             self.sp.show();
-            
+
             /*
              * Update search filters
              */
             self.updateFilters(layer);
-            
+
             return true;
-            
+
         };
-        
+
         /**
          * Update search filters
          * Structure of panel
@@ -628,14 +627,14 @@
             }
 
             var $d,
-            sc = layer["_M"].searchContext,
-            connector = sc.connector,
-            self = this;
+                    sc = layer["_M"].searchContext,
+                    connector = sc.connector,
+                    self = this;
 
             if (!self.sp) {
                 return false;
             }
-            
+
             /*
              * Get the div filters reference
              */
@@ -659,10 +658,10 @@
                  * Make a population ratio based tag cloud
                  * for each .tagcloud element
                  */
-                $('.tagcloud', $d).each(function(i){
+                $('.tagcloud', $d).each(function(i) {
 
                     var a = $('a', $(this)),
-                    b = 0;
+                            b = 0;
 
                     /*
                      * Roll over <a> element and get 
@@ -683,9 +682,9 @@
                              * Set a proportionnal font-size
                              * from 0.8 to 1.8 em
                              */
-                            $(this).css('font-size', (function(p,b){
+                            $(this).css('font-size', (function(p, b) {
                                 return (0.8 + Math.round((10 * p) / b) / 10) + 'em';
-                            })($(this).attr("population"),b));
+                            })($(this).attr("population"), b));
                         });
                     }
 
@@ -696,17 +695,17 @@
             return true;
 
         };
-        
+
         /**
          * Process a filter item
          */
         this.processItem = function(item, father, div, layer, _id) {
 
-            var i,l,active,
-            id,
-            tmpItem,
-            newItem,
-            sc = layer["_M"].searchContext;
+            var i, l, active,
+                    id,
+                    tmpItem,
+                    newItem,
+                    sc = layer["_M"].searchContext;
 
             /**
              * item can be an array
@@ -723,7 +722,7 @@
                  */
                 if (tmpItem.son) {
                     id = M.Util.getId();
-                    div.append('<span class="father">'+tmpItem.title+' |</span><span id="'+id+'" class="tagcloud"></span><br/>');
+                    div.append('<span class="father">' + tmpItem.title + ' |</span><span id="' + id + '" class="tagcloud"></span><br/>');
                     this.processItem(tmpItem.son, tmpItem, div, layer, id);
                 }
                 else {
@@ -746,10 +745,10 @@
                          * to the tag 
                          */
                         active = sc.isDefined({
-                            id:father.id,
-                            son:[{
-                                id:tmpItem.id
-                            }]
+                            id: father.id,
+                            son: [{
+                                    id: tmpItem.id
+                                }]
                         }) ? ' class="active"' : '';
 
                         /*
@@ -760,7 +759,7 @@
                         /*
                          * Add tag
                          */
-                        $('#'+_id).append('<a href="#" id="'+id+'" population="'+pop+'"'+active+'>'+tmpItem.title+'<span class="subscript">'+pop+'</span></a> ');
+                        $('#' + _id).append('<a href="#" id="' + id + '" population="' + pop + '"' + active + '>' + tmpItem.title + '<span class="subscript">' + pop + '</span></a> ');
 
                         /*
                          * Click on one enumeration item :
@@ -772,16 +771,16 @@
                          *    one enumeration item can be selected at a time
                          */
                         (function(div, father, item, sc) {
-                            div.click(function(){
+                            div.click(function() {
 
                                 var newItem = {
-                                    id:father.id,
-                                    title:father.title,
-                                    son:[{
-                                        id:item.id,
-                                        value:item.value,
-                                        title:item.title
-                                    }]
+                                    id: father.id,
+                                    title: father.title,
+                                    son: [{
+                                            id: item.id,
+                                            value: item.value,
+                                            title: item.title
+                                        }]
                                 };
 
                                 /*
@@ -810,7 +809,7 @@
                                 }
 
                             });
-                        })($('#'+id), father, tmpItem, sc);
+                        })($('#' + id), father, tmpItem, sc);
 
                     }
 
@@ -839,9 +838,9 @@
                              */
                             if (tmpItem.value) {
                                 sc.add({
-                                    id:tmpItem.id,
-                                    title:tmpItem.title,
-                                    value:tmpItem.value
+                                    id: tmpItem.id,
+                                    title: tmpItem.title,
+                                    value: tmpItem.value
                                 });
                                 tmpItem.value = "";
                             }
@@ -850,42 +849,42 @@
                         /*
                          * Add a keyword action
                          */
-                        div.append('<span class="father">'+tmpItem.title+' |</span><span id="'+id+'t" class="bold">'+(value || "")+'</span>&nbsp;[<a href="#" id="'+id+'">'+(value ? M.Util._("Change") : M.Util._("Set"))+'</a><span id="'+id+'c"> or <a href="#">'+M.Util._("Clear")+'</a></span>]</span><br/>');
+                        div.append('<span class="father">' + tmpItem.title + ' |</span><span id="' + id + 't" class="bold">' + (value || "") + '</span>&nbsp;[<a href="#" id="' + id + '">' + (value ? M.Util._("Change") : M.Util._("Set")) + '</a><span id="' + id + 'c"> or <a href="#">' + M.Util._("Clear") + '</a></span>]</span><br/>');
 
                         /*
                          * Hide 'clear' action if value is not set
                          */
                         if (!value) {
-                            $('#'+id+'c').hide();
+                            $('#' + id + 'c').hide();
                         }
 
                         /*
                          * Add a 'clear' action
                          */
                         (function(id, item, sc) {
-                            $('a', '#'+id+'c').click(function(e) {
+                            $('a', '#' + id + 'c').click(function(e) {
 
                                 /*
                                  * Set item value to ""   
-                                 */    
+                                 */
                                 sc.add({
-                                    id:item.id,
-                                    title:item.title,
-                                    value:""
+                                    id: item.id,
+                                    title: item.title,
+                                    value: ""
                                 });
 
                                 /*
                                  * Update link content text with
                                  * the new set value
                                  */
-                                $('#'+id+'t').html("");
+                                $('#' + id + 't').html("");
 
                                 /*
                                  * Hide the 'clear' action
                                  */
-                                $('#'+id+'c').hide();
+                                $('#' + id + 'c').hide();
 
-                                $('#'+id).html(M.Util._("Set"));
+                                $('#' + id).html(M.Util._("Set"));
 
                                 return false;
                             });
@@ -895,14 +894,14 @@
                          * Ask for a free keyword on click
                          */
                         (function(id, item, sc, type) {
-                            $('#'+id).click(function(e) {
+                            $('#' + id).click(function(e) {
 
                                 M.Util.askFor({
-                                    title:M.Util._(item.title),
-                                    dataType:type,
-                                    value:sc.getValue(item.id),
-                                    callback:function(v){
-                                    
+                                    title: M.Util._(item.title),
+                                    dataType: type,
+                                    value: sc.getValue(item.id),
+                                    callback: function(v) {
+
                                         /*
                                          * Value is set -> add newItem to searchContext
                                          * Otherwise, remove it
@@ -913,23 +912,23 @@
                                              * Add newItem to layer searchContext
                                              */
                                             sc.add({
-                                                id:item.id,
-                                                title:item.title,
-                                                value:v
+                                                id: item.id,
+                                                title: item.title,
+                                                value: v
                                             });
 
                                             /*
                                              * Update link content text with
                                              * the new set value
                                              */
-                                            $('#'+id+'t').html(v);
+                                            $('#' + id + 't').html(v);
 
                                             /*
                                              * Show the 'Clear' action
                                              */
-                                            $('#'+id+'c').show();
+                                            $('#' + id + 'c').show();
 
-                                            $('#'+id).html(M.Util._("Change"));
+                                            $('#' + id).html(M.Util._("Change"));
 
                                         }
 
@@ -943,16 +942,16 @@
                 }
             }
         };
-          
+
         /**
          * Launch a search over all catalogs
          *
          * @param <boolean> initialize: if true set nextRecord to 1 for each catalog (optional)
          */
-        this.searchAll = function (bounds,initialize) {
-            
-            var j,l,sc;
-            
+        this.searchAll = function(bounds, initialize) {
+
+            var j, l, sc;
+
             /**
              * Roll over each catalogs
              */
@@ -973,28 +972,28 @@
                 if (bounds) {
                     sc.setBBOX(bounds);
                 }
-                
+
                 /**
                  * Launch an unitary search for catalog
                  */
                 sc.search();
-                
+
                 /**
                  * Set back search BBOX to the map bounds
                  */
                 if (bounds) {
                     sc.setBBOX(sc.useGeo ? M.Map.map.getExtent() : null);
                 }
-            }  
+            }
 
             return true;
         };
-        
+
         /*
          * Set unique instance
          */
         M.Plugins.Catalog._o = this;
-        
+
         return this;
 
     }
