@@ -234,27 +234,6 @@
          */
         getMID:function(layerDescription) {
             return layerDescription.MID || M.Util.crc32(layerDescription.type + layerDescription.connectorName + (M.Util.repareUrl(layerDescription.url) || ""));
-        },
-        
-        /**
-         * Set layer time filter TODO REMOVE ????
-         * 
-         * @param <OpenLayers.Layer> layer : target layer
-         * @param <array> interval : interval (see TimeLine.js)
-         */
-/*
-        setTime:function(layer, interval) {
-            
-            var sc;
-            
-            if (layer && layer["_M"]) {
-                sc = layer["_M"].searchContext;
-                if (sc) {
-                    sc.setTime(interval);
-                    sc.search();
-                }
-            }
         }
-        */
     }
 })(window.M, window.M.Map);
