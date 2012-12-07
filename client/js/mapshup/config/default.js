@@ -219,7 +219,7 @@
      *      
      */
     c["general"].timeLine = {
-        enable:true, //true to enable timeLine, false otherwise
+        enable:true //true to enable timeLine, false otherwise
     };
 
     /**
