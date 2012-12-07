@@ -87,7 +87,7 @@
             /*
              * Create the search bar within mapshup header
              */
-            sb = $('.searchBar', M.$header).html('<form method="get" action="#"><input id="'+id1+'" name="q" type="text" size="40" placeholder="'+M.Util._("Search / Add a layer url")+'" autocomplete="off"/></form>');
+            sb = $('.searchBar', M.$header).html('<form method="get" action="#"><input id="'+id1+'" name="q" type="text" size="40" placeholder="'+M.Util._(options.hint || "Search / Add a layer url")+'" autocomplete="off"/></form>');
             self.$input = $('#'+id1);
             
             /*

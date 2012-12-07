@@ -504,7 +504,7 @@
      * Search plugin
      *
      * options:
-     * 
+     *      hint: // Text to display within the search bar (Default is "Search / Add a layer url")
      *      services: // array of OpenSearch services description
      *                   {
      *                      url: // url to the OpenSearch XML description - MANDATORY
