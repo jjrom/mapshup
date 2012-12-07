@@ -130,10 +130,10 @@
                         e.preventDefault();
                         e.stopPropagation();
                         
-                        /* Unselect feature*/
+                        // Unselect feature
                         M.Map.featureInfo.clear();
                         
-                        /* Launch search on disaster type */
+                        // Launch search on disaster type
                         searchPlugin.search(searchPlugin.services[options.service], {searchTerms:"type="+item.key});
                         
                         return false;
