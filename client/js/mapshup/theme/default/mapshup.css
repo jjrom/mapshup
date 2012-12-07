@@ -789,8 +789,13 @@ a.tab:hover
     right:50px;
     background-color:rgba(0, 0, 0, 0.9);
     color:#fff;
-    width:250px;
+    width:300px;
     padding:30px;
+    font-size:1.1em;
+}
+.mip h2 {
+    color:#f3961c;
+    padding-bottom:5px;
 }
 .mip p {
     text-align:justify;
