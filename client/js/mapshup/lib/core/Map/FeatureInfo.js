@@ -626,6 +626,11 @@
                  */
                 self.popup.show();
                 
+                /*
+                 * Show micro template
+                 */
+                self.showMicroInfo(feature);
+                
             }
             
             return true;
@@ -668,12 +673,19 @@
                     /*
                      * Hide feature info panel
                      */
-                    //M.menu.hide();
-                    self.popup.hide();
+                    if (self.popup.$d.is(':visible')) {
+                        self.popup.hide();
+                    }
+                    
+                    // Remove microInfo popup
+                    if (self._mip) {
+                        self._mip.remove();
+                        self._mip = null;
+                    }
                     
                 }
                 
-            }, 100);
+            }, 10);
             
         };
         
@@ -762,7 +774,6 @@
          * |          .info            | .body
          * |___________________________|
          * 
-         * 
          * @param feature : the feature to display
          *                 
          */
@@ -850,7 +861,8 @@
              * Roll over layer types to detect layer features that should be
              * displayed using a dedicated setFeatureInfoBody function
              */
-            if ((layerType = M.Map.layerTypes[feature.layer["_M"].layerDescription["type"]])) {
+            layerType = M.Map.layerTypes[feature.layer["_M"].layerDescription["type"]];
+            if (layerType) {
                 if ($.isFunction(layerType.setFeatureInfoBody)) {
                     layerType.setFeatureInfoBody(feature, $('.info', $target));
                     typeIsUnknown = false;
@@ -882,14 +894,15 @@
                     /*
                      * Special keywords
                      */
-                    if (k === 'identifier' || k === 'icon' || k === 'thumbnail' || k === 'quicklook') {
+                    if (k === 'identifier' || k === 'icon' || k === 'thumbnail' || k === 'quicklook' || k === 'modified' || k === 'color') {
                         continue;
                     }
 
                     /*
                      * Get key value
                      */
-                    if((v = feature.attributes[k])) {
+                    v = feature.attributes[k];
+                    if (v) {
 
                         /*
                          * Check type
@@ -1041,6 +1054,70 @@
             return true;
             
         };
+    
+        /**
+         * Set micro info popup html content
+         * 
+         * @param feature : the feature to display
+         *                 
+         */
+        this.showMicroInfo = function(feature) {
+            
+            var templates;
+            
+            /*
+             * Paranoid mode
+             */
+            if (!feature) {
+                return false;
+            }
+            
+            templates = feature.layer['_M'].layerDescription.microInfoTemplate; 
+            
+            /* 
+             * Panel is only shown if feature parent layer got
+             * a microInfoTemplate set in layerDescription
+             */
+            if (!templates) {
+                return false;
+            }
+            
+            /*
+             * Create the micro info popup
+             * 
+             * <div class="fi">
+             *      <div class="header>
+             *          <div class="title"></div>
+             *      </div>
+             *      <div class="body">
+             *      
+             *      </div>
+             * </div>
+             *      
+             * 
+             */
+            if (this._mip) {
+                this._mip.hide();
+            }
+            this._mip = new M.Popup({
+                modal: false,
+                scope: this,
+                classes:'mip',
+                centered:false,
+                autoSize:true,
+                generic:false,
+                addCloseButton:false,
+                zIndex:30000,
+                noHeader:templates.header ? false : true,
+                header: '<p>' + M.Util.parseTemplate(templates.header, feature.attributes) + '</p>',
+                body:M.Util.parseTemplate(templates.body, feature.attributes)
+            });
+            
+            this._mip.show();
+            
+            return true;
+            
+        }
         
         /*
          * Create unique object instance
