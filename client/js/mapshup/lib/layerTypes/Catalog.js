@@ -42,8 +42,8 @@
         /**
          * icon path relative to the M.themeDirectory
          */
-        icon:"catalog.png",
-
+        icon:'catalog.png',
+        
         /**
          * Catalogs are selectable vector objects
          */
