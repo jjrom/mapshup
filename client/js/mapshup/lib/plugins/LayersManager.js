@@ -167,13 +167,6 @@
                                 layer: layer,
                                 features: M.Map.Util.getFeatures(layer, layer['_M'].layerDescription.sort)
                             });
-
-                            /*
-                             * Do not show panel during mapshup initialization
-                             */
-                            if (M.isLoaded) {
-                                //scope.show(item);
-                            }
                         }
 
                         /*
