@@ -74,7 +74,7 @@ h1 {
     font-size:1.2em;
 }
 a {
-    color:#3b5998;
+    color:#f3961c;
     text-decoration:none;
     padding:5px;
     outline:none;
@@ -149,7 +149,7 @@ table thead {
 
 /* Semi-transparent window over everything except askFor popups */
 .overall {
-    background-color:rgba(243,150,28,0.9);
+    background-color:rgba(243, 150, 28, 0.9);
     color:#fff;
     position:absolute;
     left:0;
@@ -201,10 +201,9 @@ span.hilite
     color:#fff;
 }
 
-/* Main colored background-color - ORANGE CLAIR */
+/* Main colored background-color - Black */
 #theBar,
 #slacker,
-.fipopup,
 .tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
 .featureHilite,
 .pnsi,
@@ -212,7 +211,7 @@ span.hilite
 a.tab.active,
 a.tab:hover
 {
-    background-color:#f3961c;
+    background-color:#000;
 }
 
 /***********************************
@@ -439,7 +438,7 @@ a.tab:hover
     position:absolute;
     top:24px;
     right:0px;
-    background-color:#f3961c;
+    background-color:#000;
     border-top: 1px dashed #fff;
 }
 
@@ -727,16 +726,17 @@ a.tab:hover
 =========================================*/
 .fipopup {
     position:absolute;
+    background-color:#000;
     width:auto;
     min-width:200px;
     padding-right:30px;
     height:40px;
-    color:#000;
+    color:#fff;
     display:none;
     z-index:20000;
 }
 .fipopup.apo:after {
-    border-color: #f3961c transparent transparent;
+    border-color: #000 transparent transparent;
 }
 
 .fi {
@@ -781,6 +781,7 @@ a.tab:hover
     padding-left:5px;
     display:inline;
 }
+
 /* Micro Info popup */
 .mip {
     position:absolute;
@@ -799,7 +800,6 @@ a.tab:hover
 .mip p {
     text-align:justify;
 }
-
 /* message */
 .message {
     position:absolute;
@@ -869,7 +869,7 @@ a.tab img {
 */
 #timeLine
 {
-    background-color:#f3961c;
+    background-color:#000;
 }
 
 #timeLine {
@@ -886,7 +886,7 @@ a.tab img {
     height:40px;
     line-height:20px;
     text-align:center;
-    background-color:rgba(243, 150, 28, 0.7);
+    background-color:rgba(255, 0, 0, 0.7);
     display:none;
     text-transform:uppercase;
     cursor:pointer;
@@ -942,7 +942,7 @@ a.tab img {
 .ui-rangeSlider-scaleUnit{
     position:absolute;
     font-size:0.8em;
-    color:#000;
+    color:#fff;
     bottom:0px;
     z-index:1;
 }
@@ -971,7 +971,7 @@ a.tab img {
     width:10px;
     height:40px;
     margin:0px;
-    background:rgba(255, 255, 0, 0.4);
+    background:rgba(243,150,28, 0.4);
     cursor:col-resize;
     z-index:4;
 }
@@ -979,7 +979,7 @@ a.tab img {
     position:absolute;
     height:40px;
     margin: 1px 0px;
-    background-color:rgba(255, 255, 0, 0.4);
+    background-color:rgba(243,150,28, 0.4);
     cursor:move;
     cursor:grab;
     cursor: -moz-grab;
@@ -1765,7 +1765,7 @@ li.as-result-item em, li.as-result-item .val {
     top:90px;
     bottom:260px;
     right:40px;
-    background-color:rgba(243, 150, 28, 0.9);
+    background-color:rgba(0, 0, 0, 0.9);
     color:#fff;
     width:25%;
     padding:30px;
