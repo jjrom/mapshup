@@ -128,6 +128,7 @@
                     generic:false,
                     addCloseButton:false,
                     hideOnClose:true,
+                    zIndex:30000,
                     onClose: function(scope) {
                         scope.launcher.activate(false);
                     },

@@ -131,6 +131,10 @@
         this.mapXY = options.mapXY;
         
         /*
+         * Popup z-index
+         */
+        this.zIndex = M.Util.getPropertyValue(options, "zIndex", 35900);
+        /*
          * Initialize Popup object
          */
         this.init = function(options) {
@@ -188,7 +192,7 @@
                  * If popup followMap, then it is displayed behind Toolbars and LayersManager
                  */
                 self.$d.css({
-                    'z-index':self.followMap ? '19000' : '35900'
+                    'z-index':self.followMap ? '19000' : self.zIndex
                 });
             }
             
