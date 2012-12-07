@@ -1113,6 +1113,7 @@
                 body:M.Util.parseTemplate(templates.body, feature.attributes)
             });
             
+            this._mip.$b.addClass('padded');
             this._mip.show();
             
             return true;
