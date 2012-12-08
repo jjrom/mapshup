@@ -64,7 +64,7 @@
              */
             this.options = options || {};
 
-            $('#mwrapper').append('<div id="footer"><table><tr></tr></table></div>');
+            $('#Mfooter').append('<table><tr></tr></table>');
 
             /*
              * Items
@@ -117,7 +117,7 @@
                 }
             ];
 
-            $d = $('tr', $('#footer'));
+            $d = $('tr', $('#Mfooter'));
             
             var searchPlugin = M.Plugins.Search._o;
             

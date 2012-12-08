@@ -229,6 +229,23 @@ a.tab:hover
     margin:0px 0px -100px;
 }
 
+/* Header */
+#Mheader {
+    position:absolute;
+    top:0px;
+    left:0px;
+    height:0px;
+    width:100%;
+}
+
+/* Footer */
+#Mfooter {
+    position:absolute;
+    bottom:0px;
+    left:0px;
+    height:0px;
+    width:100%;
+}
 
 /* map container */
 #mapcontainer {
