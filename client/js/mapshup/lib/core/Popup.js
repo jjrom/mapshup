@@ -337,15 +337,17 @@
         
         /**
          * Hide popup
+         * 
+         * @param {boolean} noCloase // true = do not launch onClose callback
          */
-        this.hide = function() {
+        this.hide = function(noClose) {
             
             var self = this;
             
             self.$d.hide();
             self.$m.hide();
             
-            if ($.isFunction(self.onClose)) {
+            if (!noClose && $.isFunction(self.onClose)) {
                 self.onClose(self.scope);
             }
             

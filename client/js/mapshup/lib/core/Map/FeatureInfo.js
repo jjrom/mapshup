@@ -90,10 +90,13 @@
             options = options || {};
 
             /*
-             * Initialize featureInfo popup
-             * See this.setContent() 
+             * Initialize popups :
+             *      - '_p' is the feature info popup
+             *      - '_mip' is the mirco info popup
+             *  
+             *  When one is visible, the other is hidden !
              */
-            this.popup = new M.Popup({
+            self._p = new M.Popup({
                 modal: false,
                 generic: false,
                 hideOnClose: true,
@@ -107,10 +110,28 @@
                 }
             });
 
+            self._mip = new M.Popup({
+                modal: false,
+                generic: false,
+                hideOnClose: true,
+                noHeader: true,
+                noFooter: false,
+                scope: self,
+                classes: 'mip',
+                centered: false,
+                autoSize: true,
+                zIndex: 30000,
+                footer: '<div class="tools"></div>',
+                onClose: function() {
+                    self.clear();
+                }
+            });
+            self._mip.$b.addClass('padded');
+
             /*
              * Hide FeatureInfo panel when layer is removed
              */
-            M.Map.events.register("layersend", this, function(action, layer, scope) {
+            M.Map.events.register("layersend", self, function(action, layer, scope) {
 
                 /*
                  * If a feature is selected and the corresponding layer is removed,
@@ -141,7 +162,7 @@
                         /*
                          * Show feature info panel
                          */
-                        scope.show();
+                        scope.getPopup(layer).show();
 
                     }
                     else {
@@ -159,6 +180,25 @@
 
         };
 
+        /**
+         * Return the right popup depending
+         * on the layer configuration
+         * 
+         * @param {OpenLayers.Layer} layer
+         */
+        this.getPopup = function(layer) {
+             
+            /*
+             * Default - return popup
+             */
+            if (!layer) {
+                return this._p;
+            }
+            
+            return layer['_M'].layerDescription.microInfoTemplate ? this._mip : this._p;
+            
+        };
+    
         /**
          * Unselect all feature
          */
@@ -186,20 +226,9 @@
         };
 
         /**
-         * Set content
+         * Set popups content
          * 
-         * Feature info popup contains tools
-         *    ______________________
-         *   |                      |
-         *   |.title                |
-         *   |.tools                |    
-         *   |______________________|
-         *      \/
-         *      
-         *  Note : .thumb is only created if feature got a thumbnail/quicklook/icon property
-         *  
-         *  OR if microInfoTemplate is set
-         *  
+         *  @param {OpenLayers.Feature}  feature
          */
         this.setContent = function(feature) {
 
@@ -217,74 +246,59 @@
              * 
              */
             templates = feature.layer['_M'].layerDescription.microInfoTemplate;
+
             if (templates) {
 
                 /*
-                 * Create the micro info popup
-                 * 
-                 * <div class="fi">
-                 *      <div class="header>
-                 *      </div>
-                 *      <div class="body">
-                 *      </div>
-                 *      <div class="footer">
-                 *      </div>
-                 * </div>
-                 *      
-                 * 
+                 * Set popup body content
                  */
-                if (self._mip) {
-                    self._mip.hide();
-                }
-                self._mip = new M.Popup({
-                    modal: false,
-                    scope: self,
-                    classes: 'mip',
-                    centered: false,
-                    autoSize: true,
-                    generic: false,
-                    addCloseButton: false,
-                    onClose: function() {
-                        self._mip = null;
-                    },
-                    zIndex: 30000,
-                    noHeader: templates.header ? false : true,
-                    noFooter: false,
-                    header: M.Util.parseTemplate(templates.header, feature.attributes),
-                    body: M.Util.parseTemplate(templates.body, feature.attributes),
-                    footer: '<div class="tools"></div>'
-                });
+                self._mip.$b.html(M.Util.parseTemplate(templates.body, feature.attributes));
 
                 /*
                  * Shorten text
                  */
                 M.Util.findAndShorten(self._mip.$d, true);
 
-                self._mip.$b.addClass('padded');
-                $target = $('.tools', this._mip.$f);
+                /*
+                 * Set tools target
+                 */
+                $target = $('.tools', self._mip.$f);
 
             }
 
             /*
              * CASE 2 : Feature Info popup
+             *   ______________________
+             *   |                      |
+             *   |.title                |
+             *   |.tools                |    
+             *   |______________________|
+             *      \/
+             * 
              */
             else {
-                /*
-                 * Initialize skeleton
-                 */
-                self.popup.$b.html('<span class="title" style="white-space:nowrap;">' + M.Map.Util.Feature.getTitle(feature) + '</span><br/><span class="tools"></span>');
-                $target = $('.tools', self.popup.$b);
 
                 /*
-                 * Hide featureHilite menu
+                 * Set popup body content
                  */
-                M.Map.$featureHilite.empty().hide();
+                self._p.$b.html('<span class="title" style="white-space:nowrap;">' + M.Map.Util.Feature.getTitle(feature) + '</span><br/><span class="tools"></span>');
+
+                /*
+                 * Set tools target
+                 */
+                $target = $('.tools', self._p.$b);
+
             }
 
             /*
              * Set tools
              */
             self.setTools(feature, $target);
+
+            /*
+             * Hide featureHilite menu
+             */
+            M.Map.$featureHilite.empty().hide();
 
             return true;
         };
@@ -298,7 +312,10 @@
                     self = this,
                     tools = [],
                     fi = feature.layer["_M"].layerDescription.featureInfo;
-
+            
+            // Clean target
+            $target.empty();
+            
             /*
              * Add "Show info" action
              */
@@ -532,7 +549,6 @@
             }
         };
 
-
         /**
          * Select feature and get its information
          * Called by "onfeatureselect" events
@@ -584,7 +600,7 @@
                      * Hide feature info panel
                      */
                     self.hide();
-
+                    
                     return false;
 
                 }
@@ -598,7 +614,7 @@
              * Otherwise it is set on the middle of the clicked object if it is a Point and on the clicked xy
              * if it is a LineString or a Polygon
              */
-            self.popup.setMapXY(self._triggered ? M.Map.map.getCenter() : (feature.geometry.CLASS_NAME === "OpenLayers.Geometry.Point" ? feature.geometry.getBounds().getCenterLonLat() : M.Map.map.getLonLatFromPixel(M.Map.mousePosition)));
+            self._p.setMapXY(self._triggered ? M.Map.map.getCenter() : (feature.geometry.CLASS_NAME === "OpenLayers.Geometry.Point" ? feature.geometry.getBounds().getCenterLonLat() : M.Map.map.getLonLatFromPixel(M.Map.mousePosition)));
 
             /*
              * This is a bit tricky...
@@ -705,7 +721,8 @@
                 /*
                  * Show feature information
                  */
-                self.show(feature);
+                self.hide();
+                self.getPopup(feature.layer).show();
 
             }
 
@@ -749,13 +766,8 @@
                     /*
                      * Hide feature info panel
                      */
-                    if (self._mip) {
-                        self._mip.hide();
-                    }
-                    if (self.popup.$d.is(':visible')) {
-                        self.hide();
-                    }
-
+                    self.hide();
+                   
                 }
 
             }, 10);
@@ -1129,52 +1141,18 @@
             return true;
 
         };
-    
-        /**
-         * Show Feature Info Popup or Micro Info Template depending
-         * on context
-         * 
-         * @param {OpenLayers.Feature} feature
-         * 
-         */
-        this.show = function(feature) {
-            
-            /*
-             * Paranoid mode
-             */
-            if (!feature) {
-                return false;
-            }
-
-            if (feature.layer['_M'].layerDescription.microInfoTemplate) {
-                if (this._mip) {
-                    this._mip.show();
-                }
-            }
-            else {
-                this.popup.show();
-            }
         
-            return true;
-            
-        };
-
         /**
-         * Hide Feature Info Popup or Micro Info Template depending
-         * on context
-         * 
+         * Hide popups
          */
         this.hide = function() {
-            console.log(this._mip);
-            if (this._mip) {
-                this._mip.hide();
+            var self = this;
+            if (self._p.$d.is(':visible')) {
+                self._p.hide(true);
             }
-            else {
-                this.popup.hide();
+            if (self._mip.$d.is(':visible')) {
+                self._mip.hide(true);
             }
-        
-            return true;
-            
         };
     
         /*
