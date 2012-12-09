@@ -641,13 +641,14 @@ a.tab:hover
     text-transform:uppercase;
     font-weight: bold;
     height:40px;
-    line-height:40px;
+    padding-top:10px;
     width:100%;
 }
 
 .po .footer {
     height:40px;
-    width:100%;
+    line-height:40px;
+    text-align:center;
 }
 .po .generic {
     background-color:#fff;

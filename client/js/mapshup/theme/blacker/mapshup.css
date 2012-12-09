@@ -640,12 +640,14 @@ a.tab:hover
     text-align:center;
     font-weight: bold;
     height:40px;
-    line-height:40px;
+    padding-top:10px;
     width:100%;
 }
 
 .po .footer {
     height:40px;
+    line-height:40px;
+    text-align:center;
     width:100%;
 }
 .po .generic {

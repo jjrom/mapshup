@@ -1695,6 +1695,33 @@
         },
         
         /**
+         * Find "shorten_sizemax" class within a $div and reduce the length of
+         * the class content text() to sizemax (30 by default)
+         *
+         * @param {jQuery} $div
+         * @param {boolean} end : 'true'  the end of str is shrinked
+         *                        'false' the middle of str is shrinked
+         */
+        findAndShorten:function($div, end) {
+            
+            /*
+             * Find shorten_*
+             */
+            $('[class^=shorten]', $div).each(function(){
+                
+                // Find shorten classname
+                var i, l, sizemax = 30, names = $(this).attr("class").split(" ");
+                for (i = 0, l = names.length; i < l; i++) {
+                    if (names[i].indexOf("shorten") === 0) {
+                        sizemax = parseInt(names[i].split("_")[1]);
+                    }
+                }
+                $(this).html(M.Util.shorten($(this).text(), sizemax, end));
+            });
+        
+        },
+            
+        /**
          * Sort input array in alphabetical order
          * using key property
          */ 
