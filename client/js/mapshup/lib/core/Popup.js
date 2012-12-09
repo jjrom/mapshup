@@ -101,6 +101,11 @@
         this.noHeader = M.Util.getPropertyValue(options, "noHeader", false);
         
         /*
+         * True to not set a popup footer
+         */
+        this.noFooter = M.Util.getPropertyValue(options, "noFooter", true);
+        
+        /*
          * True to automatically resize popup on window size change
          */
         this.resize = M.Util.getPropertyValue(options, "resize", true);
@@ -152,13 +157,12 @@
              * Popup structure
              * 
              * <div id="..." class="po">
-             *      <div class="whole">
-             *          <div class="header"> // optional
-             *          <div class="body generic"> // generic class is not added if this.generic = false
-             *      </div>
+             *      <div class="header"> // optional
+             *      <div class="body generic"> // generic class is not added if this.generic = false
+             *      <div class="footer">
              *  </div>
              */
-            self.$d = M.Util.$$('#'+M.Util.getId(), M.$mcontainer).addClass('po').html('<div class="whole">'+(self.noHeader ? ''  : '<div class="header"></div>')+'<div class="body'+(self.generic ? ' generic' : '')+'"></div></div>');
+            self.$d = M.Util.$$('#'+M.Util.getId(), M.$mcontainer).addClass('po').html((self.noHeader ? ''  : '<div class="header"></div>')+'<div class="body'+(self.generic ? ' generic' : '')+'"></div>' + (!self.noFooter ? '<div class="footer"></div>' : ''));
 
             /*
              * If popup is modal, set a semi transparent mask
@@ -202,10 +206,11 @@
             self.$d.addClass(self.classes ? self.classes : (self.autoSize ? 'poa' : 'pona'));
             
             /*
-             * Set body and header reference
+             * Set body, header and footer reference
              */
             self.$b = $('.body', self.$d);
             self.$h = $('.header', self.$d);
+            self.$f = $('.footer', self.$d);
             
             /*
              * Set header content
@@ -221,6 +226,12 @@
                 self.$b.html(options.body);
             }
             
+            /*
+             * Set footer content
+             */
+            if (options.footer) {
+                self.$f.html(options.footer);
+            }
             /*
              * Add a close button
              */
@@ -281,16 +292,14 @@
          */
         this.updatePosition = function(scope) {
             
-            var $c = M.$container;
-            
             scope = scope || this;
             
             /*
-             * Popup body max height is equal to 75% of its container
+             * Popup body max height is equal to 50% of its container
              */
             if (scope.resize) {
                 scope.$b.css({
-                    'max-height':Math.round( (3 * ($c.height() - scope.$h.height())) / 4)
+                    'max-height':Math.round( (1 * (M.$container.height() - scope.$h.height())) / 2)
                 });
             }
             

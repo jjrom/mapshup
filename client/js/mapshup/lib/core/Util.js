@@ -712,7 +712,7 @@
                 modal:true,
                 autoSize:true,
                 centered:true,
-                header:'<p>'+options.title+'</p>',
+                header:options.title,
                 body:options.content ? options.content : ''
                 
             });

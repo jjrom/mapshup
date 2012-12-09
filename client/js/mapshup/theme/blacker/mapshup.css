@@ -628,6 +628,31 @@ a.tab:hover
 .po p {
     padding-left:10px;
 }
+
+.po .body {
+    overflow:auto;
+}
+
+.po .header {
+    background-color:#eee;
+    color:#666;
+    text-transform:uppercase;
+    text-align:center;
+    font-weight: bold;
+    height:40px;
+    line-height:40px;
+    width:100%;
+}
+
+.po .footer {
+    height:40px;
+    width:100%;
+}
+.po .generic {
+    background-color:#fff;
+    padding:15px;
+}
+
 .po .title {
     text-transform:uppercase;
     font-weight: bold;
@@ -637,25 +662,6 @@ a.tab:hover
     padding:5px 0px 5px 10px;
 }
 
-.po .generic {
-    background-color:#fff;
-    padding:15px;
-    overflow:auto;
-}
-
-.po .header {
-    background-color:#eee;
-    color:#666;
-    text-transform:uppercase;
-    font-weight: bold;
-    height:40px;
-    line-height:40px;
-    width:100%;
-}
-.po .header p {
-    text-align:center;
-    padding:0px 25px;
-}
 /* For share popup */
 .po .share {
     text-align:center;
@@ -754,6 +760,9 @@ a.tab:hover
 }
 .fipopup.apo:after {
     border-color: #000 transparent transparent;
+}
+.fipopup .body {
+    overflow:hidden;
 }
 
 .fi {
@@ -1058,9 +1067,9 @@ a.tab img {
 
 /* Expand width and height to the max */
 .whole {
-    height:100%;
+    /*height:100%;
     width:100%;
-    overflow:auto;
+    overflow:auto;*/
 }
 
 .hover {
