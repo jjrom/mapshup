@@ -187,18 +187,18 @@
          * @param {OpenLayers.Layer} layer
          */
         this.getPopup = function(layer) {
-             
+
             /*
              * Default - return popup
              */
             if (!layer) {
                 return this._p;
             }
-            
+
             return layer['_M'].layerDescription.microInfoTemplate ? this._mip : this._p;
-            
+
         };
-    
+
         /**
          * Unselect all feature
          */
@@ -312,10 +312,10 @@
                     self = this,
                     tools = [],
                     fi = feature.layer["_M"].layerDescription.featureInfo;
-            
+
             // Clean target
             $target.empty();
-            
+
             /*
              * Add "Show info" action
              */
@@ -600,7 +600,7 @@
                      * Hide feature info panel
                      */
                     self.hide();
-                    
+
                     return false;
 
                 }
@@ -628,7 +628,7 @@
                         c.unselect(self.selected);
                     }
                     catch (e) {
-                        self.selected = null
+                        self.selected = null;
                     }
                 }
                 return c.select(feature);
@@ -645,7 +645,12 @@
              * Set _triggered to false (see above)
              */
             self._triggered = false;
-
+            
+            /*
+             * Hide menu
+             */
+            M.menu.hide();
+            
             /*
              * Set the current selected object
              */
@@ -679,28 +684,28 @@
                  * and feature layer name. Ensure that two identical
                  * feature leads to only one panel item 
                  */
-                var t = M.Map.Util.Feature.getTitle(feature), panelItem = M.sp.add({
-                id:M.Util.crc32(t + feature.layer["_M"].layerDescription["type"]),
-                        tt:t,
-                        title:t,
-                        unremovable:false,
-                        html:'<iframe class="frame" src="' + feature.attributes[ran] + '" width="100%" height="100%"></iframe>',
-                        onclose:function() {
+                var t = M.Map.Util.Feature.getTitle(feature),
+                panelItem = M.sp.add({
+                    id:M.Util.crc32(t + feature.layer["_M"].layerDescription["type"]),
+                    tt:t,
+                    title:t,
+                    unremovable:false,
+                    html:'<iframe class="frame" src="' + feature.attributes[ran] + '" width="100%" height="100%"></iframe>',
+                    onclose:function() {
 
-                    /*
-                     * Unselect feature
-                     */
-                    if (feature && feature.layer) {
-                        M.Map.Util.getControlById("__CONTROL_SELECT__").unselect(feature);
+                        /*
+                         * Unselect feature
+                         */
+                        if (feature && feature.layer) {
+                            M.Map.Util.getControlById("__CONTROL_SELECT__").unselect(feature);
+                        }
+
+                        /*
+                         * Hide activity
+                         */
+                        M.activity.hide();
+
                     }
-
-                    /*
-                     * Hide activity
-                     */
-                    M.activity.hide();
-
-
-                }
                 });
 
                 M.sp.show(panelItem);
@@ -764,10 +769,15 @@
                 if (self._tun - self._tse > 0) {
 
                     /*
+                     * Hide menu
+                     */
+                    M.menu.hide();
+                    
+                    /*
                      * Hide feature info panel
                      */
                     self.hide();
-                   
+
                 }
 
             }, 10);
@@ -1141,7 +1151,7 @@
             return true;
 
         };
-        
+
         /**
          * Hide popups
          */
@@ -1154,7 +1164,7 @@
                 self._mip.hide(true);
             }
         };
-    
+
         /*
          * Create unique object instance
          */
