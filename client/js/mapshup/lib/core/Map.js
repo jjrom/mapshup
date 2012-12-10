@@ -444,7 +444,10 @@
                 selectable:M.Util.getPropertyValue(layerDescription, "selectable", M.Util.getPropertyValue(layerType, "selectable", false)),
 
                 /** True : no remove button in LayersManager panel */
-                unremovable:M.Util.getPropertyValue(layerDescription, "unremovable", false)
+                unremovable:M.Util.getPropertyValue(layerDescription, "unremovable", false),
+                
+                /** True : use Micro Info popup instead of Feature Info popup (see FeatureInfo.js) */
+                microInfoTemplate:M.Util.getPropertyValue(layerDescription, "microInfoTemplate", {})
 
             };
 

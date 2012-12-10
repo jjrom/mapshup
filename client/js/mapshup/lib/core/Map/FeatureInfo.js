@@ -79,6 +79,8 @@
 
         /**
          * Initialization
+         * 
+         * @param {Object} options
          */
         this.init = function(options) {
 
@@ -195,7 +197,14 @@
                 return this._p;
             }
 
-            return layer['_M'].layerDescription.microInfoTemplate ? this._mip : this._p;
+            /*
+             * Touch device only use Micro Info Popup
+             */
+            if (M.Util.device.touch) {
+                return this._mip;
+            }
+            
+            return layer['_M'].microInfoTemplate.enable ? this._mip : this._p;
 
         };
 
@@ -232,7 +241,7 @@
          */
         this.setContent = function(feature) {
 
-            var templates, $target, self = this;
+            var template, title, $target, self = this;
 
             /*
              * Paranoid mode
@@ -240,19 +249,21 @@
             if (!feature) {
                 return false;
             }
+        
+            template = feature.layer._M.microInfoTemplate;
 
             /*
              * CASE 1 : Micro Info Template
              * 
              */
-            templates = feature.layer['_M'].layerDescription.microInfoTemplate;
-
-            if (templates) {
-
+            if (template.enable) {
+                
+                title = M.Map.Util.Feature.getTitle(feature);
+                
                 /*
                  * Set popup body content
                  */
-                self._mip.$b.html(M.Util.parseTemplate(templates.body, feature.attributes));
+                self._mip.$b.html(template.body ? M.Util.parseTemplate(template.body, feature.attributes) : '<h2 class="shorten_30" title="' + title + '">' + title + '</h2>');
 
                 /*
                  * Shorten text
