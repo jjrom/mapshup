@@ -197,13 +197,6 @@
                 return this._p;
             }
 
-            /*
-             * Touch device only use Micro Info Popup
-             */
-            if (M.Util.device.touch) {
-                return this._mip;
-            }
-            
             return layer['_M'].microInfoTemplate.enable ? this._mip : this._p;
 
         };

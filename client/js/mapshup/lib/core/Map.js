@@ -450,7 +450,14 @@
                 microInfoTemplate:M.Util.getPropertyValue(layerDescription, "microInfoTemplate", {})
 
             };
-
+            
+            /*
+             * Micro Info Template is automatically enabled for touch device
+             */
+            if (M.Util.device.touch) {
+                options["_M"].microInfoTemplate.enable = true;
+            }
+            
             /*
              * Some OpenLayers properties are linked to layerType :
              * 
