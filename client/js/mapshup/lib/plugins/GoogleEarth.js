@@ -709,7 +709,7 @@
              * Fade out Google Earth view
              */
             self.$d.fadeTo(400,0, function(){
-                self.$d.css("visibility", "hidden")
+                self.$d.css("visibility", "hidden");
             });
 
         };
