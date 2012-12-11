@@ -268,7 +268,7 @@
             self.$timeLine.dateRangeSlider({
                 arrows:false,
                 wheelMode:"scroll",
-                valueLabels:"show",
+                valueLabels:"moving",
                 bounds:options.bounds,
                 defaultValues:options.values
             });
@@ -295,18 +295,27 @@
             
             /*
              * Move map object
+             * 
+             * The label position (CSS class 'ui-rangeSlider-label') depends
+             * on the timeLine position (top or bottom)
+             * 
+             * If the timeLine is on top, the labels are displayed below
+             * the timeLine. Otherwise they are displayed above.
+             * 
              */
             if (self.position.hasOwnProperty('top')) {
                 self.$d.css('top', self.position.top + $('#theBar').offset().top + $('#theBar').height());
                 $('.map').css({
                     'top':$('.map').offset().top + self.position.top + self.$d.height()
                 });
+                $('.ui-rangeSlider-label').css('top', 45);
             }
             else if (self.position.hasOwnProperty('bottom')) {
                 self.$d.css('bottom', self.position.bottom);
                 $('.map').css({
                     'bottom':self.position.bottom + self.$d.height()
                 });
+                $('.ui-rangeSlider-label').css('top', -35);
             } 
         
             /*

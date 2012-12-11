@@ -999,7 +999,7 @@ a.tab img {
     width:10px;
     height:40px;
     margin:0px;
-    background:rgba(243,150,28, 0.4);
+    background:rgba(243,150,28, 0.6);
     cursor:col-resize;
     z-index:4;
 }
@@ -1007,7 +1007,7 @@ a.tab img {
     position:absolute;
     height:40px;
     margin: 1px 0px;
-    background-color:rgba(243,150,28, 0.4);
+    background-color:rgba(243,150,28, 0.6);
     cursor:move;
     cursor:grab;
     cursor: -moz-grab;
@@ -1033,10 +1033,9 @@ a.tab img {
 }
 
 .ui-rangeSlider-label{
-    top:15px;
-    padding:0px 10px;
+    padding:10px 10px;
     margin:0px 2px 2px;
-    text-shadow: black 1px 1px 3px;
+    background-color:#f3961c;
     cursor:col-resize;
     z-index:50;
 }
