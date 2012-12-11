@@ -80,7 +80,7 @@
                 position: self.options.position,
                 orientation: self.options.orientation
             })).add({
-                icon: "raster.png",
+                icon: "layers.png",
                 tt: "Show raster layers",
                 scope: self,
                 callback: function(scope, item) {
