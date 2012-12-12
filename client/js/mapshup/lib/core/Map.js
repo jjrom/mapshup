@@ -143,7 +143,7 @@
                  * Roll over t to check if layer Description already exists
                  */
                 self.items[p["type"]] = self.items[p["type"]] || [];
-                t = self.items[p["type"]]
+                t = self.items[p["type"]];
                 for (i = 0, l = t.length; i < l; i++) {
                     if ((new M.Map.LayerDescription(t[i], M.Map)).getMID() === (new M.Map.LayerDescription(p, M.Map)).getMID()) {
                         add = false;
@@ -657,7 +657,7 @@
                     right:180,
                     bottom:-90,
                     top:90
-                }
+                };
             }
 
             /*
@@ -700,6 +700,8 @@
          *          // Layerdescription
          *      ]
          * }
+         * 
+         * @param {Object} context
          */
         loadContext: function(context) {
 
@@ -948,7 +950,7 @@
                             MID:layer["_M"].MID,
                             items:layer["_M"].searchContext.items,
                             nextRecord:layer["_M"].searchContext.nextRecord
-                        }
+                        };
                     }
                     
                     /*
@@ -1020,7 +1022,7 @@
              */
             if (M.$map.css('height') === 'auto' || M.$map.css('height') === '0px') {
                 M.$map.css('height', window.innerHeight - M.$map.offset().top);
-                M.$map.addClass('processHeightOnResize')
+                M.$map.addClass('processHeightOnResize');
             }
 
             /**
@@ -1670,7 +1672,6 @@
 
         }
         
-        
-    }
+    };
     
 })(window.M);
