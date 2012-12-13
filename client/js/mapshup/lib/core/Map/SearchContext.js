@@ -632,7 +632,12 @@
                             /*
                              * Zoom on layer extent
                              */
-                            M.Map.Util.zoomOn(layer);
+                            if (layer["_M"].layerDescription.zoomOnSearch) {
+                                M.Map.zoomTo(layer.getDataExtent());
+                            }
+                            else {
+                                M.Map.Util.zoomOn(layer);
+                            }
                             
                             /*
                              * Show result in LayersManager

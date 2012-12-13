@@ -491,7 +491,7 @@
                 sc.setSearchTerms(options.searchTerms || self.getValue());
                 sc.search({
                     callback:function(scope,layer){
-                        if (layer && layer["_M"].layerDescription.zoomOnSearchTerms) {
+                        if (layer && layer["_M"].layerDescription.zoomOnSearch) {
                             M.Map.zoomTo(layer.getDataExtent());
                         }
                     }
