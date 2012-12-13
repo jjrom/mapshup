@@ -16,6 +16,7 @@
  *  - add _getScalePosition() function
  *  - add _positionScaleRight() function
  *  - add _createScale() function
+ *  - add _positionBars() function
  *
  */
 (function ($, undefined) {
@@ -35,6 +36,8 @@
         
         /* START mapshup */
         scaleBar:null,
+        leftBar:null,
+        rightBar:null,
         /* END mapshup */
 
         /*
@@ -46,8 +49,17 @@
 
             /* Add scaleBar within the inner bar */
             this.scaleBar = $("<div class='ui-rangeSlider-scaleBar' />");
-            this.innerBar.append(this.scaleBar);        
-                        
+            this.innerBar.append(this.scaleBar);
+            
+            /* Add leftBar within the inner bar */
+            this.leftBar = $("<div class='ui-rangeSlider-mask' />");
+            this.innerBar.append(this.leftBar);
+
+            /* Add rightBar within the inner bar */
+            this.rightBar = $("<div class='ui-rangeSlider-mask' />");
+            this.innerBar.append(this.rightBar);
+            
+            /* Get Range slider bar */
             this.element.addClass("ui-dateRangeSlider");
         },
 
@@ -123,6 +135,8 @@
             }else{
                 values = $.ui.rangeSlider.prototype.values.apply(this, this._toArray(arguments));
             }
+            
+            this._positionBars();
             
             return {
                 min: new Date(values.min), 
@@ -253,6 +267,14 @@
             /* One big append is better than several small ones :) */
             this.scaleBar.append(scaleUnit);
             
+        },
+            
+        _positionBars:function() {
+            var sliderBar = $('.ui-rangeSlider-bar', this.element),
+                left = this.innerBar.offset().left,
+                right = sliderBar.offset().left + sliderBar.width();
+            this.leftBar.offset({left:left}).css('width', sliderBar.offset().left - left);
+            this.rightBar.offset({left:right}).css('width', this.innerBar.width() + this.innerBar.offset().left - right);
         },
          
         /*

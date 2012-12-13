@@ -51,6 +51,7 @@
 			this._bindHandles();
 
 			this._values = this.options.values;
+                        
 		},
 
 		_setOption: function(key, value){
@@ -281,6 +282,7 @@
 			this.element
 				.css("width", width)
 				.offset({left: this.cache.leftHandle.offset.left});
+                        
 		},
 
 		_onHandleStop: function(){

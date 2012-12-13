@@ -1007,10 +1007,18 @@ a.tab img {
     position:absolute;
     height:40px;
     margin: 1px 0px;
-    background-color:rgba(243,150,28, 0.6);
+    background-color:transparent;
     cursor:move;
     cursor:grab;
     cursor: -moz-grab;
+    top:-1px;
+    z-index:3;
+}
+.ui-rangeSlider-mask {
+    position:absolute;
+    height:40px;
+    margin: 1px 0px;
+    background-color:rgba(0,0,0, 0.8);
     top:-1px;
     z-index:3;
 }
