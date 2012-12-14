@@ -177,7 +177,7 @@
             {
                 buffer:0,
                 wrapDateLine:true,
-                transitionEffect:'resize',
+                /*transitionEffect:'resize',*/
                 /* WMS can be set as background (isBaseLayer:true) or as overlay */
                 isBaseLayer:M.Util.getPropertyValue(layerDescription, "isBaseLayer", false)
             }
