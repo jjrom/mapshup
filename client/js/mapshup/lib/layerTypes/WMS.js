@@ -101,7 +101,7 @@
             /*
              * Set version default to 1.1.1 if not specified
              */
-            version = layerDescription.version || "1.1.0";
+            version = layerDescription.version || "1.1.1";
             
             /*
              * Check mandatory properties
