@@ -96,7 +96,7 @@
                 matrixIds:matrixIds,
                 maxZoomLevel:l,
                 format:layerDescription.format || "image/png",
-                style: "normal",
+                style: layerDescription.style || "normal",
                 transitionEffect: "resize",
                 version:"1.0.0",
                 wrapDateLine:true,
