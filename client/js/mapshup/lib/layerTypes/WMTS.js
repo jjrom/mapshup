@@ -97,7 +97,7 @@
                 maxZoomLevel:l,
                 format:layerDescription.format || "image/png",
                 style: layerDescription.style || "normal",
-                transitionEffect: "resize",
+                /*transitionEffect: "resize",*/
                 version:"1.0.0",
                 wrapDateLine:true,
                 /* WMTS can be set as background (isBaseLayer:true) or as overlay */
