@@ -108,8 +108,8 @@
         /**
          * Add content to properties
          *
-         *  @param <string> propertyName : name of the property
-         *  @param <object> content : content to be added
+         *  @param {string} propertyName : name of the property
+         *  @param {object} content : content to be added
          */
         add: function(propertyName, content) {
 
