@@ -493,6 +493,14 @@
                     callback:function(scope,layer){
                         if (layer && layer["_M"].layerDescription.zoomOnSearch) {
                             M.Map.zoomTo(layer.getDataExtent());
+                            
+                            /*
+                             * If only one result - select it
+                             */
+                            if (layer.features && layer.features.length === 1) {
+                                M.Map.featureInfo.select(layer.features[0], true);
+                            }
+                        
                         }
                     }
                 });
