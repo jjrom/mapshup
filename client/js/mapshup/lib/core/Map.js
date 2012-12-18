@@ -1143,6 +1143,19 @@
                  */
                 self.currentState = M.Map.getState();
                 
+                /*
+                 * Set Geohash
+                 * 
+                 * Note : if _bof is set to true, then it means that the map moved after
+                 * a user click on back or forward button. Thus the map is not center again
+                 * to avoid infinite loop
+                 */
+                if (!self._bof) {
+                    self.hash = M.Map.Util.Geohash.encode(self.Util.p2d(self.map.getCenter().clone())) + ":" + self.map.getZoom();
+                    window.location.hash = self.hash;
+                    self._bof = false;
+                }
+            
             });
 
             /**
@@ -1410,14 +1423,36 @@
 
                     }
                 }
-
+                
                 /**
-                 * Respawn a timetout AFTER previous code has been executed
+                 * Respawn a timeout AFTER previous code has been executed
                  */
                 window.setTimeout(loopsiloopsi, M.Config["general"].refreshInterval || 1000);
 
             })();
             
+            /*
+             * Detect back/forward click
+             */
+            setInterval(function(){
+                
+                /*
+                 * Note : set _bof to true to indicates not to recenter map on moveend
+                 * (avoid infinite loop)
+                 */
+                if (self.hash && (window.location.hash !== self.hash)) {
+                    
+                    self.hash = window.location.hash;
+                    self._bof = true;
+                    
+                    /* hash structure is <geohash>:<zoomLevel> */
+                    var a = self.hash.split(':');
+                    self.map.setCenter(self.Util.d2p(self.Util.Geohash.decode(a[0])), parseInt(a[1]));
+                    
+                }
+            
+            }, 100);
+        
             /*
              * Set __CONTROL_NAVIGATION__ the default map control
              */

@@ -40,17 +40,109 @@
  * Define M.Map util functions
  */
 (function(M, Map) {
-    
+
     /*
      * Initialize M.Map.Util
      */
     Map.Util = {};
+
+    /**
+     * Geohash library for Javascript
+     * https://github.com/davetroy/geohash-js
+     * 
+     * (c) 2008 David Troy
+     * Distributed under the MIT License
+     * 
+     */
+    Map.Util.Geohash = {
+        BITS: [16, 8, 4, 2, 1],
+        BASE32: "0123456789bcdefghjkmnpqrstuvwxyz",
+        refineInterval: function(interval, cd, mask) {
+            if (cd & mask) {
+                interval[0] = (interval[0] + interval[1]) / 2;
+            }
+            else {
+                interval[1] = (interval[0] + interval[1]) / 2;
+            }
+        },
+        decode: function(geohash) {
+            var c, cd, mask, i, j, is_even = 1, lat = [], lon = [], lat_err = 90.0, lon_err = 180.0;
+
+            lat[0] = -90.0;
+            lat[1] = 90.0;
+            lon[0] = -180.0;
+            lon[1] = 180.0;
+            
+            /*
+             * Remove trailing '#'
+             */
+            geohash = geohash.replace('#', '');
+            
+            for (i = 0; i < geohash.length; i++) {
+                c = geohash.charAt(i);
+                cd = this.BASE32.indexOf(c);
+                for (j = 0; j < 5; j++) {
+                    mask = this.BITS[j];
+                    if (is_even) {
+                        lon_err /= 2;
+                        this.refineInterval(lon, cd, mask);
+                    }
+                    else {
+                        lat_err /= 2;
+                        this.refineInterval(lat, cd, mask);
+                    }
+                    is_even = !is_even;
+                }
+            }
+            lat[2] = (lat[0] + lat[1]) / 2;
+            lon[2] = (lon[0] + lon[1]) / 2;
+
+            return new OpenLayers.LonLat(lon[1], lat[1]);
+        },
+        encode: function(point) {
     
+            var mid, is_even = 1, i = 0, lat = [], lon = [], bit = 0, ch = 0, precision = 12, geohash = "";
+
+            lat[0] = -90.0;
+            lat[1] = 90.0;
+            lon[0] = -180.0;
+            lon[1] = 180.0;
+
+            while (geohash.length < precision) {
+                if (is_even) {
+                    mid = (lon[0] + lon[1]) / 2;
+                    if (point.lon > mid) {
+                        ch |= this.BITS[bit];
+                        lon[0] = mid;
+                    } else
+                        lon[1] = mid;
+                } else {
+                    mid = (lat[0] + lat[1]) / 2;
+                    if (point.lat > mid) {
+                        ch |= this.BITS[bit];
+                        lat[0] = mid;
+                    } else
+                        lat[1] = mid;
+                }
+
+                is_even = !is_even;
+                if (bit < 4)
+                    bit++;
+                else {
+                    geohash += this.BASE32.charAt(ch);
+                    bit = 0;
+                    ch = 0;
+                }
+            }
+            return '#'+geohash;
+        }
+
+    };
+
     /**
      * Feature functions
      */
     Map.Util.Feature = {
-        
         /**
          *
          * Return feature icon url
@@ -60,17 +152,17 @@
          * @param {OpenLayers.Feature} feature : input feature
          *
          */
-        getIcon:function(feature) {
-            
-            var style,defaultStyle,icon;
-            
+        getIcon: function(feature) {
+
+            var style, defaultStyle, icon;
+
             /*
              * Paranoid mode
              */
             if (!feature) {
                 return icon;
             }
-            
+
             /*
              * Guess icon with the following preference order :
              * 
@@ -87,12 +179,12 @@
             if (feature.attributes.thumbnail) {
                 return feature.attributes.thumbnail;
             }
-             
+
             /*
              * This is quite experimental :)
              */
             if (feature.layer) {
-                 
+
                 /*
                  * Get the default style object from styleMap
                  */
@@ -108,36 +200,38 @@
                     return Map.Util.KML.resolveStyleAttribute(feature, style, defaultStyle.externalGraphic);
                 }
             }
-            
+
             /*
              * Icon based on type (point, linestring, polygon)
              */
             if (feature.geometry) {
                 switch (feature.geometry.CLASS_NAME.replace("OpenLayers.Geometry.", "")) {
-                    case "MultiPolygon": case "Polygon":
+                    case "MultiPolygon":
+                    case "Polygon":
                         return M.Util.getImgUrl("polygon.png");
                         break;
-                    case "MultiLineString": case "LineString":
+                    case "MultiLineString":
+                    case "LineString":
                         return M.Util.getImgUrl("line.png");
                         break;
-                    case "MultiPoint": case "Point":
+                    case "MultiPoint":
+                    case "Point":
                         return M.Util.getImgUrl("point.png");
                         break;
                 }
             }
-            
+
             return icon;
         },
-        
         /**
          * Return feature title if it's defined within layerDescription.featureInfo.title property
          *
          * @param {OpenLayers.Feature} feature : input feature
          */
-        getTitle:function(feature) {
+        getTitle: function(feature) {
 
             var k;
-            
+
             /*
              * Paranoid mode
              */
@@ -156,7 +250,7 @@
              * User can define is own title with layerDescription.featureInfo.title property
              */
             if (feature.layer && feature.layer["_M"].layerDescription.featureInfo && feature.layer["_M"].layerDescription.featureInfo.title) {
-                
+
                 /*
                  * The tricky part :
                  * 
@@ -170,20 +264,20 @@
                  *      will return "Hello my name is Jerome Gasperi"
                  * 
                  */
-                return feature.layer["_M"].layerDescription.featureInfo.title.replace(/\$+([^\$])+\$/g, function(m,key,value) {
+                return feature.layer["_M"].layerDescription.featureInfo.title.replace(/\$+([^\$])+\$/g, function(m, key, value) {
                     var k = m.replace(/[\$\$]/g, '');
                     return Map.Util.Feature.getValue(feature, k, feature.attributes[k]);
                 });
-                
+
             }
 
             /*
              * Otherwise returns name or title or identifier or id
              */
             for (k in {
-                name:1, 
-                title:1, 
-                identifier:1
+                name: 1,
+                title: 1,
+                identifier: 1
             }) {
                 if (feature.attributes[k]) {
                     return Map.Util.Feature.getValue(feature, k, feature.attributes[k]);
@@ -192,7 +286,6 @@
             return feature.id || "";
 
         },
-        
         /*
          * Get feature attribute value
          * 
@@ -203,10 +296,10 @@
          * @param {String} key : key attribute name
          * @param {String} value : value of the attribute
          */
-        getValue:function(feature, key, value) {
+        getValue: function(feature, key, value) {
 
             var k, keys;
-            
+
             /*
              * Paranoid mode
              */
@@ -218,7 +311,7 @@
              * Check if keys array is defined
              */
             if (feature.layer && feature.layer["_M"].layerDescription.hasOwnProperty("featureInfo")) {
-                
+
                 keys = feature.layer["_M"].layerDescription.featureInfo.keys || [];
 
                 /*
@@ -238,7 +331,7 @@
                      * If key is found in array, get the corresponding value and exist the loop
                      */
                     if (key === k) {
-                        
+
                         /*
                          * Transform value if specified
                          */
@@ -248,26 +341,24 @@
                         break;
                     }
                 }
-               
+
             }
-            
+
             /*
              * In any case returns input value
              */
             return value;
         },
-        
-
         /*
          * Replace input key into its "human readable" equivalent defined in layerDescription.featureInfo.keys associative array
          *
          * @param {String} key : key to replace
          * @param {OpenLayers.Feature} feature : feature reference
          */
-        translate:function(key, feature) {
+        translate: function(key, feature) {
 
             var c, k, keys;
-            
+
             /*
              * Paranoid mode
              */
@@ -280,9 +371,9 @@
              * This array has preseance to everything else
              */
             if (feature.layer["_M"].layerDescription.hasOwnProperty("featureInfo")) {
-                
+
                 keys = feature.layer["_M"].layerDescription.featureInfo.keys || [];
-                
+
                 /*
                  * Roll over the featureInfo.keys associative array.
                  * Associative array entry is the attribute name (i.e. key)
@@ -300,21 +391,21 @@
                      * If key is found in array, get the corresponding value and exist the loop
                      */
                     if (key === k) {
-                        
+
                         /*
                          * Key value is now "v" value if specified
                          */
-                        if (keys[k].hasOwnProperty("v")){
+                        if (keys[k].hasOwnProperty("v")) {
                             return M.Util._(keys[k].v);
                         }
-                        
+
                         break;
-                        
+
                     }
                 }
-                
+
             }
-            
+
             /*
              * If feature layer got a searchContext then use the connector
              * metadataTranslator array to replace the key
@@ -329,7 +420,6 @@
              */
             return M.Util._(key);
         },
-        
         /*
          * Return a feature to given mimeType representation
          * 
@@ -342,10 +432,10 @@
          *                  }
          */
         toGeo: function(feature, format) {
-            
+
             format = format || {};
-            
-            switch(Map.Util.getGeoType(format["mimeType"])) {
+
+            switch (Map.Util.getGeoType(format["mimeType"])) {
                 case 'GML':
                     return Map.Util.GML.featureToGML(feature, format["schema"]);
                     break;
@@ -356,7 +446,6 @@
                     return null;
             }
         },
-        
         /*
          * Return a WKT representation of feature
          */
@@ -366,54 +455,53 @@
             }
             return "";
         },
-        
         /**
          * Zoom on features
          * 
          * @param {Array} features : array of OpenLayers Features
          */
         zoomOn: function(features) {
-            
+
             if (!$.isArray(features)) {
                 features = [features];
-            } 
-           
+            }
+
             var i, l, bounds = new OpenLayers.Bounds();
-           
+
             for (i = 0, l = features.length; i < l; i++) {
                 bounds.extend(features[i].geometry.getBounds());
             }
-           
+
             M.Map.zoomTo(bounds);
-           
+
         }
-        
+
     };
-    
+
     /**
-    * Return geoType from mimeType
-    */
+     * Return geoType from mimeType
+     */
     Map.Util.getGeoType = function(mimeType) {
-           
+
         if (!mimeType) {
             return null;
         }
-        
+
         var gmt = [];
-        
+
         /*
          * List of geometrical mimeTypes
          */
-        gmt["text/xml; subtype=gml/3.1.1"]="GML";
-        gmt["application/gml+xml"]="GML";
-        gmt["text/gml"]="GML";
-        gmt["application/geo+json"]="JSON";
-        gmt["application/wkt"]="WKT";
-            
+        gmt["text/xml; subtype=gml/3.1.1"] = "GML";
+        gmt["application/gml+xml"] = "GML";
+        gmt["text/gml"] = "GML";
+        gmt["application/geo+json"] = "JSON";
+        gmt["application/wkt"] = "WKT";
+
         return gmt[mimeType];
-          
+
     };
-        
+
     /**
      * Convert "input" to "format" using "precision"
      *  "input" can be one of the following :
@@ -425,10 +513,10 @@
      */
     Map.Util.convert = function(obj) {
         if (obj && obj.input instanceof OpenLayers.Bounds) {
-            var left,bottom,right,top,
-            precision = obj.precision || -1,
-            limit = obj.hasOwnProperty("limit") ? obj.limit : false;
-                
+            var left, bottom, right, top,
+                    precision = obj.precision || -1,
+                    limit = obj.hasOwnProperty("limit") ? obj.limit : false;
+
             if (precision !== -1) {
                 left = obj.input.left.toFixed(precision);
                 right = obj.input.right.toFixed(precision);
@@ -441,7 +529,7 @@
                 bottom = obj.input.bottom;
                 top = obj.input.top;
             }
-            
+
             /*
              * If limit is set, assume that input obj coordinates
              * are in deegrees and that output coordinates cannot
@@ -453,25 +541,25 @@
                 bottom = Math.max(bottom, -90);
                 top = Math.min(top, 90);
             }
-            
+
             if (obj.format === "WKT") {
-                return "POLYGON(("+left+" "+bottom+","+left+" "+top+","+right+" "+top+","+right+" "+bottom+","+left+" "+bottom+"))";
+                return "POLYGON((" + left + " " + bottom + "," + left + " " + top + "," + right + " " + top + "," + right + " " + bottom + "," + left + " " + bottom + "))";
             }
             else if (obj.format === "EXTENT") {
-                return left+","+bottom+","+right+","+top;
+                return left + "," + bottom + "," + right + "," + top;
             }
         }
         return "";
     };
-    
+
     /**
      * Return control identified by id
      */
     Map.Util.getControlById = function(id) {
         return Map.map.getControlsBy("id", id)[0];
     };
-    
-    
+
+
     /**
      * Return an array of unclusterized features
      * 
@@ -487,18 +575,18 @@
      */
     Map.Util.getFeatures = function(layer, options) {
 
-        var feature,i,j,l,m,features = [];
-        
+        var feature, i, j, l, m, features = [];
+
         /*
          * Paranoid mode
          */
         options = options || {};
-        
+
         /*
          * Roll over layer features
          */
         if (layer && layer.features) {
-            
+
             for (i = 0, l = layer.features.length; i < l; i++) {
 
                 /*
@@ -526,7 +614,7 @@
                          * Add a new entry to features array
                          */
                         features.push(options.toDisplayProjection ? feature.cluster[j].clone() : feature.cluster[j]);
-                        
+
                     }
                 }
                 else {
@@ -534,12 +622,12 @@
                 }
             }
         }
-        
+
         /*
          * Reproject ?
          */
         if (options.toDisplayProjection) {
-            for (i = 0, l = features.length; i <l; i++) {
+            for (i = 0, l = features.length; i < l; i++) {
                 if (features.components) {
                     for (j = 0, m = features.components.length; j < m; j++) {
                         this.p2d(features.components[j].geometry);
@@ -550,23 +638,23 @@
                 }
             }
         }
-        
+
         /*
          * Sorting ?
          */
         if (options.attribute) {
-            
-            features.sort(function(a,b){
-                
+
+            features.sort(function(a, b) {
+
                 var one, two;
-                
+
                 /*
                  * Paranoid mode
                  */
                 if (!a.hasOwnProperty("attributes") || !b.hasOwnProperty("attributes")) {
                     return 0;
                 }
-                
+
                 /*
                  * Ascending or descending
                  */
@@ -578,7 +666,7 @@
                     one = a.attributes[options.attribute];
                     two = b.attributes[options.attribute];
                 }
-                
+
                 /*
                  * Number case
                  */
@@ -593,7 +681,7 @@
                     one = one.toLowerCase();
                     two = two.toLowerCase();
                 }
-                
+
                 /*
                  * Order
                  */
@@ -606,11 +694,11 @@
                 return 0
             });
         }
-        
+
         return features;
 
     };
-    
+
     /*
      * This function will return a formated LonLat
      * 
@@ -620,30 +708,30 @@
      *           'dms' show degrees minutes and seconds (default)
      *           'hms' show hour minutes second
      */
-    Map.Util.getFormattedLonLat = function(lonlat,format) {
-        
+    Map.Util.getFormattedLonLat = function(lonlat, format) {
+
         /*
          * Check format - By default returns degree, minutes, seconds
          */
         if (!format) {
             format = 'dms';
         }
-        
+
         /*
          * Format 'hms' first display Right Ascension then Declinaison
          */
         if (format.indexOf('h') !== -1) {
-            return Map.Util.getFormattedCoordinate(lonlat.lon,"lon",format)+"&nbsp;::&nbsp;"+Map.Util.getFormattedCoordinate(lonlat.lat,"lat",format);
+            return Map.Util.getFormattedCoordinate(lonlat.lon, "lon", format) + "&nbsp;::&nbsp;" + Map.Util.getFormattedCoordinate(lonlat.lat, "lat", format);
         }
         /*
          * Classical 'dms' first display Latitude then Longitude
          */
         else {
-            return Map.Util.getFormattedCoordinate(lonlat.lat,"lat",format)+"&nbsp;::&nbsp;"+Map.Util.getFormattedCoordinate(lonlat.lon,"lon",format);
+            return Map.Util.getFormattedCoordinate(lonlat.lat, "lat", format) + "&nbsp;::&nbsp;" + Map.Util.getFormattedCoordinate(lonlat.lon, "lon", format);
         }
-        
+
     };
-    
+
     /**
      *
      * This function will return latitude or longitude value formatted
@@ -663,11 +751,11 @@
      *      {String} the coordinate value formatted as a string
      */
     Map.Util.getFormattedCoordinate = function(coordinate, axis, format) {
-        
-        var result,degreesOrHours,minutes,seconds,tmp,nsew,
-        sign = "",
-        degreesOrHoursUnit = "\u00B0";
-        
+
+        var result, degreesOrHours, minutes, seconds, tmp, nsew,
+                sign = "",
+                degreesOrHoursUnit = "\u00B0";
+
         /*
          * Check format - By default returns degree, minutes, seconds
          */
@@ -679,62 +767,62 @@
          * Normalize coordinate for longitude values between [-180,180] degrees for longitude and [-90,90] for latitudes
          */
         if (axis === "lon") {
-            coordinate = (coordinate+540)%360 - 180;
+            coordinate = (coordinate + 540) % 360 - 180;
             nsew = coordinate < 0 ? "W" : "E";
         }
         else {
-            coordinate = (coordinate+270)%180 - 90;
-            nsew =coordinate < 0 ? "S" : "N";
+            coordinate = (coordinate + 270) % 180 - 90;
+            nsew = coordinate < 0 ? "S" : "N";
         }
 
         /*
          * Computation for longitude coordinate depends on the display format
          */
         if (format.indexOf('h') !== -1) {
-            
+
             /*
              * For longitude, coordinate is in hours not in degrees
              */
             if (axis === 'lon') {
-                
+
                 /*
                  * Transform degrees -> hours
                  * Warning : 0 degrees = 0 hours
                  */
-                coordinate = 24 * ((360 - coordinate)%360) / 360.0;
+                coordinate = 24 * ((360 - coordinate) % 360) / 360.0;
                 degreesOrHoursUnit = "h";
             }
-            
+
             /*
              * nsew has no sense in 'hms'
              */
             nsew = "";
-            
+
             /*
              * For latitude (i.e. declinaison) the sign is stored 
              */
             sign = coordinate < 0 ? '-' : '+';
-            
+
         }
-        
+
         /*
          * Get degreesOrHour, minutes and seconds
          */
         coordinate = Math.abs(coordinate);
         /* Bitwise operator is faster than Map.floor */
-        degreesOrHours = coordinate|0;
-        minutes = (coordinate - degreesOrHours)/(1/60);
+        degreesOrHours = coordinate | 0;
+        minutes = (coordinate - degreesOrHours) / (1 / 60);
         tmp = minutes;
         /* Bitwise operator is faster than Map.floor */
-        minutes = minutes|0;
-        seconds = Math.round((tmp - minutes)/(1/60) * 10) / 10;
-        if(seconds >= 60) { 
-            seconds -= 60; 
-            minutes += 1; 
-            if( minutes >= 60) { 
-                minutes -= 60; 
-                degreesOrHours += 1; 
-            } 
+        minutes = minutes | 0;
+        seconds = Math.round((tmp - minutes) / (1 / 60) * 10) / 10;
+        if (seconds >= 60) {
+            seconds -= 60;
+            minutes += 1;
+            if (minutes >= 60) {
+                minutes -= 60;
+                degreesOrHours += 1;
+            }
         }
 
         /*
@@ -749,14 +837,14 @@
         }
 
         return result + nsew;
-        
+
     };
-    
+
     /**
      * MID is an unique identifier used to identify
      * unambiguisly a specific layer
      */
-    Map.Util.getLayerByMID = function(MID){
+    Map.Util.getLayerByMID = function(MID) {
         if (!MID || MID === "") {
             return null;
         }
@@ -772,8 +860,8 @@
         }
         return null;
     };
-    
-    
+
+
     /**
      * Return true if the layer is a raster layer
      * A raster layer is one of the following :
@@ -786,34 +874,34 @@
      *     - XYZ
      */
     Map.Util.isRaster = function(layer) {
-        
-        var i,l,b = false, rasters = ["Image","MBT","SHP","TMS","WMS","WMTS","XYZ"];
-      
+
+        var i, l, b = false, rasters = ["Image", "MBT", "SHP", "TMS", "WMS", "WMTS", "XYZ"];
+
         if (!layer || !layer['_M']) {
             return b;
         }
-        
+
         /* 
          * Rasters layers are processed differently from vector layers.
          * A vector layer got its own individual tab.
          * All raster layers are displayed within a single "rasters" tab 
          */
-        for (i = 0, l = rasters.length; i < l; i++){
+        for (i = 0, l = rasters.length; i < l; i++) {
             if (rasters[i] === layer['_M']['layerDescription'].type) {
                 b = true;
                 break;
             }
         }
-        
+
         return b;
     };
-    
-    
+
+
     /**
      * Return true if the layer is empty
      */
     Map.Util.layerIsEmpty = function(layer) {
-        
+
         /*
          * No layer
          */
@@ -829,19 +917,19 @@
         }
 
         var isEmpty = true,
-        length = layer.features.length,
-        i;
-        for (i = length;i--;) {
+                length = layer.features.length,
+                i;
+        for (i = length; i--; ) {
             if (layer.features[i].geometry) {
                 isEmpty = false;
                 break;
             }
         }
-        
+
         return isEmpty;
     };
-    
-    
+
+
     /*
      * Transform input object from display projection (epsg4326) to map projection 
      */
@@ -854,8 +942,8 @@
      */
     Map.Util.p2d = function(obj) {
         return obj.transform(Map.map.projection, Map.pc);
-    };  
-    
+    };
+
     /**
      * Set "layer" on top of other layers
      * (see LayerIndex in OpenLayers)
@@ -865,12 +953,12 @@
             Map.map.setLayerIndex(layer, Map.map.layers.length);
         }
     };
-   
+
     /*
      * Set the layer visibility
      */
     Map.Util.setVisibility = function(layer, v) {
-        
+
         /*
          * Set the layer visibility to v
          */
@@ -882,7 +970,7 @@
         Map.events.trigger("visibilitychanged", layer);
 
     };
-    
+
     /**
      * Reindex layer to ensure that :
      *  - vectors layers are always on top of raster layers
@@ -890,10 +978,10 @@
      *    on top Polygonal vector layers
      */
     Map.Util.updateIndex = function(layer) {
-        
-        var i,tmpLayer,
-        index = Map.map.getLayerIndex(layer), //Set index to the layer index
-        l = Map.map.layers.length;
+
+        var i, tmpLayer,
+                index = Map.map.getLayerIndex(layer), //Set index to the layer index
+                l = Map.map.layers.length;
 
         /*
          * Do not process raster layers
@@ -901,15 +989,15 @@
         if (!layer || !layer.features) {
             return false;
         }
-        
+
         /*
          * Roll over layers list from the higher element
          * and retrieve it
          */
-        for (i=l;i--;) {
+        for (i = l; i--; ) {
 
             tmpLayer = Map.map.layers[i]
-            
+
             /*
              * Do not process input layer
              */
@@ -955,7 +1043,7 @@
                         break;
                     }
                 }
-                
+
             }
         }
 
@@ -963,18 +1051,18 @@
          * Change layer index
          */
         if (Map.map.getLayerIndex(layer) !== index) {
-            
+
             /*
              * Change layer index
              */
-            Map.map.setLayerIndex(layer, index+1);
-            
+            Map.map.setLayerIndex(layer, index + 1);
+
         }
-       
+
         return true;
-       
+
     };
-    
+
     /*
      * Center the map on the layer extent.
      * This centering is only done if the layer, or part of the added layer,
@@ -985,16 +1073,16 @@
      * its content changes
      */
     Map.Util.zoomOn = function(layer) {
-        
+
         var extent;
-        
+
         /*
          * Paranoid mode
          */
         if (!layer || !layer["_M"]) {
             return false;
         }
-        
+
         /*
          * Only zoom on layer that are initialized
          */
@@ -1019,11 +1107,11 @@
 
             }
         }
-        
+
         return false;
-        
+
     };
-    
+
     /**
      * Return a GeoJSON geometry string from a GML posList
      * 
@@ -1032,16 +1120,16 @@
      *                           (i.e. x1 y1 x2 y2 x3 y3 ..., x* y* being double)
      */
     Map.Util.posListToGeoJsonGeometry = function(posList) {
-       
+
         var pairs = [], i, l, coordinates, latlon = false;
-       
+
         /*
-        * Paranoid mode
-        */
+         * Paranoid mode
+         */
         if (posList) {
-           
+
             coordinates = posList.split(" ");
-            
+
             /*
              * Parse each coordinates
              */
@@ -1051,21 +1139,21 @@
                  * Case 1 : coordinates order is latitude then longitude
                  */
                 if (latlon) {
-                    pairs.push('['+coordinates[i + 1] + ',' + coordinates[i]+']');
+                    pairs.push('[' + coordinates[i + 1] + ',' + coordinates[i] + ']');
                 }
                 /*
-                * Case 2 : coordinates order is longitude then latitude
-                */
+                 * Case 2 : coordinates order is longitude then latitude
+                 */
                 else {
-                    pairs.push('['+coordinates[i] + ',' + coordinates[i + 1]+']');
+                    pairs.push('[' + coordinates[i] + ',' + coordinates[i + 1] + ']');
                 }
             }
-           
+
         }
-       
+
         return pairs.join(',');
-       
+
     };
-    
-    
+
+
 })(window.M, window.M.Map);
