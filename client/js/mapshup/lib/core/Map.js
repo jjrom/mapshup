@@ -1155,9 +1155,34 @@
                     window.location.hash = self.hash;
                     self._bof = false;
                 }
+                else {
+                    self._bof = false;
+                }
             
             });
-
+            
+            /*
+             * Detect back/forward click
+             */
+            setInterval(function(){
+                
+                /*
+                 * Note : set _bof to true to indicates not to recenter map on moveend
+                 * (avoid infinite loop)
+                 */
+                if (self.hash && (window.location.hash !== self.hash)) {
+                    
+                    self.hash = window.location.hash;
+                    self._bof = true;
+                    
+                    /* hash structure is <geohash>:<zoomLevel> */
+                    var a = self.hash.split(':');
+                    self.map.setCenter(self.Util.d2p(self.Util.Geohash.decode(a[0])), parseInt(a[1]));
+                    
+                }
+            
+            }, 100);
+        
             /**
              * onmouseover event definition is only
              * valid if the current device is not a touch device
@@ -1431,28 +1456,6 @@
 
             })();
             
-            /*
-             * Detect back/forward click
-             */
-            setInterval(function(){
-                
-                /*
-                 * Note : set _bof to true to indicates not to recenter map on moveend
-                 * (avoid infinite loop)
-                 */
-                if (self.hash && (window.location.hash !== self.hash)) {
-                    
-                    self.hash = window.location.hash;
-                    self._bof = true;
-                    
-                    /* hash structure is <geohash>:<zoomLevel> */
-                    var a = self.hash.split(':');
-                    self.map.setCenter(self.Util.d2p(self.Util.Geohash.decode(a[0])), parseInt(a[1]));
-                    
-                }
-            
-            }, 100);
-        
             /*
              * Set __CONTROL_NAVIGATION__ the default map control
              */
