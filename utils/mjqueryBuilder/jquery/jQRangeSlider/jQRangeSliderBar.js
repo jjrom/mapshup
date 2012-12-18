@@ -33,9 +33,7 @@
 
 			this.element
 				.css("position", "absolute")
-                                /* Remove jrom
 				.css("top", 0)
-                                */
 				.addClass("ui-rangeSlider-bar");
 
 			this.options.leftHandle
@@ -51,7 +49,7 @@
 			this._bindHandles();
 
 			this._values = this.options.values;
-                        
+			this._setWheelModeOption(this.options.wheelMode);
 		},
 
 		_setOption: function(key, value){
@@ -74,7 +72,7 @@
 			}
 
 			if (value !== false){
-				var min = typeof value.min === "undefined" ? this.options.range.min || false : value.min,
+				var min = typeof value.min === "undefined" ? this.options.range.min || false : value.min,
 					max = typeof value.max === "undefined" ? this.options.range.max || false : value.max;
 
 				this.options.range = {
@@ -96,7 +94,7 @@
 		},
 
 		_setWheelModeOption: function(value){
-			if (value === null || value === false || value === "zoom" || value === "scroll"){
+			if (value === null || value === false || value === "zoom" || value === "scroll"){
 				if (this.options.wheelMode !== value){
 					this.element.parent().unbind("mousewheel.bar");
 				}
@@ -122,7 +120,7 @@
 			var rightValue = this._values.max,
 				leftRange = {min: false, max: false};
 
-			if ((this.options.range.min || false) !== false){
+			if ((this.options.range.min || false) !== false){
 				leftRange.max = this._leftHandle("substract", rightValue, this.options.range.min);
 			}else{
 				leftRange.max = false;
@@ -147,7 +145,7 @@
 				rightRange.min = false;
 			}
 
-			if ((this.options.range.max || false) !== false){
+			if ((this.options.range.max || false) !== false){
 				rightRange.max = this._rightHandle("add", leftValue, this.options.range.max);
 			}else{
 				rightRange.max = false;
@@ -282,7 +280,6 @@
 			this.element
 				.css("width", width)
 				.offset({left: this.cache.leftHandle.offset.left});
-                        
 		},
 
 		_onHandleStop: function(){
@@ -318,11 +315,11 @@
 		_bindHandles: function(){
 			this.options.leftHandle
 				.unbind(".bar")
-				.bind("drag.bar update.bar moving.bar", $.proxy(this._onDragLeftHandle, this));
+				.bind("sliderDrag.bar update.bar moving.bar", $.proxy(this._onDragLeftHandle, this));
 
 			this.options.rightHandle
 				.unbind(".bar")
-				.bind("drag.bar update.bar moving.bar", $.proxy(this._onDragRightHandle, this));
+				.bind("sliderDrag.bar update.bar moving.bar", $.proxy(this._onDragRightHandle, this));
 		},
 
 		_constraintPosition: function(left){
@@ -445,7 +442,7 @@
 		},
 
 		zoomIn: function(quantity){
-			quantity = quantity || 1;
+			quantity = quantity || 1;
 
 			if (quantity < 0){
 				return this.zoomOut(-quantity);

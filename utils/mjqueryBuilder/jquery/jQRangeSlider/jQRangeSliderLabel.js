@@ -65,7 +65,7 @@
 		_setOption: function(key, value){
 			if (key === "show"){
 				this._updateShowOption(value);
-			} else if (key === "durationIn" || key === "durationOut" || key === "delayOut"){
+			} else if (key === "durationIn" || key === "durationOut" || key === "delayOut"){
 				this._updateDurations(key, value);
 			}
 		},
@@ -132,7 +132,7 @@
 
 		_onUpdate: function(event, ui){
 			if (this.options.show === "show"){
-				this._display(ui.value);
+				this.update();
 			}
 		},
 
@@ -168,8 +168,12 @@
 		},
 
 		update: function(){
+			this._positionner.cache = null;
 			this._display(this._handle("value"));
-			this._positionner.PositionLabels();
+
+			if (this.options.show == "show"){
+				this._positionner.PositionLabels();
+			}
 		}
 	});
 
@@ -184,6 +188,8 @@
 		this.left = label1;
 		this.right = label2;
 		this.moving = false;
+		this.initialized = false;
+		this.updating = false;
 
 		this.Init = function(){
 			this.BindHandle(this.handle1);
@@ -191,20 +197,33 @@
 
 			if (this.options.show === "show"){
 				setTimeout($.proxy(this.PositionLabels, this), 1);
+				this.initialized = true;
+			}else{
+				setTimeout($.proxy(this.AfterInit, this), 1000);
 			}
 		}
 
+		this.AfterInit = function () {
+			this.initialized = true;
+		}
+
 		this.Cache = function(){
+			if (this.label1.css("display") == "none"){
+				return;
+			}
+
 			this.cache = {};
 			this.cache.label1 = {};
 			this.cache.label2 = {};
 			this.cache.handle1 = {};
 			this.cache.handle2 = {};
+			this.cache.offsetParent = {};
 
 			this.CacheElement(this.label1, this.cache.label1);
 			this.CacheElement(this.label2, this.cache.label2);
 			this.CacheElement(this.handle1, this.cache.handle1);
 			this.CacheElement(this.handle2, this.cache.handle2);
+			this.CacheElement(this.label1.offsetParent(), this.cache.offsetParent);
 		}
 
 		this.CacheIfNecessary = function(){
@@ -215,6 +234,7 @@
 				this.CacheWidth(this.label2, this.cache.label2);
 				this.CacheHeight(this.label1, this.cache.label1);
 				this.CacheHeight(this.label2, this.cache.label2);
+				this.CacheWidth(this.label1.offsetParent(), this.cache.offsetParent);
 			}
 		}
 
@@ -232,8 +252,6 @@
 				left: this.ParsePixels("borderLeftWidth", label),
 				right: this.ParsePixels("borderRightWidth", label)
 			};
-
-			cache.outerWidth = cache.width + cache.margin.left + cache.margin.right + cache.border.left + cache.border.right;
 		}
 
 		this.CacheWidth = function(label, cache){
@@ -250,20 +268,49 @@
 		}
 
 		this.BindHandle = function(handle){
-			handle.bind("moving update", $.proxy(this.onHandleMoving, this));
+			handle.bind("updating", $.proxy(this.onHandleUpdating, this));
+			handle.bind("update", $.proxy(this.onHandleUpdated, this));
+			handle.bind("moving", $.proxy(this.onHandleMoving, this));
 			handle.bind("stop", $.proxy(this.onHandleStop, this));
 		}
 
 		this.PositionLabels = function(){
 			this.CacheIfNecessary();
 
+			if (this.cache == null){
+				return;
+			}
+
 			var label1Pos = this.GetRawPosition(this.cache.label1, this.cache.handle1),
 				label2Pos = this.GetRawPosition(this.cache.label2, this.cache.handle2);
 
 			this.ConstraintPositions(label1Pos, label2Pos);
 
-			this.label1.offset({left:label1Pos.left});
-			this.label2.offset({left:label2Pos.left});
+			this.PositionLabel(this.label1, label1Pos.left, this.cache.label1);
+			this.PositionLabel(this.label2, label2Pos.left, this.cache.label2);
+		}
+
+		this.PositionLabel = function(label, leftOffset, cache){
+			var parentShift = this.cache.offsetParent.offset.left + this.cache.offsetParent.border.left,
+					parentRightPosition,
+					labelRightPosition,
+					rightPosition;
+
+			if ((parentShift - leftOffset) >= 0){
+				label.css("right", "");
+				label.offset({left: leftOffset});
+			}else{
+				parentRightPosition = parentShift
+																			+ this.cache.offsetParent.width;
+				labelRightPosition = leftOffset
+																			+ cache.margin.left
+																			+ cache.outerWidth
+																			+ cache.margin.right,
+				rightPosition = parentRightPosition - labelRightPosition;
+
+				label.css("left", "");
+				label.css("right", rightPosition);
+			}
 		}
 
 		this.ConstraintPositions = function(pos1, pos2){
@@ -294,27 +341,36 @@
 		}
 
 		this.ShowIfNecessary = function(){
-			if (this.options.show === "show" || this.moving) return;
+			if (this.options.show === "show" || this.moving || !this.initialized || this.updating) return;
 
-			this.label1.stop().fadeIn(this.options.durationIn || 0);
-			this.label2.stop().fadeIn(this.options.durationIn || 0);
+			this.label1.stop(true, true).fadeIn(this.options.durationIn || 0);
+			this.label2.stop(true, true).fadeIn(this.options.durationIn || 0);
 			this.moving = true;
 		},
 
 		this.HideIfNeeded = function(lastMove){
 			if (this.moving === true){
-				this.label1.stop().delay(this.options.delayOut || 0).fadeOut(this.options.durationOut || 0);
-				this.label2.stop().delay(this.options.delayOut || 0).fadeOut(this.options.durationOut || 0);
+				this.label1.stop(true, true).delay(this.options.delayOut || 0).fadeOut(this.options.durationOut || 0);
+				this.label2.stop(true, true).delay(this.options.delayOut || 0).fadeOut(this.options.durationOut || 0);
 				this.moving = false;
 			}
 		},
 
 		this.onHandleMoving = function(event, ui){
-			this.CacheIfNecessary();
 			this.ShowIfNecessary();
+			this.CacheIfNecessary();
 			this.UpdateHandlePosition(ui);
 
 			this.PositionLabels();
+		}
+
+		this.onHandleUpdating = function(){
+			this.updating = true;
+		}
+
+		this.onHandleUpdated = function(){
+			this.updating = false;
+			this.cache = null;
 		}
 
 		this.onHandleStop = function(event, ui){
@@ -322,6 +378,8 @@
 		},
 
 		this.UpdateHandlePosition = function(ui){
+			if (this.cache == null) return;
+			
 			if (ui.element[0] == this.handle1[0]){
 				this.UpdatePosition(ui, this.cache.handle1);
 			}else{

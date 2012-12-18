@@ -62,7 +62,7 @@
 				this.update();
 			}
 
-			$.ui.draggable.prototype._setOption.apply(this, [key, value]);
+			$.ui.rangeSliderDraggable.prototype._setOption.apply(this, [key, value]);
 		},
 
 		_checkRange: function(range){
@@ -78,7 +78,7 @@
 		_initElement: function(){
 			$.ui.rangeSliderDraggable.prototype._initElement.apply(this);
 			
-			if (this.cache.parent.width === 0 || this.cache.parent.width === null){
+			if (this.cache.parent.width === 0 || this.cache.parent.width === null){
 				setTimeout($.proxy(this._initElement, this), 500);
 			}else{
 				this._position(this.options.value);
@@ -188,25 +188,25 @@
 			value = this._constraintValue(value);
 
 			var ratio = (value - this.options.bounds.min) / (this.options.bounds.max - this.options.bounds.min),
-				position = this.cache.parent.offset.left;
-
-			if (!this.options.isLeft){
-				position -= this.cache.width.outer;
-			}
+				availableWidth = this.cache.parent.width - this.cache.width.outer,
+				parentPosition = this.cache.parent.offset.left;
 
 
-			return position + ratio * this.cache.parent.width;
+			return ratio * availableWidth + parentPosition;
 		},
 
 		_getValueForPosition: function(position){
-			if (!this.options.isLeft){
-				position += this.cache.width.outer;
-			}
-
-			var ratio = (position - this.cache.parent.offset.left) / this.cache.parent.width,
-				raw = ratio * (this.options.bounds.max - this.options.bounds.min) + this.options.bounds.min;
+			var raw = this._getRawValueForPositionAndBounds(position, this.options.bounds.min, this.options.bounds.max);
 
 			return this._constraintValue(raw);
+		},
+
+		_getRawValueForPositionAndBounds: function(position, min, max){
+			var parentPosition =  this.cache.parent.offset == null ? 0 : this.cache.parent.offset.left,
+					availableWidth = this.cache.parent.width - this.cache.width.outer,
+					ratio = (position - parentPosition) / availableWidth;
+
+			return	ratio * (max - min) + min;
 		},
 
 		/*
@@ -231,9 +231,11 @@
 				position = this._getPositionForValue(value);
 
 			if (value != this._value){
+				this._triggerMouseEvent("updating");
 				this._position(value);
 				this._triggerMouseEvent("update");
 			}else if (position != this.cache.offset.left){
+				this._triggerMouseEvent("updating");
 				this._position(value);
 				this._triggerMouseEvent("update");
 			}
