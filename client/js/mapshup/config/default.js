@@ -393,8 +393,6 @@
      *                         }
      *      zoomin: // True to add "Zoom" action - default true
      *      zoomout: // True to add "Zoom out" action - default true
-     *      history: // True to add Navigation history - default false
-     *      limit: // Number of stored extents for navigation history - default 10
      *      position: // Toolbar position (nw, ne, sw, se) - default nw
      *      orientation: // Toolbar orientation (h, v) - default v
      *
