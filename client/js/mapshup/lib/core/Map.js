@@ -1175,7 +1175,7 @@
                     self.hash = window.location.hash;
                     self._bof = true;
                     
-                    /* hash structure is <geohash>:<zoomLevel> */
+                    /* hash structure is '#<geohash>:<zoomLevel>' */
                     var a = self.hash.split(':');
                     self.map.setCenter(self.Util.d2p(self.Util.Geohash.decode(a[0])), parseInt(a[1]));
                     

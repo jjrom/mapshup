@@ -166,8 +166,7 @@
             self = this,
             kvp = (function () {
                 return self.Util.extractKVP(window.location.href);
-            })();
-                
+            })();    
             
             /**
              * If M.Config is not defined, everything stops !
@@ -176,7 +175,29 @@
                 alert("GRAVE : no configuration file defined. Load aborted");
                 exit();
             }
-
+            
+            /*
+             * Decode geohash from url
+             * Structure is '#<geohash>:<zoomLevel>'
+             * 
+             * Note that geohash superseeds existing location
+             */
+            if (window.location.hash) {
+                var lonlat, zoom, a = window.location.hash.split(':');
+                try {
+                    lonlat = self.Map.Util.Geohash.decode(a[0]);
+                    kvp.location = {
+                        lon:lonlat.lon,
+                        lat:lonlat.lat
+                    };
+                    zoom = parseInt(a[1]);
+                    if (!isNan(zoom)) {
+                        kvp.location.zoom = zoom;
+                    }
+                }
+                catch(e){}
+            }
+        
             /**
              * Initialize #map reference
              */
