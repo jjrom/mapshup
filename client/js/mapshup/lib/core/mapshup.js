@@ -180,20 +180,18 @@
              * Decode geohash from url
              * Structure is '#<geohash>:<zoomLevel>'
              * 
+             * If zoomLevel is not set, it is forced at the value of 9
+             * 
              * Note that geohash superseeds existing location
              */
             if (window.location.hash) {
                 var lonlat, zoom, a = window.location.hash.split(':');
                 try {
                     lonlat = self.Map.Util.Geohash.decode(a[0]);
-                    kvp.location = {
-                        lon:lonlat.lon,
-                        lat:lonlat.lat
-                    };
+                    kvp.lon = lonlat.lon;
+                    kvp.lat = lonlat.lat;
                     zoom = parseInt(a[1]);
-                    if (!isNan(zoom)) {
-                        kvp.location.zoom = zoom;
-                    }
+                    kvp.zoom = !isNaN(zoom) ? zoom : 9;
                 }
                 catch(e){}
             }
