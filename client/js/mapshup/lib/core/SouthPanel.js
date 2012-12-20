@@ -117,11 +117,11 @@
             }
 
             /*
-             * Create a Panel div within M.$container
+             * Create a Panel div within M.$mcontainer
              * 
              * <div id="..." class="pns"></div>
              */
-            self.$d = M.Util.$$('#' + M.Util.getId(), M.$container).addClass('pns').css({
+            self.$d = M.Util.$$('#' + M.Util.getId(), M.$mcontainer).addClass('pns').css({
                 'bottom': -self.h,
                 'height': self.h,
                 /* Force width to 100% if panel "push" the map (i.e. over is false) */
@@ -134,7 +134,7 @@
             M.Map.events.register("resizeend", self, function(scope) {
 
                 if (!scope.over) {
-                    scope.$d.width(M.$container.width());
+                    scope.$d.width(M.$mcontainer.width());
                 }
 
             });
@@ -143,7 +143,7 @@
              * Add tab paginator
              * IMPORTANT ! Must be set AFTER the SouthPanel resizeend event
              */
-            self.paginator = new M.TabPaginator({target: this, $container: this.$d});
+            self.paginator = new M.TabPaginator({target: this, $mcontainer: this.$d});
 
             /*
              * Set a SouthPanel reference
