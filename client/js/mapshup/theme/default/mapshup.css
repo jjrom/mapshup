@@ -577,6 +577,14 @@ a.tab:hover
     border-right: 2px dashed #fff;
 }
 
+/* =======================================
+ * SidePanel
+ * ======================================*/
+.spn {
+    position:absolute;
+    top:0px;
+}
+
 /*========================================
 *
 *    Search panel

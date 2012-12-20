@@ -427,7 +427,7 @@
          */
         init:function(kvp, ctx) {
             
-            var bg,fn,i,l,name,options,plugin,
+            var bg,fn,i,l,name,options,plugin,panels,
             self = this,
             c = self.Config;
             
@@ -468,13 +468,29 @@
             }
             
             /*
+             * Initialize panel configuration
+             */
+            panels = c.panels || {};
+            $.extend(panels,{
+                south:panels.south || {},
+                side:panels.side || {}
+            });
+        
+            /*
              * Initialize South panel
              */
             self.southPanel = (new self.SouthPanel({
-                over:c.panel.s.over,
-                h:c.panel.s.h
+                over:panels.south.over,
+                h:panels.south.h
             }));
             
+            /*
+             * Initialize Side panel
+             */
+            self.sidePanel = (new self.SidePanel({
+                position:panels.side.position,
+                w:panels.side.w
+            }));
             
             /*
              * Plugins initialization

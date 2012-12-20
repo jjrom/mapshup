@@ -1053,12 +1053,12 @@
                             this.kinetic.begin();
                         }
                         // End reproduce OpenLayers DragPan.js panMapStart function
-                        
                         self._clk = {
                             x:e.x,
                             y:e.y,
                             d:(new Date()).getTime()
                         };
+                    
                         return true;
                     },
                     /*
@@ -1229,7 +1229,7 @@
                      * Set the mousePosition object
                      */
                     var offset = M.$map.offset();
-                        
+                     
                     M.Map.mousePosition = new OpenLayers.Pixel(e.pageX - offset.left, e.pageY - offset.top);
 
                     /*
