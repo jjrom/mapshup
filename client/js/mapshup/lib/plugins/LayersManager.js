@@ -117,11 +117,11 @@
             }
 
             /*
-             * Create a Panel div within M.$container
+             * Create a Panel div within M.$mcontainer
              * 
              * <div id="..." class="lm {lmn or lms}"></div>
              */
-            self.$d = M.Util.$$('#' + M.Util.getId(), M.$container).addClass('lm lm' + self.options.position);
+            self.$d = M.Util.$$('#' + M.Util.getId(), M.$mcontainer).addClass('lm lm' + self.options.position);
 
             /*
              * Track layersend events
@@ -236,7 +236,7 @@
              * Add tab tabPaginator
              * IMPORTANT ! Must be set AFTER the SouthPanel resizeend event
              */
-            self.tabPaginator = new M.TabPaginator({target: self, $container: M.$container, left:35});
+            self.tabPaginator = new M.TabPaginator({target: self, $container: M.$mcontainer, left:35});
 
             return self;
 
