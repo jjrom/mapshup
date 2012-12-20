@@ -135,7 +135,7 @@
                         /*
                          * Create a panel for this WPS
                          */
-                        var panelItem = M.sp.add({
+                        var panelItem = M.southPanel.add({
                             id:id,
                             icon:M.Util.getImgUrl('configure.png'),
                             title:wps.title,
@@ -158,7 +158,7 @@
                         * Tell user that a new WPS panel is created
                         */
                         M.Util.message(M.Util._("WPS server successfully added"));
-                        M.sp.show(panelItem);
+                        M.southPanel.show(panelItem);
                      
                     }   
                     
@@ -1001,56 +1001,66 @@
         this.displayBoundingBoxData = function(process, put, $parent) {
             
             var type = 'input', data = put.complexData, idgeoselect = M.Util.getId(), idgeodraw = M.Util.getId(), self = this;
-            
+            var drawboxPlugin = M.Plugins.DrawBox && M.Plugins.DrawBox._o ? M.Plugins.DrawBox._o : null;
+                        
             /*
              * Store Input type within $parent.data()
              */
             $parent.data('type', 'BoundingBoxData');
+            $parent.append(' <img src="' + M.Util.getImgUrl('earth.png') + '" id="' + idgeoselect + '" class="hover middle" title="' + M.Util._("Set bounding box to map view") + '"/>');
+
+            /*
+             * Select map view as the bounding box
+             */
+            $('#' + idgeoselect).removeClass('hilite').addClass('warning').click(function(e) {
+                
+                $('#' + idgeodraw).removeClass('hilite').addClass('warning');
+                $('#' + idgeoselect).addClass('hilite').removeClass('warning');
+
+                /*
+                 * Store BoundingBox within parent data cache
+                 */
+                alert('TODO');
+                //$parent.data('data', M.Map.Util.Feature.toGeo(event.feature, data["default"])).data('format', data["default"]);
+                //self.setPuts(process, type);
+            });
             
-            $parent.append(' <img src="' + M.Util.getImgUrl('earth.png') + '" id="' + idgeoselect + '" class="hover middle" title="' + M.Util._("Set map view") + '"/>')
-                    .append(' <img src="' + M.Util.getImgUrl('drawing.png') + '" id="' + idgeodraw + '" class="hover middle" title="' + M.Util._("Draw bounding box on map") + '"/>');
-
             /*
-             * Draw bounding box within the map
+             * DrawBox on map
              */
-            $('#' + idgeodraw)
-                    .removeClass('hilite')
-                    .addClass('warning')
-                    .click(function(e) {
+            if (drawboxPlugin) {
 
-                        var $mask = self.items[process.wps.url].panelItem.$mask;
+                $parent.append(' <img src="' + M.Util.getImgUrl('drawing.png') + '" id="' + idgeodraw + '" class="hover middle" title="' + M.Util._("Draw bounding box on map") + '"/>');
 
-                        /*
-                         * Show mask
-                         */
-                        $mask.html('<div class="content">' + M.Util._("Draw a bounding box on map") + ' (<a href="#" class="cancel">' + M.Util._("Cancel") + '<a/>)</div>').show();
-                        
-                        /*
-                         * Open DrawBox
-                         */
-                        
-                        if (M.Plugins.DrawBox)
-                        /*
-                         * Add a cancel action
-                         */
-                        $('.cancel', $mask).click(function(e) {
-                            
-                            $mask.hide();
-                        });
+                /*
+                 * Draw bounding box within the map
+                 */
+                $('#' + idgeodraw).removeClass('hilite').addClass('warning').click(function(e) {
 
-                        return false;
-            });
+                    var $mask = self.items[process.wps.url].panelItem.$mask;
 
-            /*
-             * Draw geometry within the map
-             */
-            $('#' + idgeodraw)
-                    .removeClass('hilite')
-                    .addClass('warning')
-                    .click(function(e) {
-                alert("This function is not available yet");
-            });
-               
+                    /*
+                     * Show mask
+                     */
+                    $mask.html('<div class="content">' + M.Util._("Draw a bounding box on map") + ' (<a href="#" class="cancel">' + M.Util._("Cancel") + '<a/>)</div>').show();
+
+                    drawboxPlugin.draw(function(feature, bbox){
+                        alert(bbox);
+                    });
+
+                    /*
+                     * Add a cancel action
+                     */
+                    $('.cancel', $mask).click(function(e) {
+                        M.Map.resetControl();
+                        $mask.hide();
+                    });
+
+                    return false;
+
+                });
+
+            }
             
         };
         

@@ -689,7 +689,7 @@
                  * feature leads to only one panel item 
                  */
                 var t = M.Map.Util.Feature.getTitle(feature),
-                panelItem = M.sp.add({
+                panelItem = M.southPanel.add({
                     id:M.Util.crc32(t + feature.layer["_M"].layerDescription["type"]),
                     tt:t,
                     title:t,
@@ -712,7 +712,7 @@
                     }
                 });
 
-                M.sp.show(panelItem);
+                M.southPanel.show(panelItem);
 
                 M.activity.show();
                 $('.frame', panelItem.$d).load(function() {

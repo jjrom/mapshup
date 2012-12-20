@@ -355,7 +355,7 @@
                                 /*
                                  * Add Streetview to South Panel
                                  */
-                                self.panelItem = M.sp.add({
+                                self.panelItem = M.southPanel.add({
                                     id:self.uid,
                                     title:"Elevation",
                                     onclose:function() {
@@ -438,7 +438,7 @@
                 /*
                  * Activate panel item
                  */
-                M.sp.show(self.panelItem);
+                M.southPanel.show(self.panelItem);
                 
             }
             

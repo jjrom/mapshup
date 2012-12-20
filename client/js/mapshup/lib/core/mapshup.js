@@ -470,10 +470,11 @@
             /*
              * Initialize South panel
              */
-            self.sp = (new self.SouthPanel({
+            self.southPanel = (new self.SouthPanel({
                 over:c.panel.s.over,
                 h:c.panel.s.h
             }));
+            
             
             /*
              * Plugins initialization

@@ -206,7 +206,7 @@
                 /*
                  * Add GoogleEarth to South Panel
                  */
-                self.panelItem = M.sp.add({
+                self.panelItem = M.southPanel.add({
                     id:M.Util.getId(),
                     title:"3D view",
                     onshow:function() {
@@ -230,7 +230,7 @@
                  * 
                  * !! Add a "nodisplaynone" class to avoid the use of
                  * "display:none" when panel item is switch on/off.
-                 * See M.sp.setActive(item) for explanation
+                 * See M.southPanel.setActive(item) for explanation
                  */
                 self.panelItem.$d.addClass("nodisplaynone")
                 self.$d = self.panelItem.$content;

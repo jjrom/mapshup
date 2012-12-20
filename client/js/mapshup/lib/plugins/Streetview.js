@@ -102,7 +102,7 @@
                         /*
                          * Activate panel item
                          */
-                        M.sp.show(self.panelItem);
+                        M.southPanel.show(self.panelItem);
                         
                     }
                 }
@@ -132,7 +132,7 @@
             /*
              * Add Streetview to South Panel
              */
-            self.panelItem = M.sp.add({
+            self.panelItem = M.southPanel.add({
                 id:M.Util.getId(),
                 icon:M.Util.getImgUrl('streetview.png'),
                 title:"Streetview",
@@ -337,7 +337,7 @@
                     /*
                      * Activate panel item
                      */
-                    M.sp.show(self.panelItem);
+                    M.southPanel.show(self.panelItem);
                     
                 }
             }
@@ -400,14 +400,14 @@
              * Fullscreen mode
              */
             if (self.$d.height() === self.h) {
-                M.sp.$d.css('height', M.$map.height());
+                M.southPanel.$d.css('height', M.$map.height());
                 self.$d.css('height', M.$map.height());
             }
             /*
              * Normal mode
              */
             else {
-                M.sp.$d.css('height', self.$d.h);
+                M.southPanel.$d.css('height', self.$d.h);
                 self.$d.css('height', self.$d.h);
             }
 
