@@ -381,7 +381,7 @@
                                     }
                                 });
 
-                                self.$e = self.panelItem.$content
+                                self.$e = self.panelItem.$content;
                                 
                             }
                             
