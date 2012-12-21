@@ -438,7 +438,7 @@
                 }
             }
 
-            return item
+            return item;
         };
 
         /*

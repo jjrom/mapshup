@@ -241,12 +241,21 @@
     c["i18n"].path = "/js/mapshup/i18n";
 
     /** 
-     * Panel configuration
+     * Panels configuration
+     *   - s : south panel
+     *   - side: south panel 
+     *          {
+     *              position: // left or right (default right)
+     *              w: // width in pixels
+     *          }
      */
-    c["panel"] = {
-        s:{
+    c["panels"] = {
+        south:{
             over:true, // false to push the map
             h:250
+        },
+        side:{
+            w:400
         }
     };
     
@@ -322,7 +331,7 @@
             attribution:'<p>Tiles Courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png"></p>'
         }
     });
-     
+    
     */
     /**
      * Plugins description
