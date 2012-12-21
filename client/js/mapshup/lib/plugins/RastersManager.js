@@ -39,7 +39,7 @@
 /**
  * Raster manager plugin
  * 
- * Display a popup containing all raster layers. User can show/hide layers,
+ * Display all raster layers within mapshup SidePanel. User can show/hide layers,
  * switch visibility, change opacity, reorder z-index, etc.
  * 
  */
@@ -75,7 +75,11 @@
             /*
              * RastersManager is activated through a Toolbar item
              */
-            self.$d = M.Util.$$('#' + M.Util.getId(), M.$mcontainer);
+            self.item = M.sidePanel.add({
+                id:M.Util.getId(),
+                classes:'rm'
+            });
+            
             self.launcher = (new M.Toolbar({
                 position: self.options.position,
                 orientation: self.options.orientation
@@ -84,7 +88,14 @@
                 tt: "Show raster layers",
                 scope: self,
                 callback: function(scope, item) {
-                    !scope.popup || !$(scope.popup.$d).is(':visible') ? scope.show() : scope.hide();
+                    if (M.sidePanel.isVisible && scope.item.id === M.sidePanel.active.id ) {
+                        scope.launcher.activate(false);
+                        M.sidePanel.hide();
+                    }
+                    else {
+                        scope.refresh();
+                        M.sidePanel.show(scope.item);
+                    }
                 }
             });
 
@@ -105,72 +116,10 @@
         };
 
         /*
-         * Open popup configuration
-         */
-        this.show = function() {
-
-            /*
-             * Get info popup
-             */
-            if (!this.popup) {
-
-                /*
-                 * Create info popup.
-                 * popup reference is removed on popup close
-                 */
-                this.popup = new M.Popup({
-                    modal: false,
-                    scope: this,
-                    classes:'rm',
-                    centered:false,
-                    noHeader:true,
-                    autoSize:true,
-                    generic:false,
-                    addCloseButton:false,
-                    hideOnClose:true,
-                    zIndex:30000,
-                    onClose: function(scope) {
-                        scope.launcher.activate(false);
-                    },
-                    header: '<p>' + M.Util._("Configure raster layers") + '</p>'
-                });
-
-            }
-
-            /*
-             * Refresh popup content
-             */
-            this.refresh();
-
-            /*
-             * Show popup
-             */
-            this.popup.show();
-
-        };
-        
-        /**
-         * Hide popup
-         */
-        this.hide = function() {
-            if (this.popup) {
-                this.popup.hide();
-            }
-            this.launcher.activate(false);
-        };
-    
-        /*
          * Refresh popup content
          */
         this.refresh = function() {
             
-            /*
-             * Paranoid mode
-             */
-            if (!this.popup) {
-                return false;
-            }
-        
             var $tb, i, l, layer, id, layers = [], self = this;
 
             /*
@@ -185,16 +134,11 @@
             }
 
             /*
-             * Clear popup
-             */
-            self.popup.$b.empty();
-
-            /*
              * Roll over layer descrpiption properties
              */
-            self.popup.$b.append('<table class="lmrcfg sortable"><thead style="text-align:center;"><tr><th>'+M.Util._("Icon")+'</th><th>'+M.Util._("Opacity")+'</th><th></th><th></th></tr></thead><tbody></tbody></table>');
+            self.item.$content.html('<table class="lmrcfg sortable"><thead style="text-align:center;"><tr><th>'+M.Util._("Icon")+'</th><th>'+M.Util._("Opacity")+'</th><th></th><th></th></tr></thead><tbody></tbody></table>');
 
-            $tb = $('tbody', self.popup.$b).sortable({
+            $tb = $('tbody', self.item.$content).sortable({
                 revert: true,
                 revertDuration: 10,
                 stop: function(e, ui) {
