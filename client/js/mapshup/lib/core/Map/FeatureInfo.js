@@ -131,6 +131,13 @@
             self._mip.$b.addClass('padded');
 
             /*
+             * Initialize FeatureInfo sidePanel item
+             */
+            self.sidePanelItem = M.sidePanel.add({
+                id:M.Util.getId()
+            });
+        
+            /*
              * Hide FeatureInfo panel when layer is removed
              */
             M.Map.events.register("layersend", self, function(action, layer, scope) {
@@ -242,7 +249,7 @@
             if (!feature) {
                 return false;
             }
-        
+
             template = feature.layer._M.microInfoTemplate;
 
             /*
@@ -250,9 +257,9 @@
              * 
              */
             if (template.enable) {
-                
+
                 title = M.Map.Util.Feature.getTitle(feature);
-                
+
                 /*
                  * Set popup body content
                  */
@@ -573,38 +580,52 @@
             self._tse = (new Date()).getTime();
 
             /*
-             * If feature is a cluster, the map is zoomed on the cluster
-             * extent upon click
+             * Two types of clusters :
              * 
+             * 1. Points clusters
+             *    
+             *    The map is zoomed on the cluster extent upon click
+             *    
+             * 2. Polygons clusters
+             * 
+             *    Each polygons inside the cluster are shown within the SidePanel
+             *    upon click             * 
              */
             if (feature.cluster) {
 
                 length = feature.cluster.length;
 
                 if (length > 0) {
-
-                    /*
-                     * Initialize cluster bounds with first item bounds
-                     */
-                    bounds = feature.cluster[0].geometry.getBounds().clone();
-
-                    /*
-                     * Add each cluster item bounds to the cluster bounds
-                     */
-                    for (i = 1; i < length; i++) {
-                        bounds.extend(feature.cluster[i].geometry.getBounds());
+                    if (feature.layer['_M'].clusterType === "Polygon") {
+                        self.selected = feature;
+                        M.sidePanel.show(self.sidePanelItem);
                     }
+                    else {
 
-                    /*
-                     * Zoom on the cluster bounds
-                     */
-                    M.Map.map.zoomToExtent(bounds);
+                        /*
+                         * Initialize cluster bounds with first item bounds
+                         */
+                        bounds = feature.cluster[0].geometry.getBounds().clone();
+
+                        /*
+                         * Add each cluster item bounds to the cluster bounds
+                         */
+                        for (i = 1; i < length; i++) {
+                            bounds.extend(feature.cluster[i].geometry.getBounds());
+                        }
+
+                        /*
+                         * Zoom on the cluster bounds
+                         */
+                        M.Map.map.zoomToExtent(bounds);
+                        
+                    }
 
                     /*
                      * Hide feature info panel
                      */
                     self.hide();
-
+                    
                     return false;
 
                 }
@@ -649,12 +670,12 @@
              * Set _triggered to false (see above)
              */
             self._triggered = false;
-            
+
             /*
              * Hide menu
              */
             M.menu.hide();
-            
+
             /*
              * Set the current selected object
              */
@@ -689,27 +710,27 @@
                  * feature leads to only one panel item 
                  */
                 var t = M.Map.Util.Feature.getTitle(feature),
-                panelItem = M.southPanel.add({
-                    id:M.Util.crc32(t + feature.layer["_M"].layerDescription["type"]),
-                    tt:t,
-                    title:t,
-                    unremovable:false,
-                    html:'<iframe class="frame" src="' + feature.attributes[ran] + '" width="100%" height="100%"></iframe>',
-                    onclose:function() {
+                        panelItem = M.southPanel.add({
+                id:M.Util.crc32(t + feature.layer["_M"].layerDescription["type"]),
+                        tt:t,
+                        title:t,
+                        unremovable:false,
+                        html:'<iframe class="frame" src="' + feature.attributes[ran] + '" width="100%" height="100%"></iframe>',
+                        onclose:function() {
 
-                        /*
-                         * Unselect feature
-                         */
-                        if (feature && feature.layer) {
-                            M.Map.Util.getControlById("__CONTROL_SELECT__").unselect(feature);
-                        }
-
-                        /*
-                         * Hide activity
-                         */
-                        M.activity.hide();
-
+                    /*
+                     * Unselect feature
+                     */
+                    if (feature && feature.layer) {
+                        M.Map.Util.getControlById("__CONTROL_SELECT__").unselect(feature);
                     }
+
+                    /*
+                     * Hide activity
+                     */
+                    M.activity.hide();
+
+                }
                 });
 
                 M.southPanel.show(panelItem);
@@ -742,6 +763,8 @@
         /**
          * Unselect feature and clear information
          * Called by "onfeatureunselect" events
+         * 
+         * @param {OpenLayers.Feature} feature 
          */
         this.unselect = function(feature) {
 
@@ -751,7 +774,11 @@
              * Set unselect time
              */
             self._tun = (new Date()).getTime();
-
+            
+            if (feature && feature.layer['_M'].clusterType === "Polygon") {
+                M.sidePanel.hide(self.sidePanelItem);
+            }
+        
             M.Map.featureInfo.selected = null;
 
             /*
@@ -776,7 +803,7 @@
                      * Hide menu
                      */
                     M.menu.hide();
-                    
+
                     /*
                      * Hide feature info panel
                      */

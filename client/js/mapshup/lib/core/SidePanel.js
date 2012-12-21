@@ -174,8 +174,10 @@
 
         /**
          * Hide the panel
+         * 
+         * @param {Object} item
          */
-        this.hide = function() {
+        this.hide = function(item) {
 
             var self = this;
 
@@ -185,7 +187,17 @@
             if (!self.isVisible) {
                 return false;
             }
-
+            
+            /*
+             * If an item is specified, only hide the panel
+             * if the active item is the input item
+             */
+            if (item) {
+                if (self.active && self.active.id !== item.id) {
+                    return false;
+                }
+            }
+        
             /*
              * Set visible status to false
              */
@@ -251,7 +263,7 @@
                     $d: M.Util.$$('#' + content.id, self.$d).css({
                         'margin': self.padding.top + 'px ' + (self.over ? self.padding.right : 0) + 'px ' + self.padding.bottom + 'px 0px'
                     })
-                }
+                };
 
                 /*
                  * Add new item to the items array
@@ -285,6 +297,8 @@
 
         /**
          * Remove an item from the panel
+         * 
+         * @param {Object} item
          */
         this.remove = function(item) {
 

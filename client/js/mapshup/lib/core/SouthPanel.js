@@ -138,7 +138,7 @@
                 }
 
             });
-
+           
             /*
              * Add tab paginator
              * IMPORTANT ! Must be set AFTER the SouthPanel resizeend event

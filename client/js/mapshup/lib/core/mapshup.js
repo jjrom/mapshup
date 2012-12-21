@@ -177,6 +177,15 @@
             }
             
             /*
+             * Set panels configuration
+             */
+            self.Config.panels = self.Config.panels || {};
+            $.extend(self.Config.panels,{
+                south:self.Config.panels.south || {},
+                side:self.Config.panels.side || {}
+            });
+        
+            /*
              * Decode geohash from url
              * Structure is '#<geohash>:<zoomLevel>'
              * 
@@ -250,6 +259,14 @@
              */
             self.timeLine = new self.TimeLine(self.Config["general"].timeLine);
             
+            /*
+             * Initialize Side panel
+             */
+            self.sidePanel = (new self.SidePanel({
+                position:self.Config.panels.side.position,
+                w:self.Config.panels.side.w
+            }));
+        
             /*
              * If kvp got a "uid" key, then the corresponding context
              * is retrieved from the server
@@ -427,7 +444,7 @@
          */
         init:function(kvp, ctx) {
             
-            var bg,fn,i,l,name,options,plugin,panels,
+            var bg,fn,i,l,name,options,plugin,
             self = this,
             c = self.Config;
             
@@ -468,28 +485,11 @@
             }
             
             /*
-             * Initialize panel configuration
-             */
-            panels = c.panels || {};
-            $.extend(panels,{
-                south:panels.south || {},
-                side:panels.side || {}
-            });
-        
-            /*
              * Initialize South panel
              */
             self.southPanel = (new self.SouthPanel({
-                over:panels.south.over,
-                h:panels.south.h
-            }));
-            
-            /*
-             * Initialize Side panel
-             */
-            self.sidePanel = (new self.SidePanel({
-                position:panels.side.position,
-                w:panels.side.w
+                over:self.Config.panels.south.over,
+                h:self.Config.panels.south.h
             }));
             
             /*
