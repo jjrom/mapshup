@@ -88,7 +88,7 @@
                 tt: "Show raster layers",
                 scope: self,
                 callback: function(scope, item) {
-                    if (M.sidePanel.isVisible && scope.item.id === M.sidePanel.active.id ) {
+                    if (M.sidePanel.isVisible && M.sidePanel.active && scope.item.id === M.sidePanel.active.id ) {
                         scope.launcher.activate(false);
                         M.sidePanel.hide();
                     }
