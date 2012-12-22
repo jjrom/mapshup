@@ -296,12 +296,12 @@
                 /*
                  * Display previous 
                  */
-                $('li a', $ul).first().offset().left < 0 ? $p.show() : $p.hide();
+                $('li', $ul).first().offset().left < 0 ? $p.show() : $p.hide();
 
                 /*
                  * Display next
                  */
-                $('li a', $ul).last().offset().left > $('.thumbsWrapper',item.$d).width() ? $n.show() : $n.hide();
+                $('li', $ul).last().offset().left > $('.thumbsWrapper',item.$d).width() ? $n.show() : $n.hide();
             
             }
             

@@ -97,7 +97,7 @@
             for (i = 0, l = options.items.length; i < l; i++) {
                 (function(item, id, $d) {
                     
-                    $d.append('<li id="' + id + '" jtitle="' + item.name + '"><img src="' + options.rootUrl + '/' + item.icon + '"/></li>');
+                    $d.append('<li id="' + id + '" jtitle="' + item.name + '" class="thumbs"><img src="' + options.rootUrl + '/' + item.icon + '"/></li>');
                     M.tooltip.add($('#' + id), 's');
                     
                     /*

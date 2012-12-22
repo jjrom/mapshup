@@ -289,7 +289,7 @@
                 /*
                  * Set content
                  * 
-                 *  <div class="thumbs images" id="...">
+                 *  <div class="content" id="...">
                  *      <div class="thumbsWrapper">
                  *        <ul></ul>
                  *      </div>
@@ -301,7 +301,7 @@
                  *      <div>
                  *  </div>
                  */
-                $d = M.Util.$$('#' + id, self.$d).addClass("thumbs images").html('<div class="thumbsWrapper"><ul></ul></div><div class="previous"><a href="#" id="' + uid + 'p" title="' + M.Util._("Previous page") + '">&laquo;</a></div><div class="next"><a href="#" id="' + uid + 'n" title="' + M.Util._("Next page") + '">&raquo;</a></div><div id="' + uid + 'm2" class="mask"><h2>' + M.Util._(content.title) + ' ' + M.Util._("is empty") + '</h2></div><div id="' + uid + 'm" class="mask maskh"><h2>' + M.Util._(content.title) + ' ' + M.Util._("is hidden") + '</h2>(' + M.Util._("Click to show it") + ')</div>');
+                $d = M.Util.$$('#' + id, self.$d).css(self.options.position === 'n' ? {top:'0px'} : {bottom:'0px'}).addClass('content').html('<div class="thumbsWrapper"><ul></ul></div><div class="previous"><a href="#" id="' + uid + 'p" title="' + M.Util._("Previous page") + '">&laquo;</a></div><div class="next"><a href="#" id="' + uid + 'n" title="' + M.Util._("Next page") + '">&raquo;</a></div><div id="' + uid + 'm2" class="mask"><h2>' + M.Util._(content.title) + ' ' + M.Util._("is empty") + '</h2></div><div id="' + uid + 'm" class="mask maskh"><h2>' + M.Util._(content.title) + ' ' + M.Util._("is hidden") + '</h2>(' + M.Util._("Click to show it") + ')</div>');
 
                 /*
                  * Append tab to panel
@@ -594,7 +594,7 @@
              */
             if (f === null) {
                 for (i = 0, l = self.items.length; i < l; i++) {
-                    $('li a', self.items[i].$d).removeClass("hilite");
+                    $('li', self.items[i].$d).removeClass("hilite");
                 }
             }
             else {
@@ -816,7 +816,7 @@
                  */
                 icon = M.Map.Util.Feature.getIcon(f);
                 title = M.Util.stripTags(M.Map.Util.Feature.getTitle(f));
-                $ul.append('<li><a href="" jtitle="' + title + '" id="' + id + '">' + (icon ? '' : '<span class="title">' + title + '</span>') + '<img src="' + (icon ? icon : M.Util.getImgUrl('nodata.png')) + '"></a></li>');
+                $ul.append('<li class="thumbs" jtitle="' + title + '" id="' + id + '">' + (icon ? '' : '<span class="title">' + title + '</span>') + '<img src="' + (icon ? icon : M.Util.getImgUrl('nodata.png')) + '"></li>');
                 (function(f, $div) {
                     $div.click(function(e) {
 
@@ -843,7 +843,7 @@
              */
             if (max > size) {
 
-                $ul.append('<li><a href="" id="' + item.id + 'mre"><span class="title">' + M.Util._('Get more results') + '</span></a></li>');
+                $ul.append('<li class="thumbs" id="' + item.id + 'mre"><span class="title">' + M.Util._('Get more results') + '</span></li>');
 
                 /*
                  * Launch a new search
@@ -1033,7 +1033,7 @@
             /*
              * Hide all divs
              */
-            $('.thumbs', self.$d).hide();
+            $('.content', self.$d).hide();
 
             /*
              * Remove active class from all tabs
