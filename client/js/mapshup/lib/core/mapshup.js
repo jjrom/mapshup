@@ -266,7 +266,15 @@
                 position:self.Config.panels.side.position,
                 w:self.Config.panels.side.w
             }));
-        
+            
+            /*
+             * Initialize South panel
+             */
+            self.southPanel = (new self.SouthPanel({
+                over:self.Config.panels.south.over,
+                h:self.Config.panels.south.h
+            }));
+            
             /*
              * If kvp got a "uid" key, then the corresponding context
              * is retrieved from the server
@@ -483,14 +491,6 @@
             if (ctx && ctx.layers) {
                 c.update(ctx.layers);
             }
-            
-            /*
-             * Initialize South panel
-             */
-            self.southPanel = (new self.SouthPanel({
-                over:self.Config.panels.south.over,
-                h:self.Config.panels.south.h
-            }));
             
             /*
              * Plugins initialization
