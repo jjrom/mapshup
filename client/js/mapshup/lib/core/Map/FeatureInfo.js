@@ -134,9 +134,9 @@
              * Initialize FeatureInfo sidePanel item
              */
             self.sidePanelItem = M.sidePanel.add({
-                id:M.Util.getId()
+                id: M.Util.getId()
             });
-        
+
             /*
              * Hide FeatureInfo panel when layer is removed
              */
@@ -316,6 +316,9 @@
 
         /**
          * Set tools within $target
+         * 
+         * @param {OpenLayers.Feature} feature
+         * @param {jQueryElement} $target
          */
         this.setTools = function(feature, $target) {
 
@@ -547,7 +550,7 @@
                 (function(d, a, f) {
                     d.click(function(e) {
                         return a.callback(a, f);
-                    })
+                    });
                 })(d, a, feature);
 
                 /*
@@ -598,7 +601,7 @@
                 if (length > 0) {
                     if (feature.layer['_M'].clusterType === "Polygon") {
                         self.selected = feature;
-                        M.sidePanel.show(self.sidePanelItem);
+                        self.showCluster(feature.cluster);
                     }
                     else {
 
@@ -618,14 +621,14 @@
                          * Zoom on the cluster bounds
                          */
                         M.Map.map.zoomToExtent(bounds);
-                        
+
                     }
 
                     /*
                      * Hide feature info panel
                      */
                     self.hide();
-                    
+
                     return false;
 
                 }
@@ -690,7 +693,7 @@
                     c.unselect(self.selected);
                 }
                 catch (e) {
-                    self.selected = null
+                    self.selected = null;
                 }
                 return true;
             }
@@ -774,11 +777,11 @@
              * Set unselect time
              */
             self._tun = (new Date()).getTime();
-            
+
             if (feature && feature.layer['_M'].clusterType === "Polygon") {
                 M.sidePanel.hide(self.sidePanelItem);
             }
-        
+
             M.Map.featureInfo.selected = null;
 
             /*
@@ -914,11 +917,8 @@
                 return false;
             }
 
-            var $target, id,
-                    d, v, t, i, l, k, kk, kkk, ts,
+            var $target, id, v, t, i, l, k, kk, ts,
                     $info,
-                    $tabs,
-                    $thumb,
                     layerType,
                     typeIsUnknown = true,
                     title = M.Util.stripTags(M.Map.Util.Feature.getTitle(feature)),
@@ -979,11 +979,6 @@
                     M.activity.hide();
                 });
             }
-
-            /*
-             * Set body and tabs reference
-             */
-            $tabs = $('.tabs', $target);
 
             /*
              * Roll over layer types to detect layer features that should be
@@ -1073,14 +1068,13 @@
                                     /*
                                      * Special case for photos array
                                      * No tab is created but instead a photo gallery
-                                     * is displayed
+                                     * is displayed as thumbs
                                      */
-                                    if (kk === 'photo') {
+                                    if (kk === 'photos') {
+                                        $info.append('<tr><td></td><td>&nbsp;</td><td class="thumbs"><td></tr>');
                                         for (i = 0, l = v[kk].length; i < l; i++) {
                                             id = M.Util.getId();
-                                            /* Remove default thumbnail if any */
-                                            $('.dftthb', $thumb).remove();
-                                            $thumb.append('<a href="' + v[kk][i]["url"] + '" title="' + v[kk][i]["name"] + '" id="' + id + '" class="image"><img height="50px" width="50px" src="' + v[kk][i]["url"] + '"/></a>');
+                                            $('.thumbs', $info).append('<img href="' + v[kk][i]["url"] + '" title="' + v[kk][i]["name"] + '" id="' + id + '" src="' + v[kk][i]["url"] + '"/>');
                                             /*
                                              * Popup image
                                              */
@@ -1092,68 +1086,7 @@
                                             })($('#' + id));
 
                                         }
-                                        continue;
                                     }
-
-                                    /*
-                                     * Initialize tab
-                                     */
-                                    if ($tabs.is(':empty')) {
-                                        $tabs.html('<div id="_fit"><ul><li><a href="#_fitm" class="selected">' + M.Util._("Description") + '</a></li></ul></div>');
-                                    }
-
-                                    /*
-                                     * If v[kk] is not an array or is an empty array, go to the next property
-                                     */
-                                    if (typeof v[kk].length !== "number" || v[kk].length === 0) {
-                                        continue;
-                                    }
-
-                                    /*
-                                     * If kk object is a non empty array, add a new tab
-                                     */
-                                    id = M.Util.getId();
-                                    $('ul', $tabs).append('<li><a href="#' + id + '">' + M.Util._(kk) + '</a></li>');
-                                    $('.east', $target).append('<div id="' + id + '" class="noflw"><table></table></div>');
-
-                                    /*
-                                     * Table reference
-                                     */
-                                    d = $('table', $('#' + id));
-
-                                    /*
-                                     * Special case for videos
-                                     */
-                                    if (kk === "video" || kk === "audio") {
-                                        for (i = 0, l = v[kk].length; i < l; i++) {
-
-                                            /*
-                                             * Popup video
-                                             */
-                                            id = M.Util.getId();
-
-                                            d.append('<tr><td><a id="' + id + '" href="' + v[kk][i]["url"] + '">' + v[kk][i]["name"] + '</a></td></tr>');
-
-
-                                            (function($id) {
-                                                $id.click(function() {
-                                                    M.Util.showPopupVideo({
-                                                        url: $id.attr('href'),
-                                                        title: $id.attr('title')
-                                                    });
-                                                    return false;
-                                                });
-                                            })($('#' + id));
-
-                                        }
-                                    }
-                                    else {
-                                        for (kkk in v[kk]) {
-                                            ts = M.Map.Util.Feature.translate(kkk, feature);
-                                            d.append('<tr><td title="' + ts + '">' + ts + '</td><td>&nbsp;</td><td>' + v[kk][kkk] + '</td></tr>');
-                                        }
-                                    }
-
                                 }
                                 else {
                                     ts = M.Map.Util.Feature.translate(k, feature);
@@ -1168,18 +1101,80 @@
                         }
                     }
                 }
-
-                /*
-                 * Set the tabs if any
-                 */
-                $("#_fit ul").idTabs();
-
             }
 
-            //$tabs.is(':empty') ? $tabs.hide() : $tabs.show();
             $target.show();
 
             return true;
+
+        };
+
+        /**
+         * Show cluster features within SidePanel
+         * 
+         * @param {Array} cluster
+         * 
+         */
+        this.showCluster = function(cluster) {
+            
+            var i, l, f, id, icon, title, self = this;
+            
+            self.sidePanelItem.$d.html('<div class="thumbs"><ul></ul></div>');
+            
+            /*
+             * Roll over features
+             */
+            for (i = 0, l = cluster.length; i < l; i++) {
+
+                f = cluster[i];
+
+                /*
+                 * This is very important to ensure that feature are correctly synchronized
+                 */
+                if (!f.layer) {
+                    continue;
+                }
+
+                /*
+                 * The id is based on feature unique id
+                 */
+                id = M.Util.encode(f.id);
+
+                /*
+                 * Some tricky part here :
+                 * 
+                 *   - use of jquery .text() to strip out html elements
+                 *     from the M.Map.Util.Feature.getTitle() function return
+                 *     
+                 *   - If icon or thumbnail is not defined in the feature attributes,
+                 *     then force text span display
+                 */
+                icon = M.Map.Util.Feature.getIcon(f);
+                title = M.Util.stripTags(M.Map.Util.Feature.getTitle(f));
+                $('ul', self.sidePanelItem.$d).append('<li><a href="" jtitle="' + title + '" id="' + id + '">' + (icon ? '' : '<span class="title">' + title + '</span>') + '<img src="' + (icon ? icon : M.Util.getImgUrl('nodata.png')) + '"></a></li>');
+                (function(f, $div) {
+                    $div.click(function(e) {
+
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        /*
+                         * Zoom on feature and select it
+                         */
+                        M.Map.zoomTo(f.geometry.getBounds());
+                        M.Map.featureInfo.select(f, true);
+                        self.hilite(f);
+
+                        return false;
+                    });
+                    M.tooltip.add($div, 'e', 10);
+                })(f, $('#' + id));
+            }
+        
+            /*
+             * Display the SidePanel
+             */
+            M.sidePanel.show(this.sidePanelItem);
 
         };
 
@@ -1202,6 +1197,6 @@
         M.Map.FeatureInfo._o = this;
 
         return this.init(options);
-    }
+    };
 
 })(window.M);

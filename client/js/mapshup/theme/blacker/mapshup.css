@@ -811,14 +811,6 @@ a.tab:hover
     background:#666;
 }
 
-#_fit {
-    padding-bottom:10px;
-}
-#_fit li {
-    padding-left:5px;
-    display:inline;
-}
-
 /* Micro Info popup */
 .mip {
     position:absolute;
@@ -1168,13 +1160,6 @@ a.tab img {
 }
 .close:before {
     content:"\00D7";
-}
-
-/* The "no overflow" class*/
-.noflw {
-    height:99%;
-    width:99%;
-    overflow:auto;
 }
 
 .image {
