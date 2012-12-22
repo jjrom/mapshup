@@ -89,13 +89,25 @@ rm -Rf $moldir/theme/default/img/.svn
 echo "Copying addons to OpenLayers directory..."
 cp -R addons/OL-OS $oldir/lib/
 
-echo "Copying modified class to OpenLayers directory..."
+echo "Copying modified class DragPan.js to OpenLayers directory..."
 cp -R addons/DragPan.js $oldir/lib/OpenLayers/Control/
+
+echo "Copying modified class Cluster.js to OpenLayers directory..."
+cp -R addons/Cluster.js $oldir/lib/OpenLayers/Strategy/
+
+echo "Copying new class PolygonCluster.js to OpenLayers directory..."
+cp -R addons/PolygonCluster.js $oldir/lib/OpenLayers/Strategy/
 
 echo "Building OpenLayers.js..."
 cd $oldir/build
 ./build.py ../../../jOpenLayers_build.cfg
 cp OpenLayers.js ../../../mol/OpenLayers.js
+
+echo "Building OpenLayersOptimized.js..."
+cd $oldir/build
+./build.py ../../../jOpenLayersOptimized_build.cfg
+cp OpenLayers.js ../../../mol/OpenLayersOptimized.js
+
 
 echo "Building OpenLayers mobile structure..."
 rm -Rf ../../../mol/m
