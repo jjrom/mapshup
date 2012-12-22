@@ -118,9 +118,9 @@
             });
             
             /*
-             * Panel width follow the width of the map except for "over" panel
+             * Panel width follow the width of the map
              */
-            M.Map.events.register("resizeend", self, function(scope){
+            M.events.register("resizeend", self, function(scope){
                 
                 var i, l, item;
                 
