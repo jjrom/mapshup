@@ -115,13 +115,18 @@
             if (self.h === -1) {
                 self.h = Math.max(Math.round(2 * M.$map.height() / 5), 300);
             }
-
+            
+            /*
+             * Store the $container top offset
+             */
+            self._offset = M.$container.offset().top;
+            
             /*
              * Create a Panel div within M.$mcontainer
              * 
              * <div id="..." class="pns"></div>
              */
-            self.$d = M.Util.$$('#' + M.Util.getId(), M.$mcontainer).addClass('pns').css({
+            self.$d = M.Util.$$('#' + M.Util.getId(), self.over ? M.$mcontainer : M.$container).addClass('pns').css({
                 'bottom': -self.h,
                 'height': self.h,
                 /* Force width to 100% if panel "push" the map (i.e. over is false) */
@@ -129,12 +134,12 @@
             });
 
             /*
-             * Panel width follow the width of the map except for "over" panel
+             * Panel width follow the width of the map container except for over
              */
-            M.Map.events.register("resizeend", self, function(scope) {
+            M.events.register("resizeend", self, function(scope) {
 
                 if (!scope.over) {
-                    scope.$d.width(M.$mcontainer.width());
+                    scope.$d.width(M.$container.width());
                 }
 
             });
@@ -332,7 +337,7 @@
          */
         this.show = function(item) {
 
-            var mc, mch, lon, lat, extent, self = this;
+            var self = this;
 
             /*
              * Paranoid mode
@@ -365,17 +370,6 @@
 
             }
 
-            /*
-             * Show panel
-             */
-            if (!self.over) {
-                mc = M.$map.parent(); // M.$map container reference
-                mch = M.$map.height();
-                extent = M.Map.map.getExtent(),
-                        lon = (extent.right + extent.left) / 2;
-                lat = ((((mc.height() - self.h) * (extent.bottom - extent.top)) / M.$map.height()) + (2 * extent.top)) / 2;
-            }
-
             self.$d.stop().animate({
                 'bottom': '0px'
             },
@@ -383,32 +377,20 @@
                 duration: 200,
                 queue: true,
                 step: function(now, fx) {
-
-                    /*
-                     * Push the map
-                     */
                     if (!self.over) {
-                        mc.css('height', mch - self.h - now);
+                        M.$container.css('top', - now - self.h + self._offset);
                     }
-
                 },
                 complete: function() {
-
-                    /*
-                     * Recenter map after its size change (unless panel "over" attribute is set to true)
-                     */
-                    if (!self.over) {
-                        M.Map.map.setCenter(new OpenLayers.LonLat(lon, lat), M.Map.map.getZoom());
-                        M.events.trigger('resizeend');
-                    }
-
+            
+                    M.Map.map.updateSize();
+                    
                     /*
                      * Call onshow function
                      */
                     if ($.isFunction(item.onshow)) {
                         item.onshow();
                     }
-
                 }
             });
 
@@ -448,7 +430,7 @@
          */
         this.hide = function(item) {
 
-            var mc, mch, lon, lat, extent, self = this;
+            var self = this;
 
             /*
              * If item is not active, do nothing
@@ -468,19 +450,8 @@
              */
             self.isVisible = false;
 
-            /*
-             * Hide panel
-             */
-            if (!self.over) {
-                mc = M.$map.parent(); // M.$map container reference
-                mch = M.$map.height();
-                extent = M.Map.map.getExtent(),
-                        lon = (extent.right + extent.left) / 2;
-                lat = ((((mc.height() + self.h) * (extent.bottom - extent.top)) / M.$map.height()) + (2 * extent.top)) / 2;
-            }
-
             self.$d.stop().animate({
-                'bottom': '-' + self.h + 'px'
+                'bottom': -self.h
             },
             {
                 duration: 200,
@@ -491,20 +462,14 @@
                      * Push the map
                      */
                     if (!self.over) {
-                        mc.css('height', mch - now);
+                        M.$container.css('top', - now - self.h + self._offset);
                     }
 
                 },
                 complete: function() {
 
-                    /*
-                     * Recenter map after its size change (unless panel "over" attribute is set to true)
-                     */
-                    if (!self.over) {
-                        M.Map.map.setCenter(new OpenLayers.LonLat(lon, lat), M.Map.map.getZoom());
-                        M.events.trigger('resizeend');
-                    }
-
+                    M.Map.map.updateSize();
+                    
                     /*
                      * Call onclose function
                      */
