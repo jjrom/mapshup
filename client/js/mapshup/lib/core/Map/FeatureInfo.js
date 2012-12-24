@@ -714,7 +714,7 @@
                  */
                 var t = M.Map.Util.Feature.getTitle(feature),
                         panelItem = M.southPanel.add({
-                id:M.Util.crc32(t + feature.layer["_M"].layerDescription["type"]),
+                        id:M.Util.crc32(t + feature.layer["_M"].layerDescription["type"]),
                         tt:t,
                         title:t,
                         unremovable:false,
@@ -756,6 +756,14 @@
                  */
                 self.hide();
                 self.getPopup(feature.layer).show();
+                
+                /*
+                 * Call back function on select
+                 */
+                var fi = feature.layer["_M"].layerDescription.featureInfo;
+                if (fi && $.isFunction(fi.onSelect)){
+                    fi.onSelect(feature);
+                }
 
             }
 
