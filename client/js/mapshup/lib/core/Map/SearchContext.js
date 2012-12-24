@@ -548,7 +548,7 @@
                 dataType:"json",
                 success: function(data) {
 
-                    var l, lm = M.Plugins.LayersManager;
+                    var onSearch, l, lm = M.Plugins.LayersManager;
                     
                     /*
                      * First check if there is no error
@@ -625,18 +625,50 @@
                         else {
                             
                             /*
-                             * Add features to the layer 
+                             * Add features to the layer
+                             * 
+                             * WARNING! If the layer is clustered - Since the cluster
+                             * strategy will clear the layer features before adding
+                             * the new feature, we first need to cache every feature including
+                             * previous layer features 
                              */
-                            layer.addFeatures(features);
+                            if (layer["_M"].clusterized) {
+                                
+                                /*
+                                 * Add the new features to layer previous features
+                                 */
+                                var ll = M.Map.Util.getFeatures(layer).concat(features);
+                                layer.addFeatures(ll);
+                                
+                                /*
+                                 * First strategy is obviously the (Polygon)Cluster strategy 
+                                 * If this strategy supports reclustering do it !
+                                 */ 
+                                if ($.isFunction(layer.strategies[0].recluster)) {
+                                    layer.strategies[0].recluster();
+                                }
                             
+                            }
+                            else {
+                                layer.addFeatures(features);
+                            }
+                        
                             /*
                              * Zoom on layer extent
                              */
-                            if (layer["_M"].layerDescription.zoomOnSearch) {
+                            onSearch = layer["_M"].layerDescription.onSearch || {};
+                            if (onSearch.zoom) {
                                 M.Map.zoomTo(layer.getDataExtent());
                             }
                             else {
                                 M.Map.Util.zoomOn(layer);
+                            }
+                            
+                            /*
+                             * Callback function after succesfull search
+                             */
+                            if ($.isFunction(onSearch.callback)) {
+                                onSearch.callback(layer);
                             }
                             
                             /*

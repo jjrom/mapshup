@@ -360,7 +360,7 @@
                     callback: _M.layerDescription.hasOwnProperty("callback") ? _M.layerDescription.callback : null,
                     scope: scope
                 });
-
+            
                 /*
                  * Set BBOX to current map view
                  */

@@ -137,7 +137,7 @@
              * Cluster strategy
              */
             if (options["_M"].clusterized) {
-                options.strategies = [new OpenLayers.Strategy.Cluster(Map.clusterOpts)];
+                options.strategies = layerDescription.featureType === "Point" ? [new OpenLayers.Strategy.Cluster(Map.clusterOpts)] : [new OpenLayers.Strategy.PolygonCluster(Map.clusterOpts)];
             }
         
             /**
