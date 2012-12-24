@@ -71,7 +71,7 @@
              */
             items = [
                 {
-                    name: "All",
+                    name: "Show all",
                     key: "ALL",
                     color: "#666"
                 },
