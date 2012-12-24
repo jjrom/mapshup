@@ -135,6 +135,10 @@
 
             /*
              * Cluster strategy
+             * 
+             * WARNING : by default a PolygonCluster strategy is applied
+             * If the catalog returns point you need to explicitely set
+             * a featureType:"Point" option within the layerDescription
              */
             if (options["_M"].clusterized) {
                 options.strategies = layerDescription.featureType === "Point" ? [new OpenLayers.Strategy.Cluster(Map.clusterOpts)] : [new OpenLayers.Strategy.PolygonCluster(Map.clusterOpts)];
