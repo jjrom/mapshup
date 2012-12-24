@@ -841,7 +841,7 @@
             /*
              * Add an additionnal thumb at the end of the thumbs for pagination
              */
-            if (max > size) {
+            if (size > 0 && max > size) {
 
                 $ul.append('<li class="thumbs" id="' + item.id + 'mre"><span class="title">' + M.Util._('Get more results') + '</span></li>');
 
@@ -880,7 +880,14 @@
              * Update pagination
              */
             self.tabPaginator.updatePaginate(item);
-
+            
+            /*
+             * No features - hide the tab
+             */
+            if (size === 0) {
+                self.hide(item);
+            }
+        
             return true;
 
         };
