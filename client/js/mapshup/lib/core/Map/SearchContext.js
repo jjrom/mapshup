@@ -607,7 +607,6 @@
                             internalProjection:M.Map.map.projection,
                             externalProjection:M.Map.pc
                         }).read(data);
-
                         
                         /*
                          * Empty result
@@ -652,11 +651,12 @@
                             else {
                                 layer.addFeatures(features);
                             }
-                        
+                            
                             /*
                              * Zoom on layer extent
                              */
                             onSearch = layer["_M"].layerDescription.onSearch || {};
+                            
                             if (onSearch.zoom) {
                                 M.Map.zoomTo(layer.getDataExtent());
                             }
