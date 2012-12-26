@@ -159,14 +159,16 @@
                          * First check if item exist - if so update content
                          * Otherwise add a new item and show panel
                          */
-                        if (!scope.setFeatures(item, M.Map.Util.getFeatures(layer, layer['_M'].layerDescription.sort), false)) {
-
+                        if (!item || !item.layer) {
                             item = scope.add({
                                 icon: layer["_M"].icon,
                                 title: layer.name,
                                 layer: layer,
                                 features: M.Map.Util.getFeatures(layer, layer['_M'].layerDescription.sort)
                             });
+                        }
+                        else {
+                            scope.setFeatures(item, M.Map.Util.getFeatures(layer, layer['_M'].layerDescription.sort), false);
                         }
 
                         /*
