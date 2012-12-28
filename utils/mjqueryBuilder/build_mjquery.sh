@@ -54,7 +54,6 @@ cat $jquerydir/jquery-1.8.3.min.js > $mjquerydir/mjquery.js.tmp
 cat $jquerydir/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/jquery-ui-touchpunch/jquery-ui-touchpunch.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/mousewheel/jquery.mousewheel.min.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/idTabs/jquery.idTabs.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/nanoscroller/jquery.nanoscroller.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/jQRangeSlider/jQRangeSliderMouseTouch.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/jQRangeSlider/jQRangeSliderDraggable.js >> $mjquerydir/mjquery.js.tmp
