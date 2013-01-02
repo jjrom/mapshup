@@ -64,6 +64,16 @@ OpenLayers.Strategy.PolygonCluster = OpenLayers.Class(OpenLayers.Strategy.Cluste
                 var feature, clustered, cluster;
                 for (var i = 0; i < this.features.length; ++i) {
                     feature = this.features[i];
+                    
+                    /*
+                     * OpenLayers issue ? 
+                     * Some feature have a null layer which cause serious trouble
+                     * to mapshup...:( 
+                     */
+                    if (!feature.layer) {
+                        feature.layer = this.layer;
+                    }
+                
                     if (feature.geometry) {
                         clustered = false;
                         for (var j = clusters.length - 1; j >= 0; --j) {
