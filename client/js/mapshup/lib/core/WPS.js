@@ -41,6 +41,7 @@
  * 
  * See http://www.opengeospatial.org/standards/wps
  * 
+ * @param {MapshupObject} M
  */
 (function(M) {
     
@@ -93,6 +94,8 @@
         
         /**
          * Initialize WPS class
+         * 
+         * @param {String} url : WPS service endpoint url
          */
         this.init = function(url) {
             this.url = url;
@@ -241,6 +244,8 @@
          *      </wps:Languages>
          *      <wps:WSDL xlink:href=""/>
          *  </wps:Capabilities>
+         *  
+         *  @param {XMLObject} xml
          * 
          */
         this.parseCapabilities = function(xml) {
@@ -426,6 +431,8 @@
          *      </ProcessDescription>
          *      [...]
          *  </wps:Capabilities>
+         *  
+         *  @param {XMLObject} xml
          * 
          */
         this.parseDescribeProcess = function(xml) {
@@ -997,7 +1004,7 @@
         /**
          * Add an input
          * 
-         * @param {}
+         * @param {Object} input (see input structure above in this.inputs comment)
          */
         this.addInput = function(input) {
             this.inputs.push(input);
@@ -1005,6 +1012,8 @@
         
         /**
          * Add an output
+         * 
+         * @param {Object} output (see output structure above in this.outputs comment)
          */
         this.addOutput = function(output) {
             this.outputs.push(output);
@@ -1205,6 +1214,8 @@
          *  
          *     <wps:Reference href="http://constellation-wps.geomatys.com/cstl-wrapper/wps/output/8ef6ecdf-5f62-4bcd-b0ac-2cae2adcbb43" mimeType="image/png"></wps:Reference>
          *
+         *
+         * @param {XMLObject} xml
          * 
          */
         this.parseExecuteResponse = function(xml) {
@@ -1302,7 +1313,7 @@
          */
         this.parseException = function(xml) {
             M.Util.message("TODO - parse Exception");
-        }
+        };
         
         this.init(options);
         
@@ -1396,7 +1407,7 @@
                     a[i].handler(a[i].scope, obj);
                 }
             }
-        }
+        };
         
         return this;
 
