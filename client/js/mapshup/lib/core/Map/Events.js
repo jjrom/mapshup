@@ -303,7 +303,7 @@
                     obj.handler(extra, obj.scope);
                 } 
             }
-        }
+        };
         
         /*
          * Create unique object instance
