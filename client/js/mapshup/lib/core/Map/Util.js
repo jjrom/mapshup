@@ -561,22 +561,23 @@
 
 
     /**
-     * Return an array of unclusterized features
+     * Return an array of unclusterized features for Point cluster 
      * 
-     * @param layer : layer containing clusterizes or unclusterized features
-     * @param options: options for sorting or reprojecting in display projection
+     * @param {OpenLayers.Layer} layer : layer containing clusterizes or unclusterized features
+     * @param {Object} options : options for sorting or reprojecting in display projection
      *                 {
      *                      attribute: // name of the attribute to sort
      *                      order: // order of sorting - 'a' (default) for ascending and 'd' for descending
      *                      type: // attribute type - 'd' for date, 'n' for number, 't' for text (default)
      *                      toDisplayProjection: // true to reproject features to display projection
      *                 }
-     * 
+     * @param {boolean} noUncluster : true to not uncluster features array (default is false - i.e. features
+     *                                are returned unclusterized)
      */
-    Map.Util.getFeatures = function(layer, options) {
+    Map.Util.getFeatures = function(layer, options, noUncluster) {
 
         var feature, i, j, l, m, features = [];
-
+        
         /*
          * Paranoid mode
          */
@@ -598,7 +599,7 @@
                  * If feature is a cluster, roll over features
                  * within this cluster
                  */
-                if (feature.cluster) {
+                if (feature.cluster && !noUncluster) {
 
                     /*
                      * Roll over cluster features
@@ -686,15 +687,15 @@
                  * Order
                  */
                 if (one < two) {
-                    return -1
+                    return -1;
                 }
                 if (one > two) {
-                    return 1
+                    return 1;
                 }
-                return 0
+                return 0;
             });
         }
-
+    
         return features;
 
     };

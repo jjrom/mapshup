@@ -599,7 +599,16 @@
                 length = feature.cluster.length;
 
                 if (length > 0) {
-                    if (feature.layer['_M'].clusterType === "Polygon") {
+                    
+                    /*
+                     * OpenLayers issue ?
+                     * In some cases cluster does have a null layer...
+                     */
+                    if (!feature.layer) {
+                        feature.layer = feature.cluster[0].layer;
+                    }
+                
+                    if (feature.layer && feature.layer['_M'].clusterType === "Polygon") {
                         self.selected = feature;
                         self.showCluster(feature.cluster);
                     }
@@ -1125,9 +1134,9 @@
          */
         this.showCluster = function(cluster) {
             
-            var i, l, f, id, icon, title, self = this;
+            var i, l, f, id, icon, title, $t, self = this;
             
-            self.sidePanelItem.$d.html('<div class="thumbs"><ul></ul></div>');
+            $t = self.sidePanelItem.$d.html('<div class="marged"></div>').children().first();
             
             /*
              * Roll over features
@@ -1145,8 +1154,10 @@
 
                 /*
                  * The id is based on feature unique id
+                 * 
+                 * !! Warning !! 'f.id' is reserved by LayersManager plugin
                  */
-                id = M.Util.encode(f.id);
+                id = M.Util.encode(f.id) + 'c';
 
                 /*
                  * Some tricky part here :
@@ -1159,7 +1170,7 @@
                  */
                 icon = M.Map.Util.Feature.getIcon(f);
                 title = M.Util.stripTags(M.Map.Util.Feature.getTitle(f));
-                $('ul', self.sidePanelItem.$d).append('<li><a href="" jtitle="' + title + '" id="' + id + '">' + (icon ? '' : '<span class="title">' + title + '</span>') + '<img src="' + (icon ? icon : M.Util.getImgUrl('nodata.png')) + '"></a></li>');
+                $t.append('<span class="thumbs" jtitle="' + title + '" id="' + id + '">' + (icon ? '' : '<span class="title">' + title + '</span>') + '<img src="' + (icon ? icon : M.Util.getImgUrl('nodata.png')) + '"></span>');
                 (function(f, $div) {
                     $div.click(function(e) {
 
@@ -1169,9 +1180,10 @@
                         /*
                          * Zoom on feature and select it
                          */
-                        M.Map.zoomTo(f.geometry.getBounds());
+                        //console.log(f);
+                        /*M.Map.zoomTo(f.geometry.getBounds());
                         M.Map.featureInfo.select(f, true);
-                        self.hilite(f);
+                        self.hilite(f);*/
 
                         return false;
                     });

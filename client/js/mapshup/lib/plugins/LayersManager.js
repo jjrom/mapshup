@@ -128,7 +128,7 @@
              */
             M.Map.events.register("layersend", self, function(action, layer, scope) {
 
-                var item;
+                var item, noUncluster;
 
                 /*
                  * The following layers are not processed :
@@ -138,7 +138,9 @@
                 if (!layer.displayInLayerSwitcher || layer.isBaseLayer) {
                     return false;
                 }
-
+                
+                noUncluster = layer['_M'].clusterType === 'Polygon' ? true : false;
+                        
                 /* 
                  * Rasters layers are not processed within LayersManager but
                  * within the RastersManager 
@@ -154,7 +156,7 @@
                      * A layer is added
                      */
                     if (action === "add" && !layer._tobedestroyed) {
-
+                        
                         /*
                          * First check if item exist - if so update content
                          * Otherwise add a new item and show panel
@@ -164,11 +166,11 @@
                                 icon: layer["_M"].icon,
                                 title: layer.name,
                                 layer: layer,
-                                features: M.Map.Util.getFeatures(layer, layer['_M'].layerDescription.sort)
+                                features: M.Map.Util.getFeatures(layer, layer['_M'].layerDescription.sort, noUncluster)
                             });
                         }
                         else {
-                            scope.setFeatures(item, M.Map.Util.getFeatures(layer, layer['_M'].layerDescription.sort), false);
+                            scope.setFeatures(item, M.Map.Util.getFeatures(layer, layer['_M'].layerDescription.sort, noUncluster), false);
                         }
 
                         /*
@@ -182,7 +184,7 @@
                      * Refresh layer features content
                      */
                     if ((action === "update" || action === "features") && !layer._tobedestroyed) {
-                        scope.setFeatures(item, M.Map.Util.getFeatures(layer, layer['_M'].layerDescription.sort), false);
+                        scope.setFeatures(item, M.Map.Util.getFeatures(layer, layer['_M'].layerDescription.sort, noUncluster), false);
 
                         /*
                          * Refresh name if needed
@@ -195,9 +197,12 @@
 
                     /*
                      * Update layer features content
+                     * 
+                     * Note: if noUncluster boolean is set to true, then the features are refreshed
+                     * and not updated
                      */
                     if (action === "featureskeep" && !layer._tobedestroyed) {
-                        scope.setFeatures(item, M.Map.Util.getFeatures(layer, layer['_M'].layerDescription.sort), true);
+                        scope.setFeatures(item, M.Map.Util.getFeatures(layer, layer['_M'].layerDescription.sort, noUncluster), noUncluster ? false : true);
                     }
 
                     /*
@@ -716,7 +721,7 @@
 
         };
 
-        /*
+        /**
          * Set a new thumbs array from a features array 
          * 
          * @param {Object} item 
