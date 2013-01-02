@@ -620,6 +620,25 @@
                              */
                             M.Util.message(M.Util._(layer.name) + " : " + M.Util._("No result"));
                             
+                            /*
+                             * Add features to the layer
+                             * 
+                             * WARNING! If the layer is clustered, we need to specifically
+                             * recluster the layer
+                             */
+                            if (layer["_M"].clusterized) {
+                                
+                                /*
+                                 * First strategy is obviously the (Polygon)Cluster strategy 
+                                 * If this strategy supports reclustering do it !
+                                 */ 
+                                if ($.isFunction(layer.strategies[0].recluster)) {
+                                    layer.strategies[0].clearCache();
+                                    layer.strategies[0].recluster();
+                                }
+                            
+                            }  
+                            
                         }
                         else {
                             
