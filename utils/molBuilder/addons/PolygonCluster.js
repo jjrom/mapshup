@@ -85,7 +85,7 @@ OpenLayers.Strategy.PolygonCluster = OpenLayers.Class(OpenLayers.Strategy.Cluste
                             }
                         }
                         if (!clustered) {
-                            clusters.push(this.createCluster(this.features[i]));
+                            clusters.push(this.createCluster(feature));
                         }
                     }
                 }
@@ -157,6 +157,7 @@ OpenLayers.Strategy.PolygonCluster = OpenLayers.Class(OpenLayers.Strategy.Cluste
         var cluster = new OpenLayers.Feature.Vector(
                 geom,{count: 1}
         );
+        cluster.layer = this.layer;
         cluster.cluster = [feature];
         return cluster;
     },
