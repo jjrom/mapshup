@@ -191,7 +191,8 @@
 
         },
         
-        /*
+        /**
+         * 
          * Take a GML object in entry and return a GeoJSON FeatureCollection string
          * 
          * GeoJSON example (from http://www.geojson.org/geojson-spec.html)
@@ -236,7 +237,7 @@
          *      }
          *      
          *      
-         * @param {jQuery Object} gml : gml in javascript XML object
+         * @param {jQueryObject} gml : gml in javascript XML object
          * @param {Object} properties : properties to set
          * 
          */
@@ -276,7 +277,7 @@
          *  GML Point structure 
          *  
          *          <gml:Point srsName="urn:ogc:def:crs:epsg:7.9:4326">
-         *              <gml:pos>77.0223274997802 52.58523464466345</gml:posList>
+         *              <gml:pos>77.0223274997802 52.58523464466345</gml:pos>
          *          </gml:Point>
          *  
          * @param {jQuery Object} gml : gml in javascript XML object
@@ -288,10 +289,10 @@
             properties = properties || {identifier:M.Util.getId()};
             
             /*
-             * First children is gml:posList
+             * First children is gml:pos
              */
             return JSON.parse(M.Util.parseTemplate(this.geoJSONTemplate,{
-                geometry:'{"type":"Point","coordinates":['+Map.Util.posListToGeoJsonGeometry(gml.children().text())+']}',
+                geometry:'{"type":"Point","coordinates":'+Map.Util.posListToGeoJsonGeometry(gml.children().text())+'}',
                 properties:JSON.stringify(properties)
             }));
             
@@ -370,7 +371,7 @@
         
         geoJSONTemplate:'{"type":"FeatureCollection","features":[{"type":"Feature","geometry":$geometry$,"properties":$properties$}]}'
         
-    }
+    };
     
 })(window.M, window.M.Map);
 
