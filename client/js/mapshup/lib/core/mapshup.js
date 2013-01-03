@@ -588,7 +588,7 @@
                     self._wd = {
                         w:window.innerWidth,
                         h:window.innerHeight
-                    }
+                    };
 
                     /*
                      * Propagate resizeend event
