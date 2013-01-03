@@ -931,6 +931,11 @@
         this.outputs = [];
 
         /**
+         * Process status abstract (i.e. text description under <wps:Status>)
+         */
+        this.statusAbstract = null;
+        
+        /**
          * Process statusLocation (set during execute)
          */
         this.statusLocation = null;
@@ -1290,6 +1295,7 @@
                  */
                 if (M.Util.stripNS(this.nodeName) === 'Status') {
                     this.status = M.Util.stripNS($(this).children()[0].nodeName);
+                    this.statusAbstract = $(this).children().first().text();
                 }
                 
                 /*
