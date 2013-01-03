@@ -881,11 +881,6 @@
     M.WPS.Process = function(options) {
 
         /**
-         * Execute process in asynchronous mode
-         */
-        this.async = false;
-
-        /**
          * M.WPS object reference
          */
         this.wps = null;
@@ -1076,7 +1071,7 @@
             data = M.Util.parseTemplate(M.WPS.executeRequestTemplate, {
                 identifier: this.identifier,
                 storeExecute: options.storeExecute,
-                status: this.async
+                status: this.statusSupported || false
             });
 
             /*
