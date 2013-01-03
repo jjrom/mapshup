@@ -1044,8 +1044,16 @@
             options = options || {};
 
             /*
+             * executeResponse can only be stored if the server
+             * support it
+             */
+            if (!this.storeExecute) {
+                options.storeExecute = false;
+            }
+        
+            /*
              * If the first output is a ComplexOutput and its mimeType is not a
-             * Geographical mimeType, then storeExecute on server instead of streamed it
+             * Geographical mimeType, then store executeResponse on server 
              * 
              * Note : this does not superseed the input storeExecute options
              */
