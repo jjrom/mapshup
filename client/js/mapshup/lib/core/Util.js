@@ -660,7 +660,7 @@
                 
                 obj['complete'] = function(c) {
                     M.mask.abort(id);
-                }
+                };
                 
                 ajax = $.ajax(obj);
                 
@@ -1004,6 +1004,9 @@
         /**
          * Update html content of #message div and display it during "duration" ms
          * css('left') is computed each time to reflect map resize
+         * 
+         * @param {html} content
+         * @param {Integer} duration (in milliseconds)
          */
         message: function(content, duration) {
             

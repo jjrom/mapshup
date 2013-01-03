@@ -53,7 +53,7 @@
         }
         
         /*
-         * Hasmap of WPS sources items store by WPS endpoint url
+         * Hashmap of WPS sources items store by WPS endpoint url
          * 
          * Structure of an item 
          *      {
@@ -63,6 +63,17 @@
          *      }
          */
         this.items = [];
+        
+        /*
+         * Hashmap of running asynchronous processes stored by statusLocation url
+         * 
+         * Structure
+         *      {
+         *          process: // Running WPS Process reference
+         *          fn: // TimeOut function periodically called to update status
+         *      }
+         */
+        this.runningProcesses = [];
         
         /*
          * Initialization
@@ -300,7 +311,8 @@
              * Action on execute button
              */
             $('#'+executeId).click(function(){
-                process.execute();
+                //process.execute();
+                process.execute({storeExecute:true});
                 return false;
             });
             M.tooltip.add($('#'+executeId), 'n', 20);
@@ -408,69 +420,180 @@
         
         /**
          * Update Output content
+         * 
+         * The Process Status is used to determine if the result
+         * is synchronous or asynchronous 
+         * 
+         * Process status could be one of the following :
+         * 
+         *      ProcessAccepted
+         *      ProcessStarted
+         *      ProcessPaused
+         *      ProcessSucceeded
+         *      ProcessFailed
+         * 
+         * If the process is asynchronous (i.e. storeExecute = true) then
+         * the Status should be in nominal mode "ProcessAccepted"
+         * 
+         * If the process is synchronous (i.e. storeExecute = false) then
+         * the Status should be "ProcessSucceeded" if every ran good or
+         * "ProcessFailed" in case of error
+         * 
+         * @param {Object} process
+         * 
          */
         this.updateOutputContent = function(process) {
             
-            var i, l, geoType, result, item = this.items[process.wps.url], $outputsList = $('.output', item.$d);
-            
-            if (!$.isArray(process.result)) {
-                return false;
-            }
+            var i, l, geoType, result, item = this.items[process.wps.url], $outputsList = $('.output', item.$d), location = process.statusLocation;
             
             /*
-             * Update each Output DOM element that are identified in the process.result array
+             * Process failed - the very easy part :)
              */
-            for (i = 0, l = process.result.length; i < l; i++) {
-                
-                result = process.result[i];
+            if (process.status === "ProcessFailed") {
+                M.Util.message(process.title + " : " + M.Util._("Process failed") + " - " + process.statusAbstract);
+                return false;
+            }
+            /*
+             * Asynchronous case
+             * 
+             * The result is available at the url defined in the process "statusLocation"
+             * A TimeOut function is set to check periodically the status of the process
+             * 
+             * When the process is finished, the user is notified and the TimeOut function is removed
+             */
+            else if (process.status === "ProcessAccepted" && location) {
                 
                 /*
-                 * Two cases : data is directly accessible within the result,
-                 * or data is accessible through an url (reference)
+                 * Be sure to avoid multiple registry of the same running process
+                 * The unicity is guaranted by the statusLocation which is unique for a given
+                 * process
                  */
-                if (result.data) {
+                if (!this.runningProcesses[location]) {
                     
                     /*
-                     * Searh within jQuery data('identifier')
+                     * Add an entry within the running process hashmap
                      */
-                    $outputsList.each(function(){
-                        if ($(this).data('identifier') === result.identifier && result.data) {
-                            $('#'+$(this).attr('id')+'v').html(result.data.value);
-                        }
-                    });
+                    this.runningProcesses[location] = {
+                        
+                        process:process,
+                        message:M.Util.message('<span class="status">' + process.title + " : " + M.Util._("Process accepted and running") + '</span>', -1),
+                        /*
+                         * Periodically check the Process Status (every 5 seconds) 
+                         */
+                        fn:setTimeout(function(){
+                            
+                           /*
+                            * Background execute request
+                            */
+                            $.ajax({
+                                url: M.Util.proxify(location, "XML"),
+                                async: true,
+                                type: "GET",
+                                dataType: "xml",
+                                contentType: "text/xml",
+                                success: function(xml) {
+
+                                    process.result = process.parseExecuteResponse(xml);
+
+                                    /*
+                                     * Result is null only if an ExceptionReport occured
+                                     */
+                                    if (process.result) {
+                                        process.wps.events.trigger("execute", process);
+                                    }
+                                
+                                },
+                                error: function(e) {
+                                    M.Util.message(e);
+                                }
+                            });
+                            
+                        }, 5000)
+                    
+                    };
+                
+                }
+                
+                return false;
+            }
+            /*
+             * Synchronous case
+             */
+            else if (process.status === "ProcessSucceeded") {
+                
+                /*
+                 * An important task : remove asynchronous process if any !
+                 */
+                var rp = this.runningProcesses[location];
+                if (rp) {
+                    clearTimeout(rp.fn);
+                    $('.status', rp.message).html(rp.process.title + " : " + M.Util._("Process finished"));
+                    delete this.runningProcesses[location];
+                }
+            
+                /*
+                 * No result = nothing to update
+                 */
+                if (!$.isArray(process.result)) {
+                    return false;
+                }
+        
+                /*
+                 * Update each Output DOM element that are identified in the process.result array
+                 */
+                for (i = 0, l = process.result.length; i < l; i++) {
+
+                    result = process.result[i];
 
                     /*
-                     * Add new features within WPSClient layer
+                     * Two cases : data is directly accessible within the result,
+                     * or data is accessible through an url (reference)
                      */
-                    geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
-                    if (geoType === 'GML') {
-                        this.load(M.Map.Util.GML.toGeoJSON(result.data.value,{
-                            title:process.title,
-                            processid:process.identifier,
-                            description:process["abstract"],
-                            time:(new Date()).toISOString()
-                        }));
+                    if (result.data) {
+
+                        /*
+                         * Searh within jQuery data('identifier')
+                         */
+                        $outputsList.each(function(){
+                            if ($(this).data('identifier') === result.identifier && result.data) {
+                                $('#'+$(this).attr('id')+'v').html(result.data.value);
+                            }
+                        });
+
+                        /*
+                         * Add new features within WPSClient layer
+                         */
+                        geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
+                        if (geoType === 'GML') {
+                            this.load(M.Map.Util.GML.toGeoJSON(result.data.value,{
+                                title:process.title,
+                                processid:process.identifier,
+                                description:process["abstract"],
+                                time:(new Date()).toISOString()
+                            }));
+                        }
+
                     }
-                    
+                    /*
+                     * Reference result
+                     */
+                    else if (result.reference) {
+                        var id = M.Util.getId(),
+                            popup = new M.Popup({
+                            modal:false,
+                            noHeader:true,
+                            autoSize:true,
+                            body:process.title + ' <a id="'+id+'" href="'+result.reference.href+'" class="button inline colored paddedright" target="_blank">'+ M.Util._("Download result") + '</a>'
+                        }).show();
+                        $('#'+id).click(function(){
+                            popup.hide();
+                        });
+
+                    }
+
                 }
-                /*
-                 * Reference result
-                 */
-                else if (result.reference) {
-                    var id = M.Util.getId(),
-                        popup = new M.Popup({
-                        modal:false,
-                        noHeader:true,
-                        autoSize:true,
-                        body:process.title + ' <a id="'+id+'" href="'+result.reference.href+'" class="button inline colored paddedright" target="_blank">'+ M.Util._("Download result") + '</a>'
-                    }).show();
-                    $('#'+id).click(function(){
-                        popup.hide();
-                    });
-                    
-                }
-                
-            }
+            
+            } // End of synchronous case
             
             return true;
             
