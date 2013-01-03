@@ -1270,7 +1270,7 @@
          */
         this.parseExecuteResponse = function(xml) {
 
-            var nn, result = [], $obj = $(xml);
+            var nn, result = [], $obj = $(xml), self = this;
 
             /*
              * Trap Exception
@@ -1294,8 +1294,8 @@
                  * Store status
                  */
                 if (M.Util.stripNS(this.nodeName) === 'Status') {
-                    this.status = M.Util.stripNS($(this).children()[0].nodeName);
-                    this.statusAbstract = $(this).children().first().text();
+                    self.status = M.Util.stripNS($(this).children()[0].nodeName);
+                    self.statusAbstract = $(this).children().first().text();
                 }
                 
                 /*
