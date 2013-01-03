@@ -938,17 +938,18 @@
         /**
          * Process statusLocation (set during execute)
          */
-        this.statusLocation = null,
-                /**
-                 * Process status. Could be one of the following :
-                 *      ProcessAccepted
-                 *      ProcessStarted
-                 *      ProcessPaused
-                 *      ProcessSucceeded
-                 *      ProcessFailed
-                 * 
-                 */
-                this.status = null;
+        this.statusLocation = null;
+        
+        /**
+         * Process status. Could be one of the following :
+         *      ProcessAccepted
+         *      ProcessStarted
+         *      ProcessPaused
+         *      ProcessSucceeded
+         *      ProcessFailed
+         * 
+         */
+        this.status = null;
 
         /**
          * Result object read from executeResponse
@@ -1047,7 +1048,7 @@
              * executeResponse can only be stored if the server
              * support it
              */
-            if (!this.storeExecute) {
+            if (!this.storeSupported) {
                 options.storeExecute = false;
             }
         
@@ -1261,7 +1262,7 @@
          */
         this.parseExecuteResponse = function(xml) {
 
-            var p, nn, result = [], $obj = $(xml);
+            var nn, result = [], $obj = $(xml);
 
             /*
              * Trap Exception
@@ -1288,7 +1289,7 @@
                      */
                     $(this).children().each(function() {
 
-                        p = {};
+                        var p = {};
 
                         $(this).children().each(function() {
 
@@ -1370,6 +1371,7 @@
          * Set events hashtable
          */
         this.events = {
+            
             /*
              * Array containing handlers to be call after
              * a successfull GetCapabilities
