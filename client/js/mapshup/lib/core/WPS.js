@@ -1207,7 +1207,12 @@
                 contentType: "text/xml",
                 data: data,
                 success: function(xml) {
+                    
                     self.result = self.parseExecuteResponse(xml);
+                    
+                    /*
+                     * Result is null only if an ExceptionReport occured
+                     */
                     if (self.result) {
                         self.wps.events.trigger("execute", self);
                     }
@@ -1235,6 +1240,9 @@
          *              <ows:Title>Add</ows:Title>
          *              <ows:Abstract>Adds two double.</ows:Abstract>
          *          </wps:Process>
+         *          <wps:Status creationTime="2013-01-03T14:14:34.632Z">
+         *              <wps:ProcessSucceeded>Process succeeded.</wps:ProcessSucceeded>
+         *          </wps:Status>
          *          <wps:ProcessOutputs>
          *              <wps:Output>
          *                  <ows:Identifier>urn:ogc:cstl:wps:math:add:output:result</ows:Identifier>
@@ -1273,11 +1281,24 @@
             this.statusLocation = M.Util.getAttributes($obj.children())["statusLocation"];
 
             /*
-             * Process <wps:ProcessOutputs> element
+             * Process <wps:ProcessOutputs> and <wps:Status> elements
              */
             $obj.children().children().filter(function() {
 
-                if (M.Util.stripNS(this.nodeName) === 'ProcessOutputs') {
+                /*
+                 * Store status
+                 */
+                if (M.Util.stripNS(this.nodeName) === 'Status') {
+                    this.status = M.Util.stripNS($(this).children()[0].nodeName);
+                }
+                
+                /*
+                 * ProcessOutputs
+                 * 
+                 * If Status value is "ProcessAccepted" (i.e. immediate answer of an asynchronous
+                 * request), then the ProcessOutputs should not be set by server
+                 */
+                else if (M.Util.stripNS(this.nodeName) === 'ProcessOutputs') {
 
                     /*
                      * Process Output i.e. all <wps:Output> elements
