@@ -252,7 +252,7 @@
             for (identifier in item.wps.processes) {
                 id = M.Util.getId();
                 process = item.wps.processes[identifier];
-                $('.content', $processes).append('<a href="#" jtitle="'+process['abstract']+'" id="'+id+'" class="button inline">'+process.title+'</a> ');
+                $('.content', $processes).append('<a href="#" id="'+id+'" class="button inline">'+process.title+'</a> ');
                 (function(process,$id, item) {
                     $id.click(function() {
                         $('a', $(this).parent()).removeClass('active');
@@ -260,7 +260,15 @@
                         item.wps.describeProcess(process.identifier);
                         return false;
                     });
-                    M.tooltip.add($id, 's');
+                
+                    /*
+                     * Add tooltip with abstract 
+                     */
+                    if (process['abstract']) {
+                        $id.attr('jtitle', process['abstract']);
+                        M.tooltip.add($id, 's');
+                    }
+                
                 })(process,$('#'+id), item);
             }
             
@@ -279,14 +287,14 @@
          */
         this.updateDescribeProcessContent = function(process) {
             
-            var type, putsDescription, i, j, l, id, $id, put, $list, executeId = M.Util.getId(), item = this.items[process.wps.url];
+            var type, putsDescription, i, j, l, id, $id, put, $list, executeId = M.Util.getId(), item = this.items[process.wps.url], abstract = process["abstract"];
             
             /*
              * Set '.info' div
              * 
              * Display Process title and abstract.
              */
-            $('.describe', item.$d).html('<h1 title="'+process.identifier+'">'+process.title+'</h1><p>'+process["abstract"]+'</p><div class="execute"><a href="#" id="'+executeId+'" class="button inline" jtitle="'+M.Util._("Execute process")+'">&nbsp;'+M.Util._('Execute')+'</a></div>');
+            $('.describe', item.$d).html('<h1 title="'+process.identifier+'">'+process.title+'</h1><p>' + (abstract ? abstract : '') + '</p><div class="execute"><a href="#" id="'+executeId+'" class="button inline" jtitle="'+M.Util._("Execute process")+'">&nbsp;'+M.Util._('Execute')+'</a></div>');
             
             /*
              * Action on execute button
