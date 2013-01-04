@@ -298,24 +298,26 @@
          */
         this.updateDescribeProcessContent = function(process) {
             
-            var type, putsDescription, i, j, l, id, $id, put, $list, executeId = M.Util.getId(), item = this.items[process.wps.url], abstract = process["abstract"];
+            var type, putsDescription, i, j, l, id, $id, put, $list, executeId = M.Util.getId(), executeBgId = M.Util.getId(), item = this.items[process.wps.url], abstract = process["abstract"];
             
             /*
              * Set '.info' div
              * 
              * Display Process title and abstract.
              */
-            $('.describe', item.$d).html('<h1 title="'+process.identifier+'">'+process.title+'</h1><p>' + (abstract ? abstract : '') + '</p><div class="execute"><a href="#" id="'+executeId+'" class="button inline" jtitle="'+M.Util._("Execute process")+'">&nbsp;'+M.Util._('Execute')+'</a></div>');
+            $('.describe', item.$d).html('<h1 title="'+process.identifier+'">'+process.title+'</h1><p>' + (abstract ? abstract : '') + '</p><div class="execute"><img src="'+M.Util.getImgUrl('execute.png')+'" id="'+executeId+'" class="button inline" jtitle="'+M.Util._("Execute process")+'"/>&nbsp;<img src="'+M.Util.getImgUrl('sleep.png')+'" id="'+executeBgId+'" class="button inline" jtitle="'+M.Util._("Execute process in background")+'"/></div>');
             
             /*
              * Action on execute button
              */
-            $('#'+executeId).click(function(){
-                //process.execute();
-                process.execute({storeExecute:true});
+            M.tooltip.add($('#' + executeId).click(function() {
+                process.execute();
                 return false;
-            });
-            M.tooltip.add($('#'+executeId), 'n', 20);
+            }), 'n', 20);
+            M.tooltip.add($('#' + executeBgId).click(function() {
+                process.execute({storeExecute: true});
+                return false;
+            }), 'n', 20);
             
             /*
              * Set '.puts' div

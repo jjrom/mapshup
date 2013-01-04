@@ -1106,6 +1106,7 @@ a.tab img {
     position: relative;
     text-align: center;
     text-decoration: none;
+    cursor:pointer;
 }
 .button:hover {
     background:#939CA3;
@@ -1727,6 +1728,10 @@ td.clear {
     padding:10px;
     top:25px;
     right:20px;
+}
+.wpsclient .describe .execute img {
+    height:16px;
+    vertical-align:middle;
 } 
 .wpsclient .list {
     padding:5px 5px 5px 15px;
