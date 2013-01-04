@@ -263,7 +263,11 @@
              */
             self.displaySignInButton();
             
-                        
+            /*
+             * Trigger a signout event
+             */
+            M.events.trigger("signout");
+            
         };
 
         /**
@@ -420,6 +424,11 @@
                          * Display user bar
                          */
                         self.displayUserBar();
+                        
+                        /*
+                         * Trigger a signin event
+                         */
+                        M.events.trigger("signin");
                         
                     }
                     else {
@@ -635,4 +644,5 @@
         return this;
         
     };
+
 })(window.M);
