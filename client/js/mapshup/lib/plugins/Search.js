@@ -65,6 +65,9 @@
         
         /**
          * Initialize plugin
+         * 
+         * @param {Object} options
+         * 
          */
         this.init = function(options) {
 
@@ -337,7 +340,7 @@
                         
                     }
                     else if (d.formats.Atom) {
-                        type = "Atom"
+                        type = "Atom";
                     }
                     else if (d.formats.KML) {
                         type = "KML";
@@ -351,9 +354,9 @@
                     }
 
                     /*
-                     * Set URLTemplate
+                     * Set URLTemplate with an absolute url
                      */
-                    d.URLTemplate = d.formats[type].URLTemplate;
+                    d.URLTemplate = M.Util.getAbsoluteUrl(d.formats[type].URLTemplate);
                     
                     /*
                      * Set type
@@ -587,6 +590,9 @@
         
         /**
          * Build request url from service template
+         * 
+         * @param {Object} service
+         * 
          */
         this.getUrlInfo = function(service) {
           
@@ -601,7 +607,7 @@
              * url is the first part of the URLTemplate i.e. everything before '?'
              */
             url = parts[0]+"?";
-
+            
             /*
              *  Parameters are all kvps after '?'
              */
@@ -677,7 +683,7 @@
                     pagination["nextRecord"] = {
                         name:key,
                         value:1
-                    }
+                    };
                 }
                 
                 /*
@@ -687,7 +693,7 @@
                     pagination["numRecordsPerPage"] = {
                         name:key,
                         value:M.Config["general"].numRecordsPerPage
-                    }
+                    };
                 }
                 
                 else {
