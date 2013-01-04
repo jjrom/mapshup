@@ -327,6 +327,8 @@
         
         /**
          * Recenter popup
+         * 
+         * @param {Object} scope
          */
         this.center = function(scope) {
             
@@ -344,7 +346,7 @@
         /**
          * Hide popup
          * 
-         * @param {boolean} noCloase // true = do not launch onClose callback
+         * @param {boolean} noClose // true = do not launch onClose callback
          */
         this.hide = function(noClose) {
             
@@ -424,7 +426,7 @@
             pixel = {
                 x:MapPixel.x + offset.left,
                 y:MapPixel.y + offset.top
-            }
+            };
 
             /*
              * If xy is not (or uncorrectly) defined,
