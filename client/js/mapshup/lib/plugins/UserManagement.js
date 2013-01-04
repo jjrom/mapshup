@@ -123,6 +123,9 @@
          * Initialize plugin
          *
          * This is MANDATORY
+         * 
+         * @param {Object} options
+         * 
          */
         this.init = function(options) {
 
@@ -267,6 +270,10 @@
          * Register action.
          *
          * If register is successfull an email is sent to the given email adress
+         * 
+         * @param {String} email
+         * @param {String} username
+         * 
          */
         this.register = function(email, username) {
 
