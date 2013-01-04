@@ -74,6 +74,11 @@
         this.onClose = options.onClose;
         
         /*
+         * Where to display popup
+         */
+        this.parent = options.parent || M.$mcontainer;
+        
+        /*
          * True to display a generic popup (see mapshup.css .tools .generic definition)
          */
         this.generic = M.Util.getPropertyValue(options, "generic", true);
@@ -139,6 +144,7 @@
          * Popup z-index
          */
         this.zIndex = M.Util.getPropertyValue(options, "zIndex", 35900);
+        
         /*
          * Initialize Popup object
          */
@@ -162,7 +168,7 @@
              *      <div class="footer">
              *  </div>
              */
-            self.$d = M.Util.$$('#'+M.Util.getId(), M.$mcontainer).addClass('po').html((self.noHeader ? ''  : '<div class="header"></div>')+'<div class="body'+(self.generic ? ' generic' : '')+'"></div>' + (!self.noFooter ? '<div class="footer"></div>' : ''));
+            self.$d = M.Util.$$('#'+M.Util.getId(), self.parent).addClass('po').html((self.noHeader ? ''  : '<div class="header"></div>')+'<div class="body'+(self.generic ? ' generic' : '')+'"></div>' + (!self.noFooter ? '<div class="footer"></div>' : ''));
 
             /*
              * If popup is modal, set a semi transparent mask
@@ -177,7 +183,7 @@
                     'z-index':'38600'
                 });
                 
-                self.$m = M.Util.$$('#modmask',M.$container)
+                self.$m = M.Util.$$('#modmask', self.parent)
                 .addClass("mask")
                 .css(
                 {
@@ -536,7 +542,7 @@
         this.init(options);
         
         return this;
-    }
+    };
     
     
 })(window.M);
