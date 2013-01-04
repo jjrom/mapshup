@@ -35,12 +35,13 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-/*********************************************
+
+/**
  * Plugin WPSClient
  *
- * Assisted Classification of eArth observation ImAges
+ * @param {MapshupObject} M
  *
- *********************************************/
+ */
 (function(M) {
     
     M.Plugins.WPSClient = function() {
@@ -65,15 +66,9 @@
         this.items = [];
         
         /*
-         * Hashmap of running asynchronous processes stored by statusLocation url
-         * 
-         * Structure
-         *      {
-         *          process: // Running WPS Process reference
-         *          fn: // TimeOut function periodically called to update status
-         *      }
+         * Asynchronous Process Manager reference
          */
-        this.runningProcesses = [];
+        this.apm = null;
         
         /*
          * Initialization
@@ -103,17 +98,10 @@
             }
             
             /*
-             * Register to user signIn and signOut events for
-             * background processes 
+             * Set Asynchronous Processes Manager
              */
-            M.events.register("signin", self, function(scope) {
-                scope._signedIn = true;
-            });
-        
-            M.events.register("signout", self, function(scope) {
-                scope._signedIn = false;
-            });
-        
+            self.apm = new M.Plugins.WPSClient.asynchronousProcessManager(self);
+            
             return self;
             
         };
@@ -330,7 +318,7 @@
             /*
              * If user is signedIn also add an "Execute in background" button
              */
-            if (this._signedIn) {
+            if (this.apm._signedIn) {
                 executeBgId = M.Util.getId();
                 $('.execute', $('.describe', item.$d)).append('&nbsp;<img src="'+M.Util.getImgUrl('sleep.png')+'" id="'+executeBgId+'" class="button inline" jtitle="'+M.Util._("Execute process in background")+'"/>');
                 M.tooltip.add($('#' + executeBgId).click(function() {
@@ -486,57 +474,10 @@
             else if (process.status === "ProcessAccepted" && location) {
                 
                 /*
-                 * Be sure to avoid multiple registry of the same running process
-                 * The unicity is guaranted by the statusLocation which is unique for a given
-                 * process
+                 * Add a new process to the asynchronous manager
                  */
-                if (!this.runningProcesses[location]) {
-                    
-                    /*
-                     * Add an entry within the running process hashmap
-                     */
-                    this.runningProcesses[location] = {
-                        
-                        process:process,
-                        message:M.Util.message('<span class="status">' + process.title + " : " + M.Util._("Process accepted and running") + '</span>', -1),
-                        /*
-                         * Periodically check the Process Status (every 5 seconds) 
-                         */
-                        fn:setTimeout(function(){
-                            
-                           /*
-                            * Background execute request
-                            */
-                            $.ajax({
-                                url: M.Util.proxify(location, "XML"),
-                                async: true,
-                                type: "GET",
-                                dataType: "xml",
-                                contentType: "text/xml",
-                                success: function(xml) {
-
-                                    process.result = process.parseExecuteResponse(xml);
-
-                                    /*
-                                     * Result is null only if an ExceptionReport occured
-                                     */
-                                    if (process.result) {
-                                        process.wps.events.trigger("execute", process);
-                                    }
-                                
-                                },
-                                error: function(e) {
-                                    M.Util.message(e);
-                                }
-                            });
-                            
-                        }, 5000)
-                    
-                    };
+                return this.apm.add(process.wps.url, process.identifier, location);
                 
-                }
-                
-                return false;
             }
             /*
              * Synchronous case
@@ -546,13 +487,8 @@
                 /*
                  * An important task : remove asynchronous process if any !
                  */
-                var rp = this.runningProcesses[location];
-                if (rp) {
-                    clearTimeout(rp.fn);
-                    $('.status', rp.message).html(rp.process.title + " : " + M.Util._("Process finished"));
-                    delete this.runningProcesses[location];
-                }
-            
+                this.apm.remove(location);
+                
                 /*
                  * No result = nothing to update
                  */
@@ -1366,7 +1302,7 @@
         this.getLayer = function() {
             
             if (this._layer) {
-                return this._layer
+                return this._layer;
             }
             
             this._layer = M.Map.addLayer({
@@ -1415,4 +1351,183 @@
         
         return this;
     };
+    
+    /**
+     * WPSClient Asynchronous Process Manager
+     * 
+     * @param {WPSClientObject} wpsclient : WPSClient plugin instance reference
+     */
+    M.Plugins.WPSClient.asynchronousProcessManager = function(wpsclient) {
+        
+        /*
+         * Reference to the parent WPSClient instance
+         */
+        this.parent = wpsclient;
+        
+        /*
+         * Hashmap of running asynchronous processes stored by statusLocation url
+         * 
+         * Structure
+         *      {
+         *          process: // Running WPS Process reference
+         *          fn: // TimeOut function periodically called to update status
+         *      }
+         */
+        this.items = [];
+        
+        /**
+         * Initialize manager
+         */
+        this.init = function() {
+            
+            /*
+             * Register to user signIn and signOut events for
+             * background processes 
+             */
+            M.events.register("signin", this, function(scope, lm) {
+
+                /*
+                 * Tell WPSClient that user is signed in
+                 */
+                scope._signedIn = true;
+
+                /*
+                 * Add a new entry in the UserManagement userBar
+                 */
+                lm.add([{
+                        id: '#WPSClientPlugin',
+                        icon: M.Util.getImgUrl("execute.png"),
+                        title: "Processes",
+                        callback: function(scope) {
+                            //console.log(scope);
+                        }
+                    }]);
+
+            });
+
+            M.events.register("signout", this, function(scope) {
+
+                /*
+                 * Tell WPSClient that user is signed out
+                 */
+                scope._signedIn = false;
+
+            });
+
+            return this;
+            
+        };
+    
+        /**
+         * Add a process to the list of asynchronous processes
+         * 
+         * @param {String} wpsUrl : WPS url endpoint
+         * @param {String} processId : Process identifier (should be unique within WPS getCapabilities)
+         * @param {String} location : statusLocation url (should be unique)
+         */
+        this.add = function(wpsUrl, processId, location) {
+           
+           var parentItem = this.parent.items[wpsUrl], process;
+           
+           /*
+            * Paranoid mode
+            */
+           if (!parentItem || !parentItem.wps) {
+               return false;
+           }
+           
+           /*
+            * Get process reference
+            */
+           process = parentItem.wps.processes[processId];
+           
+           /*
+            * Paranoid mode
+            */
+           if (!process) {
+               return false;
+           }
+       
+           /*
+            * Be sure to avoid multiple registry of the same running process
+            * The unicity is guaranted by the statusLocation which is unique for a given
+            * process
+            */
+            if (!this.items[location]) {
+
+                /*
+                 * Great news for user :)
+                 */
+                M.Util.message('<span class="status">' + process.title + " : " + M.Util._("Process accepted and running") + '</span>');
+
+                /*
+                 * Add an entry within the running process hashmap
+                 */
+                this.items[location] = {
+                    
+                    process: process,
+                            
+                    /*
+                     * Periodically check the Process Status (every 5 seconds) 
+                     */
+                    fn: setTimeout(function() {
+
+                        /*
+                         * Background execute request
+                         */
+                        $.ajax({
+                            url: M.Util.proxify(location, "XML"),
+                            async: true,
+                            type: "GET",
+                            dataType: "xml",
+                            contentType: "text/xml",
+                            success: function(xml) {
+
+                                process.result = process.parseExecuteResponse(xml);
+
+                                /*
+                                 * Result is null only if an ExceptionReport occured
+                                 */
+                                if (process.result) {
+                                    process.wps.events.trigger("execute", process);
+                                }
+
+                            },
+                            error: function(e) {
+                                M.Util.message(e);
+                            }
+                        });
+
+                    }, 5000)
+
+                };
+
+            }
+                  
+        };
+    
+        /**
+         * Remove a process from the list of asynchronous processes
+         * 
+         * @param {String} location : statusLocation url (should be unique)
+         * 
+         */
+        this.remove = function(location) {
+            
+            var item = this.items[location];
+            
+            /*
+             * A clean remove means imperatively to first clear the TimeOut function !
+             */
+            if (item) {
+                clearTimeout(item.fn);
+                $('.status', item.message).html(item.process.title + " : " + M.Util._("Process finished"));
+                delete this.items[location];
+            }
+            
+        };
+        
+        return this.init();
+    };
+
 })(window.M);
