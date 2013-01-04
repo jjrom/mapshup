@@ -148,7 +148,7 @@
                          */
                         var panelItem = M.southPanel.add({
                             id:id,
-                            icon:M.Util.getImgUrl('configure.png'),
+                            icon:M.Util.getImgUrl('execute.png'),
                             title:wps.title,
                             classes:"wpsclient",
                             mask:true,
