@@ -38,6 +38,8 @@
 
 /**
  * Define mapshup events
+ * 
+ * @param {MapshupObject} M
  */
 (function (M) {
    
@@ -59,7 +61,19 @@
              * Array containing handlers to be call after
              * a map resize
              */
-            resizeend:[]
+            resizeend:[],
+            
+            /*
+             * Array containing handlers to be call after
+             * a successfull signIn - See UserManagement plugin
+             */
+            signin: [],
+                    
+            /*
+             * Array containing handlers to be call after
+             * a successfull signOut - See UserManagement plugin
+             */
+            signout: []
         };
         
         
@@ -86,43 +100,40 @@
          */
         this.unRegister = function(scope) {
             
-            var arr,
-                i,
-                key,
-                l;
+            var a,i,key,l;
                 
             for (key in this.events) {
-                arr = this.events[key];
-                for (i = 0, l = arr.length; i < l; i++) {
-                    if (arr[i].scope === scope) {
-                        arr.splice(i,1);
+                a = this.events[key];
+                for (i = 0, l = a.length; i < l; i++) {
+                    if (a[i].scope === scope) {
+                        a.splice(i,1);
                         break;
                     }
                 }
             }
+        
         };
         
         /*
          * Trigger handlers related to an event
          *
          * @param <String> eventname : Event name => 'resizeend'
+         * @param <Object> obj : extra object passed to the handler
          */
-        this.trigger = function(eventname) {
-            
-            var i,
-                l,
-                arr = this.events[eventname];
-            
+        this.trigger = function(eventname, obj) {
+
+            var i, a = this.events[eventname];
+
             /*
-             * Trigger resizeend to each handlers
+             * Trigger event to each handlers
              */
-            if (arr) {
-                for (i = 0, l = arr.length; i < l; i++) {
-                    arr[i].handler(arr[i].scope);
+            if (a) {
+                for (i = a.length; i--; ) {
+                    a[i].handler(a[i].scope, obj);
                 }
             }
-        }
-        
+        };
+
         /*
          * Create unique object instance
          */
@@ -130,5 +141,6 @@
         
         return this;
 
-    }
+    };
+
 })(window.M);
