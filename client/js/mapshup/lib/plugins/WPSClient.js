@@ -43,16 +43,16 @@
  *
  */
 (function(M) {
-    
+
     M.Plugins.WPSClient = function() {
-        
+
         /*
          * Only one WPSClient object instance is created
          */
         if (M.Plugins.WPSClient._o) {
             return M.Plugins.WPSClient._o;
         }
-        
+
         /*
          * Hashmap of WPS sources items store by WPS endpoint url
          * 
@@ -64,24 +64,24 @@
          *      }
          */
         this.items = [];
-        
+
         /*
          * Asynchronous Process Manager reference
          */
         this.apm = null;
-        
+
         /*
          * Initialization
          */
-        this.init = function (options) {
+        this.init = function(options) {
 
             var self = this;
-            
+
             /*
              * init options
              */
             self.options = options || {};
-            
+
             /*
              * If url are set - Retrieve GetCapabilities
              */
@@ -94,40 +94,40 @@
                         self.add(self.options.urls[i]);
                     }
                 }
-                
+
             }
-            
+
             /*
              * Set Asynchronous Processes Manager
              */
             self.apm = new M.Plugins.WPSClient.asynchronousProcessManager(self);
-            
+
             return self;
-            
+
         };
-        
+
         /*
          * Add a wps source from url
          */
         this.add = function(url) {
-            
+
             var wps;
-            
+
             /*
              * If url is set - Retrieve GetCapabilities
              */
             if (url) {
-                
+
                 /*
                  * Create a wps object
                  */
                 wps = new M.WPS(url);
-                
+
                 /*
-                * Register GetCapabilites event
-                */
+                 * Register GetCapabilites event
+                 */
                 wps.events.register("getcapabilities", this, function(scope, wps) {
-                    
+
                     /*
                      * Verify that WPS is really set
                      */
@@ -135,74 +135,74 @@
                         M.Util.message(wps.url + " : " + M.Util._("not available"));
                         return false;
                     }
-                
+
                     /*
                      * Avoid multiple getcapabilities respawn
                      */
                     if (!scope.items[url]) {
-                        
+
                         var id = M.Util.getId();
-                        
+
                         /*
                          * Create a panel for this WPS
                          */
                         var panelItem = M.southPanel.add({
-                            id:id,
-                            icon:M.Util.getImgUrl('execute.png'),
-                            title:wps.title,
-                            classes:"wpsclient",
-                            mask:true,
-                            html:'<div style="float:left;width:40%;"><div class="info"></div><div class="processes nano"><div class="content"></div></div></div><div style="float:right;width:60%;"><div class="describe">'+M.Util._("No process selected")+'</div><form method="POST" action="#"><div class="puts"></div></form><div class="outputs"></div></div>'
+                            id: id,
+                            icon: M.Util.getImgUrl('execute.png'),
+                            title: wps.title,
+                            classes: "wpsclient",
+                            mask: true,
+                            html: '<div style="float:left;width:40%;"><div class="info"></div><div class="processes nano"><div class="content"></div></div></div><div style="float:right;width:60%;"><div class="describe">' + M.Util._("No process selected") + '</div><form method="POST" action="#"><div class="puts"></div></form><div class="outputs"></div></div>'
                         });
-                        
+
                         /*
                          * Add a wps item to WPSClient
                          * with input url as the hash key
                          */
                         scope.items[url] = {
-                            $d:panelItem.$content,
-                            panelItem:panelItem,
-                            wps:wps
+                            $d: panelItem.$content,
+                            panelItem: panelItem,
+                            wps: wps
                         };
-                    
+
                         /*
-                        * Tell user that a new WPS panel is created
-                        */
+                         * Tell user that a new WPS panel is created
+                         */
                         M.Util.message(M.Util._("WPS server successfully added"));
                         M.southPanel.show(panelItem);
-                     
-                    }   
-                    
+
+                    }
+
                     scope.updateCapabilitiesContent(scope.items[url]);
-                    
+
                     return true;
-                    
+
                 });
-                
+
                 /*
-                * Register DescribeProcess event
-                */
+                 * Register DescribeProcess event
+                 */
                 wps.events.register("describeprocess", this, function(scope, processes) {
                     if ($.isArray(processes) && processes[0]) {
                         scope.updateDescribeProcessContent(processes[0]);
                     }
                 });
-            
+
                 /*
-                * Register Execute event
-                */
+                 * Register Execute event
+                 */
                 wps.events.register("execute", this, function(scope, process) {
                     scope.updateOutputContent(process);
                 });
-                
+
                 /*
                  * Retrieve capabilities
                  */
                 wps.getCapabilities();
             }
-            
+
         };
-        
+
         /*
          * Update content of input item.panelItem with GetCapabilities information 
          *           
@@ -235,9 +235,9 @@
          *  @param {Object} item
          */
         this.updateCapabilitiesContent = function(item) {
-            
+
             var id = M.Util.getId(), process, identifier, $processes;
-            
+
             /*
              * Set '.info' div
              * 
@@ -246,12 +246,12 @@
              * a mapshup message popup
              * 
              */
-            $('.info', item.$d).html('<h1><a href="'+item.wps.url+'" title="'+item.wps.url+'" target="_blank">'+item.wps.title+'</a></h1><p>'+M.Util.shorten(item.wps["abstract"], 100, true)+' [<a href="#" id="'+id+'">&nbsp;'+M.Util._("more")+'&nbsp;</a>]</p><br/><h1>'+M.Util._('Processes')+'</h1>');
-            $('#'+id).click(function(){
+            $('.info', item.$d).html('<h1><a href="' + item.wps.url + '" title="' + item.wps.url + '" target="_blank">' + item.wps.title + '</a></h1><p>' + M.Util.shorten(item.wps["abstract"], 100, true) + ' [<a href="#" id="' + id + '">&nbsp;' + M.Util._("more") + '&nbsp;</a>]</p><br/><h1>' + M.Util._('Processes') + '</h1>');
+            $('#' + id).click(function() {
                 M.Util.message(item.wps.toHTML(), -1);
                 return false;
             });
-            
+
             /*
              * Set '.processes' div
              * 
@@ -263,15 +263,15 @@
             for (identifier in item.wps.processes) {
                 id = M.Util.getId();
                 process = item.wps.processes[identifier];
-                $('.content', $processes).append('<a href="#" id="'+id+'" class="button inline">'+process.title+'</a> ');
-                (function(process,$id, item) {
+                $('.content', $processes).append('<a href="#" id="' + id + '" class="button inline">' + process.title + '</a> ');
+                (function(process, $id, item) {
                     $id.click(function() {
                         $('a', $(this).parent()).removeClass('active');
                         $(this).addClass('active');
                         item.wps.describeProcess(process.identifier);
                         return false;
                     });
-                
+
                     /*
                      * Add tooltip with abstract 
                      */
@@ -279,17 +279,17 @@
                         $id.attr('jtitle', process['abstract']);
                         M.tooltip.add($id, 's');
                     }
-                
-                })(process,$('#'+id), item);
+
+                })(process, $('#' + id), item);
             }
-            
+
             /*
              * Add a nice scrollbar :)
              */
             $processes.nanoScroller();
-            
+
         };
-        
+
         /*
          * Update content of process description panel contained
          * within 'describe' CSS class
@@ -297,16 +297,16 @@
          *  @param {Object} process : M.WPS.Process 
          */
         this.updateDescribeProcessContent = function(process) {
-            
+
             var type, putsDescription, i, j, l, id, $id, put, $list, executeId = M.Util.getId(), executeBgId, item = this.items[process.wps.url], abstract = process["abstract"];
-            
+
             /*
              * Set '.info' div
              * 
              * Display Process title and abstract.
              */
-            $('.describe', item.$d).html('<h1 title="'+process.identifier+'">'+process.title+'</h1><p>' + (abstract ? abstract : '') + '</p><div class="execute"><img src="'+M.Util.getImgUrl('execute.png')+'" id="'+executeId+'" class="button inline" jtitle="'+M.Util._("Execute process")+'"/></div>');
-            
+            $('.describe', item.$d).html('<h1 title="' + process.identifier + '">' + process.title + '</h1><p>' + (abstract ? abstract : '') + '</p><div class="execute"><img src="' + M.Util.getImgUrl('execute.png') + '" id="' + executeId + '" class="button inline" jtitle="' + M.Util._("Execute process") + '"/></div>');
+
             /*
              * Set execute button
              */
@@ -314,19 +314,19 @@
                 process.execute();
                 return false;
             }), 'n', 20);
-            
+
             /*
              * If user is signedIn also add an "Execute in background" button
              */
             if (this.apm._signedIn) {
                 executeBgId = M.Util.getId();
-                $('.execute', $('.describe', item.$d)).append('&nbsp;<img src="'+M.Util.getImgUrl('sleep.png')+'" id="'+executeBgId+'" class="button inline" jtitle="'+M.Util._("Execute process in background")+'"/>');
+                $('.execute', $('.describe', item.$d)).append('&nbsp;<img src="' + M.Util.getImgUrl('sleep.png') + '" id="' + executeBgId + '" class="button inline" jtitle="' + M.Util._("Execute process in background") + '"/>');
                 M.tooltip.add($('#' + executeBgId).click(function() {
                     process.execute({storeExecute: true});
                     return false;
                 }), 'n', 20);
             }
-            
+
             /*
              * Set '.puts' div
              * 
@@ -359,20 +359,20 @@
              *      </div>      
              * 
              */
-            $list = $('.list', $('.puts', item.$d).html('<h1>'+M.Util._('Set inputs')+'</h1><div class="list nano"><div class="content"></div></div>'));
-            
+            $list = $('.list', $('.puts', item.$d).html('<h1>' + M.Util._('Set inputs') + '</h1><div class="list nano"><div class="content"></div></div>'));
+
             /*
              * Roll over dataInputs and processOutputs
              */
             type = 'input';
             putsDescription = process.dataInputsDescription;
             for (j = 0; j < 2; j++) {
-                
+
                 if (j === 1) {
                     type = 'output';
                     putsDescription = process.processOutputsDescription;
                 }
-                
+
                 for (i = 0, l = putsDescription.length; i < l; i++) {
 
                     put = putsDescription[i];
@@ -385,13 +385,13 @@
                      * execute query.
                      * 
                      */
-                    $('.content', $list).append('<span id="'+id+'" class="'+type+'"><span class="title" jtitle="'+put['abstract']+'">'+(put['title'] || put['identifier'])+'&nbsp;:&nbsp;</span></span> ');
+                    $('.content', $list).append('<span id="' + id + '" class="' + type + '"><span class="title" jtitle="' + put['abstract'] + '">' + (put['title'] || put['identifier']) + '&nbsp;:&nbsp;</span></span> ');
 
                     /*
                      * Attach Input identifier to the 'input' div
                      * This is done by using the jQuery .data() function
                      */
-                    $id = $("#"+id).data('identifier', put['identifier']);
+                    $id = $("#" + id).data('identifier', put['identifier']);
 
                     /*
                      * Add a tooltip on the input title
@@ -420,14 +420,14 @@
 
                 }
             }
-            
+
             /*
              * Add nice scrollbars :)
              */
             $list.nanoScroller();
-        
+
         };
-        
+
         /**
          * Update Output content
          * 
@@ -453,9 +453,9 @@
          * 
          */
         this.updateOutputContent = function(process) {
-            
+
             var i, l, geoType, result, item = this.items[process.wps.url], $outputsList = $('.output', item.$d), location = process.statusLocation;
-            
+
             /*
              * Process failed - the very easy part :)
              */
@@ -472,30 +472,30 @@
              * When the process is finished, the user is notified and the TimeOut function is removed
              */
             else if (process.status === "ProcessAccepted" && location) {
-                
+
                 /*
                  * Add a new process to the asynchronous manager
                  */
                 return this.apm.add(process.wps.url, process.identifier, location);
-                
+
             }
             /*
              * Synchronous case
              */
             else if (process.status === "ProcessSucceeded") {
-                
+
                 /*
                  * An important task : remove asynchronous process if any !
                  */
                 this.apm.remove(location);
-                
+
                 /*
                  * No result = nothing to update
                  */
                 if (!$.isArray(process.result)) {
                     return false;
                 }
-        
+
                 /*
                  * Update each Output DOM element that are identified in the process.result array
                  */
@@ -512,9 +512,9 @@
                         /*
                          * Searh within jQuery data('identifier')
                          */
-                        $outputsList.each(function(){
+                        $outputsList.each(function() {
                             if ($(this).data('identifier') === result.identifier && result.data) {
-                                $('#'+$(this).attr('id')+'v').html(result.data.value);
+                                $('#' + $(this).attr('id') + 'v').html(result.data.value);
                             }
                         });
 
@@ -523,11 +523,11 @@
                          */
                         geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
                         if (geoType === 'GML') {
-                            this.load(M.Map.Util.GML.toGeoJSON(result.data.value,{
-                                title:process.title,
-                                processid:process.identifier,
-                                description:process["abstract"],
-                                time:(new Date()).toISOString()
+                            this.load(M.Map.Util.GML.toGeoJSON(result.data.value, {
+                                title: process.title,
+                                processid: process.identifier,
+                                description: process["abstract"],
+                                time: (new Date()).toISOString()
                             }));
                         }
 
@@ -537,26 +537,26 @@
                      */
                     else if (result.reference) {
                         var id = M.Util.getId(),
-                            popup = new M.Popup({
-                            modal:false,
-                            noHeader:true,
-                            autoSize:true,
-                            body:process.title + ' <a id="'+id+'" href="'+result.reference.href+'" class="button inline colored paddedright" target="_blank">'+ M.Util._("Download result") + '</a>'
+                                popup = new M.Popup({
+                        modal:false,
+                                noHeader:true,
+                                autoSize:true,
+                                body:process.title + ' <a id="' + id + '" href="' + result.reference.href + '" class="button inline colored paddedright" target="_blank">' + M.Util._("Download result") + '</a>'
                         }).show();
-                        $('#'+id).click(function(){
+                        $('#' + id).click(function() {
                             popup.hide();
                         });
 
                     }
 
                 }
-            
+
             } // End of synchronous case
-            
+
             return true;
-            
+
         };
-        
+
         /**
          * Append form for LiteralData within $parent container
          * 
@@ -565,7 +565,7 @@
          *      {
          *          anyValue: // ???
          *          dataType: // dataType (mandatory)
-	 *          defaultValue: // default value set in the input text box
+         *          defaultValue: // default value set in the input text box
          *          reference: // reference url for the dataType (display as link for dataType)
          *          UOMs:{
          *              default: // default Unit of Measure
@@ -586,104 +586,104 @@
          *      
          */
         this.displayLiteralData = function(process, put, $parent) {
-            
+
             var type = 'input', data = put.literalData, id = M.Util.getId(), $id, $uom, $av, i, l, self = this;
-            
+
             /*
              * Store Input type within $parent.data()
              */
             $parent.data('type', 'LiteralData');
-            
+
             /*
-            * Set content i.e. add a 'Set value' action except if allowedValues is set.
-            * In this case, set a select box with a finite list of elements
-            */
+             * Set content i.e. add a 'Set value' action except if allowedValues is set.
+             * In this case, set a select box with a finite list of elements
+             */
             if (data.allowedValues) {
-                
+
                 /*
                  * Create a <select> form
                  */
-                $parent.append('<span class="paddedleft"><select id="'+id+'av"></select></span>');
-                
+                $parent.append('<span class="paddedleft"><select id="' + id + 'av"></select></span>');
+
                 /*
-                * Store allowedValues value for parent $parent on change selection within .data() store
-                */
-                $av = $('#'+id+'av').change(function(){
+                 * Store allowedValues value for parent $parent on change selection within .data() store
+                 */
+                $av = $('#' + id + 'av').change(function() {
                     $parent.data('data', $(this).val());
                     self.setPuts(process, type);
                 });
-                     
-                for (i = 0, l = data.allowedValues.length; i< l; i++) {
+
+                for (i = 0, l = data.allowedValues.length; i < l; i++) {
                     (function($av, v, d) {
-                        
+
                         /*
                          * Add a new option in the select form
                          */
-                        $av.append('<option value="'+v+'">'+v+'</option>');
-                        
+                        $av.append('<option value="' + v + '">' + v + '</option>');
+
                         /*
                          * The default UOM is selected within the list of possible UOMs
                          */
                         if (v === d) {
                             $('option:last-child', $av).attr("selected", "selected").change();
                         }
-                        
+
                     })($av, data.allowedValues[i].value, data.defaultValue);
                 }
                 $av.trigger('change');
             }
             else {
-                $parent.append('<span id="'+id+'" class="hover" title="'+M.Util._("Change value")+'">'+(data.defaultValue || M.Util._("Not set"))+'</span>');
-                $id = $('#'+id);
+                $parent.append('<span id="' + id + '" class="hover" title="' + M.Util._("Change value") + '">' + (data.defaultValue || M.Util._("Not set")) + '</span>');
+                $id = $('#' + id);
             }
-            
+
             /*
              * Set the Units of Measure if specified
              */
             if (data.UOMs) {
-                
+
                 /*
                  * Create a <select> form
                  */
-                $parent.append('<span class="paddedleft"><select id="'+id+'uom"></select></span>');
-                
+                $parent.append('<span class="paddedleft"><select id="' + id + 'uom"></select></span>');
+
                 /*
-                * Store UOM value for parent $parent on change selection within .data() store
-                */
-                $uom = $('#'+id+'uom').change(function(){
+                 * Store UOM value for parent $parent on change selection within .data() store
+                 */
+                $uom = $('#' + id + 'uom').change(function() {
                     $parent.data('uom', $(this).val());
                     self.setPuts(process, type);
                 });
-                     
-                for (i = 0, l = data.UOMs.supported.length; i< l; i++) {
+
+                for (i = 0, l = data.UOMs.supported.length; i < l; i++) {
                     (function($uom, v, d) {
-                        
+
                         /*
                          * Add a new option in the select form
                          */
-                        $uom.append('<option value="'+v+'">'+v+'</option>');
-                        
+                        $uom.append('<option value="' + v + '">' + v + '</option>');
+
                         /*
                          * The default UOM is selected within the list of possible UOMs
                          */
                         if (v === d) {
                             $('option:last-child', $uom).attr("selected", "selected").change();
                         }
-                        
+
                     })($uom, data.UOMs.supported[i], data.UOMs["default"]);
                 }
-                
+
             }
-            
+
             /*
              * This only make sense if $id is set (i.e. if there are no allowedValues select)
              */
             if ($id) {
-                
+
                 /*
-                * Switch between hilite and warning classes depending
-                * if input literealData has a default value or not
-                */
+                 * Switch between hilite and warning classes depending
+                 * if input literealData has a default value or not
+                 */
                 if (!data.defaultValue) {
                     $id.removeClass('hilite').addClass('warning');
                 }
@@ -699,14 +699,14 @@
                 $id.click(function(e) {
 
                     M.Util.askFor({
-                        title:put.title,
-                        content:put["abstract"] + '<br/><br/>' + M.Util._("Enter a valid")+' <a href="'+data.reference+'" target="_blank">'+data.dataType+'</a>',
-                        dataType:data.dataType,
+                        title: put.title,
+                        content: put["abstract"] + '<br/><br/>' + M.Util._("Enter a valid") + ' <a href="' + data.reference + '" target="_blank">' + data.dataType + '</a>',
+                        dataType: data.dataType,
                         /* TODO */
-                        bounds:data.bounds,
-                        size:5,
-                        value:$id.text(),
-                        callback:function(v){
+                        bounds: data.bounds,
+                        size: 5,
+                        value: $id.text(),
+                        callback: function(v) {
 
                             /*
                              * Value is set
@@ -720,8 +720,8 @@
                                 $id.html(v).addClass('hilite').removeClass('warning');
 
                                 /*
-                                  * Store new value and update process accordingly
-                                  */
+                                 * Store new value and update process accordingly
+                                 */
                                 $parent.data('data', v);
                                 self.setPuts(process, type);
                             }
@@ -730,11 +730,11 @@
 
                     return false;
                 });
-            
+
             }
-            
+
         };
-       
+
         /**
          * Append form for LiteralOutput within $parent container 
          * 
@@ -743,7 +743,7 @@
          *      {
          *          anyValue: // ???
          *          dataType: // dataType (mandatory)
-	 *          defaultValue: // default value set in the input text box
+         *          defaultValue: // default value set in the input text box
          *          reference: // reference url for the dataType (display as link for dataType)
          *          UOMs:{
          *              default: // default Unit of Measure
@@ -764,64 +764,64 @@
          *      
          */
         this.displayLiteralOutput = function(process, put, $parent) {
-            
+
             var type = 'output', data = put.literalOutput, id = $parent.attr('id'), $uom, self = this;
-            
+
             /*
              * Store Input type within $parent.data()
              */
             $parent.data('type', 'LiteralOutput');
-            
+
             /*
-            * Set content i.e. add a 'Set value' action
-            */
-            $parent.append('<span id="'+id+'v" class="bold">---</span>');
-            
+             * Set content i.e. add a 'Set value' action
+             */
+            $parent.append('<span id="' + id + 'v" class="bold">---</span>');
+
             /*
              * Add output to process
              */
             self.setPuts(process, type);
-            
+
             /*
              * Set the Units of Measure if specified
              */
             if (data.UOMs) {
-                
+
                 /*
                  * Create a <select> form
                  */
-                $parent.append('<span class="paddedleft"><select id="'+id+'vuom"></select></span>');
-                
+                $parent.append('<span class="paddedleft"><select id="' + id + 'vuom"></select></span>');
+
                 /*
-                * Store UOM value for parent $parent on change selection within .data() store
-                */
-                $uom = $('#'+id+'vuom').change(function(){
+                 * Store UOM value for parent $parent on change selection within .data() store
+                 */
+                $uom = $('#' + id + 'vuom').change(function() {
                     $parent.data('uom', $(this).val());
                     self.setPuts(process, type);
                 });
-                     
-                for (var i = 0, l = data.UOMs.supported.length; i< l; i++) {
+
+                for (var i = 0, l = data.UOMs.supported.length; i < l; i++) {
                     (function($uom, v, d) {
-                        
+
                         /*
                          * Add a new option in the select form
                          */
-                        $uom.append('<option value="'+v+'">'+v+'</option>');
-                        
+                        $uom.append('<option value="' + v + '">' + v + '</option>');
+
                         /*
                          * The default UOM is selected within the list of possible UOMs
                          */
                         if (v === d) {
                             $('option:last-child', $uom).attr("selected", "selected").change();
                         }
-                        
+
                     })($uom, data.UOMs.supported[i], data.UOMs["default"]);
                 }
-                
+
             }
 
         };
-        
+
         /**
          * Append form for ComplexData within $parent container 
          * 
@@ -858,7 +858,7 @@
          *      
          */
         this.displayComplexData = function(process, put, $parent) {
-            
+
             var type = 'input',
                     data = put.complexData,
                     id = M.Util.getId(),
@@ -868,65 +868,65 @@
                     selectText = M.Util._("Select feature on Map"),
                     uploadText = M.Util._("Upload"),
                     self = this;
-            
+
             /*
              * Store Input type within $parent.data()
              */
             $parent.data('type', 'ComplexData');
-            
+
             /*
-            * Set content i.e. add an 'Upload' action
-            */
-            $parent.append('<img class="hover middle" src="'+M.Util.getImgUrl('upload.png')+'" id="'+id+'" title="'+uploadText+'"/>');
-            
+             * Set content i.e. add an 'Upload' action
+             */
+            $parent.append('<img class="hover middle" src="' + M.Util.getImgUrl('upload.png') + '" id="' + id + '" title="' + uploadText + '"/>');
+
             /*
              * Ask for value on click
              */
-            $('#'+id)
-            .removeClass('hilite')
-            .addClass('warning')
-            .click(function(e) {
+            $('#' + id)
+                    .removeClass('hilite')
+                    .addClass('warning')
+                    .click(function(e) {
 
                 M.Util.askFor({
-                    title:put.title,
-                    dataType:"complexData",
-                    defaultFormat:data["default"],
-                    maximumMegabytes:data.maximumMegabytes,
-                    supportedFormats:data.supported,
-                    file:$parent.data('file'),
-                    fileUrl:$parent.data('fileUrl'),
-                    upload:true, // Upload data to server to get a fileURL
-                    callback:function(data){
-                       
+                    title: put.title,
+                    dataType: "complexData",
+                    defaultFormat: data["default"],
+                    maximumMegabytes: data.maximumMegabytes,
+                    supportedFormats: data.supported,
+                    file: $parent.data('file'),
+                    fileUrl: $parent.data('fileUrl'),
+                    upload: true, // Upload data to server to get a fileURL
+                    callback: function(data) {
+
                         /*
                          * Data can be either a File object or an url
                          * Note that if upload is set to true in askFor parameter,
                          * then data should only be a fileUrl
                          */
                         if (data.file || data.fileUrl) {
-                            
+
                             /*
                              * Update link content 
                              */
-                            $('#'+id).attr('title', data.file ? data.file.name : data.fileUrl).addClass('hilite').removeClass('warning');
-                            $('#'+idgeoselect).attr('title',selectText).removeClass('hilite').addClass('warning');
-                            $('#'+idgeodraw).attr('title',drawText).removeClass('hilite').addClass('warning');
-                            
+                            $('#' + id).attr('title', data.file ? data.file.name : data.fileUrl).addClass('hilite').removeClass('warning');
+                            $('#' + idgeoselect).attr('title', selectText).removeClass('hilite').addClass('warning');
+                            $('#' + idgeodraw).attr('title', drawText).removeClass('hilite').addClass('warning');
+
                             /*
                              * Store file or fileUrl within parent data cache
                              */
                             data.file ? $parent.removeData('fileUrl').data('file', data.file) : $parent.removeData('file').data('fileUrl', data.fileUrl);
-                            
+
                             self.setPuts(process, type);
-                            
+
                         }
-                        
+
                     }
                 });
-                
+
                 return false;
             });
-            
+
             /*
              * Special case of Geometries 
              * 
@@ -935,60 +935,60 @@
              * 
              */
             if (data["default"] && M.Map.Util.getGeoType(data["default"].mimeType)) {
-                
+
                 var drawingPlugin = M.Plugins.Drawing && M.Plugins.Drawing._o ? M.Plugins.Drawing._o : null;
-                
-                $parent.append(' <img src="'+M.Util.getImgUrl('earth.png')+'" id="'+idgeoselect+'" class="hover middle" title="'+selectText+'"/>');
-                
+
+                $parent.append(' <img src="' + M.Util.getImgUrl('earth.png') + '" id="' + idgeoselect + '" class="hover middle" title="' + selectText + '"/>');
+
                 /*
                  * Select geometry within the map
                  */
-                $('#'+idgeoselect)
-                .removeClass('hilite')
-                .addClass('warning')
-                .click(function(e) {
-                    
+                $('#' + idgeoselect)
+                        .removeClass('hilite')
+                        .addClass('warning')
+                        .click(function(e) {
+
                     var $mask = self.items[process.wps.url].panelItem.$mask;
-                    
+
                     /*
                      * Set a callback function on FeatureInfo
                      */
                     M.Map.featureInfo.bypassCallback = function(feature) {
-                        
+
                         /*
                          * Hide mask
                          */
                         $mask.hide();
                         M.Map.featureInfo.bypassCallback = null;
-                        
+
                         /*
                          * Update "Select on map" action display and store feature in the .data() cache
                          */
                         if (feature) {
-                            
-                            $('#'+id).attr('title',uploadText).removeClass('hilite').addClass('warning');
-                            $('#'+idgeodraw).attr('title',drawText).removeClass('hilite').addClass('warning');
-                            $('#'+idgeoselect).attr('title',M.Map.Util.Feature.getTitle(feature)).addClass('hilite').removeClass('warning');
-                            
+
+                            $('#' + id).attr('title', uploadText).removeClass('hilite').addClass('warning');
+                            $('#' + idgeodraw).attr('title', drawText).removeClass('hilite').addClass('warning');
+                            $('#' + idgeoselect).attr('title', M.Map.Util.Feature.getTitle(feature)).addClass('hilite').removeClass('warning');
+
                             /*
                              * Store file or fileUrl within parent data cache
                              */
                             $parent
-                            .removeData('fileUrl')
-                            .data('data', M.Map.Util.Feature.toGeo(feature, data["default"]))
-                            .data('format', data["default"]);
+                                    .removeData('fileUrl')
+                                    .data('data', M.Map.Util.Feature.toGeo(feature, data["default"]))
+                                    .data('format', data["default"]);
                             self.setPuts(process, type);
-                            
+
                         }
                     };
-                    
+
                     /*
                      * Show mask
                      */
                     $mask
-                    .html('<div class="content">'+selectText+' (<a href="#" class="cancel">'+M.Util._("Cancel")+'<a/>)</div>')
-                    .show();
-                    
+                            .html('<div class="content">' + selectText + ' (<a href="#" class="cancel">' + M.Util._("Cancel") + '<a/>)</div>')
+                            .show();
+
                     /*
                      * Add a cancel action
                      */
@@ -996,58 +996,58 @@
                         M.Map.featureInfo.bypassCallback = null;
                         $mask.hide();
                     });
-                    
+
                     return false;
                 });
-                
+
                 /*
                  * Directly draw geometry on map
                  */
                 if (drawingPlugin) {
-                
-                    $parent.append(' <img src="'+M.Util.getImgUrl('drawing.png')+'" id="'+idgeodraw+'" class="hover middle" title="'+drawText+'"/>');
-                    
+
+                    $parent.append(' <img src="' + M.Util.getImgUrl('drawing.png') + '" id="' + idgeodraw + '" class="hover middle" title="' + drawText + '"/>');
+
                     var $mask = self.items[process.wps.url].panelItem.$mask;
-                    
+
                     /*
                      * Draw geometry within the map
                      */
-                    $('#'+idgeodraw)
-                    .removeClass('hilite')
-                    .addClass('warning')
-                    .click(function(e) {
+                    $('#' + idgeodraw)
+                            .removeClass('hilite')
+                            .addClass('warning')
+                            .click(function(e) {
 
                         /*
-                        * Show mask
-                        */
-                       $mask
-                       .html('<div class="content">'+drawText+' (<a href="#" class="cancel">'+M.Util._("Cancel")+'<a/>)</div>')
-                       .show();
+                         * Show mask
+                         */
+                        $mask
+                                .html('<div class="content">' + drawText + ' (<a href="#" class="cancel">' + M.Util._("Cancel") + '<a/>)</div>')
+                                .show();
 
-                       /*
-                        * Add a cancel action
-                        */
-                       $('.cancel', $mask).click(function(e) {
-                           M.Map.resetControl();
-                           if (drawingPlugin.askPopup) {
-                               drawingPlugin.askPopup.hide();
-                           }
-                           $mask.hide();
-                       });
-                   
+                        /*
+                         * Add a cancel action
+                         */
+                        $('.cancel', $mask).click(function(e) {
+                            M.Map.resetControl();
+                            if (drawingPlugin.askPopup) {
+                                drawingPlugin.askPopup.hide();
+                            }
+                            $mask.hide();
+                        });
+
                         /*
                          * Trigger Drawing plugin 
                          * Set the bypassOnFeatureAdded
                          */
                         drawingPlugin.bypass(function(event) {
-                            
+
                             /*
                              * Update "Select on map" action display and store feature in the .data() cache
                              */
                             if (event.feature) {
 
                                 $('#' + id).attr('title', uploadText).removeClass('hilite').addClass('warning');
-                                $('#'+idgeoselect).attr('title', selectText).removeClass('hilite').addClass('warning');
+                                $('#' + idgeoselect).attr('title', selectText).removeClass('hilite').addClass('warning');
                                 $('#' + idgeodraw).attr('title', M.Map.Util.Feature.getTitle(event.feature)).addClass('hilite').removeClass('warning');
 
                                 /*
@@ -1057,21 +1057,21 @@
                                 self.setPuts(process, type);
 
                             }
-                        
+
                             $mask.hide();
-                            
+
                         });
-                    
+
                         drawingPlugin.askType(true);
-                        
+
                     });
-                
+
                 }
-                
+
             }
-            
+
         };
-    
+
         /**
          * Append form for BoundingBoxData within $parent container 
          * 
@@ -1088,10 +1088,10 @@
          *      
          */
         this.displayBoundingBoxData = function(process, put, $parent) {
-            
+
             var type = 'input', data = put.complexData, idgeoselect = M.Util.getId(), idgeodraw = M.Util.getId(), self = this;
             var drawboxPlugin = M.Plugins.DrawBox && M.Plugins.DrawBox._o ? M.Plugins.DrawBox._o : null;
-                        
+
             /*
              * Store Input type within $parent.data()
              */
@@ -1102,7 +1102,7 @@
              * Select map view as the bounding box
              */
             $('#' + idgeoselect).removeClass('hilite').addClass('warning').click(function(e) {
-                
+
                 $('#' + idgeodraw).removeClass('hilite').addClass('warning');
                 $('#' + idgeoselect).addClass('hilite').removeClass('warning');
 
@@ -1113,7 +1113,7 @@
                 //$parent.data('data', M.Map.Util.Feature.toGeo(event.feature, data["default"])).data('format', data["default"]);
                 //self.setPuts(process, type);
             });
-            
+
             /*
              * DrawBox on map
              */
@@ -1133,7 +1133,7 @@
                      */
                     $mask.html('<div class="content">' + M.Util._("Draw a bounding box on map") + ' (<a href="#" class="cancel">' + M.Util._("Cancel") + '<a/>)</div>').show();
 
-                    drawboxPlugin.draw(function(feature, bbox){
+                    drawboxPlugin.draw(function(feature, bbox) {
                         alert(bbox);
                     });
 
@@ -1150,9 +1150,9 @@
                 });
 
             }
-            
+
         };
-        
+
         /**
          * Append form for complexOutput within $parent container 
          * 
@@ -1180,24 +1180,24 @@
          *      
          */
         this.displayComplexOutput = function(process, put, $parent) {
-            
+
             var type = 'output', data = put.complexOutput, id = $parent.attr('id'), self = this;
-            
+
             /*
              * In any case store parent type and mimeType
              */
             $parent.data('mimeType', data["default"].mimeType)
-            .data('type', 'ComplexOutput');
-            
+                    .data('type', 'ComplexOutput');
+
             /*
              * Geometrical output options are not displayed within $parent
              */
-            if (M.Map.Util.getGeoType(data["default"].mimeType)){
+            if (M.Map.Util.getGeoType(data["default"].mimeType)) {
                 self.setPuts(process, type);
                 $parent.hide();
             }
             else {
-           
+
                 /*
                  * Add output to process
                  */
@@ -1206,23 +1206,23 @@
                 /*
                  * Create a <select> form
                  */
-                $parent.append('<span class="paddedleft"><select id="'+id+'vmtype"></select></span>');
+                $parent.append('<span class="paddedleft"><select id="' + id + 'vmtype"></select></span>');
 
                 /*
-                * Store mimeType value for parent $parent on change selection within .data() store
-                */
-                $mtype = $('#'+id+'vmtype').change(function(){
+                 * Store mimeType value for parent $parent on change selection within .data() store
+                 */
+                $mtype = $('#' + id + 'vmtype').change(function() {
                     $parent.data('mimeType', $(this).val());
                     self.setPuts(process, type);
                 });
 
-                for (var i = 0, l = data.supported.length; i< l; i++) {
+                for (var i = 0, l = data.supported.length; i < l; i++) {
                     (function($mtype, v, d) {
 
                         /*
                          * Add a new option in the select form
                          */
-                        $mtype.append('<option value="'+v+'">'+v+'</option>');
+                        $mtype.append('<option value="' + v + '">' + v + '</option>');
 
                         /*
                          * The default mimeType is selected within the list of possible mimeTypes
@@ -1235,8 +1235,8 @@
                 }
             }
         };
-        
-        
+
+
         /**
          * Update inputs or outputs list for process
          * 
@@ -1247,7 +1247,7 @@
         this.setPuts = function(process, type) {
             type === 'input' ? this.setInputs(process) : this.setOutputs(process);
         };
-        
+
         /**
          * Update inputs list for process
          * 
@@ -1255,23 +1255,23 @@
          *
          */
         this.setInputs = function(process) {
-            
+
             /*
              * Clear process list
              */
             process.clearInputs();
-            
+
             /*
              * Populate process inputs list with
              * the .data() content of each process Input
              * identified by 'input' CSS class
              */
-            $('.input', this.items[process.wps.url].$d).each(function(){
+            $('.input', this.items[process.wps.url].$d).each(function() {
                 process.addInput($(this).data());
             });
-           
+
         };
-        
+
         /**
          * Update outputs list for process
          * 
@@ -1279,91 +1279,96 @@
          *
          */
         this.setOutputs = function(process) {
-            
+
             /*
              * Clear process list
              */
             process.clearOutputs();
-            
+
             /*
              * Populate process outputs list with
              * the .data() content of each process Input
              * identified by 'input' CSS class
              */
-            $('.output', this.items[process.wps.url].$d).each(function(){
+            $('.output', this.items[process.wps.url].$d).each(function() {
                 process.addOutput($(this).data());
             });
-            
+
         };
-        
+
         /*
          * Return layer to display Geometries results
          */
         this.getLayer = function() {
-            
+
             if (this._layer) {
                 return this._layer;
             }
-            
+
             this._layer = M.Map.addLayer({
-                type:"GeoJSON",
-                title:"WPS results",
-                clusterized:false, // Very important !
-                editable:true,
-                ol:{
+                type: "GeoJSON",
+                title: "WPS results",
+                clusterized: false, // Very important !
+                editable: true,
+                ol: {
                     styleMap: new OpenLayers.StyleMap({
-                        'default':{
-                            strokeColor:'white',
+                        'default': {
+                            strokeColor: 'white',
                             strokeWidth: 1,
-                            fillColor:'red',
+                            fillColor: 'red',
                             fillOpacity: 0.2,
-                            pointRadius:5
+                            pointRadius: 5
                         }
                     })
                 }
             });
-            
+
             return this._layer;
         };
-        
+
         /*
          * Add GeoJSON features within WPS result layer
          * 
          * @param {String} data : a GeoJSON string
          */
         this.load = function(data) {
-            
+
             /*
              * Add new feature(s) and center on it
              */
             M.Map.layerTypes["GeoJSON"].load({
-                data:data,
-                layer:this.getLayer(),
-                zoomOnNew:true
+                data: data,
+                layer: this.getLayer(),
+                zoomOnNew: true
             });
-            
+
         };
-        
+
         /*
          * Set unique instance
          */
         M.Plugins.WPSClient._o = this;
-        
+
         return this;
     };
-    
+
     /**
      * WPSClient Asynchronous Process Manager
      * 
      * @param {WPSClientObject} wpsclient : WPSClient plugin instance reference
      */
     M.Plugins.WPSClient.asynchronousProcessManager = function(wpsclient) {
-        
+
         /*
          * Reference to the parent WPSClient instance
          */
         this.parent = wpsclient;
         
+        /*
+         * Reference to the UserManagement plugin instance
+         */
+        this.um = null;
+
         /*
          * Hashmap of running asynchronous processes stored by statusLocation url
          * 
@@ -1374,12 +1379,12 @@
          *      }
          */
         this.items = [];
-        
+
         /**
          * Initialize manager
          */
         this.init = function() {
-            
+
             /*
              * Register to user signIn and signOut events for
              * background processes 
@@ -1390,6 +1395,11 @@
                  * Tell WPSClient that user is signed in
                  */
                 scope._signedIn = true;
+                
+                /*
+                 * Store the UserManagement plugin instance reference
+                 */
+                scope.um = um;
 
                 /*
                  * Add a new entry in the UserManagement userBar
@@ -1399,8 +1409,8 @@
                     icon: M.Util.getImgUrl("execute.png"),
                     title: "Processes",
                     hasPopup: true,
-                    callback: function(scope) {
-                        //console.log("huf");
+                    callback: function(um) {
+                        scope.updateUserBar();
                     }
                 }]);
 
@@ -1416,9 +1426,9 @@
             });
 
             return this;
-            
+
         };
-    
+
         /**
          * Add a process to the list of asynchronous processes
          * 
@@ -1427,33 +1437,33 @@
          * @param {String} location : statusLocation url (should be unique)
          */
         this.add = function(wpsUrl, processId, location) {
-           
-           var parentItem = this.parent.items[wpsUrl], process;
-           
-           /*
-            * Paranoid mode
-            */
-           if (!parentItem || !parentItem.wps) {
-               return false;
-           }
-           
-           /*
-            * Get process reference
-            */
-           process = parentItem.wps.processes[processId];
-           
-           /*
-            * Paranoid mode
-            */
-           if (!process) {
-               return false;
-           }
-       
-           /*
-            * Be sure to avoid multiple registry of the same running process
-            * The unicity is guaranted by the statusLocation which is unique for a given
-            * process
-            */
+
+            var self = this, parentItem = this.parent.items[wpsUrl], process;
+
+            /*
+             * Paranoid mode
+             */
+            if (!parentItem || !parentItem.wps) {
+                return false;
+            }
+
+            /*
+             * Get process reference
+             */
+            process = parentItem.wps.processes[processId];
+
+            /*
+             * Paranoid mode
+             */
+            if (!process) {
+                return false;
+            }
+
+            /*
+             * Be sure to avoid multiple registry of the same running process
+             * The unicity is guaranted by the statusLocation which is unique for a given
+             * process
+             */
             if (!this.items[location]) {
 
                 /*
@@ -1465,9 +1475,7 @@
                  * Add an entry within the running process hashmap
                  */
                 this.items[location] = {
-                    
                     process: process,
-                            
                     /*
                      * Periodically check the Process Status (every 5 seconds) 
                      */
@@ -1492,7 +1500,12 @@
                                 if (process.result) {
                                     process.wps.events.trigger("execute", process);
                                 }
-
+                                
+                                /*
+                                 * Update user bar 
+                                 */
+                                self.updateUserBar();
+                                
                             },
                             error: function(e) {
                                 M.Util.message(e);
@@ -1502,11 +1515,54 @@
                     }, 5000)
 
                 };
+            
+               /*
+                * Update user bar 
+                */
+               self.updateUserBar();
 
             }
-                  
+
         };
-    
+
+        /**
+         * Update userBar list
+         */
+        this.updateUserBar = function() {
+
+            if (!this.um) {
+                return false;
+            }
+            
+            /*
+             * Only update userBar if Processes list is visible
+             */
+            // TODO
+            /*
+             * Display Process list
+             */
+            var i, l = M.Util.getHashSize(this.items);
+            
+            /*
+             * Set UserManagement popup header
+             */
+            this.um.popup.$h.html(M.Util._("Running processes"));
+                            
+            /*
+             * Clear body
+             */
+            this.um.popup.$b.empty();
+
+            if (l === 0) {
+                this.um.popup.$b.html("No running process");
+            }
+            else {
+                for (i in this.items) {
+                    this.um.popup.append('<img src="' + M.Util.getImgUrl('loading.gif') + '" class="middle"/> ' + this.items[i].process.identifier + '</br>', 'body');
+                }
+            }
+        };
+
         /**
          * Remove a process from the list of asynchronous processes
          * 
@@ -1514,9 +1570,9 @@
          * 
          */
         this.remove = function(location) {
-            
+
             var item = this.items[location];
-            
+
             /*
              * A clean remove means imperatively to first clear the TimeOut function !
              */
@@ -1524,10 +1580,11 @@
                 clearTimeout(item.fn);
                 $('.status', item.message).html(item.process.title + " : " + M.Util._("Process finished"));
                 delete this.items[location];
+                this.updateUserBar();
             }
-            
+
         };
-        
+
         return this.init();
     };
 
