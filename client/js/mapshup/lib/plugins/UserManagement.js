@@ -148,7 +148,28 @@
              */
             self.$d = $('.userBar', M.$header);
             
-            /**
+            /*
+             * Create an empty UserManagement popup 
+             * below the userBar
+             */
+             self.popup = new M.Popup({
+                parent: $('#mwrapper'),
+                modal: false,
+                centered: false,
+                noHeader: true,
+                hideOnClose: true,
+                addCloseButton:false,
+                autoSize: true,
+                unbounded: true
+            });
+        
+            self.popup.$d.css({
+                'top':self.$d.offset().top + $('#theBar').outerHeight() + 5,
+                'right':$('#theBar .container').css('right'),
+                'width':300
+            });
+            
+            /*
              * Check for a connection cookie
              */
             userInfo = JSON.parse(M.Util.Cookie.get("userInfo"));
@@ -179,6 +200,7 @@
          *      id: // unique identifier
          *      icon: // icon url,
          *      title: // Displayed title on mouse over
+         *      hasPopup: // true to show popup on click (default false)
          *      callback: // function to execute on click
          * }
          */
@@ -207,8 +229,11 @@
                         }
                     }
                     
+                    /*
+                     * Add new item in userBar
+                     */
                     if (!update) {
-                        this.items.push(items[i]);
+                       this.items.push(items[i]);        
                     }
                 }
 
@@ -258,6 +283,31 @@
 
         };
 
+        /*
+         * Get a userBar item
+         * 
+         * @param id : id of item
+         * 
+         */
+        this.get = function(id) {
+            
+            if (!id) {
+                return null;
+            }
+        
+            /*
+             * Roll over items
+             */
+            for (var i = 0, l = this.items.length; i<l; i++) {
+                if (this.items[i].id === id) {
+                    return this.items[i];
+                }
+            }
+            
+            return null;
+
+        };
+        
         /*
          * Store context within cookie
          * 
@@ -558,9 +608,9 @@
              */
             for (i = self.items.length; i--;) {
                 (function(item, scope) {
-                                
+                    
                     if ($.isFunction(item.callback)) {
-                        
+                
                         scope.tb.add({
                             id:item.id,
                             icon:item.icon,
@@ -568,12 +618,13 @@
                             activable:false,
                             switchable:false,
                             callback:function() {
+                                scope.showHidePopup(item.id);
                                 item.callback(scope);
                             }
                         });
-                        
+                    
                     }
-
+                    
                 })(self.items[i], self);
             }
             
@@ -675,7 +726,38 @@
             return true;
             
         };
+    
+        /**
+         * Show or hide UserManagement popup
+         * 
+         * @param {String} id : item id
+         */
+        this.showHidePopup = function(id) {
+            
+            var item = this.get(id);
+            
+            if (!item) {
+                return;
+            }
         
+            /*
+             * _activeItem is the last clicked item
+             */
+            if (this._activeItem && this._activeItem.id === item.id) {
+                if (this.popup.$d.is(':visible')) {
+                    return this.popup.hide(true);
+                }
+            }
+            
+            /*
+             * Set the new active item
+             */
+            this._activeItem = item;
+            
+            return item.hasPopup ? this.popup.show() : this.popup.hide();
+        
+        };
+    
         /**
          * Open authentication popup window
          * TODO
