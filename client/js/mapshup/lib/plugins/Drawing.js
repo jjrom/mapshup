@@ -146,7 +146,7 @@
                         mode:OpenLayers.Control.ModifyFeature.RESHAPE
                     /*mode:OpenLayers.Control.ModifyFeature.RESHAPE | OpenLayers.Control.ModifyFeature.RESIZE | OpenLayers.Control.ModifyFeature.ROTATE | OpenLayers.Control.ModifyFeature.DRAG*/
                     })
-                }
+                };
             })(self.layer);
             
             for (key in controls) {
@@ -447,7 +447,7 @@
             /*
              * Show dialog drawing mode
              */
-            self.status = "draw"
+            self.status = "draw";
             self.showStatus();
                 
             /*
@@ -611,8 +611,9 @@
                 self.hideInfo = false;
                 M.Map.resetControl(self.control);
                 self.control = null;
-            }               
-        }
+            };
+            
+        };
     
         /*
          * Set unique instance
