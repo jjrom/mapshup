@@ -1384,7 +1384,7 @@
              * Register to user signIn and signOut events for
              * background processes 
              */
-            M.events.register("signin", this, function(scope, lm) {
+            M.events.register("signin", this, function(scope, um) {
 
                 /*
                  * Tell WPSClient that user is signed in
@@ -1394,14 +1394,15 @@
                 /*
                  * Add a new entry in the UserManagement userBar
                  */
-                lm.add([{
-                        id: '#WPSClientPlugin',
-                        icon: M.Util.getImgUrl("execute.png"),
-                        title: "Processes",
-                        callback: function(scope) {
-                            //console.log(scope);
-                        }
-                    }]);
+                um.add([{
+                    id: '#WPSClientPlugin',
+                    icon: M.Util.getImgUrl("execute.png"),
+                    title: "Processes",
+                    hasPopup: true,
+                    callback: function(scope) {
+                        //console.log("huf");
+                    }
+                }]);
 
             });
 
