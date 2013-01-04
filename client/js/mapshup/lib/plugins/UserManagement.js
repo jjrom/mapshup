@@ -216,9 +216,12 @@
                  * Recompute user bar
                  */
                 this.displayUserBar();
+                
+                return true;
+                
             }
             
-            return true;
+            return false;
             
         };
         
