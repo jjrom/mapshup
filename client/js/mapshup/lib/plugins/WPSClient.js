@@ -102,6 +102,18 @@
                 
             }
             
+            /*
+             * Register to user signIn and signOut events for
+             * background processes 
+             */
+            M.events.register("signin", self, function(scope) {
+                scope._signedIn = true;
+            });
+        
+            M.events.register("signout", self, function(scope) {
+                scope._signedIn = false;
+            });
+        
             return self;
             
         };
@@ -298,26 +310,34 @@
          */
         this.updateDescribeProcessContent = function(process) {
             
-            var type, putsDescription, i, j, l, id, $id, put, $list, executeId = M.Util.getId(), executeBgId = M.Util.getId(), item = this.items[process.wps.url], abstract = process["abstract"];
+            var type, putsDescription, i, j, l, id, $id, put, $list, executeId = M.Util.getId(), executeBgId, item = this.items[process.wps.url], abstract = process["abstract"];
             
             /*
              * Set '.info' div
              * 
              * Display Process title and abstract.
              */
-            $('.describe', item.$d).html('<h1 title="'+process.identifier+'">'+process.title+'</h1><p>' + (abstract ? abstract : '') + '</p><div class="execute"><img src="'+M.Util.getImgUrl('execute.png')+'" id="'+executeId+'" class="button inline" jtitle="'+M.Util._("Execute process")+'"/>&nbsp;<img src="'+M.Util.getImgUrl('sleep.png')+'" id="'+executeBgId+'" class="button inline" jtitle="'+M.Util._("Execute process in background")+'"/></div>');
+            $('.describe', item.$d).html('<h1 title="'+process.identifier+'">'+process.title+'</h1><p>' + (abstract ? abstract : '') + '</p><div class="execute"><img src="'+M.Util.getImgUrl('execute.png')+'" id="'+executeId+'" class="button inline" jtitle="'+M.Util._("Execute process")+'"/></div>');
             
             /*
-             * Action on execute button
+             * Set execute button
              */
             M.tooltip.add($('#' + executeId).click(function() {
                 process.execute();
                 return false;
             }), 'n', 20);
-            M.tooltip.add($('#' + executeBgId).click(function() {
-                process.execute({storeExecute: true});
-                return false;
-            }), 'n', 20);
+            
+            /*
+             * If user is signedIn also add an "Execute in background" button
+             */
+            if (this._signedIn) {
+                executeBgId = M.Util.getId();
+                $('.execute', $('.describe', item.$d)).append('&nbsp;<img src="'+M.Util.getImgUrl('sleep.png')+'" id="'+executeBgId+'" class="button inline" jtitle="'+M.Util._("Execute process in background")+'"/>');
+                M.tooltip.add($('#' + executeBgId).click(function() {
+                    process.execute({storeExecute: true});
+                    return false;
+                }), 'n', 20);
+            }
             
             /*
              * Set '.puts' div
