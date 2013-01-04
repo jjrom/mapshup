@@ -176,7 +176,7 @@
                             self.show(layer);
                         }
                     }
-                ]
+                ];
             }
             else {
                 return null;
