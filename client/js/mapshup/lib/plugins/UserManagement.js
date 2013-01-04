@@ -156,7 +156,7 @@
                 parent: $('#mwrapper'),
                 modal: false,
                 centered: false,
-                noHeader: true,
+                noHeader: false,
                 hideOnClose: true,
                 addCloseButton:false,
                 autoSize: true,
@@ -609,21 +609,19 @@
             for (i = self.items.length; i--;) {
                 (function(item, scope) {
                     
-                    if ($.isFunction(item.callback)) {
-                
-                        scope.tb.add({
-                            id:item.id,
-                            icon:item.icon,
-                            tt:item.title,
-                            activable:false,
-                            switchable:false,
-                            callback:function() {
-                                scope.showHidePopup(item.id);
+                    scope.tb.add({
+                        id:item.id,
+                        icon:item.icon,
+                        tt:item.title,
+                        activable:false,
+                        switchable:false,
+                        callback:function() {
+                            scope.showHidePopup(item.id);
+                            if ($.isFunction(item.callback)) {
                                 item.callback(scope);
                             }
-                        });
-                    
-                    }
+                        }
+                    });
                     
                 })(self.items[i], self);
             }
