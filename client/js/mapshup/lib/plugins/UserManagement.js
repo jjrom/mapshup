@@ -176,25 +176,44 @@
          * 
          * Item structure :
          * {
-         *      id: // identifier
+         *      id: // unique identifier
          *      icon: // icon url,
          *      title: // Displayed title on mouse over
          *      callback: // function to execute on click
          * }
          */
-        this.addToUserBar = function(items) {
+        this.add = function(items) {
+            
+            var i, j, update;
             
             if ($.isArray(items)) {
                 
                 /*
-                 * Add new item
+                 * Add new item if it is a new one or replace the old
+                 * one by the new one if it already exist (based on unique id)
                  */
-                for (var i = 0, l = items.length;i<l;i++) {
-                    this.items.push(items[i]);
+                for (i = items.length; i--;) {
+                    
+                    update = false;
+                    
+                    /*
+                     * If item already exists, replace it by the new one 
+                     */
+                    for (j = this.items.length; j--;) {
+                        if (this.items[j].id === items[i].id) {
+                            this.items[j] = items[i];
+                            update = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!update) {
+                        this.items.push(items[i]);
+                    }
                 }
 
                 /*
-                 * Recompute items position within the menu
+                 * Recompute user bar
                  */
                 this.displayUserBar();
             }
@@ -203,6 +222,38 @@
             
         };
         
+        /*
+         * Remove an item from the userBar
+         * 
+         * @param id : id of item to remove
+         * 
+         */
+        this.remove = function(id) {
+            
+            /*
+             * Roll over items
+             */
+            for (var i = 0, l = this.items.length; i<l; i++) {
+                
+                /*
+                 * Remove item with corresponding id
+                 */
+                if (this.items[i].id === id) {
+                    
+                    this.items.splice(i,1);
+                    
+                   /*
+                    * Recompute user bar
+                    */
+                   this.displayUserBar();
+                    
+                    return true;
+                }
+            }
+            
+            return false;
+
+        };
 
         /*
          * Store context within cookie
