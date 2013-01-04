@@ -317,7 +317,7 @@
             /*
              * Trigger a signout event
              */
-            M.events.trigger("signout");
+            M.events.trigger("signout", self);
             
         };
 
@@ -479,7 +479,7 @@
                         /*
                          * Trigger a signin event
                          */
-                        M.events.trigger("signin");
+                        M.events.trigger("signin", self);
                         
                     }
                     else {
