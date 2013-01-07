@@ -174,7 +174,7 @@ table thead {
  ***********************************/
 
 /* Darker color - BLACK */
-body, .po .generic, .active, .selected
+body, .po .generic, .selected
 {
     color:#000;
 }
@@ -1094,7 +1094,7 @@ a.tab img {
     background-color:rgba(199,100,0,0.3);
 }
 .active, .selected {
-    background-color:#eee;
+    background-color:rgba(199,100,0,0.3);
 }
 .inactive {
     -moz-opacity:.50; filter:alpha(opacity=50); opacity:.50;
