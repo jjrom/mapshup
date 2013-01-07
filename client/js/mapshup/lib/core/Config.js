@@ -121,7 +121,14 @@
              *  - groups
              *  - plugins
              */
-            if (p instanceof Array) {
+            if ($.isArray(p)) {
+                
+                /*
+                 * If plugin already exist, remove it first !
+                 */
+                if (content && this.get(propertyName, "name", content.name)) {
+                    this.remove(propertyName, content.name);
+                }
                 p.push(content);
             }
         },
@@ -153,7 +160,37 @@
             
             
         },
+            
+        /**
+         * Return object from propertyName array with
+         * a key equals to value
+         * 
+         * @param {String} propertyName
+         * @param {String} key
+         * @param {String} value
+         */
+        get: function(propertyName, key, value) {
+            
+            var p = this[propertyName];
+            
+            /*
+             * propertyName should be an array and one of the following
+             *  - layers
+             *  - groups
+             *  - plugins
+             */
+            if ($.isArray(p)) {
+                for (var i = 0, l = p.length; i < l; i++) {
+                    if (p[i][key] === value) {
+                        return p[i];
+                    }
+                }
+            }
         
+            return null;
+            
+        },
+            
         /**
          * Remove content from one of the following property
          *  - layers
@@ -304,5 +341,5 @@
 
         }
         
-    }
+    };
 })(window.M);
