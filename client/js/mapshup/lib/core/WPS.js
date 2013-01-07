@@ -1270,7 +1270,7 @@
          */
         this.parseExecuteResponse = function(xml) {
 
-            var nn, result = [], $obj = $(xml), self = this;
+            var sl, nn, result = [], $obj = $(xml), self = this;
 
             /*
              * Trap Exception
@@ -1282,9 +1282,16 @@
 
             /*
              * Retrieve ExecuteResponse statusLocation attribute
+             * 
+             * Note : some server (e.g. Constellation Geomatys) does not set the statusLocation
+             * within the message stored at statusLocation url. Thus we set the statusLocation
+             * for the first request and do not update it if the response does not have a status location
              */
-            this.statusLocation = M.Util.getAttributes($obj.children())["statusLocation"];
-
+            sl = M.Util.getAttributes($obj.children())["statusLocation"];
+            if (sl) {
+                this.statusLocation = sl;
+            }
+        
             /*
              * Process <wps:ProcessOutputs> and <wps:Status> elements
              */
