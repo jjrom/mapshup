@@ -35,31 +35,34 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-/*********************************************
+
+/**
  * PLUGIN: Navigation
  *
  * Add navigation tools
  * 
- *********************************************/
+ * @param {MapshupObject} M
+ */
 (function(M) {
-    
+
     M.Plugins.Navigation = function() {
-        
+
         /*
          * Only one Navigation object instance is created
          */
         if (M.Plugins.Navigation._o) {
             return M.Plugins.Navigation._o;
         }
-        
+
         /**
          * Initialize plugin
+         * 
+         * @param {Object} options
          */
         this.init = function(options) {
 
-            var pb,nb,tb,
-            self = this;
-            
+            var self = this;
+
             self.options = options || {};
 
             /*
@@ -67,34 +70,35 @@
              * Default toolbar is North East Vertical
              */
             $.extend(self.options, {
-                home:M.Util.getPropertyValue(self.options, "home", {
-                    lon:0,
-                    lat:40,
-                    zoom:2
+                home: M.Util.getPropertyValue(self.options, "home", {
+                    lon: 0,
+                    lat: 40,
+                    zoom: 2
                 }),
-                zoomin:M.Util.getPropertyValue(self.options, "zoomin", true),
-                zoomout:M.Util.getPropertyValue(self.options, "zoomout", true),
-                position:M.Util.getPropertyValue(self.options, "position", 'nw'),
-                orientation:M.Util.getPropertyValue(self.options, "orientation", 'v')
+                zoomin: M.Util.getPropertyValue(self.options, "zoomin", true),
+                zoomout: M.Util.getPropertyValue(self.options, "zoomout", true),
+                position: M.Util.getPropertyValue(self.options, "position", 'nw'),
+                orientation: M.Util.getPropertyValue(self.options, "orientation", 'v')
             });
 
             /*
              * Set the toolbar container
              */
             tb = new M.Toolbar({
-                position:self.options.position, 
-                orientation:self.options.orientation
+                position: self.options.position,
+                orientation: self.options.orientation
             });
-            
+
             /*
              * Zoom in button
              */
             if (self.options.zoomin) {
                 tb.add({
-                    title:"+",
-                    tt:"Zoom",
-                    activable:false,
-                    callback:function() {
+                    title: "+",
+                    tt: "Zoom",
+                    onoff: false,
+                    onactivate: function(scope, item) {
+                        item.activate(false);
                         M.Map.map.setCenter(M.Map.map.getCenter(), M.Map.map.getZoom() + 1);
                     }
                 });
@@ -105,24 +109,26 @@
              */
             if (self.options.zoomout) {
                 tb.add({
-                    title:"-",
-                    tt:"Zoom out",
-                    activable:false,
-                    callback:function() {
+                    title: "-",
+                    tt: "Zoom out",
+                    onoff: false,
+                    onactivate: function(scope, item) {
+                        item.activate(false);
                         M.Map.map.setCenter(M.Map.map.getCenter(), Math.max(M.Map.map.getZoom() - 1, M.Map.lowestZoomLevel));
                     }
                 });
             }
-            
+
             /*
              * Home button
              */
             if (self.options.home) {
                 tb.add({
-                    icon:"center.png",
-                    tt:"Global view",
-                    activable:false,
-                    callback:function() {
+                    icon: "center.png",
+                    tt: "Global view",
+                    onoff: false,
+                    onactivate: function(scope, item) {
+                        item.activate(false);
                         M.Map.map.restrictedExtent ? M.Map.map.zoomToExtent(M.Map.map.restrictedExtent) : M.Map.setCenter(M.Map.Util.d2p(new OpenLayers.LonLat(self.options.home.lon, self.options.home.lat)), self.options.home.zoom, true);
                     }
                 });
@@ -131,13 +137,13 @@
             return this;
 
         };
-        
+
         /*
          * Set unique instance
          */
         M.Plugins.Navigation._o = this;
-        
+
         return this;
-    }
-    
+    };
+
 })(window.M);

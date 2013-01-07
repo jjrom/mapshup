@@ -35,7 +35,8 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-/*********************************************
+
+/**
  *
  * Plugin Google Earth
  *
@@ -46,8 +47,9 @@
  *      Published under the BSD license.
  *      See http://svn.geoext.org/core/trunk/geoext/license.txt for the full text
  *      of the license.
- *
- *********************************************/
+ * 
+ * @param {MapshupObject} M
+ */
 (function(M) {
     
     M.Plugins.GoogleEarth = function() {
@@ -107,6 +109,8 @@
         
         /**
          * Init plugin
+         * 
+         * @param {Object} options
          */
         this.init = function(options) {
             
@@ -232,7 +236,7 @@
                  * "display:none" when panel item is switch on/off.
                  * See M.southPanel.setActive(item) for explanation
                  */
-                self.panelItem.$d.addClass("nodisplaynone")
+                self.panelItem.$d.addClass("nodisplaynone");
                 self.$d = self.panelItem.$content;
                 
             }
@@ -254,10 +258,13 @@
                     })).add({
                     title:"3D",
                     tt:"Toggle 2D/3D",
-                    activable:true,
-                    callback:function() {
-                        self.showHide();
-                    }  
+                    onff:true,
+                    onactivate:function() {
+                        self.show();
+                    },
+                    ondeactivate:function() {
+                        self.hide();
+                    }   
                 });
             }
             
@@ -359,6 +366,9 @@
 
         /**
          * Google Earth view position follow Map center
+         * 
+         * @param {OpenLayers.Map} map
+         * @param {Object} scope : this object reference
          */
         this.onMoveEnd = function(map, scope) {
 
@@ -388,6 +398,10 @@
          *   - update (not used here)
          *   - features
          *   - featuresupdated
+         *   
+         * @param {String} action
+         * @param {OpenLayers.Layer} layer
+         * @param {Object} scope : this object reference
          */
         this.onLayersEnd = function(action, layer, scope) {
 
@@ -417,6 +431,9 @@
 
         /**
          * This function is called after a layer visibility changed
+         * 
+         * @param {OpenLayers.Layer} layer
+         * @param {Object} scope : this object reference
          */
         this.onVisibilityChanged = function (layer, scope) {
 
@@ -461,7 +478,7 @@
             /*
              * Set the Google Earth view to the Map view
              */
-            scope.setGELookAt()
+            scope.setGELookAt();
 
             /*
              * Google Earth navigation control is set bottom left
@@ -630,6 +647,8 @@
         
         /**
          * Remove a layer from Google Earth view
+         * 
+         * @param {OpenLayers.Layer} layer
          */
         this.removeLayer = function(layer) {
     
@@ -723,7 +742,7 @@
              * Paranoid mode
              */
             if (!this.ge) {
-                return;
+                return self.initGE();
             }
 
             /*

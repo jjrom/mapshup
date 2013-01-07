@@ -179,7 +179,7 @@
              * </div>
              * 
              */
-            self.$d = M.Util.$$('#timeLine', $('#mwrapper')).html('<div class="timeLine"></div><div class="mask"><h2>'+M.Util._("Date filter disabled")+'</h2>('+M.Util._("Click to enable")+')</div>')
+            self.$d = M.Util.$$('#timeLine', $('#mwrapper')).html('<div class="timeLine"></div><div class="mask"><h2>'+M.Util._("Date filter disabled")+'</h2>('+M.Util._("Click to enable")+')</div>');
             
             /*
              * Create actions Toolbar
@@ -194,9 +194,8 @@
                     id:M.Util.getId(),
                     icon:M.Util.getImgUrl("clock.png"),
                     tt:M.Util._("Set time line bounds"),
-                    activable:false,
-                    switchable:false,
-                    callback:function() {
+                    onoff:false,
+                    onactivate:function() {
                         self.changeBounds();
                     }
                 });
@@ -208,9 +207,8 @@
                     id:M.Util.getId(),
                     icon:M.Util.getImgUrl("clock.png"),
                     tt:M.Util._("Set time interval bounds"),
-                    activable:false,
-                    switchable:false,
-                    callback:function() {
+                    onoff:false,
+                    onactivate:function() {
                         self.changeValues();
                     }
                 });
@@ -222,9 +220,8 @@
                     id:M.Util.getId(),
                     icon:M.Util.getImgUrl("disable.png"),
                     tt:M.Util._("Disable date filter"),
-                    activable:false,
-                    switchable:false,
-                    callback:function() {
+                    onoff:false,
+                    onactivate:function() {
                         self.enable(false);
                     }
                 });

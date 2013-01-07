@@ -35,11 +35,14 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-/*********************************************
+
+/**
  * 
  * Context sharing
- * 
- *********************************************/
+ *
+ * @param {MapshupObject} M 
+ *
+ */
 (function(M) {
     
     M.Plugins.Share = function() {
@@ -54,10 +57,12 @@
         /**
          * Last context
          */
-        this.last = {}
+        this.last = {};
 
         /**
          * Initialize plugin
+         * 
+         * @param {Object} options
          */
         this.init = function(options) {
 
@@ -84,14 +89,20 @@
              */
             (new M.Toolbar({
                 parent:$('.leftBar', M.$header), 
-                classes:'shr'
-            })).add({
-                icon:"share.png",
-                tt:"Share",
-                callback:self.save,
-                activable:false,
-                scope:self
-            });
+                classes:'shr',
+                items:[
+                    {
+                        icon:"share.png",
+                        tt:"Share",
+                        onoff:false,
+                        onactivate:function(scope,item) {
+                            item.activate(false);
+                            self.save(scope);    
+                        },
+                        scope:self
+                    }
+                ]
+            }));
             
             return self;
 
@@ -99,6 +110,8 @@
 
         /**
          * Save Context
+         * 
+         * @param {Object} scope : reference to this object
          */
         this.save = function(scope) {
             
@@ -121,10 +134,10 @@
                     userid:M.Util.getUserInfo().userid, // Get userid
                     context:context,
                     bbox:p.left+","+p.bottom+","+p.right+","+p.top
-                }
+                };
                 
                 if (scope.options.geocode) {
-                    data.geocode = ""
+                    data.geocode = "";
                 }
                 
                 /*
@@ -153,7 +166,7 @@
                                 utc:data.result[0].utc,
                                 location:data.result[0].location,
                                 context:context
-                            }
+                            };
                             
                             /*
                              * Display share popup
@@ -177,6 +190,8 @@
 
         /**
          * Load Context
+         * 
+         * @param {Object} scope : reference to this object
          */
         this.load = function(scope) {
 
@@ -267,7 +282,7 @@
                                         context:context.context
                                     };
 
-                                })
+                                });
                             })(scope, $('#'+id), data.contexts[i]);
                         }
                     }

@@ -333,25 +333,6 @@
     });
     
     */
-    /**
-     * Plugins description
-     *
-     * !! IMPORTANT !!
-     * Child plugins (i.e. plugins that requires a plugin)
-     * should always be loaded AFTER parent plugin.
-     *
-     */
-
-    /*
-     * Welcome plugin
-     */
-    c.add("plugins",
-    {
-        name:"Welcome",
-        options: {
-            url:'http://mapshup.info'
-        }
-    });
     
     /**
      * Logger plugin

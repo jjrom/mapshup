@@ -42,6 +42,8 @@
  * Display all raster layers within mapshup SidePanel. User can show/hide layers,
  * switch visibility, change opacity, reorder z-index, etc.
  * 
+ * @param {MapshupObject} M
+ * 
  */
 (function(M) {
 
@@ -87,14 +89,14 @@
                 icon: "layers.png",
                 tt: "Show raster layers",
                 scope: self,
-                callback: function(scope, item) {
+                onoff:true,
+                onactivate: function(scope, item) {
+                    scope.refresh();
+                    M.sidePanel.show(scope.item);
+                },
+                ondeactivate: function(scope, item) {
                     if (M.sidePanel.isVisible && M.sidePanel.active && scope.item.id === M.sidePanel.active.id ) {
-                        scope.launcher.activate(false);
                         M.sidePanel.hide();
-                    }
-                    else {
-                        scope.refresh();
-                        M.sidePanel.show(scope.item);
                     }
                 }
             });

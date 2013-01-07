@@ -41,6 +41,9 @@
  * 
  * A side panel is a panel displayed at the left or right border of the Map
  * It pushes the map to the right or the left depending on its position
+ * 
+ * @param {MapshupObject} M
+ * 
  */
 (function(M) {
 

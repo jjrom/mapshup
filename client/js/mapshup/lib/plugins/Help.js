@@ -35,12 +35,15 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-/*********************************************
+
+/**
  * Help plugin
  *
  * Display help info on top of the map
  *
- *********************************************/
+ * @param {MapshupObject} M
+ * 
+ */
 (function(M) {
     
     M.Plugins.Help = function() {
@@ -57,7 +60,7 @@
          */
         this.init = function (options) {
 
-            var c, i, l, self = this;
+            var c, i, l, id = M.Util.getId(), self = this;
             
             /*
              * init options
@@ -84,24 +87,33 @@
             self.$d = M.Util.$$('#'+M.Util.getId(),$('#mwrapper')).addClass("overall help").hide();
             
             /*
-             * Add a close button to the Help panel
-             */
-            M.Util.addClose(self.$d);
-            
-            /*
              * Register action within header
              */
-            (new M.Toolbar({
+            self.tb = new M.Toolbar({
                 parent:$('.leftBar', M.$header), 
-                classes:'shr'
-            })).add({
-                icon:"help.png",
-                tt:"Help",
-                callback:function(scope){
-                    scope.show();
-                },
-                activable:false,
-                scope:self
+                classes:'shr',
+                items:[
+                    {
+                        id:id,
+                        icon:"help.png",
+                        tt:"Help",
+                        onoff:true,
+                        scope:self,
+                        onactivate:function(scope){
+                            scope.show();
+                        },
+                        ondeactivate:function(scope){
+                            scope.hide();
+                        }
+                    }
+                ]
+            });
+        
+            /*
+             * Add a close button to the Help panel
+             */
+            M.Util.addClose(self.$d, function(e){
+                self.tb.activate(id, false);
             });
             
             /*

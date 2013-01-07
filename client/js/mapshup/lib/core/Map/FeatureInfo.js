@@ -38,6 +38,9 @@
 
 /**
  * Define FeatureInfo object
+ * 
+ * @param {MapshupObject} M
+ * 
  */
 (function(M) {
 

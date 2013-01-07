@@ -111,9 +111,8 @@
                             id:id,
                             title:M.Util._(layer.name).substring(0,1),
                             tt:layer.name,
-                            activable:true,
-                            switchable:false,
-                            callback:function() {
+                            onoff:false,
+                            onactivate:function(scope, item) {
                                 M.Map.map.setBaseLayer(layer);
                             }
                         });

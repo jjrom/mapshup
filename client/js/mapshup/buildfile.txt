@@ -85,7 +85,6 @@ lib/plugins/Streetview.js // NOTOUCH
 lib/plugins/UTFGrid.js
 lib/plugins/UserManagement.js
 lib/plugins/WPSClient.js
-#lib/plugins/Welcome.js
 lib/plugins/Wikipedia.js
 lib/plugins/WorldGrid.js
 lib/plugins/Slacker.js
