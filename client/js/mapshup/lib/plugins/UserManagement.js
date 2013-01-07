@@ -720,6 +720,7 @@
                     noHeader: false,
                     hideOnClose: false,
                     addCloseButton: false,
+                    classes:"shadow",
                     onclose:function() {
                         self._popup = null;
                     },
