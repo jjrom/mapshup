@@ -41,6 +41,7 @@
  * Add a toolbar to the map
  * Toolbar is populated by items
  *
+ * @param {MapshupObject} M
  */
 (function(M) {
     
@@ -160,7 +161,7 @@
          * Add an item to the toolbar
          * (i.e. a <div class="item"> in this.$d
          *
-         * @param {Object} obj : item
+         * @param {Object} item : item
          * 
          *  {
          *      activable: // boolean - if true, click on button set or unset 'activate' class
@@ -224,7 +225,7 @@
          * Return Toolbar Item identified by id
          */
         this.get = function(id) {
-            for (var i = 0, l = this.items.length ; i < l; i++) {
+            for (var i = 0, l = this.items.length; i < l; i++) {
                 if (this.items[i].id === id) {
                     return this.items[i];
                 }
@@ -430,7 +431,7 @@
                 return false;
 
             });
-                
+            
             /*
              * Add a tooltip depending on orientation
              */
@@ -506,7 +507,33 @@
             return true;
             
         };
-
+        
+        /**
+         * Hilite an item by adding a bright spot close
+         * to the item like in the Mac OS X Dock
+         * 
+         * THIS DOES NOT WORK YET
+         * 
+         * @param {Boolean} b : // true to hilite - false to unhilite
+         */
+        this.hilite = function(b) {
+            
+            var id = '#' + this.id + 'h', $h = $(id);
+            
+            if ($h.length) {
+                $h = M.Util.$$(id, M.$mcontainer).addClass('itemHiliter');
+            }
+            
+            var orientation = this.tb.orientation || 'h';
+            
+            if (self.tb.position) {
+                M.tooltip.add(self.$d, orientation === 'h'? self.tb.position.substr(0,1) : self.tb.position.substr(1,2));
+            }
+            else {
+                M.tooltip.add(self.$d, orientation === 'h'? 'n' : 'e');
+            }
+        };
+    
         /*
          * Initialize object
          */
