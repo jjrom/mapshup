@@ -582,8 +582,8 @@
                          * Set UserManagement popup content
                          */
                         var id = M.Util.getId(), p = scope.getPopup();
-                        p.$h.html('<p>' + M.Util._["Sign in"] + '</p>');
-                        p.$b.html('<form action="#" method="post" class="loginPanel"><input id="userEmail" type="text" placeholder="' + M.Util._("Email") + '"/><br/><input id="userPassword" type="password" placeholder="' + M.Util._("Password") + '"/><div class="signin"><a href="#" class="button inline colored" id="' + id + '">' + M.Util._("Sign in") + '</a> <input name="rememberme" id="rememberMe" type="checkbox" checked="checked"/>&nbsp;' + M.Util._("Remember me") + '</div></form>');
+                        p.$h.html('<p>' + M.Util._("Sign in") + '</p>');
+                        p.$b.html('<form action="#" method="post" class="loginPanel"><input id="userEmail" type="text" placeholder="' + M.Util._("Email") + '"/><br/><input id="userPassword" type="password" placeholder="' + M.Util._("Password") + '"/><div><a href="#" class="button inline colored" id="' + id + '">' + M.Util._("Sign in") + '</a> <input name="rememberme" id="rememberMe" type="checkbox" checked="checked" style="margin-left:20px;"/>&nbsp;' + M.Util._("Remember me") + '</div></form>');
 
                         /*
                          * Login button
@@ -628,8 +628,8 @@
                          * Set UserManagement popup content
                          */
                         var id = M.Util.getId(), p = scope.getPopup();
-                        p.$h.html('<p>' + M.Util._["Sign up"] + '</p>');
-                        p.$b.html('<form action="#" method="post" class="loginPanel"><input id="userEmail" type="text" placeholder="' + M.Util._("Email") + '"/><br/><input id="userName" type="text" placeholder="' + M.Util._("Username") + '"/><div class="signin"><a href="#" class="button inline colored" id="' + id + '">' + M.Util._("Sign up") + '</a></div></form>');
+                        p.$h.html('<p>' + M.Util._("Sign up") + '</p>');
+                        p.$b.html('<form action="#" method="post" class="loginPanel"><input id="userEmail" type="text" placeholder="' + M.Util._("Email") + '"/><br/><input id="userName" type="text" placeholder="' + M.Util._("Username") + '"/><div><a href="#" class="button inline colored" id="' + id + '">' + M.Util._("Sign up") + '</a>&nbsp;</div></form>');
 
                         /*
                          * Login button

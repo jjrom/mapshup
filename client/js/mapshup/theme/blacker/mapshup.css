@@ -1585,21 +1585,8 @@ div.olControlMousePosition {
 }
 
 /* UserManagement.js */
-.loginPanel {
-    margin:30px;
-}
 .loginPanel input {
     margin:10px 0px;
-}
-.loginPanel .signin {
-    margin:20px 0px;
-}
-.loginPanel .register {
-    margin:20px 0px;
-    color:#999;
-}
-#rememberMe {
-    margin-left:20px;
 }
 
 /* UTFGrid */
