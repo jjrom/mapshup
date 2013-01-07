@@ -76,7 +76,7 @@
         this.init = function(options) {
 
             var self = this;
-            
+
             /*
              * init options
              */
@@ -538,11 +538,11 @@
                     else if (result.reference) {
                         var id = M.Util.getId(),
                                 popup = new M.Popup({
-                                    modal:false,
-                                    noHeader:true,
-                                    autoSize:true,
-                                    body:process.title + ' <a id="' + id + '" href="' + result.reference.href + '" class="button inline colored paddedright" target="_blank">' + M.Util._("Download result") + '</a>'
-                                }).show();
+                        modal:false,
+                                noHeader:true,
+                                autoSize:true,
+                                body:process.title + ' <a id="' + id + '" href="' + result.reference.href + '" class="button inline colored paddedright" target="_blank">' + M.Util._("Download result") + '</a>'
+                        }).show();
                         $('#' + id).click(function() {
                             popup.hide();
                         });
@@ -1363,7 +1363,7 @@
          * Reference to the parent WPSClient instance
          */
         this.parent = wpsclient;
-        
+
         /*
          * Reference to the UserManagement plugin instance
          */
@@ -1384,7 +1384,7 @@
          * Initialize manager
          */
         this.init = function() {
-            
+
             /*
              * Register to user signIn and signOut events for
              * background processes 
@@ -1395,12 +1395,12 @@
                  * Tell WPSClient that user is signed in
                  */
                 scope._signedIn = true;
-                
+
                 /*
                  * Store the UserManagement plugin instance reference
                  */
                 scope.um = um;
-                
+
                 /*
                  * Add a new entry in the UserManagement userBar
                  */
@@ -1408,8 +1408,8 @@
                     id: '#WPSClientPlugin',
                     icon: M.Util.getImgUrl("execute.png"),
                     tt: "Processes",
-                    onoff:true,
-                    scope:scope,
+                    onoff: true,
+                    scope: scope,
                     onactivate: function(s, item) {
                         s.isVisible = true;
                         s.um.getPopup().show();
@@ -1420,7 +1420,6 @@
                         s.um.getPopup().hide();
                     }
                 }]);
-
             });
 
             M.events.register("signout", this, function(scope) {
@@ -1435,14 +1434,14 @@
             return this;
 
         };
-    
+
         /**
          * Get an asynchronous process from its location
          * 
          * @param {String} location
          */
         this.get = function(location) {
-            
+
             if (!location) {
                 return null;
             }
@@ -1458,7 +1457,7 @@
 
             return null;
         };
-    
+
         /**
          * Add a process to the list of asynchronous processes
          * 
@@ -1488,14 +1487,14 @@
             if (!process) {
                 return false;
             }
-        
+
             /*
              * Be sure to avoid multiple registry of the same running process
              * The unicity is guaranted by the statusLocation which is unique for a given
              * process
              */
             if (!self.get(location)) {
-                
+
                 /*
                  * Great news for user :)
                  */
@@ -1505,7 +1504,7 @@
                  * Add an entry within the running process hashmap
                  */
                 self.items.push({
-                    location:location,
+                    location: location,
                     process: process,
                     /*
                      * Periodically check the Process Status (every 5 seconds) 
@@ -1522,7 +1521,7 @@
                             dataType: "xml",
                             contentType: "text/xml",
                             success: function(xml) {
-                                
+
                                 process.result = process.parseExecuteResponse(xml);
 
                                 /*
@@ -1531,7 +1530,7 @@
                                 if (process.result) {
                                     process.wps.events.trigger("execute", process);
                                 }
-                            
+
                             },
                             error: function(e) {
                                 M.Util.message(e);
@@ -1540,12 +1539,12 @@
 
                     }, 5000)
 
-               });
-               
-               /*
-                * Update user bar 
-                */
-               self.updateUserBar();
+                });
+
+                /*
+                 * Update user bar 
+                 */
+                self.updateUserBar();
 
             }
         };
@@ -1557,7 +1556,7 @@
          * 
          */
         this.remove = function(location) {
-            
+
             if (!location) {
                 return false;
             }
@@ -1587,31 +1586,40 @@
 
             return false;
             
-
         };
-        
+
         /**
          * Update userBar list
          */
         this.updateUserBar = function() {
+
+            /*
+             * Display Process list
+             */
+            var i, l = this.items.length, item = this.um.tb.get('#WPSClientPlugin'), p = this.um.getPopup();
+          
+            /*
+             * Set a nice running processes counter
+             */
+            if (l === 0) {
+                $('.counter', item.$d).remove();
+            }
+            else {
+                item.$d.append('<span class="counter">'+l+'</span>');
+            }
             
             /*
              * Only update userBar if Processes list is visible
              */
-            if (!this.isVisible || !this.um) {
+            if (!this.isVisible) {
                 return false;
             }
-            
-            /*
-             * Display Process list
-             */
-            var i, l = this.items.length, p = this.um.getPopup();
-            
+        
             /*
              * Set UserManagement popup header
              */
             p.$h.html(M.Util._("Running processes"));
-                            
+
             /*
              * Clear body
              */
@@ -1621,11 +1629,11 @@
                 p.$b.html("No running process");
             }
             else {
-                for (i = l; i--;) {
+                for (i = l; i--; ) {
                     p.append('<img src="' + M.Util.getImgUrl('loading.gif') + '" class="middle"/> ' + this.items[i].process.identifier + '</br>', 'body');
                 }
             }
-        
+            
             return true;
         };
 

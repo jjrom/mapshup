@@ -483,7 +483,13 @@ a.tab:hover
     text-align:center;
     white-space:nowrap;
 }
-
+.tb .item span.counter {
+    position:absolute;
+    background: none repeat scroll 0 0 red;
+    bottom: 2px;
+    line-height: 1em;
+    right: -2px;
+}
 /* Position for North toobar */
 .tbneh, .tbnev, .tbnwh {
     top:130px;
