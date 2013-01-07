@@ -35,25 +35,28 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-/*
+
+/**
  *
  * UserManagement plugin
  * 
  * This plugin add authentication capabilities to maspshup
  * The authentication mechanism is based on OpenID protocol
  *
+ * @param {MapshupObject} M
+ * 
  */
 (function(M) {
-    
+
     M.Plugins.UserManagement = function() {
-        
+
         /*
          * Only one UserManagement object instance is created
          */
         if (M.Plugins.UserManagement._o) {
             return M.Plugins.UserManagement._o;
         }
-        
+
         /**
          * If set then user is connectec, otherwise not
          * 
@@ -73,52 +76,11 @@
         /**
          * Userbar items array
          * 
-         * Item structure :
-         * {
-         *      id: // identifier
-         *      icon: // icon url,
-         *      title: // Displayed title on mouse over
-         *      callback: // function to execute on click
-         * }
+         * See Toolbar.Item for items structure
+         * 
          */
-        this.items = [
-        {
-            id:M.Util.getId(),
-            icon:M.Util.getImgUrl("disconnect.png"),
-            title:"Disconnect",
-            callback:function(scope) {
-                if (scope.userInfo) {
-                    M.Util.askFor({
-                        title:M.Util._("Sign out"),
-                        content:M.Util._("Do you really want to sign out ?"),
-                        dataType:"list", value:[{
-                            title:M.Util._("Yes"), 
-                            value:"y"
-                        },
-                        {
-                            title:M.Util._("No"), 
-                            value:"n"
-                        }
-                        ],
-                        callback:function(v){
-                            if (v === "y") {
-                                scope.disconnect();
-                            }
-                        }
-                    });
-                }
-            }
-        },
-        {
-            id:M.Util.getId(),
-            icon:M.Util.getImgUrl("save.png"),
-            title:"Save context",
-            callback:function(scope) {
-                scope.storeContext();
-            }
-        }
-        ];
-        
+        this.items = [];
+
         /**
          * Initialize plugin
          *
@@ -130,126 +92,146 @@
         this.init = function(options) {
 
             var userInfo, self = this;
-            
+
             /**
              * Best practice : init options
              */
             self.options = options || {};
 
-            $.extend(self.options,{
-                loginUrl:self.options.loginUrl || "/plugins/usermanagement/login.php",
-                registerUrl:self.options.registerUrl || "/plugins/usermanagement/register.php",
-                saveContextUrl:self.options.saveContextUrl || "/plugins/usermanagement/saveContext.php"
+            $.extend(self.options, {
+                loginUrl: self.options.loginUrl || "/plugins/usermanagement/login.php",
+                registerUrl: self.options.registerUrl || "/plugins/usermanagement/register.php",
+                saveContextUrl: self.options.saveContextUrl || "/plugins/usermanagement/saveContext.php"
             });
             
+            /*
+             * Default profile items
+             */
+            this.items = [
+                {
+                    id: M.Util.getId(),
+                    icon: M.Util.getImgUrl("disconnect.png"),
+                    tt: "Disconnect",
+                    onoff: false,
+                    scope:self,
+                    onactivate: function(scope, item) {
+                        item.activate(false);
+                        if (scope.userInfo) {
+                            M.Util.askFor({
+                                title: M.Util._("Sign out"),
+                                content: M.Util._("Do you really want to sign out ?"),
+                                dataType: "list", value: [{
+                                        title: M.Util._("Yes"),
+                                        value: "y"
+                                    },
+                                    {
+                                        title: M.Util._("No"),
+                                        value: "n"
+                                    }
+                                ],
+                                callback: function(v) {
+                                    if (v === "y") {
+                                        scope.disconnect();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                },
+                {
+                    id: M.Util.getId(),
+                    icon: M.Util.getImgUrl("save.png"),
+                    tt: "Save context",
+                    onoff: false,
+                    scope:self,
+                    onactivate: function(scope, item) {
+                        item.activate(false);
+                        scope.storeContext();
+                    }
+                }
+            ];
+     
             /*
              * The Sign In / Sign Up buttons and the user toolbar are stored within
              * the header bar under the 'userBar' CSS class
              */
             self.$d = $('.userBar', M.$header);
-            
-            /*
-             * Create an empty UserManagement popup 
-             * below the userBar
-             */
-             self.popup = new M.Popup({
-                parent: $('#mwrapper'),
-                modal: false,
-                centered: false,
-                noHeader: false,
-                hideOnClose: true,
-                addCloseButton:false,
-                autoSize: true,
-                unbounded: true
-            });
-        
-            self.popup.$d.css({
-                'top':self.$d.offset().top + $('#theBar').outerHeight() + 5,
-                'right':$('#theBar .container').css('right'),
-                'width':300
-            });
-            
+
             /*
              * Check for a connection cookie
              */
             userInfo = JSON.parse(M.Util.Cookie.get("userInfo"));
-        
+
             if (userInfo) {
                 self.signIn({
-                    email:userInfo.email, 
-                    sessionid:userInfo.sessionid
+                    email: userInfo.email,
+                    sessionid: userInfo.sessionid
                 });
             }
             else {
-                self.displaySignInButton();
+                self.displayToolbar();
             }
-            
+
             return this;
         };
-        
+
         /*
          * Add action items to the userBar
          * 
          * This function should be called by plugins
          * that require additionnal item userBar
          * 
-         * @param items : array of menu items
+         * @param {Array} items : array of Toolbar.Item
          * 
-         * Item structure :
-         * {
-         *      id: // unique identifier
-         *      icon: // icon url,
-         *      title: // Displayed title on mouse over
-         *      hasPopup: // true to show popup on click (default false)
-         *      callback: // function to execute on click
-         * }
+         * Structure is defined in Toolbar.Item class
+         * 
          */
         this.add = function(items) {
-            
+
             var i, j, update;
-            
+
             if ($.isArray(items)) {
-                
+
                 /*
                  * Add new item if it is a new one or replace the old
                  * one by the new one if it already exist (based on unique id)
                  */
-                for (i = items.length; i--;) {
-                    
+                for (i = items.length; i--; ) {
+
                     update = false;
-                    
+
                     /*
                      * If item already exists, replace it by the new one 
                      */
-                    for (j = this.items.length; j--;) {
+                    for (j = this.items.length; j--; ) {
                         if (this.items[j].id === items[i].id) {
                             this.items[j] = items[i];
                             update = true;
                             break;
                         }
                     }
-                    
+
                     /*
                      * Add new item in userBar
                      */
                     if (!update) {
-                       this.items.push(items[i]);        
+                        this.items.push(items[i]);
                     }
                 }
 
                 /*
                  * Recompute user bar
                  */
-                this.displayUserBar();
-                
+                this.displayToolbar();
+
                 return true;
-                
+
             }
-            
+
             return false;
-            
+
         };
-        
+
         /*
          * Remove an item from the userBar
          * 
@@ -257,28 +239,28 @@
          * 
          */
         this.remove = function(id) {
-            
+
             /*
              * Roll over items
              */
-            for (var i = 0, l = this.items.length; i<l; i++) {
-                
+            for (var i = 0, l = this.items.length; i < l; i++) {
+
                 /*
                  * Remove item with corresponding id
                  */
                 if (this.items[i].id === id) {
-                    
-                    this.items.splice(i,1);
-                    
-                   /*
-                    * Recompute user bar
-                    */
-                   this.displayUserBar();
-                    
+
+                    this.items.splice(i, 1);
+
+                    /*
+                     * Recompute user bar
+                     */
+                    this.displayToolbar();
+
                     return true;
                 }
             }
-            
+
             return false;
 
         };
@@ -290,24 +272,24 @@
          * 
          */
         this.get = function(id) {
-            
+
             if (!id) {
                 return null;
             }
-        
+
             /*
              * Roll over items
              */
-            for (var i = 0, l = this.items.length; i<l; i++) {
+            for (var i = 0, l = this.items.length; i < l; i++) {
                 if (this.items[i].id === id) {
                     return this.items[i];
                 }
             }
-            
+
             return null;
 
         };
-        
+
         /*
          * Store context within cookie
          * 
@@ -317,61 +299,61 @@
          * 
          */
         this.storeContext = function() {
-            
+
             var self = this;
-            
-            if (self.userInfo) {    
+
+            if (self.userInfo) {
                 M.Util.ajax({
-                    dataType:"json",
-                    type:"POST",
-                    url:M.Util.getAbsoluteUrl(self.options.saveContextUrl),
-                    data:M.Util.abc+"&email=" + self.userInfo.email + "&sessionid=" + self.userInfo.sessionid + "&context=" + encodeURIComponent(JSON.stringify(M.Map.getContext())),
-                    success: function(data){
+                    dataType: "json",
+                    type: "POST",
+                    url: M.Util.getAbsoluteUrl(self.options.saveContextUrl),
+                    data: M.Util.abc + "&email=" + self.userInfo.email + "&sessionid=" + self.userInfo.sessionid + "&context=" + encodeURIComponent(JSON.stringify(M.Map.getContext())),
+                    success: function(data) {
                         M.Util.message(M.Util._("Context succesfully stored"));
                     },
                     error: function(msg) {
                         M.Util.message(M.Util._("Error : context cannot be stored"));
                     }
-                },{
-                    title:M.Util._("Store context"),
-                    cancel:true
+                }, {
+                    title: M.Util._("Store context"),
+                    cancel: true
                 });
-                
+
             }
         };
-        
+
         /**
          * Disconnect user
          */
         this.disconnect = function() {
-            
+
             var self = this;
-            
+
             /*
              * Store context within cookie
              */
             self.storeContext();
-            
+
             /*
              * Remove userInfo cookie
              */
             M.Util.Cookie.remove("userInfo");
-            
+
             /*
              * Tell UserManagement that user is disconnected
              */
             self.userInfo = null;
-            
+
             /*
              * Display the Sign in / Sign up bar
              */
-            self.displaySignInButton();
-            
+            self.displayToolbar();
+
             /*
              * Trigger a signout event
              */
             M.events.trigger("signout", self);
-            
+
         };
 
         /**
@@ -384,7 +366,9 @@
          * 
          */
         this.register = function(email, username) {
-
+            
+            var self = this;
+            
             /*
              * Check if email is valid
              */
@@ -405,24 +389,26 @@
              * Register user
              */
             M.Util.ajax({
-                dataType:"json",
-                type:"POST",
-                url:M.Util.getAbsoluteUrl(this.options.registerUrl),
-                data:M.Util.abc+"&email=" + email + "&username=" + username,
-                success: function(data){
+                dataType: "json",
+                type: "POST",
+                url: M.Util.getAbsoluteUrl(this.options.registerUrl),
+                data: M.Util.abc + "&email=" + email + "&username=" + username,
+                success: function(data) {
                     if (data.error) {
                         M.Util.message(data.error["message"]);
                     }
                     else {
                         M.Util.message(M.Util._("A password has been sent to your mailbox"));
                     }
+                    self.getPopup().hide();
                 },
                 error: function(msg) {
                     M.Util.message(M.Util._("An error occured during password generation. Registering is currently disable"));
+                    self.getPopup().hide();
                 }
-            },{
-                title:M.Util._("Register"),
-                cancel:true
+            }, {
+                title: M.Util._("Register"),
+                cancel: true
             });
 
             return true;
@@ -443,64 +429,64 @@
         this.signIn = function(info) {
 
             var self = this;
-            
+
             /*
              * Paranoid mode
              */
             info = info || {};
-            
+
             if (!info.email || (!info.sessionid && !info.password)) {
                 return false;
             }
-            
+
             /*
              * Send an ajax login request
              */
             M.Util.ajax({
-                dataType:"json",
-                type:"POST",
-                url:M.Util.getAbsoluteUrl(self.options.loginUrl),
-                data:M.Util.abc+"&email=" + info.email + (info.password ? "&password=" + info.password : "&sessionid=" + info.sessionid),
-                success: function(data){
-                    
+                dataType: "json",
+                type: "POST",
+                url: M.Util.getAbsoluteUrl(self.options.loginUrl),
+                data: M.Util.abc + "&email=" + info.email + (info.password ? "&password=" + info.password : "&sessionid=" + info.sessionid),
+                success: function(data) {
+
                     if (data.username) {
 
                         /*
                          * Set userInfo
                          */
                         self.userInfo = {
-                            'userid':data.userid,
-                            'username':data.username,
-                            'email':data.email,
-                            'icon':data.icon,
-                            'sessionid':data.sessionid
+                            'userid': data.userid,
+                            'username': data.username,
+                            'email': data.email,
+                            'icon': data.icon,
+                            'sessionid': data.sessionid
                         };
-                            
+
                         /*
                          * Load the user last context
                          */
                         if (data.context) {
                             M.Util.askFor({
-                                title:M.Util._("Hello") + " " + data.username,
-                                content:M.Util._("Do you want to restore your map context ?"),
-                                dataType:"list",
-                                value:[{
-                                    title:M.Util._("Yes"), 
-                                    value:"y"
-                                },
-                                {
-                                    title:M.Util._("No"), 
-                                    value:"n"
-                                }
+                                title: M.Util._("Hello") + " " + data.username,
+                                content: M.Util._("Do you want to restore your map context ?"),
+                                dataType: "list",
+                                value: [{
+                                        title: M.Util._("Yes"),
+                                        value: "y"
+                                    },
+                                    {
+                                        title: M.Util._("No"),
+                                        value: "n"
+                                    }
                                 ],
-                                callback:function(v){
+                                callback: function(v) {
                                     if (v === "y") {
                                         M.Map.loadContext(data.context);
                                     }
                                 }
                             });
                         }
-                        
+
                         /*
                          * If checkCookie or rememberMe is true, respawn
                          * a cookie for one year
@@ -520,263 +506,259 @@
                         /*
                          * Remove login popup
                          */
-                        if (self._p) {
-                            self._p.remove();
-                        }
-                        
+                        self.getPopup().hide();
+
                         /*
                          * Display user bar
                          */
-                        self.displayUserBar();
-                        
+                        self.displayToolbar();
+
                         /*
                          * Trigger a signin event
                          */
                         M.events.trigger("signin", self);
-                        
+
                     }
                     else {
-                        
+
                         if (!info.sessionid) {
                             M.Util.message(M.Util._("Wrong login/password - Connection refused"));
                         }
-                        
-                        /*
-                         * Display Sign in / Sign up button
-                         */
-                        self.displaySignInButton();
-                        
+
                     }
                 },
                 error: function(msg) {
-                    
+
                     if (!info.sessionid) {
                         M.Util.message(M.Util._("Wrong login/password - Connection refused"));
                     }
-                    
-                    /*
-                     * Display Sign in / Sign up button
-                     */
-                    self.displaySignInButton();
-                        
+
                 }
             }, !info.sessionid ? {
-                title:M.Util._("Login")
+                title: M.Util._("Login")
             } : null);
-            
+
             return true;
         };
 
         /*
          * Display user toolbar
          */
-        this.displayUserBar = function() {
-            
+        this.displayToolbar = function() {
+
             var i, self = this;
-            
-            if (!self.userInfo) {
-                return false;
+
+            /*
+             * Set an empty Toolbar
+             */
+            if (!self.tb) {
+                self.tb = new M.Toolbar({
+                    parent: self.$d,
+                    classes: 'bgm'
+                });
             }
-            
+            self.tb.clear();
+
             /*
-             * Create Toolbar
+             * User is not signed in 
+             * => display 'signin' and 'signout' actions
              */
-            self.$d.empty();
-            self.tb = new M.Toolbar({
-                parent:self.$d, 
-                classes:'umgmt'
-            });
+            if (!self.userInfo) {
+
+                self.tb.add({
+                    id: M.Util.getId(),
+                    tt: M.Util._("Sign in"),
+                    title: M.Util._("Sign in"),
+                    onoff: false,
+                    scope:self,
+                    /*
+                     * Display signin popup
+                     */
+                    onactivate: function(scope, item) {
+
+                        item.activate(false);
+
+                        /*
+                         * Set UserManagement popup content
+                         */
+                        var id = M.Util.getId(), p = scope.getPopup();
+                        p.$h.html('<p>' + M.Util._["Sign in"] + '</p>');
+                        p.$b.html('<form action="#" method="post" class="loginPanel"><input id="userEmail" type="text" placeholder="' + M.Util._("Email") + '"/><br/><input id="userPassword" type="password" placeholder="' + M.Util._("Password") + '"/><div class="signin"><a href="#" class="button inline colored" id="' + id + '">' + M.Util._("Sign in") + '</a> <input name="rememberme" id="rememberMe" type="checkbox" checked="checked"/>&nbsp;' + M.Util._("Remember me") + '</div></form>');
+
+                        /*
+                         * Login button
+                         */
+                        $('#' + id).click(function() {
+                            self.signIn({
+                                email: $('#userEmail').val(),
+                                password: $('#userPassword').val()
+                            });
+
+                            return false;
+                        });
+
+                        /*
+                         * Show UserManagement popup
+                         */
+                        p.show();
+
+                    },
+                    /*
+                     * Hide popup
+                     */
+                    ondeactivate: function(scope, item) {
+                        scope.getPopup().hide();
+                    }
+                });
+
+                self.tb.add({
+                    id: M.Util.getId(),
+                    tt: M.Util._("Sign up"),
+                    title: M.Util._("Sign up"),
+                    onoff: false,
+                    scope:self,
+                    /*
+                     * Display signin popup
+                     */
+                    onactivate: function(scope, item) {
+
+                        item.activate(false);
+
+                        /*
+                         * Set UserManagement popup content
+                         */
+                        var id = M.Util.getId(), p = scope.getPopup();
+                        p.$h.html('<p>' + M.Util._["Sign up"] + '</p>');
+                        p.$b.html('<form action="#" method="post" class="loginPanel"><input id="userEmail" type="text" placeholder="' + M.Util._("Email") + '"/><br/><input id="userName" type="text" placeholder="' + M.Util._("Username") + '"/><div class="signin"><a href="#" class="button inline colored" id="' + id + '">' + M.Util._("Sign up") + '</a></div></form>');
+
+                        /*
+                         * Login button
+                         */
+                        $('#' + id).click(function() {
+                            self.register($('#userEmail').val(), $('#userName').val());
+                            return false;
+                        });
+
+                        /*
+                         * Show UserManagement popup
+                         */
+                        p.show();
+
+                    },
+                    /*
+                     * Hide popup
+                     */
+                    ondeactivate: function(scope, item) {
+                        scope.getPopup().hide();
+                    }
+                });
             
+                return true; 
+
+            }
             /*
-             * Profile
+             * User is signed in 
+             * => display user toolbar
              */
-            self.tb.add({
-                id:M.Util.getId(),
-                icon:self.userInfo.icon,
-                tt:"Open profile",
-                activable:false,
-                switchable:false,
-                callback:function() {
-                    alert("TODO : profile manager for " + self.userInfo.username);
-                }
-            });
-            
+            else {
+                self.tb.add({
+                    id: M.Util.getId(),
+                    icon: self.userInfo.icon,
+                    tt: "Open profile",
+                    onoff: false,
+                    scope: self,
+                    onactivate: function(scope, item) {
+                        item.activate(false);
+                        alert("TODO : profile manager for " + scope.userInfo.username);
+                    }
+                });
+            }
+
             /*
              * Items are displayed from right to left regarding the store order
              * (i.e. first item is displayed on the right, then next item is displayed
              *  at the left of the previous one, and so on)
              */
-            for (i = self.items.length; i--;) {
-                (function(item, scope) {
-                    
-                    scope.tb.add({
-                        id:item.id,
-                        icon:item.icon,
-                        tt:item.title,
-                        activable:false,
-                        switchable:false,
-                        callback:function() {
-                            scope.showHidePopup(item.id);
-                            if ($.isFunction(item.callback)) {
-                                item.callback(scope);
-                            }
-                        }
-                    });
-                    
-                })(self.items[i], self);
+            for (i = self.items.length; i--; ) {
+                self.tb.add(self.items[i]);
+                /*
+                 (function(item, scope) {
+                 scope.tb.add({
+                 id: item.id,
+                 icon: item.icon,
+                 title: item.title,
+                 tt: item.title,
+                 onoff: M.Util.getPropertyValue(item, "onoff", true),
+                 scope:item.scope || self,
+                 onactivate: item.onactivate,
+                 ondeactivate: item.ondeactivate
+                 });
+                 })(items[i], self);
+                 */
             }
-            
+
             return true;
-            
+
         };
-        
-        /*
-         * Display user toolbar
+
+        /**
+         * Return shared UserManagement popup
          */
-        this.displaySignInButton = function() {
+        this.getPopup = function() {
             
-            var self = this,
-            sinid = M.Util.getId(),
-            supid = M.Util.getId();
+            var self = this;
             
             /*
-             * Add Sign in and Sign up button
+             * Create an empty UserManagement popup 
+             * below the userBar
              */
-            self.$d.html('<a href="#" class="button inline signin" id="'+sinid+'">'+M.Util._("Sign in")+'</a> &nbsp; <a href="#" class="button inline signup" id="'+supid+'">'+M.Util._("Sign up")+'</a></div>');
-            
-            /*
-             * Sign In popup
-             */
-            $('#'+sinid).click(function(){
-                
-                var id = M.Util.getId();
-                
-                if (self._p) {
-                    self._p.remove();
-                }
-                
-                /*
-                 * Create the Sign In popup
-                 */
-                self._p = new M.Popup({
-                    modal:true,
-                    noHeader:true,
-                    onClose:function(){
-                        self._p = null;
+            if (!self._popup) {
+                self._popup = new M.Popup({
+                    parent: $('#mwrapper'),
+                    modal: false,
+                    centered: false,
+                    noHeader: false,
+                    hideOnClose: false,
+                    addCloseButton: false,
+                    onclose:function() {
+                        self._popup = null;
                     },
-                    header:'<p>' + M.Util._["Sign in"] + '</p>',
-                    body:'<form action="#" method="post" class="loginPanel"><input id="userEmail" type="text" placeholder="'+M.Util._("Email")+'"/><br/><input id="userPassword" type="password" placeholder="'+M.Util._("Password")+'"/><div class="signin"><a href="#" class="button inline colored" id="'+id+'">'+M.Util._("Sign in")+'</a> <input name="rememberme" id="rememberMe" type="checkbox" checked="checked"/>&nbsp;'+M.Util._("Remember me")+'</div></form>'
-                });
-                
-                /*
-                 * Login button
-                 */
-                $('#'+id).click(function(){
-                    self.signIn({
-                        email:$('#userEmail').val(), 
-                        password:$('#userPassword').val()
-                    });
-                    
-                    return false;
+                    autoSize: true,
+                    unbounded: true
                 });
 
-                self._p.show();
-                
-            });
-            
-            
-            /*
-             * Sign Up popup
-             */
-            $('#'+supid).click(function(){
-                
-                var id = M.Util.getId();
-                
-                if (self._p) {
-                    self._p.remove();
-                }
-                
-                /*
-                 * Create the Sign Up popup
-                 */
-                self._p = new M.Popup({
-                    modal:true,
-                    noHeader:true,
-                    onClose:function(){
-                        self._p = null;
-                    },
-                    header:'<p>' + M.Util._["Sign up"] + '</p>',
-                    body:'<form action="#" method="post" class="loginPanel"><input id="userEmail" type="text" placeholder="'+M.Util._("Email")+'"/><br/><input id="userName" type="text" placeholder="'+M.Util._("Username")+'"/><div class="signin"><a href="#" class="button inline colored" id="'+id+'">'+M.Util._("Sign up")+'</a></div></form>'
+                self._popup.$d.css({
+                    'top': this.$d.offset().top + $('#theBar').outerHeight() + 5,
+                    'right': $('#theBar .container').css('right'),
+                    'width': 300
                 });
-                
-                /** 
-                 * Register button
-                 */
-                $('#'+id).click(function(){
-                    self.register($('#userEmail').val(), $('#userName').val());
-                    return false;
-                });
-            
-                self._p.show();
-            });
-            
-            
-            return true;
-            
-        };
-    
-        /**
-         * Show or hide UserManagement popup
-         * 
-         * @param {String} id : item id
-         */
-        this.showHidePopup = function(id) {
-            
-            var item = this.get(id);
-            
-            if (!item) {
-                return;
             }
-        
-            /*
-             * _activeItem is the last clicked item
-             */
-            if (this._activeItem && this._activeItem.id === item.id) {
-                if (this.popup.$d.is(':visible')) {
-                    return this.popup.hide(true);
-                }
-            }
-            
-            /*
-             * Set the new active item
-             */
-            this._activeItem = item;
-            
-            return item.hasPopup ? this.popup.show() : this.popup.hide();
-        
+
+            return self._popup;
+
         };
-    
+
         /**
          * Open authentication popup window
          * TODO
          */
         this.openLoginWindow = function(openid) {
-            
-        /*
+
+            /*
              * Use google by default
              */
-        //openid = openid || "https://www.google.com/accounts/o8/id";
-        //var w = window.open('http://localhost/Msrv/login.php?action=verify&openid_identity='+encodeURIComponent(openid), 'openid_popup', 'width=450,height=500,location=1,status=1,resizable=yes');
-            
+            //openid = openid || "https://www.google.com/accounts/o8/id";
+            //var w = window.open('http://localhost/Msrv/login.php?action=verify&openid_identity='+encodeURIComponent(openid), 'openid_popup', 'width=450,height=500,location=1,status=1,resizable=yes');
+
         };
-        
+
         /*
          * Set unique instance
          */
         M.Plugins.UserManagement._o = this;
-        
+
         return this;
-        
+
     };
 
 })(window.M);

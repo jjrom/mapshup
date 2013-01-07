@@ -296,6 +296,7 @@
          */
         getHashSize: function (h) {
             var v,r = 0;
+            
             for (v in h) {
                 r++;
             }

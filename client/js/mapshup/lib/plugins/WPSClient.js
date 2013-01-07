@@ -76,7 +76,7 @@
         this.init = function(options) {
 
             var self = this;
-
+            
             /*
              * init options
              */
@@ -538,11 +538,11 @@
                     else if (result.reference) {
                         var id = M.Util.getId(),
                                 popup = new M.Popup({
-                        modal:false,
-                                noHeader:true,
-                                autoSize:true,
-                                body:process.title + ' <a id="' + id + '" href="' + result.reference.href + '" class="button inline colored paddedright" target="_blank">' + M.Util._("Download result") + '</a>'
-                        }).show();
+                                    modal:false,
+                                    noHeader:true,
+                                    autoSize:true,
+                                    body:process.title + ' <a id="' + id + '" href="' + result.reference.href + '" class="button inline colored paddedright" target="_blank">' + M.Util._("Download result") + '</a>'
+                                }).show();
                         $('#' + id).click(function() {
                             popup.hide();
                         });
@@ -1384,7 +1384,7 @@
          * Initialize manager
          */
         this.init = function() {
-
+            
             /*
              * Register to user signIn and signOut events for
              * background processes 
@@ -1400,17 +1400,24 @@
                  * Store the UserManagement plugin instance reference
                  */
                 scope.um = um;
-
+                
                 /*
                  * Add a new entry in the UserManagement userBar
                  */
-                um.add([{
+                scope.um.add([{
                     id: '#WPSClientPlugin',
                     icon: M.Util.getImgUrl("execute.png"),
-                    title: "Processes",
-                    hasPopup: true,
-                    callback: function(um) {
-                        scope.updateUserBar();
+                    tt: "Processes",
+                    onoff:true,
+                    scope:scope,
+                    onactivate: function(s, item) {
+                        s.isVisible = true;
+                        s.um.getPopup().show();
+                        s.updateUserBar();
+                    },
+                    ondeactivate: function(s, item) {
+                        s.isVisible = false;
+                        s.um.getPopup().hide();
                     }
                 }]);
 
@@ -1428,7 +1435,30 @@
             return this;
 
         };
+    
+        /**
+         * Get an asynchronous process from its location
+         * 
+         * @param {String} location
+         */
+        this.get = function(location) {
+            
+            if (!location) {
+                return null;
+            }
 
+            /*
+             * Roll over items
+             */
+            for (var i = 0, l = this.items.length; i < l; i++) {
+                if (this.items[i].location === location) {
+                    return this.items[i];
+                }
+            }
+
+            return null;
+        };
+    
         /**
          * Add a process to the list of asynchronous processes
          * 
@@ -1458,14 +1488,14 @@
             if (!process) {
                 return false;
             }
-
+        
             /*
              * Be sure to avoid multiple registry of the same running process
              * The unicity is guaranted by the statusLocation which is unique for a given
              * process
              */
-            if (!this.items[location]) {
-
+            if (!self.get(location)) {
+                
                 /*
                  * Great news for user :)
                  */
@@ -1474,7 +1504,8 @@
                 /*
                  * Add an entry within the running process hashmap
                  */
-                this.items[location] = {
+                self.items.push({
+                    location:location,
                     process: process,
                     /*
                      * Periodically check the Process Status (every 5 seconds) 
@@ -1491,7 +1522,7 @@
                             dataType: "xml",
                             contentType: "text/xml",
                             success: function(xml) {
-
+                                
                                 process.result = process.parseExecuteResponse(xml);
 
                                 /*
@@ -1500,12 +1531,7 @@
                                 if (process.result) {
                                     process.wps.events.trigger("execute", process);
                                 }
-                                
-                                /*
-                                 * Update user bar 
-                                 */
-                                self.updateUserBar();
-                                
+                            
                             },
                             error: function(e) {
                                 M.Util.message(e);
@@ -1514,52 +1540,13 @@
 
                     }, 5000)
 
-                };
-            
+               });
+               
                /*
                 * Update user bar 
                 */
                self.updateUserBar();
 
-            }
-
-        };
-
-        /**
-         * Update userBar list
-         */
-        this.updateUserBar = function() {
-
-            if (!this.um) {
-                return false;
-            }
-            
-            /*
-             * Only update userBar if Processes list is visible
-             */
-            // TODO
-            /*
-             * Display Process list
-             */
-            var i, l = M.Util.getHashSize(this.items);
-            
-            /*
-             * Set UserManagement popup header
-             */
-            this.um.popup.$h.html(M.Util._("Running processes"));
-                            
-            /*
-             * Clear body
-             */
-            this.um.popup.$b.empty();
-
-            if (l === 0) {
-                this.um.popup.$b.html("No running process");
-            }
-            else {
-                for (i in this.items) {
-                    this.um.popup.append('<img src="' + M.Util.getImgUrl('loading.gif') + '" class="middle"/> ' + this.items[i].process.identifier + '</br>', 'body');
-                }
             }
         };
 
@@ -1570,19 +1557,76 @@
          * 
          */
         this.remove = function(location) {
-
-            var item = this.items[location];
-
+            
+            if (!location) {
+                return false;
+            }
+        
             /*
-             * A clean remove means imperatively to first clear the TimeOut function !
+             * Roll over items
              */
-            if (item) {
-                clearTimeout(item.fn);
-                $('.status', item.message).html(item.process.title + " : " + M.Util._("Process finished"));
-                delete this.items[location];
-                this.updateUserBar();
+            for (var i = 0, l = this.items.length; i < l; i++) {
+
+                /*
+                 * Remove item with corresponding location
+                 * A clean remove means imperatively to first clear the TimeOut function !
+                 */
+                if (this.items[i].location === location) {
+                    
+                    clearTimeout(this.items[i].fn);
+                    this.items.splice(i, 1);
+
+                    /*
+                     * Recompute user bar
+                     */
+                    this.updateUserBar();
+
+                    return true;
+                }
             }
 
+            return false;
+            
+
+        };
+        
+        /**
+         * Update userBar list
+         */
+        this.updateUserBar = function() {
+            
+            /*
+             * Only update userBar if Processes list is visible
+             */
+            if (!this.isVisible || !this.um) {
+                return false;
+            }
+            
+            /*
+             * Display Process list
+             */
+            var i, l = this.items.length, p = this.um.getPopup();
+            
+            /*
+             * Set UserManagement popup header
+             */
+            p.$h.html(M.Util._("Running processes"));
+                            
+            /*
+             * Clear body
+             */
+            p.$b.empty();
+
+            if (l === 0) {
+                p.$b.html("No running process");
+            }
+            else {
+                for (i = l; i--;) {
+                    p.append('<img src="' + M.Util.getImgUrl('loading.gif') + '" class="middle"/> ' + this.items[i].process.identifier + '</br>', 'body');
+                }
+            }
+        
+            return true;
         };
 
         return this.init();

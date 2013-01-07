@@ -235,14 +235,27 @@
 
             for (i = 0, l = self.items.length; i < l; i++) {
                 if (self.items[i].id === id) {
-                    self.items.splice(i, 1);
                     self.items[i].$d.remove();
+                    self.items.splice(i, 1);
                     break;
                 }
             }
 
         };
-
+        
+        /*
+         * Remove all Toolbar items
+         */
+        this.clear = function() {
+            
+            for (var i = 0, l = this.items.length; i < l; i++) {
+                this.items[i].$d.remove();
+            }
+            
+            this.items = [];
+        
+        };
+    
         /*
          * Initialize object
          */
@@ -270,8 +283,6 @@
      *      first:// boolean - if true item is added as the first element of the toolbar
      *                       - if false item is added at the end of the toolbar
      *                       (default false)
-     *      html: // html code to display within the button instead of title - If both html and title
-     *               are specified, html has preseance (i.e. title is discarded)
      *      icon: // Url to the icon image (if no text)
      *      id: // Unique identifier for the <li> element. Automatically created if not given
      *      nohover: // if true, item is not sensitive to onmouseover event
@@ -302,7 +313,7 @@
          * Callback function called on deactivate
          */
         this.ondeactivate = options.ondeactivate;
-
+        
         /*
          * Extra properties container
          */
@@ -312,11 +323,6 @@
          * Extra properties container
          */
         this.first = M.Util.getPropertyValue(options, "first", false);
-
-        /*
-         * Html content for the button - replace title
-         */
-        this.html = options.html;
 
         /*
          * Url to the button icon image 
@@ -389,14 +395,8 @@
              * otherwise it is added at the end of the toolbar
              */
             uid = M.Util.getId();
-
-            if (self.html) {
-                content = self.html;
-            }
-            else {
-                content = self.title ? M.Util.shorten(self.title, 10, true) : '<img class="middle" alt="" src="' + M.Util.getImgUrl(self.icon || "empty.png") + '"/>';
-            }
-            content = '<div class="' + (self.nohover ? "" : "hover ") + 'item" jtitle="' + (M.Util._(self.tt) || "") + '" id="' + uid + '">' + content + '</div>';
+            content = '<div class="' + (self.nohover ? "" : "hover ") + 'item" jtitle="' + (M.Util._(self.tt) || "") + '" id="' + uid + '">' + (self.title ? self.title : '<img class="middle" alt="" src="' + M.Util.getImgUrl(self.icon || "empty.png") + '"/>') + '</div>';
+            
             self.first ? self.tb.$d.prepend(content) : self.tb.$d.append(content);
 
             /*
@@ -469,7 +469,7 @@
                 }
 
                 self.$d.addClass("active");
-
+                
                 /*
                  * Callback is defined on activate
                  */
@@ -484,7 +484,7 @@
                  * Remove 'active' class from item
                  */
                 self.$d.removeClass("active");
-
+            
                 /*
                  * Callback is defined on deactivate
                  */
@@ -496,32 +496,6 @@
 
             return true;
 
-        };
-
-        /**
-         * Hilite an item by adding a bright spot close
-         * to the item like in the Mac OS X Dock
-         * 
-         * THIS DOES NOT WORK YET
-         * 
-         * @param {Boolean} b : // true to hilite - false to unhilite
-         */
-        this.hilite = function(b) {
-
-            var id = '#' + this.id + 'h', $h = $(id);
-
-            if ($h.length) {
-                $h = M.Util.$$(id, M.$mcontainer).addClass('itemHiliter');
-            }
-
-            var orientation = this.tb.orientation || 'h';
-
-            if (self.tb.position) {
-                M.tooltip.add(self.$d, orientation === 'h' ? self.tb.position.substr(0, 1) : self.tb.position.substr(1, 2));
-            }
-            else {
-                M.tooltip.add(self.$d, orientation === 'h' ? 'n' : 'e');
-            }
         };
 
         /*
