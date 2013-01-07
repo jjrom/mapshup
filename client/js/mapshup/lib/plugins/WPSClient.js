@@ -538,11 +538,11 @@
                     else if (result.reference) {
                         var id = M.Util.getId(),
                                 popup = new M.Popup({
-                        modal:false,
-                                noHeader:true,
-                                autoSize:true,
-                                body:process.title + ' <a id="' + id + '" href="' + result.reference.href + '" class="button inline colored paddedright" target="_blank">' + M.Util._("Download result") + '</a>'
-                        }).show();
+                                        modal:false,
+                                        noHeader:true,
+                                        autoSize:true,
+                                        body:process.title + ' <a id="' + id + '" href="' + result.reference.href + '" class="button inline colored paddedright" target="_blank">' + M.Util._("Download result") + '</a>'
+                                }).show();
                         $('#' + id).click(function() {
                             popup.hide();
                         });
