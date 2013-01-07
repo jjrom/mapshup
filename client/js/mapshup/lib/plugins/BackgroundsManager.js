@@ -35,12 +35,15 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-/*********************************************
+
+/**
  * PLUGIN: BackgroundsManager
  *
  * Define a "Background layer" switcher
  * located in the mapshup header
- *********************************************/
+ * 
+ * @param {MapshupObject} M
+ */
 (function(M) {
     
     M.Plugins.BackgroundsManager = function() {
@@ -54,6 +57,9 @@
         
         /**
          * Initialize plugin
+         * 
+         * @param {Object} options
+         * 
          */
         this.init = function(options) {
 
@@ -141,6 +147,6 @@
         M.Plugins.BackgroundsManager._o = this;
         
         return this;
-    }
+    };
     
 })(window.M);
