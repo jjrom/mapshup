@@ -1878,7 +1878,14 @@
                                              * Result display requires a specific user action
                                              */
                                             (function(result, process) {
-                                                $result.html(M.Util._("Display")).addClass("button clickable").click(function() {
+                                                $result.html(M.Util._("Display")).addClass("button clickable").click(function(e) {
+                                                    
+                                                    /*
+                                                     * Remove click event
+                                                     */
+                                                    e.preventDefault();
+                                                    $(this).off('click');
+                                                    
                                                     var geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
                                                     if (geoType === 'GML') {
                                                         item.process.descriptor.wps.load(M.Map.Util.GML.toGeoJSON(result.data.value, {
