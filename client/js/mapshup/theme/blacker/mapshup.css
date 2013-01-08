@@ -140,7 +140,9 @@ table thead {
     height:20px;
     line-height:20px;
 }
-
+td {
+    padding:5px;
+}
 /*===================================
 *
 *  Shared classes

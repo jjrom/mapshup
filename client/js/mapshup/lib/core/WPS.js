@@ -1831,18 +1831,14 @@
                              * Process succeeded
                              */
                             case "ProcessSucceeded":
-
-                                /*
-                                 * Update status
-                                 */
+                                
+                               /*
+                                * Update status
+                                */
                                 $status.css({
-                                    'background-color': 'olivedrab'
+                                    'background-color': 'blue'
                                 });
-
-                                /*
-                                 * Update Result
-                                 */
-
+                                
                                 /* 
                                  * No result = nothing to update
                                  */
@@ -1868,12 +1864,15 @@
                                          */
                                         if (typeof result.data.value !== "object") {
                                             $result.html(result.data.value);
+                                            $status.css({
+                                                'background-color': 'olivedrab'
+                                            });
                                         }
                                         /*
                                          * Complex output
                                          */
                                         else {
-
+                                            
                                             /*
                                              * Result display requires a specific user action
                                              */
@@ -1886,6 +1885,13 @@
                                                     e.preventDefault();
                                                     $(this).off('click');
                                                     
+                                                    /*
+                                                     * Update status
+                                                     */
+                                                    $status.css({
+                                                        'background-color': 'olivedrab'
+                                                    });
+                                                
                                                     var geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
                                                     if (geoType === 'GML') {
                                                         item.process.descriptor.wps.load(M.Map.Util.GML.toGeoJSON(result.data.value, {
@@ -1911,6 +1917,9 @@
                                         (function(result) {
                                             $result.html(M.Util._("Download")).addClass("button clickable").click(function() {
                                                 window.open(result.reference.href);
+                                                $status.css({
+                                                    'background-color': 'olivedrab'
+                                                });
                                             });
                                         })(result);
 
