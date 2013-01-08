@@ -35,14 +35,16 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-/*********************************************
+
+/**
  *
  * Plugin FeatureEdition
  * 
  * Allow user to delete feature individually from
  * an editable layer
  *
- *********************************************/
+ * @param {MapshupObject} M
+ */
 (function(M) {
     
     M.Plugins.FeatureEdition = function() {
@@ -56,6 +58,8 @@
         
         /**
          * Init plugin
+         * 
+         * @param {Object} options
          */
         this.init = function(options) {
   
@@ -114,7 +118,7 @@
                         });
 
                     }
-                }
+                };
             }
             
             return null;

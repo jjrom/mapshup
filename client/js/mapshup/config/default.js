@@ -782,5 +782,13 @@
     {
         name:"WPSClient"
     });
+
+    /**
+     * FeatureEdition plugin
+     */
+    c.add("plugins",
+    {
+        name:"FeatureEdition"
+    });
     
 })(window.M.Config);
