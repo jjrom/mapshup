@@ -64,6 +64,8 @@
         
         /**
          * Init plugin
+         * 
+         * @param {Object} options
          */
         this.init = function(options) {
             
@@ -317,6 +319,8 @@
         
         /**
          * This method is called by FeatureInfo actions popup
+         * 
+         * @param {OpenLayers.Feature} feature
          */
         this.getFeatureActions = function(feature) {
 
@@ -332,7 +336,7 @@
                     /*
                      * Set lonlat to new position
                      */
-                    self.lonlat = M.Map.Util.p2d(M.Map.featureInfo._ll.clone());
+                    self.lonlat = M.Map.Util.p2d(feature.geometry.getBounds().getCenterLonLat().clone());
                         
                     /*
                      * Activate panel item
@@ -340,13 +344,14 @@
                     M.southPanel.show(self.panelItem);
                     
                 }
-            }
+            };
         };
         
         /**
          * Show streetview
          *
-         * @param lonlat : LonLat in map.displayProjection coordinates
+         * @param {Object} scope : reference to this object
+         * @param {OpenLayers.LonLat} lonLat : LonLat in map.displayProjection coordinates
          */
         this.show = function(scope, lonLat) {
             
