@@ -100,7 +100,7 @@
             /*
              * Set Asynchronous Processes Manager
              */
-            self.apm = new M.Plugins.WPSClient.asynchronousProcessManager(self);
+            self.apm = new M.WPS.asynchronousProcessManager();
 
             return self;
 
@@ -182,9 +182,9 @@
                 /*
                  * Register DescribeProcess event
                  */
-                wps.events.register("describeprocess", this, function(scope, processes) {
-                    if ($.isArray(processes) && processes[0]) {
-                        scope.updateDescribeProcessContent(processes[0]);
+                wps.events.register("describeprocess", this, function(scope, descriptors) {
+                    if ($.isArray(descriptors) && descriptors[0]) {
+                        scope.updateDescribeProcessContent(descriptors[0]);
                     }
                 });
 
@@ -236,7 +236,7 @@
          */
         this.updateCapabilitiesContent = function(item) {
 
-            var id = M.Util.getId(), process, identifier, $processes;
+            var id = M.Util.getId(), descriptor, identifier, $processes;
 
             /*
              * Set '.info' div
@@ -260,27 +260,27 @@
              * 
              */
             $processes = $('.processes', item.$d);
-            for (identifier in item.wps.processes) {
+            for (identifier in item.wps.descriptors) {
                 id = M.Util.getId();
-                process = item.wps.processes[identifier];
-                $('.content', $processes).append('<a href="#" id="' + id + '" class="button inline">' + process.title + '</a> ');
-                (function(process, $id, item) {
+                descriptor = item.wps.descriptors[identifier];
+                $('.content', $processes).append('<a href="#" id="' + id + '" class="button inline">' + descriptor.title + '</a> ');
+                (function(descriptor, $id, item) {
                     $id.click(function() {
                         $('a', $(this).parent()).removeClass('active');
                         $(this).addClass('active');
-                        item.wps.describeProcess(process.identifier);
+                        item.wps.describeProcess(descriptor.identifier);
                         return false;
                     });
 
                     /*
                      * Add tooltip with abstract 
                      */
-                    if (process['abstract']) {
-                        $id.attr('jtitle', process['abstract']);
+                    if (descriptor['abstract']) {
+                        $id.attr('jtitle', descriptor['abstract']);
                         M.tooltip.add($id, 's');
                     }
 
-                })(process, $('#' + id), item);
+                })(descriptor, $('#' + id), item);
             }
 
             /*
@@ -294,24 +294,24 @@
          * Update content of process description panel contained
          * within 'describe' CSS class
          * 
-         *  @param {Object} process : M.WPS.Process 
+         *  @param {Object} descriptor : M.WPS.ProcessDescriptor 
          */
-        this.updateDescribeProcessContent = function(process) {
+        this.updateDescribeProcessContent = function(descriptor) {
 
-            var type, putsDescription, i, j, l, id, $id, put, $list, executeId = M.Util.getId(), executeBgId, item = this.items[process.wps.url], abstract = process["abstract"];
+            var type, putsDescription, i, j, l, id, $id, put, $list, executeId = M.Util.getId(), executeBgId, item = this.items[descriptor.wps.url], abstract = descriptor["abstract"];
 
             /*
              * Set '.info' div
              * 
              * Display Process title and abstract.
              */
-            $('.describe', item.$d).html('<h1 title="' + process.identifier + '">' + process.title + '</h1><p>' + (abstract ? abstract : '') + '</p><div class="execute"><img src="' + M.Util.getImgUrl('execute.png') + '" id="' + executeId + '" class="button inline" jtitle="' + M.Util._("Execute process") + '"/></div>');
+            $('.describe', item.$d).html('<h1 title="' + descriptor.identifier + '">' + descriptor.title + '</h1><p>' + (abstract ? abstract : '') + '</p><div class="execute"><img src="' + M.Util.getImgUrl('execute.png') + '" id="' + executeId + '" class="button inline" jtitle="' + M.Util._("Execute process") + '"/></div>');
 
             /*
              * Set execute button
              */
             M.tooltip.add($('#' + executeId).click(function() {
-                process.execute();
+                descriptor.execute();
                 return false;
             }), 'n', 20);
 
@@ -322,7 +322,7 @@
                 executeBgId = M.Util.getId();
                 $('.execute', $('.describe', item.$d)).append('&nbsp;<img src="' + M.Util.getImgUrl('sleep.png') + '" id="' + executeBgId + '" class="button inline" jtitle="' + M.Util._("Execute process in background") + '"/>');
                 M.tooltip.add($('#' + executeBgId).click(function() {
-                    process.execute({storeExecute: true});
+                    descriptor.execute({storeExecute: true});
                     return false;
                 }), 'n', 20);
             }
@@ -365,12 +365,12 @@
              * Roll over dataInputs and processOutputs
              */
             type = 'input';
-            putsDescription = process.dataInputsDescription;
+            putsDescription = descriptor.dataInputsDescription;
             for (j = 0; j < 2; j++) {
 
                 if (j === 1) {
                     type = 'output';
-                    putsDescription = process.processOutputsDescription;
+                    putsDescription = descriptor.processOutputsDescription;
                 }
 
                 for (i = 0, l = putsDescription.length; i < l; i++) {
@@ -403,19 +403,19 @@
                      * The hard part...
                      */
                     if (put.literalData) {
-                        this.displayLiteralData(process, put, $id);
+                        this.displayLiteralData(descriptor, put, $id);
                     }
                     else if (put.literalOutput) {
-                        this.displayLiteralOutput(process, put, $id);
+                        this.displayLiteralOutput(descriptor, put, $id);
                     }
                     else if (put.complexData) {
-                        this.displayComplexData(process, put, $id);
+                        this.displayComplexData(descriptor, put, $id);
                     }
                     else if (put.complexOutput) {
-                        this.displayComplexOutput(process, put, $id);
+                        this.displayComplexOutput(descriptor, put, $id);
                     }
                     else if (put.boundingBoxData) {
-                        this.displayBoundingBoxData(process, put, $id);
+                        this.displayBoundingBoxData(descriptor, put, $id);
                     }
 
                 }
@@ -454,15 +454,8 @@
          */
         this.updateOutputContent = function(process) {
 
-            var i, l, geoType, result, item = this.items[process.wps.url], $outputsList = $('.output', item.$d), location = process.statusLocation;
+            var i, l, geoType, result, item = this.items[process.descriptor.wps.url], $outputsList = $('.output', item.$d);
 
-            /*
-             * Process failed - the very easy part :)
-             */
-            if (process.status === "ProcessFailed") {
-                M.Util.message(process.title + " : " + M.Util._("Process failed") + " - " + process.statusAbstract);
-                return false;
-            }
             /*
              * Asynchronous case
              * 
@@ -471,23 +464,37 @@
              * 
              * When the process is finished, the user is notified and the TimeOut function is removed
              */
-            else if (process.status === "ProcessAccepted" && location) {
-
+            if (process.statusLocation) {
+                
                 /*
-                 * Add a new process to the asynchronous manager
-                 */
-                return this.apm.add(process.wps.url, process.identifier, location);
-
+                 * ProcessAccepted
+                 *  => add a new process to the asynchronous manager
+                 */  
+                if (process.status === "ProcessAccepted") {
+                   return this.apm.add(process, {
+                       wpsUrl:process.descriptor.wps.url,
+                       identifier:process.descriptor.identifier
+                   });
+                }
+                
+                /*
+                 * ProcessSucceeded or ProcessFailed
+                 *  => store result in the User processes list
+                 */  
+                return this.apm.update(process);
+                            
+            }
+            /*
+             * Process failed - the very easy part :)
+             */
+            else if (process.status === "ProcessFailed") {
+                M.Util.message(process.title + " : " + M.Util._("Process failed") + " - " + process.statusAbstract);
+                return false;
             }
             /*
              * Synchronous case
              */
             else if (process.status === "ProcessSucceeded") {
-
-                /*
-                 * An important task : remove asynchronous process if any !
-                 */
-                this.apm.remove(location);
 
                 /*
                  * No result = nothing to update
@@ -523,10 +530,10 @@
                          */
                         geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
                         if (geoType === 'GML') {
-                            this.load(M.Map.Util.GML.toGeoJSON(result.data.value, {
-                                title: process.title,
-                                processid: process.identifier,
-                                description: process["abstract"],
+                            process.descriptor.wps.load(M.Map.Util.GML.toGeoJSON(result.data.value, {
+                                title: process.descriptor.title,
+                                processid: process.descriptor.identifier,
+                                description: process.descriptor["abstract"],
                                 time: (new Date()).toISOString()
                             }));
                         }
@@ -541,7 +548,7 @@
                                         modal:false,
                                         noHeader:true,
                                         autoSize:true,
-                                        body:process.title + ' <a id="' + id + '" href="' + result.reference.href + '" class="button inline colored paddedright" target="_blank">' + M.Util._("Download result") + '</a>'
+                                        body:process.descriptor.title + ' <a id="' + id + '" href="' + result.reference.href + '" class="button inline colored paddedright" target="_blank">' + M.Util._("Download result") + '</a>'
                                 }).show();
                         $('#' + id).click(function() {
                             popup.hide();
@@ -580,12 +587,12 @@
          *   IMPORTANT : jQuery .data() is used to store addtionnal information on value
          *   (for example UOM if specified)
          *   
-         *   @param {Object} process : M.WPS.Process
+         *   @param {Object} descriptor : M.WPS.ProcessDescriptor
          *   @param {Object} put : Input object containing LiteralData
          *   @param {Object} $parent
          *      
          */
-        this.displayLiteralData = function(process, put, $parent) {
+        this.displayLiteralData = function(descriptor, put, $parent) {
 
             var type = 'input', data = put.literalData, id = M.Util.getId(), $id, $uom, $av, i, l, self = this;
 
@@ -610,7 +617,7 @@
                  */
                 $av = $('#' + id + 'av').change(function() {
                     $parent.data('data', $(this).val());
-                    self.setPuts(process, type);
+                    self.setPuts(descriptor, type);
                 });
 
                 for (i = 0, l = data.allowedValues.length; i < l; i++) {
@@ -652,7 +659,7 @@
                  */
                 $uom = $('#' + id + 'uom').change(function() {
                     $parent.data('uom', $(this).val());
-                    self.setPuts(process, type);
+                    self.setPuts(descriptor, type);
                 });
 
                 for (i = 0, l = data.UOMs.supported.length; i < l; i++) {
@@ -690,7 +697,7 @@
                 else {
                     $id.addClass('hilite').removeClass('warning');
                     $parent.data('data', data.defaultValue);
-                    self.setPuts(process, type);
+                    self.setPuts(descriptor, type);
                 }
 
                 /*
@@ -723,7 +730,7 @@
                                  * Store new value and update process accordingly
                                  */
                                 $parent.data('data', v);
-                                self.setPuts(process, type);
+                                self.setPuts(descriptor, type);
                             }
                         }
                     });
@@ -758,12 +765,12 @@
          *   IMPORTANT : jQuery .data() is used to store addtionnal information on value
          *   (for example UOM if specified)
          *   
-         *   @param {Object} process : M.WPS.Process
+         *   @param {Object} descriptor : M.WPS.ProcessDescriptor
          *   @param {Object} put : Input or Output object containing LiteralData
          *   @param {Object} $parent
          *      
          */
-        this.displayLiteralOutput = function(process, put, $parent) {
+        this.displayLiteralOutput = function(descriptor, put, $parent) {
 
             var type = 'output', data = put.literalOutput, id = $parent.attr('id'), $uom, self = this;
 
@@ -780,7 +787,7 @@
             /*
              * Add output to process
              */
-            self.setPuts(process, type);
+            self.setPuts(descriptor, type);
 
             /*
              * Set the Units of Measure if specified
@@ -797,7 +804,7 @@
                  */
                 $uom = $('#' + id + 'vuom').change(function() {
                     $parent.data('uom', $(this).val());
-                    self.setPuts(process, type);
+                    self.setPuts(descriptor, type);
                 });
 
                 for (var i = 0, l = data.UOMs.supported.length; i < l; i++) {
@@ -852,12 +859,12 @@
          *   IMPORTANT : jQuery .data() is used to store addtionnal information on value
          *   (for example UOM if specified)
          *   
-         *   @param {Object} process : M.WPS.Process
+         *   @param {Object} descriptor : M.WPS.ProcessDescriptor
          *   @param {Object} put : Input object containing ComplexData
          *   @param {Object} $parent
          *      
          */
-        this.displayComplexData = function(process, put, $parent) {
+        this.displayComplexData = function(descriptor, put, $parent) {
 
             var type = 'input',
                     data = put.complexData,
@@ -917,7 +924,7 @@
                              */
                             data.file ? $parent.removeData('fileUrl').data('file', data.file) : $parent.removeData('file').data('fileUrl', data.fileUrl);
 
-                            self.setPuts(process, type);
+                            self.setPuts(descriptor, type);
 
                         }
 
@@ -948,7 +955,7 @@
                         .addClass('warning')
                         .click(function(e) {
 
-                    var $mask = self.items[process.wps.url].panelItem.$mask;
+                    var $mask = self.items[descriptor.wps.url].panelItem.$mask;
 
                     /*
                      * Set a callback function on FeatureInfo
@@ -973,11 +980,10 @@
                             /*
                              * Store file or fileUrl within parent data cache
                              */
-                            $parent
-                                    .removeData('fileUrl')
+                            $parent.removeData('fileUrl')
                                     .data('data', M.Map.Util.Feature.toGeo(feature, data["default"]))
                                     .data('format', data["default"]);
-                            self.setPuts(process, type);
+                            self.setPuts(descriptor, type);
 
                         }
                     };
@@ -985,9 +991,7 @@
                     /*
                      * Show mask
                      */
-                    $mask
-                            .html('<div class="content">' + selectText + ' (<a href="#" class="cancel">' + M.Util._("Cancel") + '<a/>)</div>')
-                            .show();
+                    $mask.html('<div class="content">' + selectText + ' (<a href="#" class="cancel">' + M.Util._("Cancel") + '<a/>)</div>').show();
 
                     /*
                      * Add a cancel action
@@ -1007,7 +1011,7 @@
 
                     $parent.append(' <img src="' + M.Util.getImgUrl('drawing.png') + '" id="' + idgeodraw + '" class="hover middle" title="' + drawText + '"/>');
 
-                    var $mask = self.items[process.wps.url].panelItem.$mask;
+                    var $mask = self.items[descriptor.wps.url].panelItem.$mask;
 
                     /*
                      * Draw geometry within the map
@@ -1020,9 +1024,7 @@
                         /*
                          * Show mask
                          */
-                        $mask
-                                .html('<div class="content">' + drawText + ' (<a href="#" class="cancel">' + M.Util._("Cancel") + '<a/>)</div>')
-                                .show();
+                        $mask.html('<div class="content">' + drawText + ' (<a href="#" class="cancel">' + M.Util._("Cancel") + '<a/>)</div>').show();
 
                         /*
                          * Add a cancel action
@@ -1054,7 +1056,7 @@
                                  * Store file or fileUrl within parent data cache
                                  */
                                 $parent.removeData('fileUrl').data('data', M.Map.Util.Feature.toGeo(event.feature, data["default"])).data('format', data["default"]);
-                                self.setPuts(process, type);
+                                self.setPuts(descriptor, type);
 
                             }
 
@@ -1082,12 +1084,12 @@
          *          supported[CRS1, CRS2, CRS...]
          *      }
          *   
-         *   @param {Object} process : M.WPS.Process
+         *   @param {Object} descriptor : M.WPS.ProcessDescriptor
          *   @param {Object} put : Input object containing ComplexData
          *   @param {Object} $parent
          *      
          */
-        this.displayBoundingBoxData = function(process, put, $parent) {
+        this.displayBoundingBoxData = function(descriptor, put, $parent) {
 
             var type = 'input', data = put.complexData, idgeoselect = M.Util.getId(), idgeodraw = M.Util.getId(), self = this;
             var drawboxPlugin = M.Plugins.DrawBox && M.Plugins.DrawBox._o ? M.Plugins.DrawBox._o : null;
@@ -1126,7 +1128,7 @@
                  */
                 $('#' + idgeodraw).removeClass('hilite').addClass('warning').click(function(e) {
 
-                    var $mask = self.items[process.wps.url].panelItem.$mask;
+                    var $mask = self.items[descriptor.wps.url].panelItem.$mask;
 
                     /*
                      * Show mask
@@ -1174,12 +1176,12 @@
          *   IMPORTANT : jQuery .data() is used to store additionnal information on value
          *   (for example UOM if specified)
          *   
-         *   @param {Object} process : M.WPS.Process
+         *   @param {Object} descriptor : M.WPS.ProcessDescriptor
          *   @param {Object} put : Input or Output object containing ComplexOutput
          *   @param {Object} $parent
          *      
          */
-        this.displayComplexOutput = function(process, put, $parent) {
+        this.displayComplexOutput = function(descriptor, put, $parent) {
 
             var type = 'output', data = put.complexOutput, id = $parent.attr('id'), self = this;
 
@@ -1193,7 +1195,7 @@
              * Geometrical output options are not displayed within $parent
              */
             if (M.Map.Util.getGeoType(data["default"].mimeType)) {
-                self.setPuts(process, type);
+                self.setPuts(descriptor, type);
                 $parent.hide();
             }
             else {
@@ -1201,7 +1203,7 @@
                 /*
                  * Add output to process
                  */
-                self.setPuts(process, type);
+                self.setPuts(descriptor, type);
 
                 /*
                  * Create a <select> form
@@ -1213,7 +1215,7 @@
                  */
                 $mtype = $('#' + id + 'vmtype').change(function() {
                     $parent.data('mimeType', $(this).val());
-                    self.setPuts(process, type);
+                    self.setPuts(descriptor, type);
                 });
 
                 for (var i = 0, l = data.supported.length; i < l; i++) {
@@ -1240,34 +1242,34 @@
         /**
          * Update inputs or outputs list for process
          * 
-         * @param {Object} process
+         * @param {M.WPS.ProcessDescriptor} descriptor
          * @param {String} type : 'input' or 'output'
          *
          */
-        this.setPuts = function(process, type) {
-            type === 'input' ? this.setInputs(process) : this.setOutputs(process);
+        this.setPuts = function(descriptor, type) {
+            type === 'input' ? this.setInputs(descriptor) : this.setOutputs(descriptor);
         };
 
         /**
          * Update inputs list for process
          * 
-         * @param {Object} process
+         * @param {M.WPS.ProcessDescriptor} descriptor
          *
          */
-        this.setInputs = function(process) {
+        this.setInputs = function(descriptor) {
 
             /*
              * Clear process list
              */
-            process.clearInputs();
+            descriptor.clearInputs();
 
             /*
              * Populate process inputs list with
              * the .data() content of each process Input
              * identified by 'input' CSS class
              */
-            $('.input', this.items[process.wps.url].$d).each(function() {
-                process.addInput($(this).data());
+            $('.input', this.items[descriptor.wps.url].$d).each(function() {
+                descriptor.addInput($(this).data());
             });
 
         };
@@ -1275,71 +1277,23 @@
         /**
          * Update outputs list for process
          * 
-         * @param {Object} process
+         * @param {M.WPS.ProcessDescriptor} descriptor
          *
          */
-        this.setOutputs = function(process) {
+        this.setOutputs = function(descriptor) {
 
             /*
              * Clear process list
              */
-            process.clearOutputs();
+            descriptor.clearOutputs();
 
             /*
              * Populate process outputs list with
              * the .data() content of each process Input
              * identified by 'input' CSS class
              */
-            $('.output', this.items[process.wps.url].$d).each(function() {
-                process.addOutput($(this).data());
-            });
-
-        };
-
-        /*
-         * Return layer to display Geometries results
-         */
-        this.getLayer = function() {
-
-            if (this._layer) {
-                return this._layer;
-            }
-
-            this._layer = M.Map.addLayer({
-                type: "GeoJSON",
-                title: "WPS results",
-                clusterized: false, // Very important !
-                editable: true,
-                ol: {
-                    styleMap: new OpenLayers.StyleMap({
-                        'default': {
-                            strokeColor: 'white',
-                            strokeWidth: 1,
-                            fillColor: 'red',
-                            fillOpacity: 0.2,
-                            pointRadius: 5
-                        }
-                    })
-                }
-            });
-
-            return this._layer;
-        };
-
-        /*
-         * Add GeoJSON features within WPS result layer
-         * 
-         * @param {String} data : a GeoJSON string
-         */
-        this.load = function(data) {
-
-            /*
-             * Add new feature(s) and center on it
-             */
-            M.Map.layerTypes["GeoJSON"].load({
-                data: data,
-                layer: this.getLayer(),
-                zoomOnNew: true
+            $('.output', this.items[descriptor.wps.url].$d).each(function() {
+                descriptor.addOutput($(this).data());
             });
 
         };
@@ -1350,294 +1304,6 @@
         M.Plugins.WPSClient._o = this;
 
         return this;
-    };
-
-    /**
-     * WPSClient Asynchronous Process Manager
-     * 
-     * @param {WPSClientObject} wpsclient : WPSClient plugin instance reference
-     */
-    M.Plugins.WPSClient.asynchronousProcessManager = function(wpsclient) {
-
-        /*
-         * Reference to the parent WPSClient instance
-         */
-        this.parent = wpsclient;
-
-        /*
-         * Reference to the UserManagement plugin instance
-         */
-        this.um = null;
-
-        /*
-         * Hashmap of running asynchronous processes stored by statusLocation url
-         * 
-         * Structure
-         *      {
-         *          process: // Running WPS Process reference
-         *          fn: // TimeOut function periodically called to update status
-         *      }
-         */
-        this.items = [];
-
-        /**
-         * Initialize manager
-         */
-        this.init = function() {
-
-            /*
-             * Register to user signIn and signOut events for
-             * background processes 
-             */
-            M.events.register("signin", this, function(scope, um) {
-
-                /*
-                 * Tell WPSClient that user is signed in
-                 */
-                scope._signedIn = true;
-
-                /*
-                 * Store the UserManagement plugin instance reference
-                 */
-                scope.um = um;
-
-                /*
-                 * Add a new entry in the UserManagement userBar
-                 */
-                scope.um.add([{
-                    id: '#WPSClientPlugin',
-                    icon: M.Util.getImgUrl("execute.png"),
-                    tt: "Processes",
-                    onoff: true,
-                    scope: scope,
-                    onactivate: function(s, item) {
-                        s.isVisible = true;
-                        s.um.getPopup().show();
-                        s.updateUserBar();
-                    },
-                    ondeactivate: function(s, item) {
-                        s.isVisible = false;
-                        s.um.getPopup().hide();
-                    }
-                }]);
-            });
-
-            M.events.register("signout", this, function(scope) {
-
-                /*
-                 * Tell WPSClient that user is signed out
-                 */
-                scope._signedIn = false;
-
-            });
-
-            return this;
-
-        };
-
-        /**
-         * Get an asynchronous process from its location
-         * 
-         * @param {String} location
-         */
-        this.get = function(location) {
-
-            if (!location) {
-                return null;
-            }
-
-            /*
-             * Roll over items
-             */
-            for (var i = 0, l = this.items.length; i < l; i++) {
-                if (this.items[i].location === location) {
-                    return this.items[i];
-                }
-            }
-
-            return null;
-        };
-
-        /**
-         * Add a process to the list of asynchronous processes
-         * 
-         * @param {String} wpsUrl : WPS url endpoint
-         * @param {String} processId : Process identifier (should be unique within WPS getCapabilities)
-         * @param {String} location : statusLocation url (should be unique)
-         */
-        this.add = function(wpsUrl, processId, location) {
-
-            var self = this, parentItem = this.parent.items[wpsUrl], process;
-
-            /*
-             * Paranoid mode
-             */
-            if (!parentItem || !parentItem.wps) {
-                return false;
-            }
-
-            /*
-             * Get process reference
-             */
-            process = parentItem.wps.processes[processId];
-
-            /*
-             * Paranoid mode
-             */
-            if (!process) {
-                return false;
-            }
-
-            /*
-             * Be sure to avoid multiple registry of the same running process
-             * The unicity is guaranted by the statusLocation which is unique for a given
-             * process
-             */
-            if (!self.get(location)) {
-
-                /*
-                 * Great news for user :)
-                 */
-                M.Util.message('<span class="status">' + process.title + " : " + M.Util._("Process accepted and running") + '</span>');
-
-                /*
-                 * Add an entry within the running process hashmap
-                 */
-                self.items.push({
-                    location: location,
-                    process: process,
-                    /*
-                     * Periodically check the Process Status (every 5 seconds) 
-                     */
-                    fn: setTimeout(function() {
-
-                        /*
-                         * Background execute request
-                         */
-                        $.ajax({
-                            url: M.Util.proxify(location, "XML"),
-                            async: true,
-                            type: "GET",
-                            dataType: "xml",
-                            contentType: "text/xml",
-                            success: function(xml) {
-
-                                process.result = process.parseExecuteResponse(xml);
-
-                                /*
-                                 * Result is null only if an ExceptionReport occured
-                                 */
-                                if (process.result) {
-                                    process.wps.events.trigger("execute", process);
-                                }
-
-                            },
-                            error: function(e) {
-                                M.Util.message(e);
-                            }
-                        });
-
-                    }, 5000)
-
-                });
-
-                /*
-                 * Update user bar 
-                 */
-                self.updateUserBar();
-
-            }
-        };
-
-        /**
-         * Remove a process from the list of asynchronous processes
-         * 
-         * @param {String} location : statusLocation url (should be unique)
-         * 
-         */
-        this.remove = function(location) {
-
-            if (!location) {
-                return false;
-            }
-        
-            /*
-             * Roll over items
-             */
-            for (var i = 0, l = this.items.length; i < l; i++) {
-
-                /*
-                 * Remove item with corresponding location
-                 * A clean remove means imperatively to first clear the TimeOut function !
-                 */
-                if (this.items[i].location === location) {
-                    
-                    clearTimeout(this.items[i].fn);
-                    this.items.splice(i, 1);
-
-                    /*
-                     * Recompute user bar
-                     */
-                    this.updateUserBar();
-
-                    return true;
-                }
-            }
-
-            return false;
-            
-        };
-
-        /**
-         * Update userBar list
-         */
-        this.updateUserBar = function() {
-
-            /*
-             * Display Process list
-             */
-            var i, l = this.items.length, item = this.um.tb.get('#WPSClientPlugin'), p = this.um.getPopup();
-          
-            /*
-             * Set a nice running processes counter
-             */
-            if (l === 0) {
-                $('.counter', item.$d).remove();
-            }
-            else {
-                item.$d.append('<span class="counter">'+l+'</span>');
-            }
-            
-            /*
-             * Only update userBar if Processes list is visible
-             */
-            if (!this.isVisible) {
-                return false;
-            }
-        
-            /*
-             * Set UserManagement popup header
-             */
-            p.$h.html(M.Util._("Running processes"));
-
-            /*
-             * Clear body
-             */
-            p.$b.empty();
-
-            if (l === 0) {
-                p.$b.html("No running process");
-            }
-            else {
-                for (i = l; i--; ) {
-                    p.append('<img src="' + M.Util.getImgUrl('loading.gif') + '" class="middle"/> ' + this.items[i].process.identifier + '</br>', 'body');
-                }
-            }
-            
-            return true;
-        };
-
-        return this.init();
     };
 
 })(window.M);

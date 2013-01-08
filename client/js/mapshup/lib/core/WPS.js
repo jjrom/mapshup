@@ -51,8 +51,10 @@
      */
     M = M || {};
 
-    /*
+    /**
      * Initialize M.WPS
+     * 
+     * @param {String} url : WPS endpoint url
      */
     M.WPS = function(url) {
 
@@ -88,9 +90,9 @@
         this.serviceProvider = {};
 
         /**
-         * Hashtag of M.WPS.Process objects stored by unique identifier
+         * Hashtag of M.WPS.ProcessDescriptors objects stored by unique identifier
          */
-        this.processes = [];
+        this.descriptors = [];
 
         /**
          * Initialize WPS class
@@ -161,7 +163,7 @@
          */
         this.describeProcess = function(identifiers) {
 
-            var url, process, self = this;
+            var url, descriptor, self = this;
 
             /*
              * Convert input to array if needed
@@ -171,14 +173,13 @@
             }
 
             /*
-             * If descriveProcess has been already called before,
+             * If describeProcess has been already called before,
              * refresh it but do not call service again
              */
             if (identifiers.length === 1) {
-                process = this.getProcess(identifiers[0]);
-                if (process && process.dataInputsDescription) {
-                    process.clear();
-                    self.events.trigger("describeprocess", [process]);
+                descriptor = this.getProcessDescriptor(identifiers[0]);
+                if (descriptor && descriptor.dataInputsDescription) {
+                    self.events.trigger("describeprocess", [descriptor]);
                     return true;
                 }
             }
@@ -200,13 +201,13 @@
                 async: true,
                 dataType: 'xml',
                 success: function(xml) {
-                    var i, l, p, processDescriptions = self.parseDescribeProcess(xml), processes = [];
+                    var i, l, p, processDescriptions = self.parseDescribeProcess(xml), descriptors = [];
                     for (i = 0, l = processDescriptions.length; i < l; i++) {
-                        p = new M.WPS.Process(processDescriptions[i]);
-                        self.addProcess(p);
-                        processes.push(p);
+                        p = new M.WPS.ProcessDescriptor(processDescriptions[i]);
+                        self.addProcessDescriptor(p);
+                        descriptors.push(p);
                     }
-                    self.events.trigger("describeprocess", processes);
+                    self.events.trigger("describeprocess", descriptors);
                 },
                 error: function(e) {
                     M.Util.message(M.Util._("Error reading DescribeProcess file"));
@@ -388,7 +389,7 @@
                 }
 
                 /*
-                 * Get individual processes
+                 * Get individual process descriptor
                  * 
                  * GetCapabilities structure (version 1.0.0)
                  * 
@@ -403,7 +404,7 @@
                  * 
                  */
                 else if (M.Util.stripNS(this.nodeName) === 'Process') {
-                    self.addProcess(new M.WPS.Process(self.parseLeaf($(this))));
+                    self.addProcessDescriptor(new M.WPS.ProcessDescriptor(self.parseLeaf($(this))));
                 }
 
             });
@@ -763,7 +764,7 @@
         /**
          * Request 'execute' service on process identified by identifier
          * 
-         * @param {String} identifier : M.WPS.Process object identifier
+         * @param {String} identifier : M.WPS.ProcessDescriptor object identifier
          * @param {Object} options : options to modify execution (optional)
          *                          {
          *                              storeExecute: // boolean (set to true to set asynchronous mode)
@@ -773,56 +774,56 @@
          */
         this.execute = function(identifier, options) {
 
-            var process = this.getProcess(identifier);
+            var descriptor = this.getProcessDescriptor(identifier);
 
             /*
              * Paranoid mode
              */
-            if (!process) {
+            if (!descriptor) {
                 return false;
             }
 
-            return process.execute(options);
+            return descriptor.execute(options);
 
         };
 
         /**
-         * Add process to this.processes list
+         * Add process descriptor to this.descriptors list
          *
-         * @param {Object} process : M.WPS.Process object
+         * @param {Object} descriptor : M.WPS.ProcessDescriptor object
          */
-        this.addProcess = function(process) {
+        this.addProcessDescriptor = function(descriptor) {
 
             /*
              * Paranoid mode
              */
-            if (!process) {
+            if (!descriptor) {
                 return false;
             }
 
             /*
              * Effectively add a new process
              */
-            $.extend(process, {
+            $.extend(descriptor, {
                 wps: this
             });
 
-            this.processes[process.identifier] = process;
+            this.descriptors[descriptor.identifier] = descriptor;
 
             return true;
 
         };
 
         /**
-         * Get process from this.processes list based on its identifier
+         * Get process from this.descriptors list based on its identifier
          *
-         * @param {String} identifier : M.WPS.Process object identifier
+         * @param {String} identifier : M.WPS.ProcessDescriptor object identifier
          */
-        this.getProcess = function(identifier) {
+        this.getProcessDescriptor = function(identifier) {
             if (!identifier) {
                 return null;
             }
-            return this.processes[identifier];
+            return this.descriptors[identifier];
         };
 
         /**
@@ -859,6 +860,54 @@
             });
 
         };
+    
+        /*
+         * Return layer to display Geometries results
+         */
+        this.getLayer = function() {
+
+            if (this._layer) {
+                return this._layer;
+            }
+
+            this._layer = M.Map.addLayer({
+                type: "GeoJSON",
+                title: this.title,
+                clusterized: false, // Very important !
+                editable: true,
+                ol: {
+                    styleMap: new OpenLayers.StyleMap({
+                        'default': {
+                            strokeColor: 'white',
+                            strokeWidth: 1,
+                            fillColor: 'red',
+                            fillOpacity: 0.2,
+                            pointRadius: 5
+                        }
+                    })
+                }
+            });
+
+            return this._layer;
+        };
+
+        /*
+         * Add GeoJSON features within WPS result layer
+         * 
+         * @param {String} data : a GeoJSON string
+         */
+        this.load = function(data) {
+
+            /*
+             * Add new feature(s) and center on it
+             */
+            M.Map.layerTypes["GeoJSON"].load({
+                data: data,
+                layer: this.getLayer(),
+                zoomOnNew: true
+            });
+
+        };
 
         this.init(url);
 
@@ -866,8 +915,8 @@
 
     };
 
-    /*
-     * WPS Process
+    /**
+     * WPS ProcessDescriptor
      * 
      * @param {Object} options : WPS process initialization options
      * 
@@ -878,7 +927,7 @@
      *          wps: // reference to the M.WPS parent
      *      }
      */
-    M.WPS.Process = function(options) {
+    M.WPS.ProcessDescriptor = function(options) {
 
         /**
          * M.WPS object reference
@@ -929,45 +978,6 @@
          * List of outputs (Set by M.Plugins.WPSClient for example)
          */
         this.outputs = [];
-
-        /**
-         * Process status abstract (i.e. text description under <wps:Status>)
-         */
-        this.statusAbstract = null;
-        
-        /**
-         * Process statusLocation (set during execute)
-         */
-        this.statusLocation = null;
-        
-        /**
-         * Process status. Could be one of the following :
-         *      ProcessAccepted
-         *      ProcessStarted
-         *      ProcessPaused
-         *      ProcessSucceeded
-         *      ProcessFailed
-         * 
-         */
-        this.status = null;
-
-        /**
-         * Result object read from executeResponse
-         * 
-         * Structure 
-         *      [
-         *          {
-         *              identifier://
-         *              data:{
-         *                  value://
-         *              }
-         *          }
-         *          ,
-         *          ...
-         *      ]
-         * 
-         */
-        this.result = null;
 
         /*
          * Process initialization
@@ -1026,6 +1036,107 @@
         };
 
         /**
+         * Create a child Process and launch 'execute' request 
+         * 
+         *  @param {Object} options : options to modify execution (optional)
+         *                          {
+         *                              storeExecute: // boolean (set to true to set asynchronous mode)
+         *                              asReference: // boolean (set to true to have complexOutput resulte
+         *                                              as an url instead of directly set within the executeResponse
+         *                          }
+         */
+        this.execute = function(options) {
+            var process = new M.WPS.Process({
+                descriptor: this,
+                inputs: M.Util.clone(this.inputs),
+                outputs: M.Util.clone(this.outputs)
+            });
+
+            return process.execute(options);
+        };
+
+        this.init(options);
+
+        return this;
+    };
+
+    /**
+     * WPS Process
+     * 
+     * @param {Object} options : WPS process initialization options
+     * 
+     *      {
+     *          descriptor: // reference to the M.WPS parent
+     *      }
+     */
+    M.WPS.Process = function(options) {
+
+        /**
+         * M.WPS.ProcessDescriptor object reference
+         */
+        this.descriptor = null;
+
+        /**
+         * List of inputs
+         * Same structure as M.WPS.ProcessDescriptor inputs
+         */
+        this.inputs = [];
+
+        /**
+         * List of outputs
+         */
+        this.outputs = [];
+
+        /**
+         * Process status abstract (i.e. text description under <wps:Status>)
+         */
+        this.statusAbstract = null;
+
+        /**
+         * Process statusLocation (set during execute)
+         */
+        this.statusLocation = null;
+
+        /**
+         * Process status. Could be one of the following :
+         *      ProcessAccepted
+         *      ProcessStarted
+         *      ProcessPaused
+         *      ProcessSucceeded
+         *      ProcessFailed
+         * 
+         */
+        this.status = null;
+
+        /**
+         * Result object read from executeResponse
+         * 
+         * Structure 
+         *      [
+         *          {
+         *              identifier://
+         *              data:{
+         *                  value://
+         *              }
+         *          }
+         *          ,
+         *          ...
+         *      ]
+         * 
+         */
+        this.result = null;
+
+        /**
+         * Process initialization
+         *
+         * @param {Object} options
+         * 
+         */
+        this.init = function(options) {
+            $.extend(this, options);
+        };
+
+        /**
          * Launch WPS execute request
          * 
          * @param {Object} options : options to modify execution (optional)
@@ -1048,10 +1159,10 @@
              * executeResponse can only be stored if the server
              * support it
              */
-            if (!this.storeSupported) {
+            if (!this.descriptor.storeSupported) {
                 options.storeExecute = false;
             }
-        
+
             /*
              * If the first output is a ComplexOutput and its mimeType is not a
              * Geographical mimeType, then store executeResponse on server 
@@ -1074,7 +1185,7 @@
              * Initialize process request
              */
             data = M.Util.parseTemplate(M.WPS.executeRequestTemplate, {
-                identifier: this.identifier,
+                identifier: this.descriptor.identifier,
                 storeExecute: options.storeExecute,
                 status: this.statusSupported || false
             });
@@ -1205,21 +1316,21 @@
              * Launch execute request
              */
             M.Util.ajax({
-                url: M.Util.proxify(M.Util.repareUrl(self.wps.url), "XML"),
+                url: M.Util.proxify(M.Util.repareUrl(self.descriptor.wps.url), "XML"),
                 async: true,
                 type: "POST",
                 dataType: "xml",
                 contentType: "text/xml",
                 data: data,
                 success: function(xml) {
-                    
+
                     self.result = self.parseExecuteResponse(xml);
-                    
+
                     /*
                      * Result is null only if an ExceptionReport occured
                      */
                     if (self.result) {
-                        self.wps.events.trigger("execute", self);
+                        self.descriptor.wps.events.trigger("execute", self);
                     }
                 },
                 error: function(e) {
@@ -1291,7 +1402,7 @@
             if (sl) {
                 this.statusLocation = sl;
             }
-        
+
             /*
              * Process <wps:ProcessOutputs> and <wps:Status> elements
              */
@@ -1304,7 +1415,7 @@
                     self.status = M.Util.stripNS($(this).children()[0].nodeName);
                     self.statusAbstract = $(this).children().first().text();
                 }
-                
+
                 /*
                  * ProcessOutputs
                  * 
@@ -1391,7 +1502,463 @@
         return this;
     };
 
-    /*
+    /**
+     * WPS Asynchronous Process Manager
+     * 
+     * The APM is used to store asynchronous processes and results
+     * It is called by the WPSClientPlugin
+     */
+    M.WPS.asynchronousProcessManager = function() {
+
+        /*
+         * Unique identifier of the asynchronousProcessManager item 
+         * within the UserManagement toolbar
+         */
+        this.tbID = M.Util.getId();
+
+        /*
+         * Reference to the UserManagement plugin instance
+         */
+        this.um = null;
+
+        /*
+         * Hashmap of running asynchronous processes stored by statusLocation url
+         * 
+         * Structure
+         *      {
+         *          process: // Running WPS Process reference
+         *          fn: // TimeOut function periodically called to update status
+         *      }
+         */
+        this.items = [];
+
+        /**
+         * Initialize manager
+         */
+        this.init = function() {
+
+            /*
+             * Register to user signIn and signOut events for
+             * background processes 
+             */
+            M.events.register("signin", this, function(scope, um) {
+
+                /*
+                 * Tell WPSClient that user is signed in
+                 */
+                scope._signedIn = true;
+
+                /*
+                 * Store the UserManagement plugin instance reference
+                 */
+                scope.um = um;
+
+                /*
+                 * Add a new entry in the UserManagement userBar
+                 */
+                scope.um.add([{
+                        id: scope.tbID,
+                        icon: M.Util.getImgUrl("execute.png"),
+                        tt: "Processes",
+                        onoff: true,
+                        scope: scope,
+                        onactivate: function(s, item) {
+                            s.isVisible = true;
+                            s.um.getPopup().show();
+                            s.updateProcessesList();
+                        },
+                        ondeactivate: function(s, item) {
+                            s.isVisible = false;
+                            s.um.getPopup().hide();
+                        }
+                    }]);
+            });
+
+            M.events.register("signout", this, function(scope) {
+
+                /*
+                 * Tell WPSClient that user is signed out
+                 */
+                scope._signedIn = false;
+
+            });
+
+            return this;
+
+        };
+
+        /**
+         * Get an asynchronous process from its statusLocation
+         * 
+         * @param {String} statusLocation
+         */
+        this.get = function(statusLocation) {
+
+            if (!statusLocation) {
+                return null;
+            }
+
+            /*
+             * Roll over items
+             */
+            for (var i = 0, l = this.items.length; i < l; i++) {
+                if (this.items[i].statusLocation === statusLocation) {
+                    return this.items[i];
+                }
+            }
+
+            return null;
+        };
+
+        /**
+         * Add a process to the list of asynchronous processes
+         * 
+         * @param {M.WPS.Process} process : Process
+         * @param {Object} options : additional info used to reconstruct M.WPS and M.WPSDescriptor instance
+         *                           from a context when user signed in
+         *                           {
+         *                              wpsUrl: // WPS endpoint url
+         *                              identifier: // WPS ProcessDescriptor unique identifier
+         *                           }
+         */
+        this.add = function(process, options) {
+
+            var self = this;
+
+            /*
+             * Paranoid mode
+             */
+            if (!process) {
+                return false;
+            }
+
+            /*
+             * Be sure to avoid multiple registry of the same running process
+             * The unicity is guaranted by the statusLocation which is unique for a given
+             * process
+             */
+            if (!self.get(process.statusLocation)) {
+
+                /*
+                 * Great news for user :)
+                 */
+                M.Util.message('<span class="status">' + process.descriptor.title + " : " + M.Util._("Process accepted and running") + '</span>');
+
+                /*
+                 * Add an entry within the running process hashmap
+                 */
+                self.items.push({
+                    id: M.Util.getId(),
+                    statusLocation: process.statusLocation,
+                    time: (new Date()).toISOString(),
+                    process: process,
+                    /*
+                     * Periodically check the Process Status (every 5 seconds) 
+                     */
+                    fn: setTimeout(function() {
+
+                        /*
+                         * Background execute request
+                         */
+                        $.ajax({
+                            url: M.Util.proxify(process.statusLocation, "XML"),
+                            async: true,
+                            type: "GET",
+                            dataType: "xml",
+                            contentType: "text/xml",
+                            success: function(xml) {
+
+                                process.result = process.parseExecuteResponse(xml);
+
+                                /*
+                                 * Result is null only if an ExceptionReport occured
+                                 */
+                                if (process.result) {
+                                    process.descriptor.wps.events.trigger("execute", process);
+                                }
+
+                            },
+                            error: function(e) {
+                                M.Util.message(e);
+                            }
+                        });
+
+                    }, 5000)
+
+                });
+
+                /*
+                 * Update user bar 
+                 */
+                self.updateProcessesList();
+
+            }
+        };
+
+        /**
+         * Update a process when it is over (i.e. status is "ProcessSuceeded")
+         * 
+         * @param {M.WPS.Process} process : Process
+         */
+        this.update = function(process) {
+
+            /*
+             * Paranoid mode
+             */
+            if (!process) {
+                return false;
+            }
+
+            this.updateProcessesList();
+
+        };
+
+        /**
+         * Remove a process from the list of asynchronous processes
+         * 
+         * @param {String} statusLocation : statusLocation url (should be unique)
+         * 
+         */
+        this.remove = function(statusLocation) {
+
+            if (!statusLocation) {
+                return false;
+            }
+
+            /*
+             * Roll over items
+             */
+            for (var i = 0, l = this.items.length; i < l; i++) {
+
+                /*
+                 * Remove item with corresponding statusLocation
+                 * A clean remove means imperatively to first clear the TimeOut function !
+                 */
+                if (this.items[i].statusLocation === statusLocation) {
+
+                    clearTimeout(this.items[i].fn);
+                    this.items.splice(i, 1);
+
+                    /*
+                     * Display processes list
+                     */
+                    this.updateProcessesList();
+
+                    return true;
+                }
+            }
+
+            return false;
+
+        };
+
+        /**
+         * Update processes list
+         * 
+         * The process list is displayed within the UserManagement shared popup
+         */
+        this.updateProcessesList = function() {
+
+            /*
+             * Display Process list
+             */
+            var $tbody, i, l = this.items.length, item = this.um.tb.get(this.tbID), p = this.um.getPopup();
+
+            /*
+             * Set a nice running processes counter
+             */
+            if (l === 0) {
+                $('.counter', item.$d).remove();
+            }
+            else {
+                item.$d.append('<span class="counter">' + l + '</span>');
+            }
+
+            /*
+             * Only update userBar if Processes list is visible
+             */
+            if (!this.isVisible) {
+                return false;
+            }
+
+            /*
+             * Set UserManagement popup header
+             */
+            p.$h.html(M.Util._("Running processes"));
+
+            /*
+             * The very-easy-to-manage no process case 
+             */
+            if (l === 0) {
+                p.$b.html("No running process");
+            }
+            /*
+             * For each process set an entry with the following actions/infos
+             * 
+             *  Status  identifier  result  remove
+             */
+            else {
+
+                /*
+                 * Initialize <table> container
+                 */
+                p.$b.html('<table style="width:100%"><tbody></tbody></table>');
+                $tbody = $('tbody', p.$b);
+
+                /*
+                 * Process order is first in - first out   
+                 */
+                for (i = l; i--; ) {
+                    (function(item, self) {
+
+                        var j, result, $status, $info, $result, id = item.id;
+
+                        /*
+                         * Add entry
+                         */
+                        $tbody.append('<tr><td id="' + id + 'status" style="width:20px">&nbsp;&nbsp;</td><td>&nbsp;</td><td id="' + id + 'info" class="clickable" jtitle="' + item.process.descriptor.identifier + ' : ' + item.time + '">' + M.Util.shorten(item.process.descriptor.identifier, 10) + '</td><td id="' + id + 'result" ></td><td class="clickable remove" id="' + item.id + 'rm"><img class="middle" src="' + M.Util.getImgUrl("trash2.png") + '"/></td></tr>');
+                        $status = $('#' + id + 'status');
+                        $info = $('#' + id + 'info');
+                        $result = $('#' + id + 'result');
+                        M.tooltip.add($info, 'n');
+                        
+                        /*
+                         * Complete Process info depending on status
+                         */
+                        switch (item.process.status) {
+
+                            /*
+                             * Process succeeded
+                             */
+                            case "ProcessSucceeded":
+
+                                /*
+                                 * Update status
+                                 */
+                                $status.css({
+                                    'background-color': 'olivedrab'
+                                });
+
+                                /*
+                                 * Update Result
+                                 */
+
+                                /* 
+                                 * No result = nothing to update
+                                 */
+                                if (!$.isArray(item.process.result)) {
+                                    return false;
+                                }
+
+                                /*
+                                 * Update each element that are identified in the process.result array
+                                 */
+                                for (j = item.process.result.length; j--; ) {
+
+                                    result = item.process.result[j];
+
+                                    /*
+                                     * Two cases : data is directly accessible within the result,
+                                     * or data is accessible through an url (reference)
+                                     */
+                                    if (result.data) {
+
+                                        /*
+                                         * Simple value => display result
+                                         */
+                                        if (typeof result.data.value !== "object") {
+                                            $result.html(result.data.value);
+                                        }
+                                        /*
+                                         * Complex output
+                                         */
+                                        else {
+
+                                            /*
+                                             * Result display requires a specific user action
+                                             */
+                                            (function(result, process) {
+                                                $result.html(M.Util._("Display")).addClass("button clickable").click(function() {
+                                                    var geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
+                                                    if (geoType === 'GML') {
+                                                        item.process.descriptor.wps.load(M.Map.Util.GML.toGeoJSON(result.data.value, {
+                                                            title: process.descriptor.title,
+                                                            processid: process.descriptor.identifier,
+                                                            description: process.descriptor["abstract"],
+                                                            time: (new Date()).toISOString()
+                                                        }));
+                                                    }
+                                                });
+                                            })(result, item.process);
+
+                                        }
+                                    }
+                                    /*
+                                     * Reference result
+                                     */
+                                    else if (result.reference) {
+
+                                        /*
+                                         * Result display requires a specific user action
+                                         */
+                                        (function(result) {
+                                            $result.html(M.Util._("Download")).addClass("button clickable").click(function() {
+                                                window.open(result.reference.href);
+                                            });
+                                        })(result);
+
+                                    }
+
+                                }
+
+                                break;
+                            case "ProcessFailed":
+
+                                /*
+                                 * Update status
+                                 */
+                                $status.css({
+                                    'background-color': 'red'
+                                });
+
+                                /*
+                                 * Update result
+                                 */
+                                M.tooltip.add($result.html(M.Util._("Error")).addClass("clickable").attr('jtitle', item.process.statusAbstract), 'n');
+                                break;
+                            default:
+
+                                /*
+                                 * Update status
+                                 */
+                                $status.css({
+                                    'background-color': 'orange'
+                                });
+
+                                $result.html('<img src="' + M.Util.getImgUrl("loading.gif") + '" class="middle"/>');
+
+                        }
+                        ;
+
+                        /*
+                         * Remove process
+                         */
+                        $('#' + item.id + 'rm').click(function() {
+                            self.remove(item.statusLocation);
+                            return false;
+                        });
+
+                    })(this.items[i], this);
+                }
+            }
+
+            return true;
+        };
+
+        return this.init();
+    };
+
+    /**
      * WPS events
      */
     M.WPS.Events = function() {
@@ -1400,7 +1967,6 @@
          * Set events hashtable
          */
         this.events = {
-            
             /*
              * Array containing handlers to be call after
              * a successfull GetCapabilities
