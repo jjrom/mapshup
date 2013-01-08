@@ -1667,7 +1667,7 @@
                             dataType: "xml",
                             contentType: "text/xml",
                             success: function(xml) {
-
+                                
                                 process.result = process.parseExecuteResponse(xml);
 
                                 /*
@@ -1708,7 +1708,10 @@
             if (!process) {
                 return false;
             }
-
+            
+            /*
+             * Set finished status
+             */
             this.updateProcessesList();
 
         };
@@ -1762,7 +1765,7 @@
             /*
              * Display Process list
              */
-            var $tbody, i, l = this.items.length, item = this.um.tb.get(this.tbID), p = this.um.getPopup();
+            var $tbody, i, l = this.items.length, count = 0, item = this.um.tb.get(this.tbID), p = this.um.getPopup();
 
             /*
              * Set a nice running processes counter
@@ -1771,7 +1774,15 @@
                 $('.counter', item.$d).remove();
             }
             else {
-                item.$d.append('<span class="counter">' + l + '</span>');
+                /*
+                 * Add one counter for each unfinished process
+                 */
+                for (i = l; i--;) {
+                    if (this.items[i].process.status === "ProcessAccepted") {
+                        count++;
+                    }
+                }
+                item.$d.append('<span class="counter">' + count + '</span>');
             }
 
             /*
@@ -1808,7 +1819,7 @@
                 /*
                  * Process order is first in - first out   
                  */
-                for (i = l; i--; ) {
+                for (i = l; i--;) {
                     (function(item, self) {
 
                         var j, result, $status, $info, $result, id = item.id;
@@ -1891,7 +1902,7 @@
                                                     $status.css({
                                                         'background-color': 'olivedrab'
                                                     });
-                                                
+                                                    
                                                     var geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
                                                     if (geoType === 'GML') {
                                                         item.process.descriptor.wps.load(M.Map.Util.GML.toGeoJSON(result.data.value, {
@@ -1953,8 +1964,7 @@
 
                                 $result.html('<img src="' + M.Util.getImgUrl("loading.gif") + '" class="middle"/>');
 
-                        }
-                        ;
+                        };
 
                         /*
                          * Remove process
@@ -1967,7 +1977,7 @@
                     })(this.items[i], this);
                 }
             }
-
+            
             return true;
         };
 
