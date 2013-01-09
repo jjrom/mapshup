@@ -480,6 +480,8 @@
 
     /**
      * Return geoType from mimeType
+     * 
+     * @param {String} mimeType
      */
     Map.Util.getGeoType = function(mimeType) {
 
@@ -497,6 +499,7 @@
         gmt["text/gml"] = "GML";
         gmt["application/geo+json"] = "JSON";
         gmt["application/wkt"] = "WKT";
+        gmt["application/x-ogc-wms"] = "WMS";
 
         return gmt[mimeType];
 
@@ -510,6 +513,8 @@
      *  "format" can be one of the following :
      *    - WKT
      *    - EXTENT
+     *    
+     *  @param {Object} obj
      */
     Map.Util.convert = function(obj) {
         if (obj && obj.input instanceof OpenLayers.Bounds) {
@@ -554,6 +559,8 @@
 
     /**
      * Return control identified by id
+     * 
+     * @param {String} id
      */
     Map.Util.getControlById = function(id) {
         return Map.map.getControlsBy("id", id)[0];
@@ -738,15 +745,14 @@
      * This function will return latitude or longitude value formatted
      * It is inspired by the OpenLayers.Util.getFormattedLonLat function
      *
-     * Parameters:
-     *      coordinate - {Float} the coordinate value to be formatted
-     *      axis - {String} value of either 'lat' or 'lon' to indicate which axis is to
-     *          to be formatted (default = lat)
-     *      format - {String} specify the precision of the output can be one of:
-     *           'dms' show degrees minutes and seconds (default)
-     *           'hms' show hour minutes second
-     *           'dm' show only degrees and minutes
-     *           'd' show only degrees
+     * @param {Float} coordinate - the coordinate value to be formatted
+     * @param {String} axis - value of either 'lat' or 'lon' to indicate which axis is to
+     *                        to be formatted (default = lat)
+     * @param {String} format - specify the precision of the output can be one of:
+     *                          'dms' show degrees minutes and seconds (default)
+     *                          'hms' show hour minutes second
+     *                          'dm' show only degrees and minutes
+     *                          'd' show only degrees
      * 
      * Returns:
      *      {String} the coordinate value formatted as a string
@@ -844,6 +850,8 @@
     /**
      * MID is an unique identifier used to identify
      * unambiguisly a specific layer
+     * 
+     * @param {String} MID
      */
     Map.Util.getLayerByMID = function(MID) {
         if (!MID || MID === "") {
@@ -855,7 +863,7 @@
              * We use '==' instead of '===' in case that input MID is a string
              * and not a numeric
              */
-            if (layer["_M"] && (layer["_M"].MID == MID)) {
+            if (layer["_M"] && (layer["_M"].MID === MID)) {
                 return layer;
             }
         }
@@ -873,6 +881,8 @@
      *     - WMS
      *     - WMTS
      *     - XYZ
+     *  
+     *  @param {OpenLayers.Layer} layer
      */
     Map.Util.isRaster = function(layer) {
 
@@ -900,6 +910,8 @@
 
     /**
      * Return true if the layer is empty
+     * 
+     * @param {OpenLayers.Layer} layer
      */
     Map.Util.layerIsEmpty = function(layer) {
 
@@ -948,6 +960,8 @@
     /**
      * Set "layer" on top of other layers
      * (see LayerIndex in OpenLayers)
+     * 
+     * @param {OpenLayers.Layer} layer
      */
     Map.Util.setLayerOnTop = function(layer) {
         if (layer) {
@@ -977,6 +991,8 @@
      *  - vectors layers are always on top of raster layers
      *  - Point and/or Line vector layers are always
      *    on top Polygonal vector layers
+     *    
+     * @param {OpenLayers.Layer} layer
      */
     Map.Util.updateIndex = function(layer) {
 
@@ -997,7 +1013,7 @@
          */
         for (i = l; i--; ) {
 
-            tmpLayer = Map.map.layers[i]
+            tmpLayer = Map.map.layers[i];
 
             /*
              * Do not process input layer
