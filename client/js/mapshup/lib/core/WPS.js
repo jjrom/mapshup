@@ -1862,7 +1862,9 @@
                                                             processid: process.descriptor.identifier,
                                                             description: process.descriptor["abstract"],
                                                             time: (new Date()).toISOString()
-                                                        }));
+                                                        }),{
+                                                            zoomOn:true
+                                                        });
                                                     }
                                                 });
                                             })(result, item.process);

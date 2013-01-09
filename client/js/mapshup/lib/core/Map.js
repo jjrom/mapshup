@@ -272,10 +272,21 @@
          * temporary result from various plugins (i.e. WPS processing
          * results for instance)
          * 
-         * @param {Object} data : a valid GeoJSON object
+         * @param {Object} data : a valid FeatureCollection GeoJSON object
+         * @param {Object} options :
+         *                      {
+         *                          zoomOn: true to zoom on added features (default false)
+         *                      }
+         * 
          */
-        addToStuffLayer: function(data) {
-
+        addToStuffLayer: function(data, options) {
+            
+            if (typeof data !== "object") {
+                return null;
+            }
+            
+            options = options || {};
+            
             if (!this._stuffLayer) {
                 this._stuffLayer = this.addLayer({
                     type: "GeoJSON",
@@ -302,7 +313,7 @@
             return this.layerTypes["GeoJSON"].load({
                 data: data,
                 layer: this._stuffLayer,
-                zoomOnNew: true
+                zoomOnNew: options.zoomOn || false
             });
         
         },

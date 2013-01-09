@@ -535,7 +535,9 @@
                                 processid: process.descriptor.identifier,
                                 description: process.descriptor["abstract"],
                                 time: (new Date()).toISOString()
-                            }));
+                            }),{
+                                zoomOn:true
+                            });
                         }
 
                     }
@@ -1057,7 +1059,21 @@
                                  */
                                 $parent.removeData('fileUrl').data('data', M.Map.Util.Feature.toGeo(event.feature, data["default"])).data('format', data["default"]);
                                 self.setPuts(descriptor, type);
-
+                                
+                                /*
+                                 * Store drawn feature
+                                 */
+                                try {
+                                    var f = event.feature.clone();
+                                    M.Map.Util.p2d(f.geometry);
+                                    M.Map.addToStuffLayer({
+                                        features:[JSON.parse(drawingPlugin.GeoJSONFormat.write(f))],
+                                        type:"FeatureCollection"
+                                    });
+                                }
+                                catch (e) {
+                                    return false;
+                                }
                             }
 
                             $mask.hide();
