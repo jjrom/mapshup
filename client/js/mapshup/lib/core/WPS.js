@@ -431,7 +431,7 @@
          *          </ProcessOutputs>
          *      </ProcessDescription>
          *      [...]
-         *  </wps:Capabilities>
+         *  </wps:ProcessDescriptions>
          *  
          *  @param {XMLObject} xml
          * 
