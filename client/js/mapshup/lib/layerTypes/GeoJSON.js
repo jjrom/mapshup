@@ -164,7 +164,7 @@
              */
             if (!options.data || !options.data.features || options.data.error) {
                 M.Util.message(options.layer.name + " : " + (options.data ? options.data.error["message"] : "Error"), -1);
-                return null
+                return null;
             }
             else {
                 

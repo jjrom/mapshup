@@ -530,7 +530,7 @@
                          */
                         geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
                         if (geoType === 'GML') {
-                            process.descriptor.wps.load(M.Map.Util.GML.toGeoJSON(result.data.value, {
+                            M.Map.addToStuffLayer(M.Map.Util.GML.toGeoJSON(result.data.value, {
                                 title: process.descriptor.title,
                                 processid: process.descriptor.identifier,
                                 description: process.descriptor["abstract"],

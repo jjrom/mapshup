@@ -125,6 +125,8 @@
             
             /**
              * Add a new layer description to the item list
+             * 
+             * @param {Object} p
              */
             add: function(p) {
                 
@@ -181,6 +183,8 @@
 
             /**
              * Add a new layer to the selectable list
+             * 
+             * @param {OpenLayers.Layer} layer
              */
             add: function(layer) {
                 layer.events.on({
@@ -206,6 +210,8 @@
 
             /**
              * Remove a layer from the selectable list
+             * 
+             * @param {OpenLayers.Layer} layer
              */
             remove: function(layer) {
                 
@@ -238,6 +244,8 @@
 
             /**
              * Add a new layer to the selectable list
+             * 
+             * @param {OpenLayers.Layer} layer
              */
             add: function(layer) {
                 this.items.push(layer);
@@ -245,6 +253,8 @@
 
             /**
              * Remove a layer from the selectable list
+             * 
+             * @param {OpenLayers.Layer} layer
              */
             remove: function(layer) {
                 for (var i = 0, l = this.items.length; i < l; i++) {
@@ -255,7 +265,48 @@
                 }
             }
         },
+            
+        /*
+         * Add GeoJSON feature to mapshup stuff layer
+         * The stuff layer is a vector layer that contains
+         * temporary result from various plugins (i.e. WPS processing
+         * results for instance)
+         * 
+         * @param {Object} data : a valid GeoJSON object
+         */
+        addToStuffLayer: function(data) {
+
+            if (!this._stuffLayer) {
+                this._stuffLayer = this.addLayer({
+                    type: "GeoJSON",
+                    title: "Stuff",
+                    clusterized: false, // Very important !
+                    editable: true,
+                    ol: {
+                        styleMap: new OpenLayers.StyleMap({
+                            'default': {
+                                strokeColor: 'white',
+                                strokeWidth: 1,
+                                fillColor: 'red',
+                                fillOpacity: 0.2,
+                                pointRadius: 5
+                            }
+                        })
+                    }
+                });
+            }
         
+            /*
+             * Add new feature(s) and center on it
+             */
+            return this.layerTypes["GeoJSON"].load({
+                data: data,
+                layer: this._stuffLayer,
+                zoomOnNew: true
+            });
+        
+        },
+
         /*
          *
          * This fonction is the entry point to add any kind of layers
@@ -263,9 +314,11 @@
          *
          *  @param {object} _layerDescription : layer description object (see layerTypes js files)
          *  @param {Object} _options : options can be
-         *          {boolean} noDeletionCheck : if 'true', user is not request if the added layer replace an existing one
-         *          {boolean} forceInitialized : if true, the layer["_M"].initialized is set to true and thus the map
-         *                                      is not zoom on layer after load
+         *                  {
+         *                      noDeletionCheck : if 'true', user is not request if the added layer replace an existing one
+         *                      forceInitialized : if true, the layer["_M"].initialized is set to true and thus the map
+         *                                         is not zoom on layer after load
+         *                  }
          */
         addLayer: function(_layerDescription, _options) {
 
@@ -973,6 +1026,8 @@
          *
          * config : M.config object
          * urlParameters: window.location.href key/value pair if any
+         * 
+         * @param {Object} _config
          */
         init: function(_config) {
             
@@ -1482,6 +1537,9 @@
 
         /**
          * Remove layer
+         * 
+         * @param {OpenLayers.Layer} layer
+         * @param {boolean} confirm : if true, user is asked to confirm deletion
          */
         removeLayer: function(layer, confirm) {
 
@@ -1587,6 +1645,8 @@
 
         /**
          * Deactivate control and activate SelectFeature control
+         * 
+         * @param {OpenLayers.Control} control
          */
         resetControl: function(control) {
 
@@ -1665,6 +1725,8 @@
          * Zoom to the input bounds + a half of the bounds
          * If bounds is too small (point), then the map is centered on the
          * bounds with a zoom level of 14
+         * 
+         * @param {OpenLayers.Bounds} bounds
          */
         zoomTo: function(bounds) {
 

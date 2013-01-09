@@ -861,54 +861,6 @@
 
         };
     
-        /*
-         * Return layer to display Geometries results
-         */
-        this.getLayer = function() {
-
-            if (this._layer) {
-                return this._layer;
-            }
-
-            this._layer = M.Map.addLayer({
-                type: "GeoJSON",
-                title: this.title,
-                clusterized: false, // Very important !
-                editable: true,
-                ol: {
-                    styleMap: new OpenLayers.StyleMap({
-                        'default': {
-                            strokeColor: 'white',
-                            strokeWidth: 1,
-                            fillColor: 'red',
-                            fillOpacity: 0.2,
-                            pointRadius: 5
-                        }
-                    })
-                }
-            });
-
-            return this._layer;
-        };
-
-        /*
-         * Add GeoJSON features within WPS result layer
-         * 
-         * @param {String} data : a GeoJSON string
-         */
-        this.load = function(data) {
-
-            /*
-             * Add new feature(s) and center on it
-             */
-            M.Map.layerTypes["GeoJSON"].load({
-                data: data,
-                layer: this.getLayer(),
-                zoomOnNew: true
-            });
-
-        };
-
         this.init(url);
 
         return this;
@@ -1905,7 +1857,7 @@
                                                     
                                                     var geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
                                                     if (geoType === 'GML') {
-                                                        item.process.descriptor.wps.load(M.Map.Util.GML.toGeoJSON(result.data.value, {
+                                                        M.Map.addToStuffLayer(M.Map.Util.GML.toGeoJSON(result.data.value, {
                                                             title: process.descriptor.title,
                                                             processid: process.descriptor.identifier,
                                                             description: process.descriptor["abstract"],
