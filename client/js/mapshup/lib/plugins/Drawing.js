@@ -603,7 +603,6 @@
             
             var self = this;
  
-            self.clear();
             self.hideInfo = true;
             self.bypassOnFeatureAdded = function(event) {
                 fct(event);
@@ -611,6 +610,15 @@
                 self.hideInfo = false;
                 M.Map.resetControl(self.control);
                 self.control = null;
+                
+                /*
+                 * Trick...wait 100 ms to be sure that javascript
+                 * garbage collector cleaned event
+                 */
+                setTimeout(function(){
+                    self.clear();
+                }, 100);
+            
             };
             
         };
