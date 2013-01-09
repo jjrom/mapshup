@@ -1289,7 +1289,7 @@
                     M.Util.message(e);
                 }
             }, {
-                title: this.title + " : " + M.Util._("Execute"),
+                title: self.descriptor.title + " : " + M.Util._("Execute"),
                 cancel: true
             });
 

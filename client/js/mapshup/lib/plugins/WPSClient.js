@@ -488,7 +488,7 @@
              * Process failed - the very easy part :)
              */
             else if (process.status === "ProcessFailed") {
-                M.Util.message(process.title + " : " + M.Util._("Process failed") + " - " + process.statusAbstract);
+                M.Util.message(process.descriptor.title + " : " + M.Util._("Process failed") + " - " + process.statusAbstract);
                 return false;
             }
             /*
