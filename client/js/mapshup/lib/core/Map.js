@@ -699,38 +699,6 @@
             return newLayer;
         },
         
-        /*
-         * Return the map bbox in epsg4326 projection and in
-         * url format i.e. lonMin,latMin,lonMax,latMax
-         *
-         * Returned values are strictly between [-180,180] for longitudes
-         * and [-90,90] for latitudes
-         */
-        getBBOX: function() {
-
-            /*
-             * Initialize bbox
-             */
-            var bbox = this.map.getExtent();
-            if (bbox) {
-                this.Util.p2d(bbox);
-            }
-            else {
-                bbox = {
-                    left:-180,
-                    right:180,
-                    bottom:-90,
-                    top:90
-                };
-            }
-
-            /*
-             * Returns lonMin,latMin,lonMax,latMax
-             */
-            return Math.max(-180,bbox.left)+","+Math.max(-90,bbox.bottom)+","+Math.min(180,bbox.right)+","+Math.min(90,bbox.top);
-
-        },
-        
         /**
          * Method: getState
          * Get the current map state and return it.

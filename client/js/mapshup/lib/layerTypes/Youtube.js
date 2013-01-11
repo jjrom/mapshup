@@ -93,10 +93,15 @@
              */
             if (!layerDescription.url) {
                 
+                var e = Map.map.getExtent();
+                
                 /*
                  * Check if bbox is defined in layerDescription
                  */
-                layerDescription.bbox = M.Util.getPropertyValue(layerDescription, "bbox", Map.getBBOX());
+                layerDescription.bbox = M.Util.getPropertyValue(layerDescription, "bbox", {
+                    bounds:[e.left, e.bottom, e.right, e.top],
+                    crs:M.Map.map.getProjection()
+                });
 
                 /*
                  * Set an empty search term value if not set
@@ -106,7 +111,7 @@
                 /*
                  * Build url
                  */
-                layerDescription.url = M.Util.getAbsoluteUrl("/plugins/youtube/search.php?q="+layerDescription.q+"&bbox="+layerDescription.bbox);
+                layerDescription.url = M.Util.getAbsoluteUrl("/plugins/youtube/search.php?q="+layerDescription.q+"&bbox="+Map.Util.toBBOX(layerDescription.bbox));
                 
             }
             

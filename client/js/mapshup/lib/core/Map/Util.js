@@ -72,12 +72,12 @@
             lat[1] = 90.0;
             lon[0] = -180.0;
             lon[1] = 180.0;
-            
+
             /*
              * Remove trailing '#'
              */
             geohash = geohash.replace('#', '');
-            
+
             for (i = 0; i < geohash.length; i++) {
                 c = geohash.charAt(i);
                 cd = this.BASE32.indexOf(c);
@@ -100,7 +100,7 @@
             return new OpenLayers.LonLat(lon[1], lat[1]);
         },
         encode: function(point) {
-    
+
             var mid, is_even = 1, i = 0, lat = [], lon = [], bit = 0, ch = 0, precision = 12, geohash = "";
 
             lat[0] = -90.0;
@@ -134,7 +134,7 @@
                     ch = 0;
                 }
             }
-            return '#'+geohash;
+            return '#' + geohash;
         }
 
     };
@@ -479,6 +479,51 @@
     };
 
     /**
+     * 
+     * Return a BBOX string in EPSG 4326 projection i.e. lonMin,latMin,lonMax,latMax
+     *
+     * Returned values are strictly between [-180,180] for longitudes
+     * and [-90,90] for latitudes
+     * 
+     * @param {Object} obj : a bbox structure
+     *                  {
+     *                      bounds: array (i.e. [minx, miny, maxx, maxy]) or string (i.e. "minx, miny, maxx, maxy")
+     *                      crs: "EPSG:4326" or "EPSG:3857"
+     *                  } 
+     */
+    Map.Util.toBBOX = function(obj) {
+
+        /*
+         * Paranoid mode
+         */
+        if (typeof obj !== "object") {
+            return null;
+        }
+
+        if (!obj.bounds) {
+            return null;
+        }
+
+        var crs = obj.crs || "EPSG:4326",
+                // Bounds is an array or a string ?
+                coords = $.isArray(obj.bounds) ? obj.bounds : obj.bounds.split(','),
+                bounds = new OpenLayers.Bounds(coords[0], coords[1], coords[2], coords[3]);
+
+        /*
+         * Reproject to EPSG:4326
+         */
+        if (crs === "EPSG:3857" || crs === "EPSG:900913") {
+            M.Map.Util.p2d(bounds);
+        }
+
+        /*
+         * Returns lonMin,latMin,lonMax,latMax
+         */
+        return [Math.max(-180, bounds.left), Math.max(-90, bounds.bottom), Math.min(180, bounds.right), Math.min(90, bounds.top)].join(',');
+        
+    };
+
+    /**
      * Return geoType from mimeType
      * 
      * @param {String} mimeType
@@ -584,7 +629,7 @@
     Map.Util.getFeatures = function(layer, options, noUncluster) {
 
         var feature, i, j, l, m, features = [];
-        
+
         /*
          * Paranoid mode
          */
@@ -638,11 +683,11 @@
             for (i = 0, l = features.length; i < l; i++) {
                 if (features.components) {
                     for (j = 0, m = features.components.length; j < m; j++) {
-                        this.p2d(features.components[j].geometry);
+                        M.Map.Util.p2d(features.components[j].geometry);
                     }
                 }
                 else {
-                    this.p2d(features[i].geometry);
+                    M.Map.Util.p2d(features[i].geometry);
                 }
             }
         }
@@ -702,7 +747,7 @@
                 return 0;
             });
         }
-    
+
         return features;
 
     };
