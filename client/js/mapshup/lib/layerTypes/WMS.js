@@ -86,7 +86,7 @@
          */
         add: function(layerDescription, options) {
 
-            var version,projection, BBOX, avoidBoundError;
+            var version,projection, bbox;
             
             /**
              * Repare URL if it is not well formed
@@ -151,19 +151,16 @@
              * Input "options" modification
              * If no BBOX is given, default is set to -170,-80,170,80
              */
-            BBOX = layerDescription.bbox ? layerDescription.bbox.split(",") : ["-170","-80","170","80"];
-            avoidBoundError = 0; //Avoid reprojection error at the pole
-            
-
-            if (BBOX[0] === "-180" || BBOX[1] === "-90" || BBOX[2] === "90" || BBOX[3] === "180") {
-                avoidBoundError = 1;
-            }
-
+            bbox = layerDescription.bbox || {
+                bounds:"-170,-80,170,80",
+                crs:"EPSG:4326"
+            };
+        
             $.extend(options["_M"],
             {
                 /* A WMS cannot be "selectable" */
                 selectable:false,
-                bounds:Map.Util.d2p(new OpenLayers.Bounds(parseFloat(BBOX[0]) + avoidBoundError, parseFloat(BBOX[1])  + avoidBoundError, parseFloat(BBOX[2])  - avoidBoundError, parseFloat(BBOX[3]) - avoidBoundError)),
+                bounds:Map.Util.getProjectedBounds(bbox),
                 allowChangeOpacity:true,
                 /* A WMS should have a GetLegendGraphic function to retrieve a Legend */
                 legend:layerDescription.url + "service=WMS&version="+version+"&format=image/png&request=GetLegendGraphic&layer="+layerDescription.layers,
@@ -425,7 +422,10 @@
                         preview:this.getPreview({
                             url:url,
                             version:capabilities.version,
-                            bbox:layer.llbbox,
+                            bbox:{
+                                bounds:layer.llbbox,
+                                crs:"EPSG:4326"
+                            },
                             layers:layer["name"]
                         }),
                         version:capabilities.version
@@ -437,9 +437,12 @@
                      * The bbox of this layer if retrieved from the capabilities
                      * or set to the whole earth if not found
                      */
-                    d.bbox = "-170,-80,170,80";
+                    d.bbox = {
+                        bounds:"-170,-80,170,80",
+                        crs:"EPSG:4326"
+                    };
                     if (layer.llbbox && layer.llbbox.length === 4) {
-                        d.bbox = layer.llbbox[0]+','+layer.llbbox[1]+','+layer.llbbox[2]+','+layer.llbbox[3];
+                        d.bbox.bounds = layer.llbbox[0]+','+layer.llbbox[1]+','+layer.llbbox[2]+','+layer.llbbox[3];
                     }
 
                     /*
@@ -454,7 +457,7 @@
                         d.time = {
                             "default":layer.dimensions.time["default"],
                             values:layer.dimensions.time["values"] || []
-                        }
+                        };
                     }
 
                     /*
@@ -485,10 +488,12 @@
         
         /**
          * Return a wms preview from layer
+         * 
+         * @param {Object} layerDescription
          */
         getPreview: function(layerDescription) {
             
-            var url, version, bbox;
+            var url, version, bounds;
             
             layerDescription = layerDescription || {};
             
@@ -500,13 +505,11 @@
             /*
              * Set default BBOX to the whole world
              */
-            if (layerDescription.hasOwnProperty("bbox")) {
-                bbox = $.isArray(layerDescription.bbox) && layerDescription.bbox.length === 4 ? layerDescription.bbox : layerDescription.bbox.split(",");
+            bounds = M.Map.Util.getGeoBounds(layerDescription.bbox);
+            if (!bounds) {
+                bounds = new OpenLayers.Bounds(-180, -90, 180, 90);
             }
-            else {
-                bbox = ["-180","-90","180","90"];
-            }
-            
+        
             /*
              * Set default url to a 150x75 pixels thumbnail
              */
@@ -518,10 +521,10 @@
              *
              */
             if (version === "1.3.0") {
-                url += "&CRS=EPSG:4326&BBOX="+bbox[1]+','+bbox[0]+','+bbox[3]+','+bbox[2];
+                url += "&CRS=EPSG:4326&BBOX="+bounds.bottom+','+bounds.left+','+bounds.top+','+bounds.right;
             }
             else {
-                url += "&SRS=EPSG:4326&BBOX="+bbox[0]+','+bbox[1]+','+bbox[2]+','+bbox[3];
+                url += "&SRS=EPSG:4326&BBOX="+bounds.left+','+bounds.bottom+','+bounds.right+','+bounds.top;
             }
             
             return url+'&LAYERS='+layerDescription.layers;

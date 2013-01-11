@@ -584,17 +584,17 @@
          */
         if (crs === "EPSG:4326") {
             
-            if (coords[1] === "-90" || coords[3] === "90") {
-                avoidBoundError = 0.1;
+            if (coords[0] === -180 || coords[1] === -90 || coords[2] === 180 || coords[3] === 90) {
+                avoidBoundError = 1;
             }
 
-            bounds = Map.Util.d2p(new OpenLayers.Bounds(coords[0], coords[1] + avoidBoundError, coords[2], coords[3] - avoidBoundError));
+            bounds = Map.Util.d2p(new OpenLayers.Bounds(coords[0] + avoidBoundError, coords[1] + avoidBoundError, coords[2]- avoidBoundError, coords[3] - avoidBoundError));
             
         }
         else {
             bounds = new OpenLayers.Bounds(coords[0], coords[1], coords[2], coords[3]);
         }
-
+    
         /*
          * Returns projected bounds
          */
