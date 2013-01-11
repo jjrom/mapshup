@@ -35,11 +35,14 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
+
 /**
  * Plugin: Wikipedia
  *
  * Add a Wikipedia layer that display wikipedia articles
  * as vector features
+ * 
+ * @param {MapshupObject} M
  */
 (function(M) {
     
@@ -132,6 +135,9 @@
       
         /**
          * Wikipedia is requested each time map change
+         * 
+         * @param {OpenLayers.Map} map
+         * @param {Object} scope
          */
         this.onMoveEnd = function(map, scope) {
 
@@ -150,7 +156,7 @@
                  * If the map is sufficiently zoomed, then load Wikipedia stuff...
                  */
                 if (newZoom >= scope.options.minimumZoomLevel) {
-                    if (scope.zoom != newZoom || Math.abs(centerPixel.x - newCenterPixel.x) > (M.$map.width() / 2) || Math.abs(centerPixel.y - newCenterPixel.y) > (M.$map.height() / 2)) {
+                    if (scope.zoom !== newZoom || Math.abs(centerPixel.x - newCenterPixel.x) > (M.$map.width() / 2) || Math.abs(centerPixel.y - newCenterPixel.y) > (M.$map.height() / 2)) {
                         scope.getItems(M.Map.Util.p2d(map.getExtent()));
                         scope.zoom = newZoom;
                         scope.centerLonLat = map.getCenter();
@@ -167,6 +173,8 @@
 
         /**
          * Get articles from wikipedia
+         * 
+         * @param {OpenLayers.Bounds} bbox
          */
         this.getItems = function(bbox) {
 
