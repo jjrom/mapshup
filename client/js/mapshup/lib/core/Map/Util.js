@@ -504,11 +504,22 @@
             return null;
         }
 
-        var bounds,
-            crs = obj.crs || "EPSG:4326",
-            // Bounds is an array or a string ?
-            coords = $.isArray(obj.bounds) ? obj.bounds : obj.bounds.split(',');
-
+        var bounds, coords, crs = obj.crs || "EPSG:4326";
+        
+        /*
+         * Bounds is an array or a string ?
+         */
+        if (!$.isArray(obj.bounds)) {
+            var coords = obj.bounds.split(',');
+            coords[0] = parseFloat(coords[0]);
+            coords[1] = parseFloat(coords[1]);
+            coords[2] = parseFloat(coords[2]);
+            coords[3] = parseFloat(coords[3]);
+        }
+        else {
+            coords = obj.bounds;
+        }
+    
         /*
          * Be sure to not be outside -180,-90,180,90
          */
@@ -522,14 +533,70 @@
         bounds = new OpenLayers.Bounds(coords[0], coords[1], coords[2], coords[3]);
         
         /*
-         * Reproject to EPSG:4326
+         * Returns geo bounds
          */
-        if (crs === "EPSG:3857" || crs === "EPSG:900913") {
-            M.Map.Util.p2d(bounds);
+        return crs === "EPSG:3857" || crs === "EPSG:900913" ? M.Map.Util.p2d(bounds) : bounds;
+        
+    };
+
+    /**
+     * 
+     * Return an OpenLayers.Bounds in EPSG:3857 projection
+     * Add an error at the pole to deal with infinite at the pole in Spherical Mercator
+     * 
+     * @param {Object} obj : a bbox structure
+     *                  {
+     *                      bounds: array (i.e. [minx, miny, maxx, maxy]) or string (i.e. "minx, miny, maxx, maxy")
+     *                      crs: "EPSG:4326" or "EPSG:3857"
+     *                  } 
+     */
+    Map.Util.toProjectedBounds = function(obj) {
+
+        /*
+         * Paranoid mode
+         */
+        if (typeof obj !== "object") {
+            return null;
+        }
+
+        if (!obj.bounds) {
+            return null;
+        }
+
+        var avoidBoundError, bounds, coords, crs = obj.crs || "EPSG:4326";
+        
+        /*
+         * Bounds is an array or a string ?
+         */
+        if (!$.isArray(obj.bounds)) {
+            var coords = obj.bounds.split(',');
+            coords[0] = parseFloat(coords[0]);
+            coords[1] = parseFloat(coords[1]);
+            coords[2] = parseFloat(coords[2]);
+            coords[3] = parseFloat(coords[3]);
+        }
+        else {
+            coords = obj.bounds;
+        }
+        
+        /*
+         * Avoid reprojection error at the pole
+         */
+        if (crs === "EPSG:4326") {
+            
+            if (coords[1] === "-90" || coords[3] === "90") {
+                avoidBoundError = 0.1;
+            }
+
+            bounds = Map.Util.d2p(new OpenLayers.Bounds(coords[0], coords[1] + avoidBoundError, coords[2], coords[3] - avoidBoundError));
+            
+        }
+        else {
+            bounds = new OpenLayers.Bounds(coords[0], coords[1], coords[2], coords[3]);
         }
 
         /*
-         * Returns geo bounds
+         * Returns projected bounds
          */
         return bounds;
         
