@@ -491,7 +491,7 @@
      *                      crs: "EPSG:4326" or "EPSG:3857"
      *                  } 
      */
-    Map.Util.toGeoBounds = function(obj) {
+    Map.Util.getGeoBounds = function(obj) {
 
         /*
          * Paranoid mode
@@ -550,7 +550,7 @@
      *                      crs: "EPSG:4326" or "EPSG:3857"
      *                  } 
      */
-    Map.Util.toProjectedBounds = function(obj) {
+    Map.Util.getProjectedBounds = function(obj) {
 
         /*
          * Paranoid mode
@@ -599,51 +599,6 @@
          * Returns projected bounds
          */
         return bounds;
-        
-    };
-
-    /**
-     * 
-     * Return a BBOX string in EPSG 4326 projection i.e. lonMin,latMin,lonMax,latMax
-     *
-     * Returned values are strictly between [-180,180] for longitudes
-     * and [-90,90] for latitudes
-     * 
-     * @param {Object} obj : a bbox structure
-     *                  {
-     *                      bounds: array (i.e. [minx, miny, maxx, maxy]) or string (i.e. "minx, miny, maxx, maxy")
-     *                      crs: "EPSG:4326" or "EPSG:3857"
-     *                  } 
-     */
-    Map.Util.toBBOX = function(obj) {
-
-        /*
-         * Paranoid mode
-         */
-        if (typeof obj !== "object") {
-            return null;
-        }
-
-        if (!obj.bounds) {
-            return null;
-        }
-
-        var crs = obj.crs || "EPSG:4326",
-                // Bounds is an array or a string ?
-                coords = $.isArray(obj.bounds) ? obj.bounds : obj.bounds.split(','),
-                bounds = new OpenLayers.Bounds(coords[0], coords[1], coords[2], coords[3]);
-
-        /*
-         * Reproject to EPSG:4326
-         */
-        if (crs === "EPSG:3857" || crs === "EPSG:900913") {
-            M.Map.Util.p2d(bounds);
-        }
-
-        /*
-         * Returns lonMin,latMin,lonMax,latMax
-         */
-        return [Math.max(-180, bounds.left), Math.max(-90, bounds.bottom), Math.min(180, bounds.right), Math.min(90, bounds.top)].join(',');
         
     };
 
