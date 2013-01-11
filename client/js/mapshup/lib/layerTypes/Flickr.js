@@ -119,7 +119,7 @@
                 /*
                  * Build url
                  */
-                layerDescription.url = M.Util.getAbsoluteUrl("/plugins/flickr/search.php?q="+layerDescription.q+"&bbox="+Map.Util.toBBOX(layerDescription.bbox));
+                layerDescription.url = M.Util.getAbsoluteUrl("/plugins/flickr/search.php?q="+layerDescription.q+"&bbox="+Map.Util.getGeoBounds(layerDescription.bbox).toBBOX());
                 
             }
             

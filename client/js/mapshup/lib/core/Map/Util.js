@@ -480,6 +480,63 @@
 
     /**
      * 
+     * Return an OpenLayers.Bounds in EPSG 4326 projection
+     *
+     * Returned values are strictly between [-180,180] for longitudes
+     * and [-90,90] for latitudes
+     * 
+     * @param {Object} obj : a bbox structure
+     *                  {
+     *                      bounds: array (i.e. [minx, miny, maxx, maxy]) or string (i.e. "minx, miny, maxx, maxy")
+     *                      crs: "EPSG:4326" or "EPSG:3857"
+     *                  } 
+     */
+    Map.Util.toGeoBounds = function(obj) {
+
+        /*
+         * Paranoid mode
+         */
+        if (typeof obj !== "object") {
+            return null;
+        }
+
+        if (!obj.bounds) {
+            return null;
+        }
+
+        var bounds,
+            crs = obj.crs || "EPSG:4326",
+            // Bounds is an array or a string ?
+            coords = $.isArray(obj.bounds) ? obj.bounds : obj.bounds.split(',');
+
+        /*
+         * Be sure to not be outside -180,-90,180,90
+         */
+        if (crs === "EPSG:4326") {
+            coords[0] = Math.max(-180, coords[0]);
+            coords[1] = Math.max(-90, coords[1]);
+            coords[2] = Math.max(180, coords[2]);
+            coords[3] = Math.max(90, coords[3]);
+        }
+        
+        bounds = new OpenLayers.Bounds(coords[0], coords[1], coords[2], coords[3]);
+        
+        /*
+         * Reproject to EPSG:4326
+         */
+        if (crs === "EPSG:3857" || crs === "EPSG:900913") {
+            M.Map.Util.p2d(bounds);
+        }
+
+        /*
+         * Returns geo bounds
+         */
+        return bounds;
+        
+    };
+
+    /**
+     * 
      * Return a BBOX string in EPSG 4326 projection i.e. lonMin,latMin,lonMax,latMax
      *
      * Returned values are strictly between [-180,180] for longitudes
