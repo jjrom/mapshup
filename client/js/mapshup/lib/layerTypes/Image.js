@@ -66,10 +66,17 @@
          * layerDescription = {
          *      type:"Image",
          *      title:,
-         *      displayType:,
+         *      displayType:
          *      srs:
-         *      bbox:
+         *      bbox:{
+         *          bounds:
+         *          crs:
+         *      }
          *  };
+         *  
+         *  @param {Object} layerDescription
+         *  @param {Object} options
+         *  
          */
         add: function(layerDescription, options) {
 
@@ -102,34 +109,7 @@
 
             var newImg = new Image();
             newImg.src = layerDescription.url;
-            var size = [newImg.height, newImg.width],
-                BBOX = layerDescription.bbox.split(","),
-                bounds;
-
-            /*
-             * If srs is set to EPSG:4326 then reproject
-             */
-            if (layerDescription.srs && layerDescription.srs === Map.pc.projCode) {
-
-                /*
-                 * This is awfull...
-                 * Spherical mercator doesnt like polar values...
-                 */ 
-                var avoidBoundError = 0;
-
-                if (BBOX[1] === "-90" || BBOX[3] === "90") {
-                    avoidBoundError = 0.1;
-                }
-
-                bounds = Map.Util.d2p(new OpenLayers.Bounds(parseFloat(BBOX[0]), parseFloat(BBOX[1]) + avoidBoundError, parseFloat(BBOX[2]), parseFloat(BBOX[3]) - avoidBoundError));
-
-            }
-            /*
-             * Do not project the bounds
-             */
-            else {
-                bounds = new OpenLayers.Bounds(parseFloat(BBOX[0]), parseFloat(BBOX[1]), parseFloat(BBOX[2]), parseFloat(BBOX[3]));
-            }
+            var size = [newImg.height, newImg.width];
 
             /*
              * Extend options object with Image specific properties
@@ -149,7 +129,7 @@
              */
             options["_M"].selectable = false;
             options["_M"].allowChangeOpacity = true;
-            options["_M"].bounds = bounds;
+            options["_M"].bounds = Map.Util.getProjectedBounds(layerDescription.bbox);
             options["_M"].icon = layerDescription.url;
 
             /**
@@ -165,8 +145,11 @@
 
         },
 
-        /*
+        /**
          * Ask user for bbox if not specified
+         * 
+         * @param {Object} layerDescription
+         * @param {Function} callback
          */
         update:function(layerDescription, callback) {
 
@@ -175,8 +158,10 @@
                 content:M.Util._("Enter Image BBOX"),
                 dataType:'bbox',
                 callback:function(v){
-                    layerDescription["bbox"] = v;
-                    layerDescription.srs = "EPSG:4326";
+                    layerDescription["bbox"] = {
+                        bounds:v,
+                        crs:"EPSG:4326"
+                    };
                     callback(layerDescription);
                 }
             });  
@@ -184,5 +169,6 @@
             return true;
 
         }
-    }
+    };
+
 })(window.M, window.M.Map);

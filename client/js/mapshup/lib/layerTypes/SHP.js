@@ -123,31 +123,11 @@
             }
 
             /**
-             * Input "options" modification
-             */
-            var bounds = null;
-            if (layerDescription.bbox) {
-
-                var BBOX = layerDescription.bbox.split(",");
-
-                /*
-                 * Avoid reprojection error at the pole
-                 */
-                var avoidBoundError = 0;
-
-                if (BBOX[0] === "-180" || BBOX[1] === "-90" || BBOX[2] === "90" || BBOX[3] === "180") {
-                    avoidBoundError = 1;
-                }
-
-                bounds = Map.Util.d2p(new OpenLayers.Bounds(parseFloat(BBOX[0]) + avoidBoundError, parseFloat(BBOX[1])  + avoidBoundError, parseFloat(BBOX[2])  - avoidBoundError, parseFloat(BBOX[3]) - avoidBoundError));
-
-            }
-            /**
              * A WMS cannot be "selectable"
              * Thus this property cannot be overriden
              */
             options["_M"].selectable = false;
-            options["_M"].bounds = bounds;
+            options["_M"].bounds = Map.Util.getProjectedBounds(layerDescription.bbox);
             options["_M"].allowChangeOpacity = true;
 
 
