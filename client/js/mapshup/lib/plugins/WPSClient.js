@@ -943,7 +943,7 @@
              * Special case of Geometries 
              * 
              * If the mimeType of the ComplexData is one of the geographical
-             * mimeTypes, then use can also choose one feature within the map :)
+             * mimeTypes, then user can also choose one feature within the map :)
              * 
              */
             if (data["default"] && M.Map.Util.getGeoType(data["default"].mimeType)) {
@@ -1188,10 +1188,6 @@
          *   
          *      <span id="idv" class="hilite">---</span>
          *   
-         *   For geometrical output (i.e. M.Map.Util.getGeoType(data["default"].mimeType) is not null)
-         *   then nothing is appended to $parent container, since geometrical results are directly
-         *   displayed within the map
-         *   
          *   IMPORTANT : jQuery .data() is used to store additionnal information on value
          *   (for example UOM if specified)
          *   
@@ -1211,50 +1207,41 @@
                     .data('type', 'ComplexOutput');
 
             /*
-             * Geometrical output options are not displayed within $parent
+             * Add output to process
              */
-            if (M.Map.Util.getGeoType(data["default"].mimeType)) {
+            self.setPuts(descriptor, type);
+
+            /*
+             * Create a <select> form
+             */
+            $parent.append('<span class="paddedleft"><select id="' + id + 'vmtype"></select></span>');
+
+            /*
+             * Store mimeType value for parent $parent on change selection within .data() store
+             */
+            $mtype = $('#' + id + 'vmtype').change(function() {
+                $parent.data('mimeType', $(this).val());
                 self.setPuts(descriptor, type);
-                $parent.hide();
+            });
+
+            for (var i = 0, l = data.supported.length; i < l; i++) {
+                (function($mtype, v, d) {
+
+                    /*
+                     * Add a new option in the select form
+                     */
+                    $mtype.append('<option value="' + v + '">' + v + '</option>');
+
+                    /*
+                     * The default mimeType is selected within the list of possible mimeTypes
+                     */
+                    if (v === d) {
+                        $('option:last-child', $mtype).attr("selected", "selected").change();
+                    }
+
+                })($mtype, data.supported[i].mimeType, data["default"].mimeType);
             }
-            else {
-
-                /*
-                 * Add output to process
-                 */
-                self.setPuts(descriptor, type);
-
-                /*
-                 * Create a <select> form
-                 */
-                $parent.append('<span class="paddedleft"><select id="' + id + 'vmtype"></select></span>');
-
-                /*
-                 * Store mimeType value for parent $parent on change selection within .data() store
-                 */
-                $mtype = $('#' + id + 'vmtype').change(function() {
-                    $parent.data('mimeType', $(this).val());
-                    self.setPuts(descriptor, type);
-                });
-
-                for (var i = 0, l = data.supported.length; i < l; i++) {
-                    (function($mtype, v, d) {
-
-                        /*
-                         * Add a new option in the select form
-                         */
-                        $mtype.append('<option value="' + v + '">' + v + '</option>');
-
-                        /*
-                         * The default mimeType is selected within the list of possible mimeTypes
-                         */
-                        if (v === d) {
-                            $('option:last-child', $mtype).attr("selected", "selected").change();
-                        }
-
-                    })($mtype, data.supported[i].mimeType, data["default"].mimeType);
-                }
-            }
+            
         };
 
 
