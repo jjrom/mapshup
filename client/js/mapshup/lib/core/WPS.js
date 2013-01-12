@@ -1406,13 +1406,21 @@
                                 $(this).children().filter(function() {
 
                                     nn = M.Util.stripNS(this.nodeName);
-
+                                    
                                     if (nn === 'LiteralData') {
                                         p['data']['value'] = $(this).text();
                                     }
                                     else if (nn === 'ComplexData') {
                                         $.extend(p['data'], M.Util.getAttributes($(this)));
-                                        p['data']['value'] = $(this).children();
+                                        /*
+                                         * WMS output is a json String
+                                         */
+                                        if (M.Map.Util.getGeoType(p['data']['mimeType']) === 'WMS') {
+                                            p['data']['value'] = $.trim($(this).text());
+                                        }
+                                        else {
+                                            p['data']['value'] = $(this).children();
+                                        }
                                     }
                                     else if (nn === 'BoundingBox') {
                                         // TODO    
