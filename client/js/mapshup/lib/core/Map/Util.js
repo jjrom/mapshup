@@ -563,7 +563,7 @@
             return null;
         }
 
-        var avoidBoundError, bounds, coords, crs = obj.crs || "EPSG:4326";
+        var avoidBoundError = 0, bounds, coords, crs = obj.crs || "EPSG:4326";
         
         /*
          * Bounds is an array or a string ?
