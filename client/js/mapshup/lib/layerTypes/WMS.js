@@ -203,7 +203,8 @@
                 transitionEffect: "resize",
                 transparent:'true',
                 SLD:layerDescription.SLD,
-                version:version
+                version:version,
+                attribution:layerDescription.attribution || null
             }, options);
 
             /*
