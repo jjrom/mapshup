@@ -568,7 +568,7 @@
                 self.tb.add({
                     id: M.Util.getId(),
                     tt: M.Util._("Sign in"),
-                    title: M.Util._("Sign in"),
+                    icon: M.Util.getImgUrl("signin.png"),
                     onoff: false,
                     scope:self,
                     /*
@@ -614,7 +614,7 @@
                 self.tb.add({
                     id: M.Util.getId(),
                     tt: M.Util._("Sign up"),
-                    title: M.Util._("Sign up"),
+                    icon: M.Util.getImgUrl("signup.png"),
                     onoff: false,
                     scope:self,
                     /*
