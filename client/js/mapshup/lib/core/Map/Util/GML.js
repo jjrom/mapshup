@@ -40,16 +40,14 @@
  * Define GML Map util functions
  */
 (function(M, Map) {
-    
+
     Map.Util = Map.Util || {};
-    
+
     /*
      * Initialize Map.Util.GML
      */
     Map.Util.GML = {
-        
-        namespaces:'xmlns:gml="http://www.opengis.net/gml"',
-        
+        namespaces: 'xmlns:gml="http://www.opengis.net/gml"',
         /*
          * Return a GML representation of feature
          * 
@@ -72,9 +70,9 @@
          * 
          */
         featureToGML: function(feature, schema) {
-            
+
             var i, l, gml = '';
-            
+
             /*
              * Roll over each component. A component contain
              * a point in (x,y) map coordinates.
@@ -95,7 +93,7 @@
                     // TODO
                 }
                 else if (gt === "OpenLayers.Geometry.LineString") {
-                    gml = this.geometryLineStringToGML(feature.geometry);                    
+                    gml = this.geometryLineStringToGML(feature.geometry);
                 }
                 else if (gt === "OpenLayers.Geometry.MultiLineString") {
                     if (feature.geometry.components) {
@@ -105,7 +103,7 @@
                     }
                 }
                 else if (gt === "OpenLayers.Geometry.Polygon") {
-                    return this.geometryPolygonToGML(feature.geometry); 
+                    return this.geometryPolygonToGML(feature.geometry);
                 }
                 else if (gt === "OpenLayers.Geometry.MultiPolygon") {
                     if (feature.geometry.components) {
@@ -120,39 +118,37 @@
              * Return a FeatureCollection
              */
             if (schema === "http://schemas.opengis.net/gml/3.1.1/base/feature.xsd") {
-                return '<gml:FeatureCollection '+Map.Util.GML.namespaces+' ><gml:featureMember><gml:GeometryPropertyType>'+gml+'</gml:GeometryPropertyType></gml:featureMember></gml:FeatureCollection>';
+                return '<gml:FeatureCollection ' + Map.Util.GML.namespaces + ' ><gml:featureMember><gml:GeometryPropertyType>' + gml + '</gml:GeometryPropertyType></gml:featureMember></gml:FeatureCollection>';
             }
-            
+
             /*
              * Return a GeometryType
              */
             return gml;
-        
+
         },
-        
         /*
          * @param {OpenLayers.Geometry.Point} geometry
          */
         geometryPointToGML: function(geometry) {
             var point;
-            point = Map.Util.p2d(new OpenLayers.LonLat(geometry.x,geometry.y));
-            return '<gml:Point '+Map.Util.GML.namespaces+' srsName="'+Map.map.displayProjection.projCode+'"><gml:pos>'+point.lon + ' ' + point.lat + '</gml:pos></gml:Point>';
+            point = Map.Util.p2d(new OpenLayers.LonLat(geometry.x, geometry.y));
+            return '<gml:Point ' + Map.Util.GML.namespaces + ' srsName="' + Map.map.displayProjection.projCode + '"><gml:pos>' + point.lon + ' ' + point.lat + '</gml:pos></gml:Point>';
         },
-        
         /*
          * @param {OpenLayers.Geometry.LineString} geometry
          */
         geometryLineStringToGML: function(geometry) {
-            
+
             var point, gml = '';
-            
+
             /*
              * LineString geometry get a "components" array of points
              */
             if (geometry.components) {
                 for (var i = 0, l = geometry.components.length; i < l; i++) {
                     point = geometry.components[i];
-                    point = M.Map.Util.p2d(new OpenLayers.LonLat(point.x,point.y));
+                    point = M.Map.Util.p2d(new OpenLayers.LonLat(point.x, point.y));
                     gml += point.lon + ' ' + point.lat + ' ';
                 }
             }
@@ -160,14 +156,13 @@
             /*
              * Remove trailing white space
              */
-            return '<gml:LineString '+Map.Util.GML.namespaces+' srsName="'+Map.map.displayProjection.projCode+'"><gml:posList>'+gml.substring(0, gml.length-1)+'</gml:posList></gml:LineString>';
+            return '<gml:LineString ' + Map.Util.GML.namespaces + ' srsName="' + Map.map.displayProjection.projCode + '"><gml:posList>' + gml.substring(0, gml.length - 1) + '</gml:posList></gml:LineString>';
         },
-        
         /*
          * @param {OpenLayers.Geometry.Polygon} geometry
          */
         geometryPolygonToGML: function(geometry) {
-            
+
             var point, component, gml = '';
 
             /*
@@ -176,9 +171,9 @@
             if (geometry.components) {
                 for (var i = 0, l = geometry.components.length; i < l; i++) {
                     component = geometry.components[i];
-                    for (var j = 0, k = component.components.length; j < k; j++){
+                    for (var j = 0, k = component.components.length; j < k; j++) {
                         point = component.components[j];
-                        point = M.Map.Util.p2d(new OpenLayers.LonLat(point.x,point.y));
+                        point = M.Map.Util.p2d(new OpenLayers.LonLat(point.x, point.y));
                         gml += point.lon + ' ' + point.lat + ' ';
                     }
                 }
@@ -187,10 +182,9 @@
             /*
              * Remove trailing white space
              */
-            return '<gml:Polygon '+Map.Util.GML.namespaces+' srsName="'+Map.map.displayProjection.projCode+'"><gml:exterior><gml:LinearRing><gml:posList>'+gml.substring(0, gml.length-1)+'</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>';
+            return '<gml:Polygon ' + Map.Util.GML.namespaces + ' srsName="' + Map.map.displayProjection.projCode + '"><gml:exterior><gml:LinearRing><gml:posList>' + gml.substring(0, gml.length - 1) + '</gml:posList></gml:LinearRing></gml:exterior></gml:Polygon>';
 
         },
-        
         /**
          * 
          * Take a GML object in entry and return a GeoJSON FeatureCollection string
@@ -242,14 +236,14 @@
          * 
          */
         toGeoJSON: function(gml, properties) {
-            
+
             var geoJSON = {};
-            
+
             /*
              * Input gml description must be a jQuery object to be parsed
              */
             if (gml instanceof jQuery) {
-                
+
                 /*
                  * Detect GML type
                  */
@@ -263,14 +257,15 @@
                     case 'Polygon':
                         geoJSON = this.polygonToGeoJSON(gml, properties);
                         break;
-                    
+                    case 'MultiPolygon':
+                        geoJSON = this.multiPolygonToGeoJSON(gml, properties);
+                        break;
                 }
-                
+
             }
-            
+
             return geoJSON;
         },
-        
         /*
          * Return a GeoJSON geometry from a GML Point
          * 
@@ -285,19 +280,18 @@
          * 
          */
         pointToGeoJSON: function(gml, properties) {
-            
-            properties = properties || {identifier:M.Util.getId()};
-            
+
+            properties = properties || {identifier: M.Util.getId()};
+
             /*
              * First children is gml:pos
              */
-            return JSON.parse(M.Util.parseTemplate(this.geoJSONTemplate,{
-                geometry:'{"type":"Point","coordinates":'+Map.Util.posListToGeoJsonGeometry(gml.children().text())+'}',
-                properties:JSON.stringify(properties)
+            return JSON.parse(M.Util.parseTemplate(this.geoJSONTemplate, {
+                geometry: '{"type":"Point","coordinates":' + Map.Util.posListToGeoJsonGeometry(gml.children().text()) + '}',
+                properties: JSON.stringify(properties)
             }));
-            
+
         },
-        
         /*
          * Return a GeoJSON geometry from a GML Polygon
          * 
@@ -312,19 +306,18 @@
          * 
          */
         lineStringToGeoJSON: function(gml, properties) {
-            
-            properties = properties || {identifier:M.Util.getId()};
-            
+
+            properties = properties || {identifier: M.Util.getId()};
+
             /*
              * First children is gml:posList
              */
-            return JSON.parse(M.Util.parseTemplate(this.geoJSONTemplate,{
-                geometry:'{"type":"LineString","coordinates":['+Map.Util.posListToGeoJsonGeometry(gml.children().text())+']}',
-                properties:JSON.stringify(properties)
+            return JSON.parse(M.Util.parseTemplate(this.geoJSONTemplate, {
+                geometry: '{"type":"LineString","coordinates":[' + Map.Util.posListToGeoJsonGeometry(gml.children().text()) + ']}',
+                properties: JSON.stringify(properties)
             }));
-            
+
         },
-        
         /*
          * Return a GeoJSON geometry from a GML Polygon
          * 
@@ -343,35 +336,94 @@
          * 
          */
         polygonToGeoJSON: function(gml, properties) {
-            
+
             var geometries = [];
-            
-            properties = properties || {identifier:M.Util.getId()};
-            
+
+            properties = properties || {identifier: M.Util.getId()};
+
             /*
              * Roll over exterior and interiors
              */
-            gml.children().each(function(){
-                
+            gml.children().each(function() {
+
                 /*
                  * Parse interior and interiors
                  */
                 $(this).children().each(function() {
-                    geometries.push('[' + Map.Util.posListToGeoJsonGeometry($(this).children().text())+']');
+                    geometries.push('[' + Map.Util.posListToGeoJsonGeometry($(this).children().text()) + ']');
                 });
-                
+
             });
-            
-            return JSON.parse(M.Util.parseTemplate(this.geoJSONTemplate,{
-                geometry:'{"type":"Polygon","coordinates":['+geometries.join(',')+']}',
-                properties:JSON.stringify(properties)
+
+            return JSON.parse(M.Util.parseTemplate(this.geoJSONTemplate, {
+                geometry: '{"type":"Polygon","coordinates":[' + geometries.join(',') + ']}',
+                properties: JSON.stringify(properties)
             }));
-            
+
         },
+        /*
+         * Return a GeoJSON geometry from a GML MultiPolygon
+         * 
+         *  GML MultiPolygon structure 
+         *  
+         *          <gml:MultiPolygon srsDimension="2" xmlns:sch="http://www.ascc.net/xml/schematron" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink">
+         *              <gml:polygonMember>
+         *                  <gml:Polygon srsName="urn:ogc:def:crs:epsg:7.9:4326">
+         *                      <gml:exterior>
+         *                          <gml:LinearRing srsName="urn:ogc:def:crs:epsg:7.9:4326">
+         *                              <gml:posList>77.0223274997802 52.58523464466345 86.63758854839588 41.09044727093532 86.34797437056751 40.97981843953097 77.0223274997802 52.58523464466345</gml:posList>
+         *                          </gml:LinearRing>
+         *                      </gml:exterior>
+         *                  </gml:Polygon>
+         *              </gml:polygonMember>
+         *              ...
+         *          </gml:MultiPolygon>
+         *  
+         * @param {jQuery Object} gml : gml in javascript XML object
+         * @param {Object} properties : properties to set
+         * 
+         */
+        multiPolygonToGeoJSON: function(gml, properties) {
+
+            var members = [],
+                polygons = [];
+
+            properties = properties || {identifier: M.Util.getId()};
+
+            /*
+             * Roll over MultiPolygon/polygonMember
+             */
+            gml.children().each(function() {
+
+                /*
+                 * Parse Polygon
+                 */
+                $(this).children().each(function() {
+                    
+                    polygons = [];
+                    
+                    /*
+                     * Parse interior and interiors
+                     */
+                    $(this).children().each(function() {
+                        polygons.push('[' + Map.Util.posListToGeoJsonGeometry($(this).children().text()) + ']');
+                    });
+                    
+                    members.push('[' + polygons.join(',') + ']');
+                    
+                });
+
+            });
         
-        geoJSONTemplate:'{"type":"FeatureCollection","features":[{"type":"Feature","geometry":$geometry$,"properties":$properties$}]}'
-        
+            return JSON.parse(M.Util.parseTemplate(this.geoJSONTemplate, {
+                geometry: '{"type":"MultiPolygon","coordinates":[' + members.join(',') + ']}',
+                properties: JSON.stringify(properties)
+            }));
+
+        },
+        geoJSONTemplate: '{"type":"FeatureCollection","features":[{"type":"Feature","geometry":$geometry$,"properties":$properties$}]}'
+
     };
-    
+
 })(window.M, window.M.Map);
 
