@@ -89,4 +89,4 @@ lib/plugins/Wikipedia.js
 lib/plugins/WorldGrid.js
 lib/plugins/Slacker.js
 #lib/plugins/ACAcIA.js
-lib/plugins/QuickLocator.js
+lib/plugins/QuickSelector.js
