@@ -35,9 +35,11 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
+
 /**
  * Quick Selector 
  * 
+ * @param {MapshupObject} M
  */
 (function(M) {
 
@@ -50,6 +52,26 @@
             return M.Plugins.QuickSelector._o;
         }
 
+       /*
+        * Array of items.
+        *
+        *  Item structure 
+        *  {
+        *          name: // Toolip text or structure
+        *                      {
+        *                          on: // Tooltip to display when item is on
+        *                          off: // Tooltip to display when item is off
+        *                      }
+        *          icon: // Icon to set within the thumbnail container
+        *          bounds: // Bounds as an array [xmin,ymin,xmax,ymax] to
+        *                     zoom on click (optional)
+        *          layerMID: // attached layer
+        *          active: // if true activate the item
+        *          callback: // Callback function to call on click (optional)
+        *      }
+        */
+        this.items = [];
+        
         /**
          * Init plugin
          * 
@@ -57,22 +79,20 @@
          */
         this.init = function(options) {
 
-            var options, id, i, l;
+            var item, options, id = M.Util.getId(), i, l, self = this;
 
             /*
              * Init options
              */
             options = options || {};
-            $.extend(options, {
-                rootUrl: options.rootUrl || "",
-                items: options.items || []
-            });
-            
+            options.rootUrl =  options.rootUrl || ""
+            self.items = options.items || [];
+
             /* If items is empty do not load the plugin */
-            if (options.items.length === 0) {
+            if (self.items.length === 0) {
                 return null;
             }
-        
+
             /*
              * Display items
              * 
@@ -84,51 +104,104 @@
              * 
              * Item structure :
              *      {
-             *          name: // Toolip text
+             *          name: // Toolip text 
              *          icon: // Icon to set within the thumbnail container
              *          bounds: // Bounds as an array [xmin,ymin,xmax,ymax] to
              *                     zoom on click (optional)
+             *          layerMID: // attached layer
+             *          active: // if true activate the item
              *          callback: // Callback function to call on click (optional)
              *      }
              * 
              */
             M.Util.$$('#' + id, M.$mcontainer).html('<ul></ul>').addClass("quickselector");
+
+            for (i = 0, l = self.items.length; i < l; i++) {
+                
+                item = self.items[i];
+                
+                /*
+                 * Add a unique id to item if not set
+                 */
+                item.id = item.id || M.Util.getId();
             
-            for (i = 0, l = options.items.length; i < l; i++) {
-                (function(item, id, $d) {
-                    
-                    $d.append('<li id="' + id + '" jtitle="' + item.name + '" class="thumbs"><img src="' + options.rootUrl + '/' + item.icon + '"/></li>');
-                    M.tooltip.add($('#' + id), 's');
-                    
+                /*
+                 * Activate or not
+                 */
+                
+                (function(item, $d) {
+
+                    $d.append('<li id="' + item.id + '" jtitle="' + item.name + '" class="thumbs"><img src="' + options.rootUrl + '/' + item.icon + '"/></li>');
+                    M.tooltip.add($('#' + item.id), 's');
+
                     /*
                      * Callback and/or zoom to extent on click
                      */
-                    $('#' + id).click(function(e) {
+                    $('#' + item.id).click(function(e) {
+
                         e.preventDefault();
                         e.stopPropagation();
+
+                        /*
+                         * Activate/Deactivate 
+                         */
+                        self.activate(item, !$('img', $(this)).hasClass('active'));
                         
                         /*
                          * Zoom to extent
                          */
-                        if ($.isArray(item.bounds) && item.bounds.length === 4 ) {
-                            M.Map.map.zoomToExtent(new OpenLayers.Bounds(item.bounds[0],item.bounds[1],item.bounds[2],item.bounds[3]));
+                        if ($.isArray(item.bounds) && item.bounds.length === 4) {
+                            M.Map.map.zoomToExtent(new OpenLayers.Bounds(item.bounds[0], item.bounds[1], item.bounds[2], item.bounds[3]));
                         }
-                    
+
                         /*
                          * Callback
                          */
                         if ($.isFunction(item.callback)) {
-                            item.callback();
+                            item.callback(item);
                         }
-                    
+
                         return false;
                     });
-                    
-                })(options.items[i], M.Util.getId(), $('ul', $('#' + id)));
+
+                })(item, $('ul', $('#' + id)));
+
             }
-   
+        
+            /*
+             * Event on a change in layer visibility
+             */
+            M.Map.events.register("visibilitychanged", self, function(layer, scope) {
+              
+                /*
+                 * Activate/unactivate item depending on visibility
+                 */
+                for (var i = 0, l = scope.items.length; i < l; i++) {
+                    if (layer["_M"].MID === scope.items[i].layerMID) {
+                        scope.activate(scope.items[i], layer.getVisibility());
+                    }
+                }
+            });
+
             return this;
 
+        };
+
+        /*
+         * Activate or deactivate item
+         * 
+         * @param {Object} item : object  
+         * @param {boolean} b : true to activate, false to deactivate
+         */
+        this.activate = function(item, b) {
+            
+            var $d = $('#' + item.id);
+            
+            /*
+             * Switch active/inactive status
+             */
+            b ? $('img', $d).addClass('active') : $('img', $d).removeClass('active');
+            
         };
 
         /*
