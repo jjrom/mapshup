@@ -1735,10 +1735,10 @@
             }
             else {
                 /*
-                 * Add one counter for each unfinished process
+                 * Add one counter for each unfinished process (i.e. Accepted or Started)
                  */
                 for (i = l; i--;) {
-                    if (this.items[i].process.status === "ProcessAccepted") {
+                    if (this.items[i].process.status === "ProcessAccepted" || this.items[i].process.status === "ProcessStarted") {
                         count++;
                     }
                 }
