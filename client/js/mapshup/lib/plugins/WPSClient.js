@@ -298,14 +298,14 @@
          */
         this.updateDescribeProcessContent = function(descriptor) {
 
-            var type, putsDescription, i, j, l, id, $id, put, $list, executeId = M.Util.getId(), executeBgId, item = this.items[descriptor.wps.url], abstract = descriptor["abstract"];
+            var type, putsDescription, i, j, l, id, $id, put, $list, executeId = M.Util.getId(), executeBgId, item = this.items[descriptor.wps.url], abstrct = descriptor["abstract"];
 
             /*
              * Set '.info' div
              * 
              * Display Process title and abstract.
              */
-            $('.describe', item.$d).html('<h1 title="' + descriptor.identifier + '">' + descriptor.title + '</h1><p>' + (abstract ? abstract : '') + '</p><div class="execute"><img src="' + M.Util.getImgUrl('execute.png') + '" id="' + executeId + '" class="button inline" jtitle="' + M.Util._("Execute process") + '"/></div>');
+            $('.describe', item.$d).html('<h1 title="' + descriptor.identifier + '">' + descriptor.title + '</h1><p>' + (abstrct ? abstrct : '') + '</p><div class="execute"><img src="' + M.Util.getImgUrl('execute.png') + '" id="' + executeId + '" class="button inline" jtitle="' + M.Util._("Execute process") + '"/></div>');
 
             /*
              * Set execute button
