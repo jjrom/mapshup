@@ -1111,6 +1111,18 @@
     };
 
     /**
+     * Switch the layer visibility
+     * 
+     * @param {String} MID
+     */
+    Map.Util.switchVisibility = function(MID) {
+        var l = Map.Util.getLayerByMID(MID);
+        if (l) {
+            Map.Util.setVisibility(l, !l.getVisibility());
+        }
+    };
+
+    /**
      * Reindex layer to ensure that :
      *  - vectors layers are always on top of raster layers
      *  - Point and/or Line vector layers are always
