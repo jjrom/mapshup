@@ -176,7 +176,8 @@
                 wrapDateLine:true,
                 /*transitionEffect:'resize',*/
                 /* WMS can be set as background (isBaseLayer:true) or as overlay */
-                isBaseLayer:M.Util.getPropertyValue(layerDescription, "isBaseLayer", false)
+                isBaseLayer:M.Util.getPropertyValue(layerDescription, "isBaseLayer", false),
+                attribution:layerDescription.attribution || null
             }
             );
             
@@ -203,8 +204,7 @@
                 transitionEffect: "resize",
                 transparent:'true',
                 SLD:layerDescription.SLD,
-                version:version,
-                attribution:layerDescription.attribution || null
+                version:version
             }, options);
 
             /*
