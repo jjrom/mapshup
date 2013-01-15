@@ -540,7 +540,7 @@
                             });
                         }
                         else if (geoType === 'WMS') {
-                            M.Map.addLayer(JSON.parse(result.data.value));
+                            M.Map.addLayer(result.data.value);
                         }
 
                     }

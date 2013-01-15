@@ -1416,7 +1416,7 @@
                                          * WMS output is a json String
                                          */
                                         if (M.Map.Util.getGeoType(p['data']['mimeType']) === 'WMS') {
-                                            p['data']['value'] = $.trim($(this).text());
+                                            p['data']['value'] = JSON.parse($.trim($(this).text()));
                                         }
                                         else {
                                             p['data']['value'] = $(this).children();
@@ -1874,6 +1874,11 @@
                                                             zoomOn:true
                                                         });
                                                     }
+                                                    else if (geoType === 'WMS') {
+                                                        M.Map.addLayer(result.data.value);
+                                                    }
+                                                    
+                                                
                                                 });
                                             })(result, item.process);
 
