@@ -1139,7 +1139,7 @@
             data = M.Util.parseTemplate(M.WPS.executeRequestTemplate, {
                 identifier: this.descriptor.identifier,
                 storeExecute: options.storeExecute,
-                status: this.statusSupported || false
+                status: this.descriptor.statusSupported || false
             });
 
             /*
