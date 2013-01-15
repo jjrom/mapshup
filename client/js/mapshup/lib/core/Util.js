@@ -1086,12 +1086,14 @@
         /**
          * Extract Key/Value pair from an url like string
          * (e.g. &lon=123.5&lat=2.3&zoom=5)
+         * 
+         * @param {String} str
          */
         extractKVP: function(str) {
             var c = {};
             str = str || "";
             str.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-                c[key] = (value === undefined) ? true : value;
+                c[decodeURIComponent(key)] = (value === undefined) ? true : decodeURIComponent(value);
             });
             return c;
         },
@@ -1736,12 +1738,12 @@
                     var nameA = scope._(a[key]).toLowerCase();
                     var nameB = scope._(b[key]).toLowerCase();
                     if (nameA < nameB) {
-                        return -1
+                        return -1;
                     }
                     if (nameA > nameB) {
-                        return 1
+                        return 1;
                     }
-                    return 0
+                    return 0;
                 });
             }   
         },
