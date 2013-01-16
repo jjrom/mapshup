@@ -467,7 +467,7 @@
 
                     }
                 }
-
+                
                 self.$d.addClass("active");
                 
                 /*

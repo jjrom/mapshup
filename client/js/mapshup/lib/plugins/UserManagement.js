@@ -569,14 +569,12 @@
                     id: M.Util.getId(),
                     tt: M.Util._("Sign in"),
                     icon: M.Util.getImgUrl("signin.png"),
-                    onoff: false,
+                    onoff: true,
                     scope:self,
                     /*
                      * Display signin popup
                      */
                     onactivate: function(scope, item) {
-
-                        item.activate(false);
 
                         /*
                          * Set UserManagement popup content
@@ -589,7 +587,7 @@
                          * Login button
                          */
                         $('#' + id).click(function() {
-                            self.signIn({
+                            scope.signIn({
                                 email: $('#userEmail').val(),
                                 password: $('#userPassword').val()
                             });
@@ -615,14 +613,12 @@
                     id: M.Util.getId(),
                     tt: M.Util._("Sign up"),
                     icon: M.Util.getImgUrl("signup.png"),
-                    onoff: false,
+                    onoff: true,
                     scope:self,
                     /*
                      * Display signin popup
                      */
                     onactivate: function(scope, item) {
-
-                        item.activate(false);
 
                         /*
                          * Set UserManagement popup content
