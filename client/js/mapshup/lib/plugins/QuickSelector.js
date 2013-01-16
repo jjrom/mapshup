@@ -85,7 +85,7 @@
              * Init options
              */
             options = options || {};
-            options.rootUrl =  options.rootUrl || ""
+            options.rootUrl =  options.rootUrl || "";
             self.items = options.items || [];
 
             /* If items is empty do not load the plugin */
