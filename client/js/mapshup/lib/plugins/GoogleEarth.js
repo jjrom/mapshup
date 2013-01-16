@@ -742,7 +742,7 @@
              * Paranoid mode
              */
             if (!this.ge) {
-                return self.initGE();
+                return this.initGE();
             }
 
             /*
