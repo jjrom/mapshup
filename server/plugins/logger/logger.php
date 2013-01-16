@@ -77,7 +77,7 @@ $location = "";
  * Get the search location name
  * relative to countries table
  */
-$query = "SELECT cntry_name FROM countries WHERE st_intersects(GeomFromText('" . $wktCenter . "',4326),the_geom)";
+$query = "SELECT cntry_name FROM countries WHERE st_intersects(st_GeomFromText('" . $wktCenter . "',4326),the_geom)";
 $result = pg_query($dbh, $query) or die("Error in SQL query: " . pg_last_error());
 while ($row = pg_fetch_row($result)) {
     $location = $row[0];

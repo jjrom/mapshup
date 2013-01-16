@@ -96,7 +96,7 @@ $location = number_format((($coords[3] + $coords[1]) / 2.0),2) . "/" . number_fo
  * is retrieve from countries table
  */
 if (isset($_POST["geocode"])) {
-    $query = "SELECT cntry_name FROM countries WHERE st_intersects(GeomFromText('" . $wktCenter . "',4326),the_geom)";
+    $query = "SELECT cntry_name FROM countries WHERE st_intersects(st_GeomFromText('" . $wktCenter . "',4326),the_geom)";
     $result = pg_query($dbh, $query) or die($error);
     $location = "Somewhere";
     while ($row = pg_fetch_row($result)) {
