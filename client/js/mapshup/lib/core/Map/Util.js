@@ -625,7 +625,7 @@
         gmt["application/wkt"] = "WKT";
         gmt["application/x-ogc-wms"] = "WMS";
 
-        return gmt[mimeType];
+        return gmt[mimeType.toLowerCase()];
 
     };
 
