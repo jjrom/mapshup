@@ -38,6 +38,9 @@
 
 /**
  * Flickr layer type
+ * 
+ * @param {MapshupObject} M
+ * @param {M.Map} Map
  */
 (function (M, Map){
     
@@ -79,6 +82,9 @@
          *      machineTags:,
          *      bbox:
          *  };
+         *  
+         *  @param {Object} layerDescription
+         *  @param {Object} options
          */
         add: function(layerDescription, options) {
 
@@ -226,9 +232,11 @@
         /**
          * MANDATORY
          * Compute an unique MID based on layerDescription
+         * 
+         * @param {object} layerDescription
          */
         getMID:function(layerDescription) {
             return layerDescription.MID || M.Util.crc32(layerDescription.type + (layerDescription.title || "") + (layerDescription.userID || "") + (layerDescription.q || "") + (layerDescription.machineTags || ""));
         }
-    }
+    };
 })(window.M, window.M.Map);

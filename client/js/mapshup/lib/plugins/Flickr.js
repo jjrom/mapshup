@@ -109,6 +109,8 @@
 
         /**
          * This method is called by FeatureInfo actions popup
+         * 
+         * @param {OpenLayers.Feature} feature
          */
         this.getFeatureActions = function(feature) {
 
@@ -126,7 +128,7 @@
                     bounds = M.Map.Util.p2d(feature.geometry.getBounds().clone());
                         
                     if (bounds.top === bounds.bottom || bounds.right === bounds.left) {
-                        bounds = new OpenLayers.Bounds(bounds.left - add, bounds.bottom - add, bounds.right + add, bounds.top + add)
+                        bounds = new OpenLayers.Bounds(bounds.left - add, bounds.bottom - add, bounds.right + add, bounds.top + add);
                     }
                     
                     /*
@@ -137,7 +139,10 @@
                         layer:M.Map.addLayer({
                             type:"Flickr",
                             title:M.Util.stripTags(M.Map.Util.Feature.getTitle(feature)),
-                            bbox:bounds.toBBOX(),
+                            bbox:{
+                                bounds:bounds.toBBOX(),
+                                crs:M.Map.map.getProjection()
+                            },
                             q:""
                         },{
                             noDeletionCheck:true
@@ -147,7 +152,7 @@
                     
                     
                 }
-            }
+            };
         };
         
         /*
