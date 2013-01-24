@@ -59,15 +59,16 @@ $url = isset($_REQUEST["url"]) ? $_REQUEST["url"] : '';
  * Get input id
  */
 $id = isset($_REQUEST["id"]) ? $_REQUEST["id"] : '';
-/*
- * Set the default type
- */
-$type = MSP_UNKNOWN;
 
 /*
  * Try to get the url type through curl_getinfo()
  */
 if (abcCheck($_REQUEST) && $url != '') {
+    
+    /*
+     * Initialize info array
+     */
+    $infos = array();
 
     /*
      * Parse url to extract request=GetCapabilities
@@ -117,11 +118,6 @@ if (abcCheck($_REQUEST) && $url != '') {
         $arr = getRemoteData($url . "&request=GetCapabilities", null, true);
     }
     
-    /*
-     * Info array
-     */
-    $infos = array();
-
     /*
      * Magic part : we try to detect a mapshup valid
      * layerType from the url content_type
