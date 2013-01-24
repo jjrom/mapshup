@@ -59,7 +59,7 @@ if (abcCheck($_REQUEST)) {
     $kml = $_REQUEST["s"];
 
     /*
-     * Get an unique filename
+     * Get an unique filename - unless specified in the request
      */
     $fileName = str_replace(" ", "", microtime(true)) . ".kml";
 
