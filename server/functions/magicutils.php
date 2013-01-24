@@ -57,7 +57,7 @@ function getLayerInfosFromXML($doc) {
      * Get layer type
      */
     $type = getLayerType($doc);
-    
+
     /*
      * Set default $infos array values
      */
@@ -80,8 +80,7 @@ function getLayerInfosFromXML($doc) {
 
     /*
      * OpenSearch service
-     */
-    else if ($type === "OpenSearch") {
+     */ else if ($type === "OpenSearch") {
 
         /*
          * Two cases : the OpenSearch description can be an OpenSearch catalog or an OpenSearch service
@@ -112,8 +111,7 @@ function getLayerInfosFromXML($doc) {
             $infos['extras'] = array(
                 'connectorName' => "OpenSearch"
             );
-        }
-        else {
+        } else {
             $infos['type'] = "OpenSearch";
         }
         return $infos;
@@ -124,7 +122,7 @@ function getLayerInfosFromXML($doc) {
 
 /**
  * Assume input type is Catalog_XXXX,
- * 
+ * TODO : REMOVE because UNUSUED 
  */
 function getConnectorName($type) {
     $types = preg_split('/_/', $type);
@@ -229,12 +227,25 @@ function getLayerType($doc) {
     }
 
     /*
-     * WPS 1.0.0 => root element = Capabilities
+     * root element = Capabilities
+     * 
+     * Check service type within the <ows:ServiceIdentification>
      *
      */ else if ($rootName === "capabilities") {
-        return "WPS";
+
+        $serviceIdentification = $doc->getElementsByTagName('ServiceIdentification')->item(0);
+        if ($serviceIdentification != null) {
+            $serviceType = $serviceIdentification->getElementsByTagName('ServiceType')->item(0)->nodeValue;
+            if (strpos($serviceType, "WMTS") !== false) {
+                return "WMTS";
+            } else if (strpos($serviceType, "WPS") !== false) {
+                return "WPS";
+            }
+        }
+
+        return MSP_UNKNOWN;
     }
-    
+
     /*
      * Pleiades
      */ else if (getPHRType($doc) !== null) {
@@ -245,12 +256,10 @@ function getLayerType($doc) {
      * Sentinel
      */ else if (getSentinelType($doc) !== null) {
         return "Sentinel";
-    }
-
-    else {
+    } else {
         $rootName = MSP_UNKNOWN;
     }
-    
+
     return $rootName;
 }
 
