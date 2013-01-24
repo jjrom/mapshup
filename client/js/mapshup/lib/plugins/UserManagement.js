@@ -599,7 +599,12 @@
                          * Show UserManagement popup
                          */
                         p.show();
-
+                        
+                        /*
+                         * Set focus on email adress
+                         */
+                        $('#userEmail').focus();
+                        
                     },
                     /*
                      * Hide popup
@@ -639,6 +644,11 @@
                          * Show UserManagement popup
                          */
                         p.show();
+                        
+                        /*
+                         * Set focus on email adress
+                         */
+                        $('#userEmail').focus();
 
                     },
                     /*
