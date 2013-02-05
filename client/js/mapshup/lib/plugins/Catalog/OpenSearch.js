@@ -207,7 +207,7 @@
                                  * as the search done with the layer search action
                                  */
                                 if (kvps[key].indexOf('searchTerms') === 1) {
-                                    self.searchKeyAlias = key
+                                    self.searchKeyAlias = key;
                                     if (M.Plugins.Search && M.Plugins.Search._o) {
                                         M.Plugins.Search._o.add(catalog["_M"].layerDescription.url, {
                                             layer:catalog
@@ -306,7 +306,8 @@
             }
             ];
             
-        }
+        };
         
-    }
+    };
+
 })(window.M);
