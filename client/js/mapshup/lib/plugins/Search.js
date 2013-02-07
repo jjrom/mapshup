@@ -672,7 +672,7 @@
                 else if (interval && kvps[key].indexOf('time:start') === 1) {
                     kvps[key] = interval[0];
                 }
-                else if (interval && kvps[key].indexOf('time:stop') === 1) {
+                else if (interval && kvps[key].indexOf('time:end') === 1) {
                     kvps[key] = interval[1];
                 }
                 
