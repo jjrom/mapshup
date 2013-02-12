@@ -138,13 +138,11 @@
                      */
                     if (!scope.items[url]) {
 
-                        var id = M.Util.getId();
-
                         /*
                          * Create a panel for this WPS
                          */
                         var panelItem = M.southPanel.add({
-                            id: id,
+                            id: M.Util.getId(),
                             icon: M.Util.getImgUrl('execute.png'),
                             title: wps.title,
                             classes: "wpsclient",
