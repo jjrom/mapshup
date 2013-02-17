@@ -47,24 +47,23 @@ Installation
 Note: the following scripts only work on Linux or Mac OS X
 
 Before installing, you need to double check that the following packages are installed :
-
-  - Apache server
-	- PHP > 5.0
-	- PHP Curl
-	- PostgreSQL > 8.3 (optional - for UserManagement and context sharing only)
-	- PostGIS > 1.5 (optional - for UserManagement and context sharing only)
-	- Mapserver > 5.0 (optional - for on the fly WMS reprojection only)
+* Apache server
+* PHP > 5.0
+* PHP Curl
+* PostgreSQL > 8.3 (optional - for UserManagement and context sharing only)
+* PostGIS > 1.5 (optional - for UserManagement and context sharing only)
+* Mapserver > 5.0 (optional - for on the fly WMS reprojection only)
 
 In the following, we suppose that
-  - $MAPSHUP_SRC is the directory where mapshup sources will be installed
-  - $MAPSHUP_HOME is the directory where mapshup will be installed. This directory should be under Apache root directory
+* $MAPSHUP_SRC is the directory where mapshup sources will be installed
+* $MAPSHUP_HOME is the directory where mapshup will be installed. This directory should be under Apache root directory
 
 1. Retrieve sources
 
     git clone https://github.com/jjrom/mapshup.git $MAPSHUP_SRC
     
 2. Compile mapshup
-  
+
     /bin/rm -Rf $MAPSHUP_HOME
     $MAPSHUP_SRC/utils/packer/pack.sh src $MAPSHUP_HOME blacker $MAPSHUP_SRC/client/js/mapshup/config/example.js 0 0
 
