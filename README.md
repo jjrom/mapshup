@@ -1,5 +1,6 @@
 mapshup
 =======
+(See installation at the end of the README file)
 
 Project info
 ------------
