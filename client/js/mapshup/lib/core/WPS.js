@@ -988,6 +988,24 @@
         };
 
         /**
+         * Get an input description
+         * 
+         * @param {String} identifier
+         */
+        this.getInputDescription = function(identifier) {
+            
+            if (this.dataInputsDescription && this.dataInputsDescription.length) {
+                for (var i = 0, l = this.dataInputsDescription.length; i < l; i++) {
+                    if (this.dataInputsDescription[i].identifier === identifier) {
+                        return this.dataInputsDescription[i];
+                    }
+                }
+            }
+            return null;
+            
+        };
+    
+        /**
          * Create a child Process and launch 'execute' request 
          * 
          *  @param {Object} options : options to modify execution (optional)
