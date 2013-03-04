@@ -100,7 +100,7 @@
                  */
                 layerDescription.bbox = M.Util.getPropertyValue(layerDescription, "bbox", {
                     bounds:[e.left, e.bottom, e.right, e.top],
-                    crs:M.Map.map.getProjection()
+                    srs:M.Map.map.getProjection()
                 });
 
                 /*

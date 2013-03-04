@@ -153,7 +153,7 @@
              */
             bbox = layerDescription.bbox || {
                 bounds:"-170,-80,170,80",
-                crs:"EPSG:4326"
+                srs:"EPSG:4326"
             };
         
             $.extend(options["_M"],
@@ -425,7 +425,7 @@
                             version:capabilities.version,
                             bbox:{
                                 bounds:layer.llbbox,
-                                crs:"EPSG:4326"
+                                srs:"EPSG:4326"
                             },
                             layers:layer["name"]
                         }),
@@ -440,7 +440,7 @@
                      */
                     d.bbox = {
                         bounds:"-170,-80,170,80",
-                        crs:"EPSG:4326"
+                        srs:"EPSG:4326"
                     };
                     if (layer.llbbox && layer.llbbox.length === 4) {
                         d.bbox.bounds = layer.llbbox[0]+','+layer.llbbox[1]+','+layer.llbbox[2]+','+layer.llbbox[3];

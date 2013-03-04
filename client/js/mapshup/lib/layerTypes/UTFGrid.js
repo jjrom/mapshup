@@ -65,7 +65,7 @@
              */
             var bbox = layerDescription.bbox || {
                 bounds:"-180,-90,180,90",
-                crs:"EPSG:4326"
+                srs:"EPSG:4326"
             };
             
             /*

@@ -488,7 +488,8 @@
      * @param {Object} obj : a bbox structure
      *                  {
      *                      bounds: array (i.e. [minx, miny, maxx, maxy]) or string (i.e. "minx, miny, maxx, maxy")
-     *                      crs: "EPSG:4326" or "EPSG:3857"
+     *                      crs: "EPSG:4326" or "EPSG:3857" (optional)
+     *                      srs: "EPSG:4326" or "EPSG:3857" (optional)
      *                  } 
      */
     Map.Util.getGeoBounds = function(obj) {
@@ -504,7 +505,7 @@
             return null;
         }
 
-        var bounds, coords, crs = obj.crs || "EPSG:4326";
+        var bounds, coords, srs = obj.srs, crs = obj.crs || "EPSG:4326";
         
         /*
          * Bounds is an array or a string ?
@@ -521,15 +522,25 @@
         }
     
         /*
+         * If srs is specified and srs === EPSG:4326 then
+         * order coordinates is lon,lat
+         * Otherwise it is lat,lon
+         * 
          * Be sure to not be outside -180,-90,180,90
          */
-        if (crs === "EPSG:4326") {
+        if (srs === "EPSG:4326") {
             coords[0] = Math.max(-180, coords[0]);
             coords[1] = Math.max(-90, coords[1]);
             coords[2] = Math.max(180, coords[2]);
             coords[3] = Math.max(90, coords[3]);
         }
-        
+        else if (crs === "EPSG:4326") {
+            coords[0] = Math.max(-180, coords[1]);
+            coords[1] = Math.max(-90, coords[0]);
+            coords[2] = Math.max(180, coords[3]);
+            coords[3] = Math.max(90, coords[2]);
+        }
+    
         bounds = new OpenLayers.Bounds(coords[0], coords[1], coords[2], coords[3]);
         
         /*
@@ -547,7 +558,8 @@
      * @param {Object} obj : a bbox structure
      *                  {
      *                      bounds: array (i.e. [minx, miny, maxx, maxy]) or string (i.e. "minx, miny, maxx, maxy")
-     *                      crs: "EPSG:4326" or "EPSG:3857"
+     *                      crs: "EPSG:4326" or "EPSG:3857" (optional)
+     *                      srs: "EPSG:4326" or "EPSG:3857" (optional)
      *                  } 
      */
     Map.Util.getProjectedBounds = function(obj) {
@@ -563,7 +575,7 @@
             return null;
         }
 
-        var avoidBoundError = 0, bounds, coords, crs = obj.crs || "EPSG:4326";
+        var avoidBoundError = 0, bounds, coords, srs = obj.srs, crs = obj.crs || "EPSG:4326";
         
         /*
          * Bounds is an array or a string ?
@@ -582,13 +594,22 @@
         /*
          * Avoid reprojection error at the pole
          */
-        if (crs === "EPSG:4326") {
+        if (srs === "EPSG:4326") {
             
             if (coords[0] === -180 || coords[1] === -90 || coords[2] === 180 || coords[3] === 90) {
                 avoidBoundError = 1;
             }
 
             bounds = Map.Util.d2p(new OpenLayers.Bounds(coords[0] + avoidBoundError, coords[1] + avoidBoundError, coords[2]- avoidBoundError, coords[3] - avoidBoundError));
+            
+        }
+        else if (crs === "EPSG:4326") {
+            
+            if (coords[0] === -180 || coords[1] === -90 || coords[2] === 180 || coords[3] === 90) {
+                avoidBoundError = 1;
+            }
+
+            bounds = Map.Util.d2p(new OpenLayers.Bounds(coords[1] + avoidBoundError, coords[0] + avoidBoundError, coords[3] - avoidBoundError, coords[2] - avoidBoundError));
             
         }
         else {

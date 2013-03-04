@@ -70,7 +70,7 @@
          *      srs:
          *      bbox:{
          *          bounds:
-         *          crs:
+         *          srs:
          *      }
          *  };
          *  
@@ -160,7 +160,7 @@
                 callback:function(v){
                     layerDescription["bbox"] = {
                         bounds:v,
-                        crs:"EPSG:4326"
+                        srs:"EPSG:4326"
                     };
                     callback(layerDescription);
                 }

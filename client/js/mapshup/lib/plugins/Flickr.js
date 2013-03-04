@@ -141,7 +141,7 @@
                             title:M.Util.stripTags(M.Map.Util.Feature.getTitle(feature)),
                             bbox:{
                                 bounds:bounds.toBBOX(),
-                                crs:M.Map.map.getProjection()
+                                srs:M.Map.map.getProjection()
                             },
                             q:""
                         },{
