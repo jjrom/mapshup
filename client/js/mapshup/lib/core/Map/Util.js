@@ -505,7 +505,7 @@
             return null;
         }
 
-        var bounds, coords, srs = obj.srs, crs = obj.crs || "EPSG:4326";
+        var bounds, coords, coords2 = [], srs = obj.srs, crs = obj.crs || "EPSG:4326";
         
         /*
          * Bounds is an array or a string ?
@@ -529,19 +529,19 @@
          * Be sure to not be outside -180,-90,180,90
          */
         if (srs === "EPSG:4326") {
-            coords[0] = Math.max(-180, coords[0]);
-            coords[1] = Math.max(-90, coords[1]);
-            coords[2] = Math.max(180, coords[2]);
-            coords[3] = Math.max(90, coords[3]);
+            coords2[0] = Math.max(-180, coords[0]);
+            coords2[1] = Math.max(-90, coords[1]);
+            coords2[2] = Math.min(180, coords[2]);
+            coords2[3] = Math.min(90, coords[3]);
         }
         else if (crs === "EPSG:4326") {
-            coords[0] = Math.max(-180, coords[1]);
-            coords[1] = Math.max(-90, coords[0]);
-            coords[2] = Math.max(180, coords[3]);
-            coords[3] = Math.max(90, coords[2]);
+            coords2[0] = Math.max(-180, coords[1]);
+            coords2[1] = Math.max(-90, coords[0]);
+            coords2[2] = Math.min(180, coords[3]);
+            coords2[3] = Math.min(90, coords[2]);
         }
     
-        bounds = new OpenLayers.Bounds(coords[0], coords[1], coords[2], coords[3]);
+        bounds = new OpenLayers.Bounds(coords2[0], coords2[1], coords2[2], coords2[3]);
         
         /*
          * Returns geo bounds
