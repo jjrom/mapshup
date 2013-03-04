@@ -1,5 +1,6 @@
 mapshup
 =======
+(See installation at the end of the README file)
 
 Project info
 ------------
@@ -40,3 +41,47 @@ intuitive
 Architecture
 ------------
 ![mapshup architecture](https://raw.github.com/jjrom/mapshup/master/utils/stuff/2012.11.23%20-%20mapshup.008.jpg)
+
+Installation
+------------
+
+Note: the following scripts only work on Linux or Mac OS X
+
+Before installing, you need to double check that the following packages are installed :
+* Apache server
+* PHP > 5.0
+* PHP Curl
+* PostgreSQL > 8.3 (optional - for UserManagement and context sharing only)
+* PostGIS > 1.5 (optional - for UserManagement and context sharing only)
+* Mapserver > 5.0 (optional - for on the fly WMS reprojection only)
+
+In the following, we suppose that
+* $MAPSHUP_SRC is the directory where mapshup sources will be installed
+* $MAPSHUP_HOME is the directory where mapshup will be installed. This directory should be under Apache root directory
+
+Retrieve sources
+
+    git clone https://github.com/jjrom/mapshup.git $MAPSHUP_SRC
+    
+Compile mapshup
+
+    /bin/rm -Rf $MAPSHUP_HOME
+    $MAPSHUP_SRC/utils/packer/pack.sh src $MAPSHUP_HOME blacker $MAPSHUP_SRC/client/js/mapshup/config/example.js 0 0
+
+Database installation (optional - for UserManagement and context sharing only)
+
+Edit install_mapshupdb.sh to put the right postgis paths if needed
+See $MAPSHUP_HOME/s/README_INSTALL.txt  
+    
+    cd $MAPSHUP_HOME/s/_installdb
+    ./install_mapshupdb.sh
+
+Clean installation files
+
+    rm -Rf $MAPSHUP_HOME/s/README_INSTALL.txt
+    rm -Rf $MAPSHUP_HOME/s/_installdb
+
+Configuration
+
+Edit $MAPSHUP_HOME/s/config.php
+Note : the current build suppose that mapshup directory is accessible through http://localhot/mapshup. If it is not the case, change it within $MAPSHUP_HOME/js/mapshup/config/example.js 
