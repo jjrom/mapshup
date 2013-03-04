@@ -71,7 +71,7 @@
          *       layers:,
          *       displayType:,
          *       srs:,
-         *       version: // optional - set to 1.1.0 if not specified,
+         *       version: // optional - set to 1.1.1 if not specified,
          *       time : // optional - only used for WMS Time layer
          *  };
          *
@@ -286,10 +286,10 @@
                 }
             }
             /*
-             * By default call WMS with version set to 1.1.0
+             * By default call WMS with version set to 1.1.1
              */
             M.Util.ajax({
-                url:M.Util.proxify(M.Util.repareUrl(layerDescription.url+"request=GetCapabilities&service=WMS&version=1.1.0"), "XML"),
+                url:M.Util.proxify(M.Util.repareUrl(layerDescription.url+"request=GetCapabilities&service=WMS&version=1.1.1"), "XML"),
                 async:true,
                 success:function(data, textStatus, XMLHttpRequest) {
 
@@ -499,9 +499,9 @@
             layerDescription = layerDescription || {};
             
             /*
-             * Default version is 1.1.0
+             * Default version is 1.1.1
              */
-            version = layerDescription.version || "1.1.0";
+            version = layerDescription.version || "1.1.1";
             
             /*
              * Set default BBOX to the whole world
