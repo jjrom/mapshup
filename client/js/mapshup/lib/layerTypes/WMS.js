@@ -206,7 +206,7 @@
                 SLD:layerDescription.SLD,
                 version:version
             }, options);
-
+        
             /*
              * Add a setTime function
              */
@@ -658,5 +658,5 @@
         getMID:function(layerDescription) {
             return layerDescription.MID || M.Util.crc32(layerDescription.type + (M.Util.repareUrl(layerDescription.url) || "") + (layerDescription.layers || ""));
         }
-    }
+    };
 })(window.M, window.M.Map);
