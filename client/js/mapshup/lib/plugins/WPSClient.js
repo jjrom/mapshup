@@ -452,13 +452,32 @@
             var i, l, geoType, result, item = this.items[process.descriptor.wps.url], $outputsList = $('.output', item.$d);
 
             /*
-             * Asynchronous case
+             * Asynchronous case - Normal case
              * 
              * The result is available at the url defined in the process "statusLocation"
              * A TimeOut function is set to check periodically the status of the process
              * 
              * When the process is finished, the user is notified and the TimeOut function is removed
              */
+            if (process.statusLocation && process.status === "ProcessAccepted") {
+               /*
+                * ProcessAccepted
+                *  => add a new process to the asynchronous manager
+                */
+                return M.apm.add(process, {
+                    wpsUrl: process.descriptor.wps.url,
+                    identifier: process.descriptor.identifier
+                });
+            }
+            /*
+             * Asynchronous case - Bad implementation case
+             * 
+             * This case occurs when statusLocation attribute is not repeated within the
+             * process response located at statusLocation
+             */
+            else if (process.status === "ProcessStarted") {
+                return M.apm.update(process);
+            }
             if (process.statusLocation) {
                 
                 /*
@@ -473,11 +492,20 @@
                 }
                 
                 /*
-                 * ProcessSucceeded or ProcessFailed
+                 * ProcessStarted, ProcessSucceeded or ProcessFailed
                  *  => store result in the User processes list
                  */  
                 return M.apm.update(process);
                             
+            }
+            /*
+             * Asynchronous case - Bad implementation case
+             * 
+             * This case occurs when statusLocation attribute is not repeated within the
+             * process response located at statusLocation
+             */
+            else if (process.status === "ProcessStarted") {
+                return M.apm.update(process);
             }
             /*
              * Process failed - the very easy part :)

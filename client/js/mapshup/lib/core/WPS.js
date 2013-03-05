@@ -1629,46 +1629,13 @@
                     id: M.Util.getId(),
                     statusLocation: process.statusLocation,
                     time: (new Date()).toISOString(),
-                    process: process,
-                    /*
-                     * Periodically check the Process Status (every 5 seconds) 
-                     */
-                    fn: setTimeout(function() {
-
-                        /*
-                         * Background execute request
-                         */
-                        $.ajax({
-                            url: M.Util.proxify(process.statusLocation, "XML"),
-                            async: true,
-                            type: "GET",
-                            dataType: "xml",
-                            contentType: "text/xml",
-                            success: function(xml) {
-                                
-                                process.result = process.parseExecuteResponse(xml);
-
-                                /*
-                                 * Result is null only if an ExceptionReport occured
-                                 */
-                                if (process.result) {
-                                    process.descriptor.wps.events.trigger("execute", process);
-                                }
-
-                            },
-                            error: function(e) {
-                                M.Util.message(e);
-                            }
-                        });
-
-                    }, 5000)
-
+                    process: process
                 });
 
                 /*
                  * Update user bar 
                  */
-                self.updateProcessesList();
+                self.update(process);
 
             }
         };
@@ -1687,6 +1654,45 @@
                 return false;
             }
             
+            /*
+             * Run timeout function
+             */
+            if (this.get(process.statusLocation) && process.status !== "ProcessSucceeded") {
+                
+                /*
+                 * Refresh process result every 3 seconds
+                 */
+                setTimeout(function() {
+
+                    /*
+                     * Background execute request
+                     */
+                    $.ajax({
+                        url: M.Util.proxify(process.statusLocation, "XML"),
+                        async: true,
+                        type: "GET",
+                        dataType: "xml",
+                        contentType: "text/xml",
+                        success: function(xml) {
+
+                            process.result = process.parseExecuteResponse(xml);
+
+                            /*
+                             * Result is null only if an ExceptionReport occured
+                             */
+                            if (process.result) {
+                                process.descriptor.wps.events.trigger("execute", process);
+                            }
+
+                        },
+                        error: function(e) {
+                            M.Util.message(e);
+                        }
+                    });
+
+                }, 3000);
+            }
+        
             /*
              * Set finished status
              */
@@ -1716,8 +1722,7 @@
                  * A clean remove means imperatively to first clear the TimeOut function !
                  */
                 if (this.items[i].statusLocation === statusLocation) {
-
-                    clearTimeout(this.items[i].fn);
+                    
                     this.items.splice(i, 1);
 
                     /*
