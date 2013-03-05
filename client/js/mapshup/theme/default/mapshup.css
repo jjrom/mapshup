@@ -1733,7 +1733,7 @@ td.clear {
     height:100px;
     line-height:35px;
 }
-.wpsclient .hilite {
+.wpsclient .hilite, .acacia .hilite{
     background-color:olivedrab;
     padding:4px;
 }
