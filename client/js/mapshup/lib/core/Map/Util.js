@@ -520,7 +520,7 @@
         else {
             coords = obj.bounds;
         }
-    
+        
         /*
          * If srs is specified and srs === EPSG:4326 then
          * order coordinates is lon,lat
@@ -533,20 +533,22 @@
             coords2[1] = Math.max(-90, coords[1]);
             coords2[2] = Math.min(180, coords[2]);
             coords2[3] = Math.min(90, coords[3]);
+            coords = coords2;
         }
         else if (crs === "EPSG:4326") {
             coords2[0] = Math.max(-180, coords[1]);
             coords2[1] = Math.max(-90, coords[0]);
             coords2[2] = Math.min(180, coords[3]);
             coords2[3] = Math.min(90, coords[2]);
+            coords = coords2;
         }
-    
-        bounds = new OpenLayers.Bounds(coords2[0], coords2[1], coords2[2], coords2[3]);
+        
+        bounds = new OpenLayers.Bounds(coords[0], coords[1], coords[2], coords[3]);
         
         /*
          * Returns geo bounds
          */
-        return crs === "EPSG:3857" || crs === "EPSG:900913" ? M.Map.Util.p2d(bounds) : bounds;
+        return srs === "EPSG:3857" || srs === "EPSG:900913" || crs === "EPSG:3857" || crs === "EPSG:900913" ? M.Map.Util.p2d(bounds) : bounds;
         
     };
 

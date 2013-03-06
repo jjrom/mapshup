@@ -141,7 +141,7 @@
                             title:M.Util.stripTags(M.Map.Util.Feature.getTitle(feature)),
                             bbox:{
                                 bounds:bounds.toBBOX(),
-                                srs:M.Map.map.getProjection()
+                                srs:"EPSG:4326"
                             },
                             q:""
                         },{
