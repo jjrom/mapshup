@@ -66,7 +66,7 @@ Retrieve sources
 Compile mapshup
 
     /bin/rm -Rf $MAPSHUP_HOME
-    $MAPSHUP_SRC/utils/packer/pack.sh src $MAPSHUP_HOME blacker $MAPSHUP_SRC/client/js/mapshup/config/example.js 0 0
+    $MAPSHUP_SRC/utils/packer/pack.sh $MAPSHUP_SRC $MAPSHUP_HOME blacker $MAPSHUP_SRC/client/js/mapshup/config/example.js 0 0
 
 Database installation (optional - for UserManagement and context sharing only)
 
