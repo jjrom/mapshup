@@ -72,37 +72,31 @@ DEBUG=$6
 if [ ! -x $TARGET ]
 then
 	echo ""
-	echo "Clone git repository $1"
-
-        # Export git last repository
-        git clone $REPO /tmp/_mspexport
-        EXPORTDIR=`echo /tmp/_mspexport/client/`
-        SERVERDIR=`echo /tmp/_mspexport/server/`
+	echo "Compile repository $REPO"
+        CLIENTDIR=`echo $REPO/client/`
+        SERVERDIR=`echo $REPO/server/`
 	
         # Create target directories
-        mkdir $TARGET
-	mkdir $TARGET/js
-	mkdir $TARGET/js/mapshup
-	mkdir $TARGET/js/mapshup/config
+        mkdir -p $TARGET/js/mapshup/config
 
         # Copy javascript files
-        /bin/cp -Rf $EXPORTDIR/js/mapshup/buildfile.txt $TARGET/js/mapshup
-	/bin/cp -Rf $EXPORTDIR/js/mapshup/i18n $TARGET/js/mapshup
-	/bin/cp -Rf $EXPORTDIR/js/mapshup/lib $TARGET/js/mapshup
-	/bin/cp -Rf $EXPORTDIR/js/mapshup/theme $TARGET/js/mapshup
-	/bin/cp $EXPORTDIR/js/mapshup/config/default.js $TARGET/js/mapshup/config
-	/bin/cp $EXPORTDIR/js/mapshup/config/touch.js $TARGET/js/mapshup/config
-        /bin/cp $EXPORTDIR/js/mapshup/config/help_*.js $TARGET/js/mapshup/config
+        /bin/cp -Rf $CLIENTDIR/js/mapshup/buildfile.txt $TARGET/js/mapshup
+	/bin/cp -Rf $CLIENTDIR/js/mapshup/i18n $TARGET/js/mapshup
+	/bin/cp -Rf $CLIENTDIR/js/mapshup/lib $TARGET/js/mapshup
+	/bin/cp -Rf $CLIENTDIR/js/mapshup/theme $TARGET/js/mapshup
+	/bin/cp $CLIENTDIR/js/mapshup/config/default.js $TARGET/js/mapshup/config
+	/bin/cp $CLIENTDIR/js/mapshup/config/touch.js $TARGET/js/mapshup/config
+        /bin/cp $CLIENTDIR/js/mapshup/config/help_*.js $TARGET/js/mapshup/config
 	
         # Copy external javascript libraries
-	/bin/cp -Rf $EXPORTDIR/js/mjquery $TARGET/js
-	/bin/cp -Rf $EXPORTDIR/js/mol $TARGET/js
+	/bin/cp -Rf $CLIENTDIR/js/mjquery $TARGET/js
+	/bin/cp -Rf $CLIENTDIR/js/mol $TARGET/js
 
         # Copy images files
-	/bin/cp -Rf $EXPORTDIR/img $TARGET/img
+	/bin/cp -Rf $CLIENTDIR/img $TARGET/img
 
         # Copy presentation files
-        /bin/cp -Rf $EXPORTDIR/welcome.html_files $TARGET/
+        /bin/cp -Rf $CLIENTDIR/welcome.html_files $TARGET/
 
         # Copy index*.html files
         # If config file is specified...
@@ -113,31 +107,31 @@ then
             CONFIG_FILE=`basename $CONFIG`
             
             # Copy index*.html files and replace __DEVEL__.js with input config file
-            cat $EXPORTDIR/index_prod.html | sed s/__DEVEL__\.js/$CONFIG_FILE/g > $TARGET/tmp_index.html
-            cat $EXPORTDIR/index_prodt.html | sed s/__DEVEL__\.js/$CONFIG_FILE/g > $TARGET/tmp_indext.html
+            cat $CLIENTDIR/index_prod.html | sed s/__DEVEL__\.js/$CONFIG_FILE/g > $TARGET/tmp_index.html
+            cat $CLIENTDIR/index_prodt.html | sed s/__DEVEL__\.js/$CONFIG_FILE/g > $TARGET/tmp_indext.html
 
             # Replace theme name in index files
             sed s/__THEME__/$THEME/g $TARGET/tmp_index.html > $TARGET/index.html
             sed s/__THEME__/$THEME/g $TARGET/tmp_indext.html > $TARGET/indext.html
         else
             # Copy index*.html files
-            cat $EXPORTDIR/index_prod.html | grep -v "__DEVEL__\.js" > $TARGET/index.html
-            cat $EXPORTDIR/index_prodt.html | grep -v "__DEVEL__\.js" > $TARGET/indext.html
+            cat $CLIENTDIR/index_prod.html | grep -v "__DEVEL__\.js" > $TARGET/index.html
+            cat $CLIENTDIR/index_prodt.html | grep -v "__DEVEL__\.js" > $TARGET/indext.html
         fi
         
-        /bin/cp -Rf $EXPORTDIR/blank.html $TARGET/
-        /bin/cp -Rf $EXPORTDIR/error.html $TARGET/
-        /bin/cp -Rf $EXPORTDIR/welcome.html $TARGET/
-        /bin/cp -Rf $EXPORTDIR/robots.txt $TARGET/
-        /bin/cp -Rf $EXPORTDIR/license-fr.txt $TARGET/
-        /bin/cp -Rf $EXPORTDIR/license-en.txt $TARGET/
-        /bin/cp -Rf $EXPORTDIR/favicon.ico $TARGET/
+        /bin/cp -Rf $CLIENTDIR/blank.html $TARGET/
+        /bin/cp -Rf $CLIENTDIR/error.html $TARGET/
+        /bin/cp -Rf $CLIENTDIR/welcome.html $TARGET/
+        /bin/cp -Rf $CLIENTDIR/robots.txt $TARGET/
+        /bin/cp -Rf $CLIENTDIR/license-fr.txt $TARGET/
+        /bin/cp -Rf $CLIENTDIR/license-en.txt $TARGET/
+        /bin/cp -Rf $CLIENTDIR/favicon.ico $TARGET/
 
         # Copy server file to export directory
         /bin/cp -Rf $SERVERDIR $TARGET/s
 
         # Touch files
-        /bin/cp -Rf $EXPORTDIR/js/mapshup/theme/$THEME/mapshup.css $TARGET/js/mapshup/theme/$THEME/mapshupt.css
+        /bin/cp -Rf $CLIENTDIR/js/mapshup/theme/$THEME/mapshup.css $TARGET/js/mapshup/theme/$THEME/mapshupt.css
 
 fi
 
@@ -218,7 +212,6 @@ echo "Clean..."
 /bin/rm -Rf $TARGET/js/mapshup/lib
 /bin/rm -Rf $TARGET/tmp_index.html
 /bin/rm -Rf $TARGET/tmp_indext.html
-/bin/rm -Rf /tmp/_mspexport
 mv $TARGET/js/mapshup/_mapshup.js $TARGET/js/mapshup/mapshup.js
 mv $TARGET/js/mapshup/_mapshupt.js $TARGET/js/mapshup/mapshupt.js
 
