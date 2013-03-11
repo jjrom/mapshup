@@ -235,9 +235,12 @@
         /**
          * MANDATORY
          * Compute an unique MID based on layerDescription
+         * 
+         * @param {Object} layerDescription
          */
         getMID:function(layerDescription) {
             return layerDescription.MID || M.Util.crc32(layerDescription.type + layerDescription.connectorName + (M.Util.repareUrl(layerDescription.url) || ""));
         }
-    }
+    };
+
 })(window.M, window.M.Map);
