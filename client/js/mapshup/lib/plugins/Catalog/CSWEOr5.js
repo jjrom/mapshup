@@ -71,7 +71,8 @@
             url: "/plugins/catalog/CSWEOCatalogProxy.php?version=06-131r5&"
         });
         
-        return new M.Plugins.Catalog.CSWEO(catalog, options, registerCallback, filterCallback)
+        return new M.Plugins.Catalog.CSWEO(catalog, options, registerCallback, filterCallback);
         
-    }
+    };
+
 })(window.M);

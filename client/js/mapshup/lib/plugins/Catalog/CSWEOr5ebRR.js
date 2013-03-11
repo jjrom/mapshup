@@ -54,7 +54,7 @@
      * @param registerCallback : callback function called after connector is successfully registered
      * @param filterCallback : callback function called after filter is successfully updated
      */
-    M.Plugins.Catalog.CSWEOr5 = function(catalog, options, registerCallback, filterCallback) {
+    M.Plugins.Catalog.CSWEOr5ebRR = function(catalog, options, registerCallback, filterCallback) {
         
         $.extend(options, {
         
@@ -71,7 +71,8 @@
             url: "/plugins/catalog/CSWEOCatalogProxy.php?version=06-131r5ebRR&"
         });
         
-        return new M.Plugins.Catalog.CSWEO(catalog, options, registerCallback, filterCallback)
+        return new M.Plugins.Catalog.CSWEO(catalog, options, registerCallback, filterCallback);
         
-    }
+    };
+
 })(window.M);
