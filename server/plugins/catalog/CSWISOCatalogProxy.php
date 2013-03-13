@@ -1,4 +1,5 @@
 <?php
+
 /*
  * mapshup - Webmapping made easy
  * http://mapshup.info
@@ -146,17 +147,15 @@ function outputToGeoJSON($theData) {
             $attr = $reference->getAttribute('scheme');
             if ($attr == "urn:x-cwic:Onlink:MimeType:application/x-hdfeos") {
                 $product = $reference->nodeValue;
-            }
-            else if ($attr == "urn:x-cwic:Browse") {
+            } else if ($attr == "urn:x-cwic:Browse") {
                 $thumbnail = $reference->nodeValue;
                 $quicklook = $reference->nodeValue;
             }
             if ($thumbnail != "" && $product != "") {
                 break;
             }
-            
         }
-        
+
         /**
          * Add feature
          */
@@ -213,14 +212,23 @@ $maxResults = isset($_REQUEST["numRecordsPerPage"]) ? $_REQUEST["numRecordsPerPa
 $order = isset($_REQUEST["order"]) ? $_REQUEST["order"] : "latlon";
 
 if (isset($_REQUEST["startDate"])) {
+    
     $dates = getDatesFromInterval($_REQUEST["startDate"]);
+
+    /*
+     * If completionDate is set it replaces $dates['completionDate']
+     */
+    if (isset($_REQUEST["completionDate"])) {
+        $dates['completionDate'] = addTimeToDate(urldecode($_REQUEST["completionDate"]));
+    }
+    
     if ($dates['startDate']) {
         $startDate = $dates['startDate'];
         $nbOfFilters++;
     }
 
     if ($dates['completionDate']) {
-        $startDate = $dates['completionDate'];
+        $completionDate = $dates['completionDate'];
         $nbOfFilters++;
     }
 }

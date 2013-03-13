@@ -71,6 +71,14 @@ if (isset($_REQUEST['bbox']) && $_REQUEST['bbox'] != "") {
  * Get dates
  */
 $dates = getDatesFromInterval(isset($_REQUEST["startDate"]) ? $_REQUEST["startDate"] : null);
+
+/*
+ * If completionDate is set it replaces $dates['completionDate']
+ */
+if (isset($_REQUEST["completionDate"])) {
+    $dates['completionDate'] = addTimeToDate(urldecode($_REQUEST["completionDate"]));
+}
+
 $req .= '&completionDate=' . ($dates['completionDate'] ? $dates['completionDate'] : "");
 $req .= '&startDate=' . ($dates['startDate'] ? $dates['startDate'] : "");
 
