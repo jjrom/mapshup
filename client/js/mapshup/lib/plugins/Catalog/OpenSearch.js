@@ -139,6 +139,8 @@
                             var j,
                             k,
                             key,
+                            parts2,
+                            unNameSpacedKey,
                             kvps = "",
                             parts = description.formats["GeoJSON"].URLTemplate.split("?"),
                             // url is the first part of the URLTemplate i.e. everything before '?'
@@ -161,6 +163,12 @@
                                 if (kvps[key].indexOf('{') === -1) {
                                     url += key + "=" + kvps[key] + '&';
                                 }
+                                
+                                /*
+                                 * Template parameter can be prefixed by namespace
+                                 */
+                                parts2 = kvps[key].split(":");
+                                unNameSpacedKey = (parts2.length === 2 ? parts2[1] : parts2[0]).replace('{', '').replace('}', '').replace('?', '');
                                 
                                 /*
                                  * The "modified" parameter is a reserved keyword
@@ -187,14 +195,14 @@
                                 /*
                                  * If value = count then corresponding key should replace "numRecordsPerPage" property name
                                  */
-                                if (kvps[key].indexOf('count') === 1) {
+                                if (unNameSpacedKey === 'count') {
                                     self.numRecordsPerPageAlias = key;
                                 }
                                 
                                 /*
                                  * If value = startIndex then corresponding key should replace "nextRecord" property name
                                  */
-                                if (kvps[key].indexOf('startIndex') === 1) {
+                                if (unNameSpacedKey === 'startIndex') {
                                     self.nextRecordAlias = key;
                                 }
                                 
@@ -206,7 +214,7 @@
                                  * that search within the bar are displayed within the same layer
                                  * as the search done with the layer search action
                                  */
-                                if (kvps[key].indexOf('searchTerms') === 1) {
+                                if (unNameSpacedKey === 'searchTerms') {
                                     self.searchKeyAlias = key;
                                     if (M.Plugins.Search && M.Plugins.Search._o) {
                                         M.Plugins.Search._o.add(catalog["_M"].layerDescription.url, {

@@ -596,7 +596,7 @@
          */
         this.getUrlInfo = function(service) {
           
-            var interval, j, k, key, parts, pagination = {}, url = service.URLTemplate, kvps = "", self = this;
+            var interval, j, k, key, parts, parts2, unNameSpacedKey, pagination = {}, url = service.URLTemplate, kvps = "", self = this;
            
             /*
              * Split URLTemplate into base url and parameters
@@ -639,18 +639,24 @@
                 if (kvps[key].indexOf('{') === -1) {
                     continue;
                 }
-                
+            
+                /*
+                * Template parameter can be prefixed by namespace
+                */
+                parts2 = kvps[key].split(":");
+                unNameSpacedKey = (parts2.length === 2 ? parts2[1] : parts2[0]).replace('{', '').replace('}', '').replace('?', '');
+                         
                 /*
                  * Set searchTerms
                  */
-                if (kvps[key].indexOf('searchTerms') === 1) {
+                if (unNameSpacedKey === 'searchTerms') {
                     kvps[key] = encodeURIComponent(self.$input.val());
                 }
                 
                 /*
                  * Set bbox
                  */
-                else if (kvps[key].indexOf('geo:box') === 1) {
+                else if (unNameSpacedKey === 'box') {
                     kvps[key] = M.Map.Util.convert({
                         input:M.Map.Util.p2d(M.Map.map.getExtent().clone()),
                         format:"EXTENT",
@@ -679,7 +685,7 @@
                 /*
                  * NextRecord = OpenSearch "startIndex"
                  */
-                else if (kvps[key].indexOf('startIndex') === 1) {
+                else if (unNameSpacedKey === 'startIndex') {
                     pagination["nextRecord"] = {
                         name:key,
                         value:1
@@ -689,7 +695,7 @@
                 /*
                  * numRecordsPerPage = OpenSearch "count"
                  */
-                else if (kvps[key].indexOf('count') === 1) {
+                else if (unNameSpacedKey === 'count') {
                     pagination["numRecordsPerPage"] = {
                         name:key,
                         value:M.Config["general"].numRecordsPerPage
