@@ -38,29 +38,19 @@
 /**
  * WMS layer type
  */
-(function (M,Map){
-    
+(function(M, Map) {
+
     Map.layerTypes["WMS"] = {
-        
         /**
          * MANDATORY
          */
-        icon:"wms.png",
-
+        icon: "wms.png",
         /**
          * Layer used to identify the map point
          * for a getFeatureInfo request
          */
-        getFeatureInfoLayer:null,
-
-        /**
-         * Mandatory properties for
-         * valid layerDescription
-         */
-        mandatories:[
-            "layers"
-        ],
-
+        getFeatureInfoLayer: null,
+        
         /**
          * MANDATORY
          *
@@ -86,7 +76,12 @@
          */
         add: function(layerDescription, options) {
 
-            var version,projection, bbox;
+            var version, projection, bbox;
+
+            /**
+             * If url is a GetMap then base url is extracted
+             */
+            $.extend(layerDescription, this.getLayerDescriptionFromUrl(layerDescription.url));
             
             /**
              * Repare URL if it is not well formed
@@ -102,7 +97,7 @@
              * Set version default to 1.1.1 if not specified
              */
             version = layerDescription.version || "1.1.1";
-            
+
             /*
              * Check mandatory properties
              */
@@ -126,10 +121,10 @@
 
             if (layerDescription.srs !== projection.projCode) {
                 OpenLayers.Request.GET({
-                    url:M.Util.getAbsoluteUrl(M.Config["general"].reprojectionServiceUrl)+M.Util.abc+"&url="+encodeURIComponent(layerDescription.url)+"&layers="+encodeURIComponent(layerDescription.layers)+"&srs="+layerDescription.srs,
+                    url: M.Util.getAbsoluteUrl(M.Config["general"].reprojectionServiceUrl) + M.Util.abc + "&url=" + encodeURIComponent(layerDescription.url) + "&layers=" + encodeURIComponent(layerDescription.layers) + "&srs=" + layerDescription.srs,
                     callback: function(request) {
                         var json = (new OpenLayers.Format.JSON()).read(request.responseText);
-                        
+
                         /**
                          * Add a new property "projectedUrl" that should be used
                          * in place of original url
@@ -152,35 +147,35 @@
              * If no BBOX is given, default is set to -170,-80,170,80
              */
             bbox = layerDescription.bbox || {
-                bounds:"-170,-80,170,80",
-                srs:"EPSG:4326"
+                bounds: "-170,-80,170,80",
+                srs: "EPSG:4326"
             };
-        
+
             $.extend(options["_M"],
-            {
-                /* A WMS cannot be "selectable" */
-                selectable:false,
-                bounds:Map.Util.getProjectedBounds(bbox),
-                allowChangeOpacity:true,
-                /* A WMS should have a GetLegendGraphic function to retrieve a Legend */
-                legend:layerDescription.url + "service=WMS&version="+version+"&format=image/png&request=GetLegendGraphic&layer="+layerDescription.layers,
-                icon:this.getPreview(layerDescription)
-            });
-            
+                    {
+                        /* A WMS cannot be "selectable" */
+                        selectable: false,
+                        bounds: Map.Util.getProjectedBounds(bbox),
+                        allowChangeOpacity: true,
+                        /* A WMS should have a GetLegendGraphic function to retrieve a Legend */
+                        legend: layerDescription.url + "service=WMS&version=" + version + "&format=image/png&request=GetLegendGraphic&layer=" + layerDescription.layers,
+                        icon: this.getPreview(layerDescription)
+                    });
+
             /*
              * Extend options object with WMS specific properties
              */
             $.extend(options,
-            {
-                buffer:0,
-                wrapDateLine:true,
-                /*transitionEffect:'resize',*/
-                /* WMS can be set as background (isBaseLayer:true) or as overlay */
-                isBaseLayer:M.Util.getPropertyValue(layerDescription, "isBaseLayer", false),
-                attribution:layerDescription.attribution || null
-            }
+                    {
+                        buffer: 0,
+                        wrapDateLine: true,
+                        /*transitionEffect:'resize',*/
+                        /* WMS can be set as background (isBaseLayer:true) or as overlay */
+                        isBaseLayer: M.Util.getPropertyValue(layerDescription, "isBaseLayer", false),
+                        attribution: layerDescription.attribution || null
+                    }
             );
-            
+
             /*
              * Time component
              */
@@ -192,34 +187,34 @@
              * Set title
              */
             layerDescription.title = M.Util.getTitle(layerDescription);
-            
+
             /*
              * Layer creation
              * !! If "projectedUrl" is defined, then use it instead
              * of original url
              */
             var newLayer = new OpenLayers.Layer.WMS(layerDescription.title, M.Util.getPropertyValue(layerDescription, "projectedUrl", layerDescription.url), {
-                layers:layerDescription.layers,
-                format:"image/png",
+                layers: layerDescription.layers,
+                format: "image/png",
                 transitionEffect: "resize",
-                transparent:'true',
-                SLD:layerDescription.SLD,
-                version:version
+                transparent: 'true',
+                SLD: layerDescription.SLD,
+                version: version
             }, options);
-        
+
             /*
              * Add a setTime function
              */
             if (layerDescription.hasOwnProperty("time")) {
-                
+
                 newLayer["_M"].setTime = function(interval) {
-                    
+
                     /*
                      * Currently only the first value of the interval is 
                      * sent to the WMS server
                      */
                     var time, self = this;
-                    
+
                     if ($.isArray(interval)) {
                         time = interval[0] + (interval[1] !== '' ? '/' + interval[1] : '');
                     }
@@ -230,18 +225,95 @@
                         self.layerDescription.time = self.layerDescription.time || {};
                         self.layerDescription.time["value"] = time;
                         newLayer.mergeNewParams({
-                            'time':time
+                            'time': time
                         });
                     }
-                        
+
                 };
-                
+
             }
-            
+
             return newLayer;
 
         },
+        /*
+         * Return a layerDescription from a WMS GetMap url i.e. 
+         *  {
+         *      url: base WMS url endpoint (i.e. without request=GetMap and without GetMap parameters)
+         *      version: WMS version extracted from WMS GetMap url
+         *      srs: WMS srs extracted from WMS GetMap url
+         *      bbox : WMS bbox extracted from WMS GetMap url
+         *      layers: WMS layers extracted from WMS GetMap url
+         *      preview: GetMap url
+         *  }
+         *  
+         *  If input url is not a GetMap url, then url is returned as is :
+         *  {
+         *      url: input url
+         *  }
+         *  
+         * @param {String} url
+         */
+        getLayerDescriptionFromUrl: function(url) {
 
+            /*
+             * Default - returns url within an object
+             */
+            var o = {
+                url: url
+            };
+
+            if (!url) {
+                return o;
+            }
+
+            var kvps = M.Util.extractKVP(url, true);
+
+            /*
+             * If url is not a GetMap request then returns input url
+             * within object
+             */
+            if (!kvps["request"] || kvps["request"].toLowerCase() !== "getmap" ) {
+                return o;
+            }
+        
+            /*
+             * Extract interesting parts from WMS GetMap url i.e.
+             * LAYERS, VERSION, SRS and BBOX
+             * 
+             * Complete baseUrl with non GetMap parameters i.e.
+             * constructs baseUrl from baseUrl plus all kvp url parameters
+             * minus the specific parameters
+             * 
+             *      LAYERS=
+             *      FORMAT=
+             *      TRANSITIONEFFECT=
+             *      TRANSPARENT=
+             *      VERSION=
+             *      REQUEST=
+             *      STYLES=
+             *      SRS=
+             *      BBOX=
+             *      WIDTH=
+             *      HEIGHT=
+             */
+            $.extend(o, {
+                url:M.Util.extractBaseUrl(url, ['layers','format','transparent','transitioneffect','styles','version','request','styles','srs','crs','bbox','width','height']),
+                preview:M.Util.extractBaseUrl(url, ['width','height'])+'width=125&height=125',
+                layers:kvps["layers"],
+                version:kvps["version"],
+                bbox:{
+                    bounds:kvps["bbox"],
+                    srs:kvps["srs"],
+                    crs:kvps["crs"]
+                },
+                srs:kvps["srs"]||kvps["crs"]
+            });
+            
+            return o;
+
+        },
+            
         /*
          * Launch an ajax call to WMS getCapabilities service
          * based on input layerDescription
@@ -254,9 +326,9 @@
          */
         update: function(layerDescription, callback) {
 
-            var i,l,availableLayer,predefined,
-                self = Map.layerTypes["WMS"],
-                doCall = !callback || !$.isFunction(callback) ? false : true;
+            var i, l, availableLayer, predefined,
+                    self = Map.layerTypes["WMS"],
+                    doCall = !callback || !$.isFunction(callback) ? false : true;
 
             /*
              * First check if one of the predefined layers with the same url
@@ -289,9 +361,9 @@
              * By default call WMS with version set to 1.1.1
              */
             M.Util.ajax({
-                url:M.Util.proxify(M.Util.repareUrl(layerDescription.url+"request=GetCapabilities&service=WMS&version=1.1.1"), "XML"),
-                async:true,
-                success:function(data, textStatus, XMLHttpRequest) {
+                url: M.Util.proxify(M.Util.repareUrl(layerDescription.url + "request=GetCapabilities&service=WMS&version=1.1.1"), "XML"),
+                async: true,
+                success: function(data, textStatus, XMLHttpRequest) {
 
                     /*
                      * Append capabilities to layerDescription
@@ -304,12 +376,12 @@
                     if (!layerDescription.title) {
                         layerDescription.title = layerDescription.capabilities.service ? layerDescription.capabilities.service["title"] : M.Util.getTitle(layerDescription);
                     }
-                    
+
                     /*
                      * Add this layerDescription to the list of available layers,
                      * or update this list if it is already defined
                      */
-                    var i,l,update = false;
+                    var i, l, update = false;
                     for (i = 0, l = predefined.length; i < l; i++) {
 
                         availableLayer = predefined[i];
@@ -336,10 +408,10 @@
                      */
                     if (!update) {
                         Map.predefined.add({
-                            type:"WMS",
-                            title:layerDescription.title,
-                            url:layerDescription.url,
-                            capabilities:layerDescription.capabilities
+                            type: "WMS",
+                            title: layerDescription.title,
+                            url: layerDescription.url,
+                            capabilities: layerDescription.capabilities
                         });
                     }
 
@@ -347,18 +419,17 @@
                         callback(self.getLayerDescriptions(layerDescription));
                     }
                 },
-                error:function(e) {
+                error: function(e) {
                     M.Util.message(M.Util._("Error reading Capabilities file"));
                 }
             }, {
-                title:M.Util._("WMS") + " : " + M.Util._("Get capabilities"),
-                cancel:true
+                title: M.Util._("WMS") + " : " + M.Util._("Get capabilities"),
+                cancel: true
             });
 
 
             return true;
         },
-        
         /**
          * Return an array of layerDescription derived from capabilities information
          */
@@ -368,7 +439,7 @@
              * Default is an empty array
              */
             var a = [],
-                capabilities;
+                    capabilities;
 
             /*
              * Paranoid mode
@@ -387,9 +458,9 @@
              */
             if (!capabilities || !capabilities.capability) {
                 a = {
-                    type:"error",
-                    error:{
-                        message:"Error performing GetCapabilities operation"
+                    type: "error",
+                    error: {
+                        message: "Error performing GetCapabilities operation"
                     }
                 };
                 return a;
@@ -400,9 +471,9 @@
                  * Get the getmap url
                  */
                 var url = M.Util.repareUrl(layerDescription.url),
-                    d,
-                    layer,
-                    ptitle = (capabilities.capability.nestedLayers && capabilities.capability.nestedLayers[0]) ? capabilities.capability.nestedLayers[0]["title"] : null;
+                        d,
+                        layer,
+                        ptitle = (capabilities.capability.nestedLayers && capabilities.capability.nestedLayers[0]) ? capabilities.capability.nestedLayers[0]["title"] : null;
 
                 /*
                  * Parse layers list
@@ -410,26 +481,26 @@
                 for (var i = 0, l = capabilities.capability.layers.length; i < l; i++) {
 
                     layer = capabilities.capability.layers[i];
-                    
+
                     /*
                      * Initialize new object
                      */
                     d = {
-                        type:"WMS",
-                        title:layer["title"],
-                        ptitle:ptitle,
-                        url:url,
-                        layers:layer["name"],
-                        preview:this.getPreview({
-                            url:url,
-                            version:capabilities.version,
-                            bbox:{
-                                bounds:layer.llbbox,
-                                srs:"EPSG:4326"
+                        type: "WMS",
+                        title: layer["title"],
+                        ptitle: ptitle,
+                        url: url,
+                        layers: layer["name"],
+                        preview: this.getPreview({
+                            url: url,
+                            version: capabilities.version,
+                            bbox: {
+                                bounds: layer.llbbox,
+                                srs: "EPSG:4326"
                             },
-                            layers:layer["name"]
+                            layers: layer["name"]
                         }),
-                        version:capabilities.version
+                        version: capabilities.version
                     };
 
                     /*
@@ -439,11 +510,11 @@
                      * or set to the whole earth if not found
                      */
                     d.bbox = {
-                        bounds:"-170,-80,170,80",
-                        srs:"EPSG:4326"
+                        bounds: "-170,-80,170,80",
+                        srs: "EPSG:4326"
                     };
                     if (layer.llbbox && layer.llbbox.length === 4) {
-                        d.bbox.bounds = layer.llbbox[0]+','+layer.llbbox[1]+','+layer.llbbox[2]+','+layer.llbbox[3];
+                        d.bbox.bounds = layer.llbbox[0] + ',' + layer.llbbox[1] + ',' + layer.llbbox[2] + ',' + layer.llbbox[3];
                     }
 
                     /*
@@ -456,8 +527,8 @@
                      */
                     if (layer.dimensions && layer.dimensions.time) {
                         d.time = {
-                            "default":layer.dimensions.time["default"],
-                            values:layer.dimensions.time["values"] || []
+                            "default": layer.dimensions.time["default"],
+                            values: layer.dimensions.time["values"] || []
                         };
                     }
 
@@ -486,23 +557,29 @@
 
             return a;
         },
-        
         /**
          * Return a wms preview from layer
          * 
          * @param {Object} layerDescription
          */
         getPreview: function(layerDescription) {
-            
+
             var url, version, bounds;
-            
+
             layerDescription = layerDescription || {};
             
+            /*
+             * The easy part !
+             */
+            if (layerDescription.preview) {
+                return layerDescription.preview;
+            }
+        
             /*
              * Default version is 1.1.1
              */
             version = layerDescription.version || "1.1.1";
-            
+
             /*
              * Set default BBOX to the whole world
              */
@@ -510,27 +587,26 @@
             if (!bounds) {
                 bounds = new OpenLayers.Bounds(-180, -90, 180, 90);
             }
-        
+
             /*
              * Set default url to a 150x75 pixels thumbnail
              */
-            url = M.Util.repareUrl(layerDescription.url)+"WIDTH=150&HEIGHT=75&STYLES=&FORMAT=image/png&TRANSPARENT=false&SERVICE=WMS&REQUEST=GetMap&VERSION="+version;
-            
+            url = M.Util.repareUrl(layerDescription.url) + "WIDTH=150&HEIGHT=75&STYLES=&FORMAT=image/png&TRANSPARENT=false&SERVICE=WMS&REQUEST=GetMap&VERSION=" + version;
+
             /*
              * WMS 1.3.0 => srs is now crs and axis order is switched for
              * EPSG:4326
              *
              */
             if (version === "1.3.0") {
-                url += "&CRS=EPSG:4326&BBOX="+bounds.bottom+','+bounds.left+','+bounds.top+','+bounds.right;
+                url += "&CRS=EPSG:4326&BBOX=" + bounds.bottom + ',' + bounds.left + ',' + bounds.top + ',' + bounds.right;
             }
             else {
-                url += "&SRS=EPSG:4326&BBOX="+bounds.left+','+bounds.bottom+','+bounds.right+','+bounds.top;
+                url += "&SRS=EPSG:4326&BBOX=" + bounds.left + ',' + bounds.bottom + ',' + bounds.right + ',' + bounds.top;
             }
-            
-            return url+'&LAYERS='+layerDescription.layers;
-        },
 
+            return url + '&LAYERS=' + layerDescription.layers;
+        },
         /**
          * Launch a getFeatureInfo on all queryables WMS layers
          *
@@ -543,27 +619,24 @@
              * By default there is no "good candidates"
              */
             var atLeastOne = false,
-
-                /**
-                 * Reference to map object
-                 */
-                map = Map.map,
-
-                /**
-                 * Compute the pixel equivalence to the map lonLat coordinates
-                 */
-                xy = map.getPixelFromLonLat(lonLat),
-
-                /**
-                 * Parse all layers for "good candidates" aka WMS layers with queryable = 1
-                 */
-                length = map.layers.length,
-                j,
-                layer,
-                layerDescription,
-                url,
-                id;
-            for (j=length;j--;) {
+                    /**
+                     * Reference to map object
+                     */
+                    map = Map.map,
+                    /**
+                     * Compute the pixel equivalence to the map lonLat coordinates
+                     */
+                    xy = map.getPixelFromLonLat(lonLat),
+                    /**
+                     * Parse all layers for "good candidates" aka WMS layers with queryable = 1
+                     */
+                    length = map.layers.length,
+                    j,
+                    layer,
+                    layerDescription,
+                    url,
+                    id;
+            for (j = length; j--; ) {
                 layer = map.layers[j];
                 if (layer["_M"]) {
                     layerDescription = layer["_M"].layerDescription;
@@ -584,16 +657,16 @@
                          */
                         url = M.Util.repareUrl(layerDescription.url);
                         url += "SERVICE=WMS";
-                        url += "&VERSION="+ layerDescription.version;
+                        url += "&VERSION=" + layerDescription.version;
                         url += "&REQUEST=GetFeatureInfo";
                         url += "&EXCEPTIONS=application/vnd.ogc.se_xml";
-                        url += "&X="+xy.x;
-                        url += "&Y="+xy.y;
+                        url += "&X=" + xy.x;
+                        url += "&Y=" + xy.y;
                         url += "&INFO_FORMAT=text/html",
-                        url += "&QUERY_LAYERS="+layerDescription.layers;
-                        url += "&LAYERS="+layerDescription.layers;
-                        url += "&WIDTH="+map.size.w;
-                        url += "&HEIGHT="+map.size.h;
+                                url += "&QUERY_LAYERS=" + layerDescription.layers;
+                        url += "&LAYERS=" + layerDescription.layers;
+                        url += "&WIDTH=" + map.size.w;
+                        url += "&HEIGHT=" + map.size.h;
                         //url += "&FEATURE_COUNT=1";
 
                         /*
@@ -603,37 +676,37 @@
                          */
                         if (layerDescription.projectedUrl) {
                             var extent = map.p22(map.getExtent().clone());
-                            url += "&BBOX="+extent.toBBOX();
-                            url += "&SRS="+Map.pc.projCode;
+                            url += "&BBOX=" + extent.toBBOX();
+                            url += "&SRS=" + Map.pc.projCode;
                         }
                         else {
-                            url += "&BBOX="+map.getExtent().toBBOX();
-                            url += "&SRS="+layerDescription.srs;
+                            url += "&BBOX=" + map.getExtent().toBBOX();
+                            url += "&SRS=" + layerDescription.srs;
                         }
 
                         /**
                          * Initialize information container
                          */
                         id = M.Util.getId();
-                        div.append("<h1>"+layer.name+"</h1>");
-                        div.append('<div class="'+id+'"><img src="'+M.Util.getImgUrl("loading.gif")+'" class="textmiddle"/> '+M.Util._("Get data from server..."));
+                        div.append("<h1>" + layer.name + "</h1>");
+                        div.append('<div class="' + id + '"><img src="' + M.Util.getImgUrl("loading.gif") + '" class="textmiddle"/> ' + M.Util._("Get data from server..."));
                         /*
-                        description.append('<iframe src="'+M.Util.proxify(url)+'" width="100%"><img src="'+M.Util.getImgUrl("loading.gif")+'" class="textmiddle"/></iframe>');
-                        */
-                        (function(div,id,url) {
+                         description.append('<iframe src="'+M.Util.proxify(url)+'" width="100%"><img src="'+M.Util.getImgUrl("loading.gif")+'" class="textmiddle"/></iframe>');
+                         */
+                        (function(div, id, url) {
                             $.ajax({
-                                url:M.Util.proxify(url),
-                                async:true,
-                                dataType:"text",
-                                success:function(data) {
-                                    $('.'+id, div).html(data);
-                                //$('.'+id, description).html('<iframe>'+data+'</iframe>');
+                                url: M.Util.proxify(url),
+                                async: true,
+                                dataType: "text",
+                                success: function(data) {
+                                    $('.' + id, div).html(data);
+                                    //$('.'+id, description).html('<iframe>'+data+'</iframe>');
                                 },
-                                error:function(e) {
-                                    $('.'+id, div).html(M.Util._("No result"));
+                                error: function(e) {
+                                    $('.' + id, div).html(M.Util._("No result"));
                                 }
                             });
-                        })(div,id,url);
+                        })(div, id, url);
                     }
                 }
             }
@@ -650,12 +723,11 @@
             return true;
 
         },
-
         /**
          * MANDATORY
          * Compute an unique MID based on layerDescription
          */
-        getMID:function(layerDescription) {
+        getMID: function(layerDescription) {
             return layerDescription.MID || M.Util.crc32(layerDescription.type + (M.Util.repareUrl(layerDescription.url) || "") + (layerDescription.layers || ""));
         }
     };
