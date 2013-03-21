@@ -1075,6 +1075,8 @@
         
         /**
          * Replace all ',",. and # characters from "str" by "_"
+         * 
+         * @param {String} str
          */
         encode: function(str) {
             if (!str) {
@@ -1082,26 +1084,73 @@
             }
             return str.replace(/[',", ,\.,#]/g,"_");
         },
+    
+        /**
+         * Return base url (i.e. url without parameters) from an input url
+         * E.g. extractBaseUrl("http://myserver.com/test?foo=bar") will return "http://myserver.com/test?"
+         * 
+         * @param {String} url
+         * @param {Array} arr : if arr is not specified remove all url parameters
+         *                      otherwiser only remove parameters set in arr
+         */
+        extractBaseUrl: function(url, arr) {
+            
+            var baseUrl, u = this.repareUrl(url);
+            
+            if (!u) {
+                return null;
+            }
+            
+            /*
+             * Extract base url i.e. everything befor '?'
+             */
+            baseUrl = u.match(/.+\?/)[0];
+            
+            if (!arr || arr.length === 0) {
+                return baseUrl;
+            }
+        
+            var addToBaseUrl, key, i, l, kvps = this.extractKVP(url, true);
+            
+            for (key in kvps) {
+                addToBaseUrl = true;
+                for (i = 0, l = arr.length;i<l;i++) {
+                    if (key === arr[i]) {
+                        addToBaseUrl = false;
+                        break;
+                    }
+                }
+                if (addToBaseUrl) {
+                    baseUrl += encodeURIComponent(key) + "=" + encodeURIComponent(kvps[key]) + "&";
+                }
+            }
+        
+            return baseUrl;
+            
+        },
         
         /**
          * Extract Key/Value pair from an url like string
          * (e.g. &lon=123.5&lat=2.3&zoom=5)
          * 
          * @param {String} str
+         * @param {boolean} lowerCasedKey
          */
-        extractKVP: function(str) {
+        extractKVP: function(str, lowerCasedKey) {
             var c = {};
             str = str || "";
             str.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-                c[decodeURIComponent(key)] = (value === undefined) ? true : decodeURIComponent(value);
+                c[decodeURIComponent(lowerCasedKey ? key.toLowerCase() : key )] = (value === undefined) ? true : decodeURIComponent(value);
             });
             return c;
         },
-        
+            
         /**
          * Return an absolute URL.
          * If input url starts with '/', it is assumed that input url
          * is relative to the Config.general.serverRootUrl
+         * 
+         *  @param {String} url
          */
         getAbsoluteUrl: function(url) {
 
