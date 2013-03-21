@@ -507,7 +507,7 @@
         /**
          * Launch a search request on this SearchContext
          *
-         * @param <Obj> options : options structure
+         * @param {Object} options : options structure
          *                          {
          *                              nextRecord // (optional)
          *                              callback // function to call after search (optional)
@@ -761,7 +761,7 @@
         /*
          * Set use of search bbox 
          * 
-         * @param <booelean> b: true to use search bbox. false otherwise
+         * @param <boolean> b: true to use search bbox. false otherwise
          * 
          */
         this.setGeo = function(b) {
