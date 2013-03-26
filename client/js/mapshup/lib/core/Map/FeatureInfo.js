@@ -942,7 +942,7 @@
                     layerType,
                     typeIsUnknown = true,
                     title = M.Util.stripTags(M.Map.Util.Feature.getTitle(feature)),
-                    ql = feature.attributes['quicklook']; // Thumbnail of quicklook attributes
+                    ql = feature.attributes['quicklook'] || feature.attributes['imageUrl']; // Thumbnail of quicklook attributes
 
             /*
              * Create the info container over everything else
@@ -1037,7 +1037,7 @@
                     /*
                      * Special keywords
                      */
-                    if (k === 'identifier' || k === 'icon' || k === 'thumbnail' || k === 'quicklook' || k === 'modified' || k === 'color') {
+                    if (k === 'identifier' || k === 'icon' || k === 'thumbnail' || k === 'quicklook' || k === 'imageUrl' || k === 'modified' || k === 'color') {
                         continue;
                     }
 
