@@ -207,8 +207,12 @@
             if (M.i18n === undefined) {
                 return s;
             }
+            /*
+             * Warning : if s is oneof the name of Array function ("shift", "splice", "push", etc)
+             * it should be returned without translation to avoid function error
+             */
             var i18nized = M.i18n[s];
-            return i18nized === undefined ? s : i18nized;
+            return i18nized === undefined || typeof i18nized === "function" ? s : i18nized;
         },
 
         /**
