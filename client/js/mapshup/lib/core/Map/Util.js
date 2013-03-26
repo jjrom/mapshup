@@ -420,9 +420,9 @@
              */
             c = feature.layer["_M"].searchContext;
             if (c && c.connector) {
-                return M.Util._(c.connector.metadataTranslator[key] || key);
+                return M.Util._(typeof c.connector.metadataTranslator[key] === "string" ? c.connector.metadataTranslator[key] : key);
             }
-
+            
             /*
              * In any case returns a i18n translated string
              */
