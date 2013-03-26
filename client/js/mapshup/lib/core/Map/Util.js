@@ -168,6 +168,8 @@
              * 
              *    - attributes icon
              *    - attributes thumbnail
+             *    - attributes quicklook
+             *    - attributes imageUrl
              *    - feature style externalGraphic
              *    - icon based on type (i.e. point, line or polygon)
              *    - generic image 
@@ -179,7 +181,13 @@
             if (feature.attributes.thumbnail) {
                 return feature.attributes.thumbnail;
             }
-
+            if (feature.attributes.quicklook) {
+                return feature.attributes.quicklook;
+            }
+            if (feature.attributes.imageUrl) {
+                return feature.attributes.imageUrl;
+            }
+        
             /*
              * This is quite experimental :)
              */
