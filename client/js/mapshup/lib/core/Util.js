@@ -212,7 +212,7 @@
              * it should be returned without translation to avoid function error
              */
             var i18nized = M.i18n[s];
-            return i18nized === undefined || typeof i18nized === "function" ? s : i18nized;
+            return typeof i18nized === "string" ? i18nized : s;
         },
 
         /**
