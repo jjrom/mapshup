@@ -50,7 +50,12 @@
          * for a getFeatureInfo request
          */
         getFeatureInfoLayer: null,
-        
+        /*
+         * Layers must always be specified
+         */
+        mandatories:[
+            'layers'
+        ],
         /**
          * MANDATORY
          *
@@ -82,7 +87,7 @@
              * If url is a GetMap then base url is extracted
              */
             $.extend(layerDescription, this.getLayerDescriptionFromUrl(layerDescription.url));
-            
+
             /**
              * Repare URL if it is not well formed
              */
@@ -100,8 +105,11 @@
 
             /*
              * Check mandatory properties
+             * 
+             * Note : with the addition of getLayerDescriptionFromUrl(url) mechanism, the "layers" property
+             * must also be checked since the mandatories array is empty
              */
-            if (!(new Map.LayerDescription(layerDescription, Map)).isValid()) {
+            if (!(new Map.LayerDescription(layerDescription, Map)).isValid() || !layerDescription.hasOwnProperty("layers")) {
 
                 /*
                  * Important : non valid layers loaded during
@@ -273,10 +281,10 @@
              * If url is not a GetMap request then returns input url
              * within object
              */
-            if (!kvps["request"] || kvps["request"].toLowerCase() !== "getmap" ) {
+            if (!kvps["request"] || kvps["request"].toLowerCase() !== "getmap") {
                 return o;
             }
-        
+
             /*
              * Extract interesting parts from WMS GetMap url i.e.
              * LAYERS, VERSION, SRS and BBOX
@@ -298,22 +306,21 @@
              *      HEIGHT=
              */
             $.extend(o, {
-                url:M.Util.extractBaseUrl(url, ['layers','format','transparent','transitioneffect','styles','version','request','styles','srs','crs','bbox','width','height']),
-                preview:M.Util.extractBaseUrl(url, ['width','height'])+'width=125&height=125',
-                layers:kvps["layers"],
-                version:kvps["version"],
-                bbox:{
-                    bounds:kvps["bbox"],
-                    srs:kvps["srs"],
-                    crs:kvps["crs"]
+                url: M.Util.extractBaseUrl(url, ['layers', 'format', 'transparent', 'transitioneffect', 'styles', 'version', 'request', 'styles', 'srs', 'crs', 'bbox', 'width', 'height']),
+                preview: M.Util.extractBaseUrl(url, ['width', 'height']) + 'width=125&height=125',
+                layers: kvps["layers"],
+                version: kvps["version"],
+                bbox: {
+                    bounds: kvps["bbox"],
+                    srs: kvps["srs"],
+                    crs: kvps["crs"]
                 },
-                srs:kvps["srs"]||kvps["crs"]
+                srs: kvps["srs"] || kvps["crs"]
             });
-            
+
             return o;
 
         },
-            
         /*
          * Launch an ajax call to WMS getCapabilities service
          * based on input layerDescription
@@ -567,14 +574,14 @@
             var url, version, bounds;
 
             layerDescription = layerDescription || {};
-            
+
             /*
              * The easy part !
              */
             if (layerDescription.preview) {
                 return layerDescription.preview;
             }
-        
+
             /*
              * Default version is 1.1.1
              */

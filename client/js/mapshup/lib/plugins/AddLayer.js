@@ -436,7 +436,7 @@
              *  - layerDescription with a "-1" url
              *  - layerDescription with property ignore set to true
              */
-            if (!p || (p.hasOwnProperty('url') && p['url'] == -1) || p['ignore']) {
+            if (!p || (p.hasOwnProperty('url') && p['url'] === -1) || p['ignore']) {
                 return false;
             }
 
@@ -455,7 +455,7 @@
              */
             if (p.type === "WPS" && (M.Plugins.WPSClient && M.Plugins.WPSClient._o)) {
                 M.Plugins.WPSClient._o.add(p.url);
-                return true
+                return true;
             }
             
             /*
