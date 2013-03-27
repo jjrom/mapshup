@@ -161,11 +161,11 @@
             $.extend(options, {
                 disablable:M.Util.getPropertyValue(options, "disablable", false),
                 bounds:options.bounds || {
-                    min:new Date(2000,0,1),
+                    min:new Date(1990,0,1),
                     max:new Date()
                 },
                 values:options.values || {
-                    min:new Date(2011,0,1),
+                    min:new Date(1990,0,1),
                     max:new Date()
                 }
             });
