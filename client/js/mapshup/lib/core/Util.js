@@ -1230,6 +1230,64 @@
         },
         
         /**
+         * 
+         * A valid BBOX object should be defined as
+         *      {
+         *          bounds:"xmin,ymin,xmax,ymax"
+         *          srs: // optional if srs is specified
+         *          crs: // optional is crs is specified
+         *      }
+         *      
+         *  If input bbox is valid, then this function returns
+         *  the unmodified bbox
+         *  
+         *  Else if input bbox is a string as "xmin,ymin,xmax,ymax" then
+         *  this function returns the following object
+         *      {
+         *          bounds: input bbox,
+         *          srs:"EPSG:4326"
+         *      }
+         *  
+         *  Otherwise, this function returns the default value
+         *  
+         *  @param {Object} bbox
+         *  @param {Object} value
+         *  
+         */
+        getValidBBOX: function(bbox, value) {
+            
+            /*
+             * Paranoid mode
+             */
+            if (bbox === undefined) {
+                return value;
+            }
+            
+           /*
+            * If input bbox is a String then it is supposed that the input string corresponds
+            * to an EPSG:4326 string (i.e. lonMin,latMin,lonMax,latMax)
+            */
+            if (typeof bbox === "string") {
+                bbox = {
+                    bounds: bbox,
+                    srs: 'EPSG:4326'
+                };
+            }
+            
+            /*
+             * Property is set, returns its value
+             */
+            if (bbox.hasOwnProperty("bounds")) {
+                return bbox;
+            }
+            
+            /*
+             * Returns the input value
+             */
+            return value;
+        },
+            
+        /**
          * Return true if input value is a boolean
          * i.e. an integer number with value
          * between -9007199254740990 to 9007199254740990
