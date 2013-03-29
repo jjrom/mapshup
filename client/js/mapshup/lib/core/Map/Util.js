@@ -493,20 +493,33 @@
      * Returned values are strictly between [-180,180] for longitudes
      * and [-90,90] for latitudes
      * 
-     * @param {Object} obj : a bbox structure
+     * @param {Object/String} obj : a bbox structure
      *                  {
      *                      bounds: array (i.e. [minx, miny, maxx, maxy]) or string (i.e. "minx, miny, maxx, maxy")
      *                      crs: "EPSG:4326" or "EPSG:3857" (optional)
      *                      srs: "EPSG:4326" or "EPSG:3857" (optional)
      *                  } 
+     *                  If input bbox is a String then it is supposed that the input string corresponds
+     *                  to an EPSG:4326 string (i.e. lonMin,latMin,lonMax,latMax)
      */
     Map.Util.getGeoBounds = function(obj) {
 
         /*
          * Paranoid mode
          */
-        if (typeof obj !== "object") {
+        if (!obj) {
             return null;
+        }
+        
+        /*
+         * If input bbox is a String then it is supposed that the input string corresponds
+         * to an EPSG:4326 string (i.e. lonMin,latMin,lonMax,latMax)
+         */
+        if (typeof obj === "string") {
+            obj = {
+                bounds:obj,
+                srs:'EPSG:4326'
+            };
         }
 
         if (!obj.bounds) {
@@ -565,22 +578,35 @@
      * Return an OpenLayers.Bounds in EPSG:3857 projection
      * Add an error at the pole to deal with infinite at the pole in Spherical Mercator
      * 
-     * @param {Object} obj : a bbox structure
+     * @param {Object/String} obj : a bbox structure
      *                  {
      *                      bounds: array (i.e. [minx, miny, maxx, maxy]) or string (i.e. "minx, miny, maxx, maxy")
      *                      crs: "EPSG:4326" or "EPSG:3857" (optional)
      *                      srs: "EPSG:4326" or "EPSG:3857" (optional)
      *                  } 
+     *                  If input bbox is a String then it is supposed that the input string corresponds
+     *                  to an EPSG:4326 string (i.e. lonMin,latMin,lonMax,latMax)
      */
     Map.Util.getProjectedBounds = function(obj) {
 
         /*
          * Paranoid mode
          */
-        if (typeof obj !== "object") {
+        if (!obj) {
             return null;
         }
-
+        
+        /*
+         * If input bbox is a String then it is supposed that the input string corresponds
+         * to an EPSG:4326 string (i.e. lonMin,latMin,lonMax,latMax)
+         */
+        if (typeof obj === "string") {
+            obj = {
+                bounds:obj,
+                srs:'EPSG:4326'
+            };
+        }
+    
         if (!obj.bounds) {
             return null;
         }
