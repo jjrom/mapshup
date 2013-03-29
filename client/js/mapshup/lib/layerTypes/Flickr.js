@@ -112,9 +112,9 @@
                 /*
                  * Check if bbox is defined in layerDescription
                  */
-                layerDescription.bbox = M.Util.getPropertyValue(layerDescription, "bbox", {
-                    bounds:[e.left, e.bottom, e.right, e.top],
-                    srs:M.Map.map.getProjection()
+                layerDescription.bbox = M.Util.getValidBBOX(layerDescription["bbox"], {
+                    bounds: [e.left, e.bottom, e.right, e.top],
+                    srs: M.Map.map.getProjection()
                 });
 
                 /*

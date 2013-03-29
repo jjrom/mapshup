@@ -62,7 +62,7 @@
             
             /*
              * Valid bbox for UTFGrid read from configuration
-             */
+             */            
             var bbox = layerDescription.bbox || {
                 bounds:"-180,-90,180,90",
                 srs:"EPSG:4326"
