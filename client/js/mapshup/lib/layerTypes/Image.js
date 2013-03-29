@@ -136,7 +136,7 @@
              * Layer creation
              */
             var newLayer = new OpenLayers.Layer.Image(layerDescription.title , layerDescription.url,
-                bounds,
+                options["_M"].bounds,
                 new OpenLayers.Size(size[0],size[1]),
                 options
                 );
@@ -162,6 +162,7 @@
                         bounds:v,
                         srs:"EPSG:4326"
                     };
+                
                     callback(layerDescription);
                 }
             });  
