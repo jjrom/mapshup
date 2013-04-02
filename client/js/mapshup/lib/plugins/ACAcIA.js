@@ -146,7 +146,7 @@
                                     strokeWidth:1,
                                     label:"${className}",
                                     fontSize:15,
-                                    fontColor:"#000",
+                                    fontColor:"#F00",
                                     fontStrokeColor:"#000",
                                     fontStrokeWidth:0
                                 }
