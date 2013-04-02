@@ -140,11 +140,15 @@
                             styleMap: new OpenLayers.StyleMap({
                                 'default': {
                                     pointRadius: 5,
-                                    strokeColor: 'white',
-                                    strokeWidth: 2,
+                                    fillOpacity: 0.1,
                                     fillColor: 'black',
-                                    fillOpacity: 0.3,
-                                    label : "${className}"
+                                    strokeColor:"#000",
+                                    strokeWidth:1,
+                                    label:"${className}",
+                                    fontSize:15,
+                                    fontColor:"#000",
+                                    fontStrokeColor:"#000",
+                                    fontStrokeWidth:0
                                 }
                             })
                         });
