@@ -238,9 +238,9 @@
                 strokeColor:"#000",
                 strokeWidth:1,
                 label:"${label}",
-                fontSize:20,
-                fontColor:'#fff',
-                fontStrokeColor:'#fff',
+                fontSize:"${fontSize}",
+                fontColor:"${fontColor}",
+                fontStrokeColor:"${fontColor}",
                 fontStrokeWidth:0,
                 fillColor:"${color}"
             }, OpenLayers.Feature.Vector.style["default"]), {
@@ -266,11 +266,44 @@
                      * Label for clusters
                      */
                     label: function(feature) {
+                        var fi = feature.layer["_M"].layerDescription.featureInfo;
                         if(feature.cluster) {
                             return feature.cluster.length;
                         }
+                        else if (fi && fi.label && fi.label["value"]) {
+                            return fi.label["value"].replace(/\$+([^\$])+\$/g, function(m, key, value) {
+                                var k = m.replace(/[\$\$]/g, '');
+                                return M.Map.Util.Feature.getValue(feature, k, feature.attributes[k]);
+                            });
+                        }
                         else {
                             return '';
+                        }
+                    },
+                    
+                    /*
+                     * Fontsize for labels
+                     */
+                    fontSize: function(feature) {
+                        var fi = feature.layer["_M"].layerDescription.featureInfo;
+                        if (fi && fi.label) {
+                            return fi.label["size"] || 10;
+                        }
+                        else {
+                            return 20;
+                        }
+                    },
+                    
+                    /*
+                     * Font color for labels
+                     */
+                    fontColor: function(feature) {
+                        var fi = feature.layer["_M"].layerDescription.featureInfo;
+                        if (fi && fi.label) {
+                            return fi.label["color"] || "#000";
+                        }
+                        else {
+                            return "#fff";
                         }
                     },
                         
@@ -353,6 +386,6 @@
             });
         };
        
-    }
+    };
     
 })(window.M);
