@@ -217,7 +217,7 @@
 
             var icon = null, // Determines if point must be represented by an icon
                 obj = this.obj, // Object reference
-                opacity = obj.opacity || 0.4; // Set opacity
+                opacity = obj.opacity || 0.2; // Set opacity
 
             /*
              * Features got a 'icon' attribute => use it as symbol
