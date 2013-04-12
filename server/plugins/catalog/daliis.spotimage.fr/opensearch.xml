@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:geo="http://a9.com/-/opensearch/extensions/geo/1.0/">
+	<ShortName>DALI catalog</ShortName>
+	<LongName>Astrium Geo Information Service products catalog</LongName>
+	<Description>Astrium Geo Information Service products catalog</Description>
+        <Url type="application/json" template="/plugins/catalog/daliis.spotimage.fr/search.php?q={searchTerms?}&amp;sd={time:start?}&amp;ed={time:end?}&amp;bbox={geo:box?}"/>
+        <Url type="application/json" rel="mspdesc" template="/plugins/catalog/daliis.spotimage.fr/opensearch.json" />
+</OpenSearchDescription>

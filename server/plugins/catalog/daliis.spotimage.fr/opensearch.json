@@ -1,0 +1,52 @@
+{
+    "filters": [
+        {
+            "id": "sn",
+            "title": "Satellites",
+            "type": "enumeration",
+            "unique": false,
+            "son": [
+                {
+                    "id": "SPOT1",
+                    "title": "SPOT1",
+                    "value": "SPOT1"
+                },
+                {
+                    "id": "SPOT2",
+                    "title": "SPOT2",
+                    "value": "SPOT2"
+                },
+                {
+                    "id": "SPOT3",
+                    "title": "SPOT3",
+                    "value": "SPOT3"
+                },
+                {
+                    "id": "SPOT4",
+                    "title": "SPOT4",
+                    "value": "SPOT4"
+                },
+                {
+                    "id": "SPOT5",
+                    "title": "SPOT5",
+                    "value": "SPOT5"
+                },
+                {
+                    "id": "SPOT6",
+                    "title": "SPOT6",
+                    "value": "SPOT6"
+                },
+                {
+                    "id": "PHR1A",
+                    "title": "PHR1A",
+                    "value": "PHR1A"
+                },
+                {
+                    "id": "PHR1B",
+                    "title": "PHR1B",
+                    "value": "PHR1B"
+                },
+            ]
+        }
+    ]
+}
