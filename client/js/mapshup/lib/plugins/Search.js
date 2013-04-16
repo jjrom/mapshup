@@ -444,7 +444,7 @@
          */     
         this.search = function(service, options) {
 
-            var a, lt, info, layer, layerDescription, self = this;
+            var a, lt, info, layer, v, layerDescription, self = this;
             
             options = options || {};
             
@@ -475,6 +475,8 @@
                 return false;
             }
             
+            v = options.searchTerms || self.getValue();
+            
             /*
              * If service is added to an existing layer,
              * then the result is displayed within that layer...
@@ -491,7 +493,7 @@
                 /*
                  * Launch search with a callback function
                  */
-                sc.setSearchTerms(options.searchTerms || self.getValue());
+                sc.setSearchTerms(v);
                 sc.search({
                     callback:function(scope,layer){
                         if (layer) {
@@ -525,8 +527,8 @@
                 type:service.type,
                 url:info.url + a.params, // concatenate url with additional parameters
                 pagination:info.pagination,
-                title:a.title || self.getValue(), // if input value is not set
-                q:self.getValue()
+                title:a.title || v, // if input value is not set
+                q:v
             };
 
             /*
@@ -580,7 +582,7 @@
              * Tell user that search is in progress
              */
             M.mask.add({
-                title:M.Util._(service.name)+' : '+M.Util._("Searching")+" "+ (a.title || self.$input.val()),
+                title:M.Util._(service.name)+' : '+M.Util._("Searching")+" "+ (a.title || v),
                 layer:layer,
                 cancel:true
             });
