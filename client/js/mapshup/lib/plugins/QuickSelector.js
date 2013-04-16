@@ -63,8 +63,11 @@
         *                          off: // Tooltip to display when item is off
         *                      }
         *          icon: // Icon to set within the thumbnail container
-        *          bounds: // Bounds as an array [xmin,ymin,xmax,ymax] to
-        *                     zoom on click (optional)
+        *          bbox: // bbox expressed as {
+        *                                       bounds:// array [xmin,ymin,xmax,ymax]
+        *                                       srs: // EPSG:4326 or EPSG:3857
+        *                                     }
+        *                   If specified then map is zoomed on click (optional)
         *          layerMID: // attached layer
         *          active: // if true activate the item
         *          callback: // Callback function to call on click (optional)
@@ -106,8 +109,10 @@
              *      {
              *          name: // Toolip text 
              *          icon: // Icon to set within the thumbnail container
-             *          bounds: // Bounds as an array [xmin,ymin,xmax,ymax] to
-             *                     zoom on click (optional)
+             *          bbox: // bbox expressed as {
+             *                                       bounds:// array [xmin,ymin,xmax,ymax]
+             *                                       srs: // EPSG:4326 or EPSG:3857
+             *                                        }
              *          layerMID: // attached layer
              *          active: // if true activate the item
              *          callback: // Callback function to call on click (optional)
@@ -150,8 +155,11 @@
                         /*
                          * Zoom to extent
                          */
-                        if ($.isArray(item.bounds) && item.bounds.length === 4) {
-                            M.Map.map.zoomToExtent(new OpenLayers.Bounds(item.bounds[0], item.bounds[1], item.bounds[2], item.bounds[3]));
+                        if (item.bbox) {
+                            var b = M.Map.Util.getProjectedBounds(item.bbox); 
+                            if (b) {
+                                M.Map.map.zoomToExtent(b);
+                            }
                         }
 
                         /*
