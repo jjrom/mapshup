@@ -90,6 +90,11 @@
             options = options || {};
             options.rootUrl =  options.rootUrl || "";
             self.items = options.items || [];
+            
+            /* 
+             * If true only one item can be activated at a time (default false)
+             */          
+            self.unique = options.unique || false;
 
             /* If items is empty do not load the plugin */
             if (self.items.length === 0) {
@@ -147,6 +152,13 @@
                         e.preventDefault();
                         e.stopPropagation();
 
+                        /*
+                         * If unique deactivate every icons
+                         */
+                        if (self.unique) {
+                            self.clear();
+                        }
+                    
                         /*
                          * Activate/Deactivate 
                          */
@@ -209,6 +221,17 @@
              * Switch active/inactive status
              */
             b ? $('img', $d).addClass('active') : $('img', $d).removeClass('active');
+        
+        };
+    
+        /*
+         * Unactivate all items
+         */
+        this.clear = function() {
+            
+            for (var i = 0, l = this.items.length; i < l; i++) {
+                $('img', $('#' + this.items[i].id)).removeClass('active');
+            }
             
         };
 
