@@ -1292,7 +1292,9 @@
                  * Hide divs when mouse is outside of M.$map
                  */
                 M.$map.mouseleave(function (e){
-                    M.Map.$coords.hide();
+                    if (M.Map.$coords) {
+                        M.Map.$coords.hide();
+                    }
                     self.$featureHilite.hide();
                     return true;
                 });
