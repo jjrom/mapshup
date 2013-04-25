@@ -1,0 +1,161 @@
+/*
+ * Overide mapshup CSS definition
+ */
+body {
+    background: none repeat scroll 0 0 #E4E4E4;
+}
+#mwrapper {
+    position:absolute;
+    left:150px;
+    right:150px;
+    box-shadow: 1px 1px 25px 0 rgba(0, 0, 0, 0.5);
+    -o-box-shadow: 1px 1px 25px 0 rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 1px 1px 25px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 1px 1px 25px 0 rgba(0, 0, 0, 0.5);
+}
+#theBar {
+    display:none;
+}
+.map {
+    top:75px;
+    bottom:400px;
+    left:0px;
+    right:0px;
+    border-top:3px solid #f3961c;
+    border-bottom:3px solid #f3961c;
+}
+#Mheader {
+    height:75px;
+    color:#000;
+}
+#Mfooter {
+    font-family:'Open Sans Condensed', sans-serif;
+    color: #000;
+    height:400px;
+}
+
+#__CONTROL_ATTRIBUTION__ {
+    background-color:transparent;
+    color: #000000;
+    font-size: 0.9em;
+}
+.olControlAttribution {
+    left:10px;
+    bottom:30px;
+    height:18px;
+    width:auto;
+    max-width:600px;
+    text-align:left;
+}
+
+/* Navigation */
+.tbnwh {
+    top:15px;
+    background-color:#3C4E5A;
+    border:1px solid #fff;
+}
+
+/*
+ * Take5 specific CSS definitions
+ */
+#Mheader .links {
+    font-family:'Open Sans Condensed', sans-serif;
+    font-size:3em;
+    text-transform: uppercase;
+    position:absolute;
+    right:20px;
+    top:0px;
+    height:100%;
+}
+#Mheader .links a {
+    color:#000;
+}
+#Mheader .links a:hover {
+    color:darkgrey;
+}
+#Mheader .links ul{
+    list-style:none;
+    margin:0px;
+    padding:0px;
+}
+#Mheader .links ul li {
+    position:relative;
+    float:left;
+    padding:20px;
+    cursor: pointer;
+}
+#Mheader .links ul li:hover {
+    color:darkgrey;
+}
+#Mfooter .container {
+    margin:50px;
+    font-size: 1.5em;
+    line-height: 2em;
+}
+.container .title {
+    font-size:1.6em;
+    font-weight:bold;
+    padding-bottom:20px;
+}
+#Mfooter .container #leftCol {
+    background-color:#f3961c;
+    color:#fff;
+    height:300px;
+    width:350px;
+    padding:10px;
+    float: left;
+}
+#leftCol .description {
+    margin-top: 30px;
+}
+
+#Mfooter .container #rightCol {
+    height:300px;
+    padding:10px;
+    width: 67%;
+    float: right;
+    margin: 0;
+}
+#rightCol #side1 {
+    width: 49%;
+    float: left;
+}
+#side1 img {
+    border:2px solid #f3961c;
+    box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
+    -o-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
+    -moz-opacity:.90; filter:alpha(opacity=90); opacity:.90;
+}
+#rightCol #side2 {
+    width: 49%;
+    float: right;
+}
+
+/* QuickSelector */
+.quickselector {
+    position:static;
+    float:left;
+    bottom:auto;
+    right:auto;
+    margin-bottom:40px;
+}
+
+.button.download {
+    font-family:'Open Sans Condensed', sans-serif;
+    font-size:1.6em;
+    font-weight:bold;
+    background-color:#3B5998;
+}
+.button.download:hover {
+    background-color:darkslategray;
+}
+
+.site-heading {
+    font-family:'Open Sans Condensed', sans-serif;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    margin-left:20px;
+    margin-top:10px;
+    font-size: 4em;
+}
