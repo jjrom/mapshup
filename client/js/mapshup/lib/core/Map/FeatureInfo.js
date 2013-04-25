@@ -252,7 +252,7 @@
             if (!feature) {
                 return false;
             }
-
+            
             template = feature.layer._M.microInfoTemplate;
 
             /*
@@ -757,22 +757,25 @@
 
             }
             else {
-
-                /*
-                 * Set popup content
-                 */
-                self.setContent(feature);
-
+                
+                var fi = feature.layer["_M"].layerDescription.featureInfo;
+                
                 /*
                  * Show feature information
                  */
                 self.hide();
-                self.getPopup(feature.layer).show();
                 
+                /*
+                 * Set popup content
+                 */
+                if (!fi || !fi.noMenu) {
+                    self.setContent(feature);
+                    self.getPopup(feature.layer).show();
+                }
+            
                 /*
                  * Call back function on select
                  */
-                var fi = feature.layer["_M"].layerDescription.featureInfo;
                 if (fi && $.isFunction(fi.onSelect)){
                     fi.onSelect(feature);
                 }
