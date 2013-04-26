@@ -119,8 +119,10 @@
             /*
              * Append logo bottom right
              */
-            self.$d.append('<div style="position:absolute;bottom:30px;right:30px;opacity:0.2"><a href="http://mapshup.info" title="Powered with mapshup" target="_blank"><img src="./img/mapshuplogobig.png"/></a></div>');
-            
+            if (!options.noLogo) {
+                self.$d.append('<div style="position:absolute;bottom:30px;right:30px;opacity:0.2"><a href="http://mapshup.info" title="Powered with mapshup" target="_blank"><img src="./img/mapshuplogobig.png"/></a></div>');
+            }
+        
             /*
              * Add help items defined in the config file
              */

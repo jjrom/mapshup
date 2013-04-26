@@ -761,6 +761,10 @@
     
     /**
      * Display Help
+     * 
+     * options:
+     *      noLogo : // if true, mapshup logo is not displayed within help frame (default is false)
+     *       
      */
     c.add("plugins",
     {
