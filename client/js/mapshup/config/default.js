@@ -764,6 +764,7 @@
      * 
      * options:
      *      noLogo : // if true, mapshup logo is not displayed within help frame (default is false)
+     *      rootUrl: // root url where help files should be (default is js/mapshup/i18n)
      *       
      */
     c.add("plugins",

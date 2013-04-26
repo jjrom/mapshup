@@ -45,128 +45,129 @@
  * 
  */
 (function(M) {
-    
+
     M.Plugins.Help = function() {
-        
+
         /*
          * Only one Help object instance is created
          */
         if (M.Plugins.Help._o) {
             return M.Plugins.Help._o;
         }
-        
+
         /*
          * Initialization
          */
-        this.init = function (options) {
+        this.init = function(options) {
 
             var c, i, l, id = M.Util.getId(), self = this;
-            
+
             /*
              * init options
              */
             self.options = options || {};
-            
-            /*
-             * Get help items from configuration
-             */
-            c = M.Config["help"] || {};
-            c.items = c.items || [];
-            l = c.items.length;
-            
-            /*
-             * No help item, no Help plugin !
-             */
-            if (l === 0) {
-                return null;
-            }
-             
+            self.options.rootUrl = self.options.rootUrl || M.Config["general"].rootUrl + "/js/mapshup/i18n";
+
             /*
              * Create the help container over everything else
              */
-            self.$d = M.Util.$$('#'+M.Util.getId(),$('#mwrapper')).addClass("overall help").hide();
-            
+            self.$d = M.Util.$$('#' + M.Util.getId(), $('#mwrapper')).addClass("overall help").hide();
+
             /*
              * Register action within header
              */
             self.tb = new M.Toolbar({
-                parent:$('.leftBar', M.$header), 
-                classes:'shr',
-                items:[
+                parent: $('.leftBar', M.$header),
+                classes: 'shr',
+                items: [
                     {
-                        id:id,
-                        icon:"help.png",
-                        tt:"Help",
-                        onoff:true,
-                        scope:self,
-                        onactivate:function(scope){
+                        id: id,
+                        icon: "help.png",
+                        tt: "Help",
+                        onoff: true,
+                        scope: self,
+                        onactivate: function(scope) {
                             scope.show();
                         },
-                        ondeactivate:function(scope){
+                        ondeactivate: function(scope) {
                             scope.hide();
                         }
                     }
                 ]
             });
-        
+
             /*
              * Add a close button to the Help panel
              */
-            M.Util.addClose(self.$d, function(e){
+            M.Util.addClose(self.$d, function(e) {
                 self.tb.activate(id, false);
             });
-            
+
             /*
              * Append logo bottom right
              */
             if (!options.noLogo) {
                 self.$d.append('<div style="position:absolute;bottom:30px;right:30px;opacity:0.2"><a href="http://mapshup.info" title="Powered with mapshup" target="_blank"><img src="./img/mapshuplogobig.png"/></a></div>');
             }
-        
+
             /*
-             * Add help items defined in the config file
+             * Retrieve Help file depending on lang
              */
-            for (i = 0, l = c.items.length; i < l; i++) {
-                self.add(c.items[i]);
-            }
-            
+            $.ajax({
+                url: M.Util.proxify(self.options.rootUrl + '/help_' + M.Config["i18n"].lang + '.json'),
+                async: true,
+                dataType: "json",
+                success: function(json) {
+                    
+                    /*
+                     * Add help items defined in the config file
+                     */
+                    if (json && json.items) {
+                        for (var i = 0, l = json.items.length; i < l; i++) {
+                            self.add(json.items[i]);
+                        }
+                    }
+                
+                }
+            });
+
             return self;
-            
+
         };
-        
+
         /*
          * Add a help block
          */
         this.add = function(item) {
-            
+
             /*
              * Paranoid mode
              */
             item = item || {};
-            
-            this.$d.append('<div class="item" style="max-width:'+(item.maxWidth ? item.maxWidth : '350px')+'">'+item.html+'</div>').children().last().css(item.position);
-            
+
+            this.$d.append('<div class="item" style="max-width:' + (item.maxWidth ? item.maxWidth : '350px') + '">' + item.html + '</div>').children().last().css(item.position);
+
         };
-        
+
         /*
          * Show help panel
          */
         this.show = function() {
             this.$d.show();
         };
-        
+
         /*
          * Hide help panel
          */
         this.hide = function() {
             this.$d.hide();
         };
-        
+
         /*
          * Set unique instance
          */
         M.Plugins.Help._o = this;
-        
+
         return this;
     };
 })(window.M);
