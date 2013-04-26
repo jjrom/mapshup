@@ -27,12 +27,12 @@
          * Sites layer
          */
         this.layer = null;
-        
+
         /*
          * Site features
          */
         this.features = [];
-        
+
         /**
          * Init plugin
          * 
@@ -51,34 +51,34 @@
                 searchService: options.searchService,
                 rootUrl: options.rootUrl
             });
-            
+
             /*
              * Set mapshup logo
              */
             M.$map.append('<div style="position:absolute;bottom:10px;right:30px;z-index:999;"><a href="http://mapshup.info" title="Powered with mapshup" target="_blank"><img src="./img/mapshuplogo.png"/></a></div>');
-            
+
             /*
              * Set Help and links
              */
-            M.Util.$$('#Mheader').append('<div class="links"><ul><li id="'+id+'a">' + self._("About") + '</li><li><a href="http://ptsc.teledetection.fr" target="_blank">PTSC</a></li></ul></div>');
-            
-            $('#' + id + 'a').click(function(){
+            M.Util.$$('#Mheader').append('<div class="links"><ul><li id="' + id + 'a">' + self._("About") + '</li><li><a href="http://ptsc.teledetection.fr" target="_blank">PTSC</a></li></ul></div>');
+
+            $('#' + id + 'a').click(function() {
                 if (M.Plugins.Help && M.Plugins.Help._o) {
                     M.Plugins.Help._o.show();
                 }
             });
-            $('#' + id + 'l').click(function(){
+            $('#' + id + 'l').click(function() {
                 $('#ptsclink').trigger('click');
             });
-        
+
             /*
              * Tell user that Take5 initializes
              */
             M.mask.add({
-                title:self._("Initializing Take5"),
-                cancel:false
+                title: self._("Initializing Take5"),
+                cancel: false
             });
-        
+
             /*
              * Asynchronously retrieve sites description from GeoJSON layer
              */
@@ -91,14 +91,14 @@
                 color: '#FFFF00',
                 opacity: 0,
                 unremovable: true,
-                featureInfo:{
-                    noMenu:true,
-                    onSelect:function(f) {
+                featureInfo: {
+                    noMenu: true,
+                    onSelect: function(f) {
                         if (self.$s) {
                             $('option[value=' + f.attributes.identifier + ']', self.$s).prop('selected', 'selected');
                             self.$s.change();
                         }
-                        
+
                     }
                 },
                 ol: {
@@ -112,9 +112,9 @@
             M.Map.events.register("layersend", self, function(action, layer, scope) {
 
                 if (!self.initialized && layer.id === self.layer.id && action === "features") {
-                    
+
                     var id = M.Util.getId(), i, l;
-                    
+
                     /*
                      * Display sites within select form
                      * 
@@ -128,11 +128,11 @@
                      * |  ||            | |                  download   || |
                      * |  |+------------+ +-----------------------------+| |
                      * |  +----------------------------------------------+ |
-                     * |                                                   |
+                     * |                     copyright                     |
                      * +---------------------------------------------------+
                      * 
                      */
-                    M.Util.$$('#Mfooter').html('<div class="container"><div id="leftCol"><form><p class="title">' + self._("Choose a site") + '</p><select id="' + id + '"></select></form><p class="description"></p></div><div id="rightCol"><div id="side1"></div><div id="side2"></div></div></div>');
+                    $('#Mfooter').html('<div class="container"><div id="leftCol"><form><p class="title">' + self._("Choose a site") + '</p><select id="' + id + '"></select></form><p class="description"></p></div><div id="rightCol"><div id="side1"></div><div id="side2"></div></div></div>');
                     self.$s = $('#' + id);
                     self.$s.append('<option name="---" value="---">---</option>');
                     for (i = 0, l = layer.features.length; i < l; i++) {
@@ -160,11 +160,11 @@
                          */
                         var site = self.getSite($(':selected', $(this)).attr("name"));
                         if (site) {
-                            
+
                             /*
                              * Select feature on map if not already selected
                              */
-                            if (!M.Map.featureInfo.selected  || (M.Map.featureInfo.selected && M.Map.featureInfo.selected.id !== site.id)) {
+                            if (!M.Map.featureInfo.selected || (M.Map.featureInfo.selected && M.Map.featureInfo.selected.id !== site.id)) {
                                 M.Map.featureInfo.select(site, true);
                             }
                             else {
@@ -176,42 +176,47 @@
                             M.Map.setCenter(M.Map.Util.d2p(new OpenLayers.LonLat(0, 40)), 2, true);
                             self.clear();
                         }
-                    
+
                     });
-                    
+
+                    /*
+                     * Copyright
+                     */
+                    $('#Mfooter').append('<div class="copyright">' + self._("Take 5 project") + ' | <a href="http://www.cnes.fr">CNES</a> - <a href="http://www.cesbio.ups-tlse.fr">Cesbio</a> - <a href="http://www.usgs.gov">USGS</a> | ' + self._("All right reserved") + ' - copyright <a href="http://www.cnes.fr">CNES</a> © ' + (new Date()).getFullYear() + '</div>');
+
                     /*
                      * Avoid multiple initialization
                      */
                     self.initialized = true;
                     M.mask.hide();
-                    
+
                 }
 
             });
-        
+
             /*
              * Main quicklook size should be recalculated when widow is resized
              */
-            M.Map.events.register("resizeend", self, function(scope){
+            M.Map.events.register("resizeend", self, function(scope) {
                 scope.resize();
             });
 
             return self;
 
         };
-    
+
         this.resize = function() {
-            
+
             /*
              * Avoid quicklook to be outside its container
              */
             $('#lastql').css({
-                'max-height':$('#Mfooter').height() - 120,
-                'max-width':$('#side1').width() - 20 
+                'max-height': $('#Mfooter').height() - 120,
+                'max-width': $('#side1').width() - 20
             });
 
         };
-    
+
 
         /*
          * Get site from identifier
@@ -229,7 +234,7 @@
             }
             return null;
         };
-    
+
         /*
          * Show site description
          * 
@@ -237,36 +242,36 @@
          * 
          */
         this.showSite = function(site) {
-            
+
             var self = this;
-            
+
             /*
              * Show site description
              */
             $('#leftCol .description').html(site.attributes.description);
-            
+
             /*
              * Asynchronously retrieve products from site
              */
             M.Util.ajax({
-                url:M.Util.proxify(M.Util.getAbsoluteUrl(self.searchService + site.attributes.identifier)),
-                async:true,
-                dataType:"json",
-                success:function(json) {
-                    
+                url: M.Util.proxify(M.Util.getAbsoluteUrl(self.searchService + site.attributes.identifier)),
+                async: true,
+                dataType: "json",
+                success: function(json) {
+
                     var i, l, id = M.Util.getId();
-                    
+
                     /*
                      * Double check if there are products
                      */
                     if (json.features && json.features.length) {
-                        
+
                         self.features = json.features;
-                        
+
                         l = self.features.length;
-                        
+
                         if (l > 0) {
-                            
+
                             /*
                              * Display products clickable thumbnails
                              * 
@@ -317,17 +322,17 @@
                                 })(self.features[i], $('#' + id));
 
                             }
-                            
+
                             /*
                              * Trigger click on newest image
                              */
                             $('#' + self.features[0].id).trigger("click");
-                            
+
                             /*
                              * Set downlad link
                              */
                             $('#' + id + 'd').click(function() {
-                                
+
                                 /*
                                  * Get active product
                                  */
@@ -338,13 +343,13 @@
                                         break;
                                     }
                                 }
-                                
+
                                 $(this).attr('target', '_blank').attr('href', href);
-                                
+
                                 return true;
-                                
+
                             });
-                            
+
                         }
                     }
                     /*
@@ -353,18 +358,18 @@
                     else {
                         self.clear();
                     }
-                
+
                     return true;
-                    
+
                 }
             },
             {
-                title:self._("Search products")
+                title: self._("Search products")
             }
             );
-            
+
         };
-        
+
         /*
          * Activate thumbnail for product identified by identifier
          * 
@@ -376,7 +381,7 @@
             }
             $('img', $('#' + identifier)).addClass('active');
         };
-    
+
         /*
          * Clear MMI
          */
@@ -384,7 +389,7 @@
             $('#side1').empty();
             $('#side2').empty();
         };
-    
+
         /*
          * Take an ISO 8601 timeStamp (i.e. YYYY-MM-DDTHH:MM:SS)
          * and return simplified date (i.e. YYYY-MM-DD)
@@ -397,7 +402,7 @@
             }
             return timeStamp;
         };
-        
+
         /*
          * Translate text
          * 
@@ -411,15 +416,17 @@
             texts["Available products"] = ["Produits disponibles"];
             texts["Search products"] = ["Recherche de produits"];
             texts["Download product"] = ["Télécharger le produit"];
+            texts["All right reserved"] = ["Tous droits réservés"];
+            texts["Take 5 project"] = ["Projet Take 5"];
             
             if (M.Config.i18n.lang === 'fr') {
                 return texts[text] || text;
             }
-        
+
             return text;
-            
+
         };
-    
+
         /*
          * Set unique instance
          */

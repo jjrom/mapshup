@@ -25,8 +25,12 @@ body {
     border-bottom:3px solid #f3961c;
 }
 #Mheader {
+    font-family:'Open Sans Condensed', sans-serif;
+    text-transform: uppercase;
     height:75px;
+    line-height:75px;
     color:#000;
+    background: url('./img/cneslogo.png') no-repeat scroll 20px 5px transparent;
 }
 #Mfooter {
     font-family:'Open Sans Condensed', sans-serif;
@@ -60,9 +64,7 @@ body {
  * Take5 specific CSS definitions
  */
 #Mheader .links {
-    font-family:'Open Sans Condensed', sans-serif;
     font-size:3em;
-    text-transform: uppercase;
     position:absolute;
     right:20px;
     top:0px;
@@ -82,14 +84,27 @@ body {
 #Mheader .links ul li {
     position:relative;
     float:left;
-    padding:20px;
+    padding:0px 20px;
     cursor: pointer;
 }
 #Mheader .links ul li:hover {
     color:darkgrey;
 }
+#Mfooter .copyright {
+    height:20px;
+    line-height:20px;
+    width:100%;
+    font-size: 1em;
+    text-align:center;
+}
+#Mfooter .copyright a {
+    color: #000;
+    font-weight: bold;
+    padding:0px;
+}
 #Mfooter .container {
-    margin:50px;
+    height:340px;
+    margin:20px 50px;
     font-size: 1.5em;
     line-height: 2em;
 }
@@ -154,9 +169,7 @@ body {
 }
 
 .site-heading {
-    font-family:'Open Sans Condensed', sans-serif;
-    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-    margin-left:20px;
-    margin-top:10px;
-    font-size: 4em;
+    margin-left:220px;
+    font-size: 5em;
+    font-weight: bold;
 }
