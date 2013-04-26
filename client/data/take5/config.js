@@ -53,6 +53,10 @@
         orientation:'h',
         home:null
     });
+    c.extend("Help", {
+        noLogo:true,
+        rootUrl:c["general"].rootUrl + '/data/take5'
+    });
 
     /* DO NOT TOUCH UNDER THIS LINE */
     c.add("plugins",
