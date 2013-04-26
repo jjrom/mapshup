@@ -174,6 +174,7 @@
                         }
                         else {
                             M.Map.setCenter(M.Map.Util.d2p(new OpenLayers.LonLat(0, 40)), 2, true);
+                            M.Map.featureInfo.clear();
                             self.clear();
                         }
 
