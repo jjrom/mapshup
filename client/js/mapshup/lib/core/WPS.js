@@ -1436,6 +1436,12 @@
                                         if (M.Map.Util.getGeoType(p['data']['mimeType']) === 'WMS') {
                                             p['data']['value'] = JSON.parse($.trim($(this).text()));
                                         }
+                                        /*
+                                         * GeoJSON output is a json String
+                                         */
+                                        else if (M.Map.Util.getGeoType(p['data']['mimeType']) === 'JSON') {
+                                            p['data']['value'] = JSON.parse($.trim($(this).text()));
+                                        }
                                         else {
                                             p['data']['value'] = $(this).children();
                                         }
@@ -1894,6 +1900,11 @@
                                                             description: process.descriptor["abstract"],
                                                             time: (new Date()).toISOString()
                                                         }),{
+                                                            zoomOn:true
+                                                        });
+                                                    }
+                                                    else if (geoType === 'JSON') {
+                                                        M.Map.addToStuffLayer(result.data.value,{
                                                             zoomOn:true
                                                         });
                                                     }
