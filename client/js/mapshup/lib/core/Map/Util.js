@@ -679,6 +679,7 @@
         gmt["application/gml+xml"] = "GML";
         gmt["text/gml"] = "GML";
         gmt["application/geo+json"] = "JSON";
+        gmt["application/geojson"] = "JSON";
         gmt["application/wkt"] = "WKT";
         gmt["application/x-ogc-wms"] = "WMS";
 
