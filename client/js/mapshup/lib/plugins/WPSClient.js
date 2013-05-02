@@ -562,10 +562,14 @@
                                 zoomOn:true
                             });
                         }
+                        else if (geoType === 'JSON') {
+                            M.Map.addToStuffLayer(JSON.parse(result.data.value),{
+                                zoomOn:true
+                            });
+                        }
                         else if (geoType === 'WMS') {
                             M.Map.addLayer(result.data.value);
                         }
-
                     }
                     /*
                      * Reference result
