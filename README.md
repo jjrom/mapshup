@@ -55,6 +55,7 @@ Before installing, you need to double check that the following packages are inst
 * PostGIS > 1.5 (optional - for UserManagement and context sharing only)
 * Mapserver > 5.0 (optional - for on the fly WMS reprojection only)
 
+Note: to get these packages installed you can take a look at https://github.com/jjrom/GisOnOsX/blob/master/README.md (Mac OS X) or at https://github.com/jjrom/InstallALinuxServerForMapshup/blob/master/README.md (Linux)
 In the following, we suppose that
 * $MAPSHUP_SRC is the directory where mapshup sources will be installed
 * $MAPSHUP_HOME is the directory where mapshup will be installed. This directory should be under Apache root directory
