@@ -7,7 +7,7 @@ user=mspuser
 password=m2siUdRpYY023
 
 ###### ADMIN ACCOUNT CREATION ######
-psql -U postgres -d template1 << EOF
+psql -U $superuser -d template1 << EOF
 CREATE USER $user WITH PASSWORD '$password' NOCREATEDB;
 EOF
 
