@@ -109,7 +109,7 @@
              * Note : with the addition of getLayerDescriptionFromUrl(url) mechanism, the "layers" property
              * must also be checked since the mandatories array is empty
              */
-            if (!(new Map.LayerDescription(layerDescription, Map)).isValid() || !layerDescription.hasOwnProperty("layers")) {
+            if (!(new Map.LayerDescription(layerDescription, Map)).isValid() || !layerDescription.hasOwnProperty("layers")) {
 
                 /*
                  * Important : non valid layers loaded during

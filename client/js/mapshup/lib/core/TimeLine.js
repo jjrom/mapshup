@@ -146,7 +146,7 @@
             /*
              * Set absolutes values
              */
-            self.absolutes = options.absolutes || {
+            self.absolutes = options.absolutes || {
                 min:1990,
                 max:(new Date()).getFullYear() + 1
             };
