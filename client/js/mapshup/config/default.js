@@ -163,8 +163,7 @@
     c["general"].shpToWMSServiceUrl = "/mapserver/shp2wms.php?";
 
     /**
-     * Reprojection service url. Must be terminated by "?" or "&"
-     * This service is used for WMS layers reprojection
+     * Tiles server url. Must be terminated by "?" or "&"
      */
     c["general"].mbtilesServiceUrl = "/utilities/mbtsrv.php?zxy=${z}/${x}/${y}&t=";
 
@@ -445,7 +444,7 @@
     });
 
     /**
-     * This plugin requires the LayersManager plugin
+     * Add Layer
      * 
      * options:
      * 
