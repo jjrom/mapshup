@@ -174,7 +174,10 @@
                         /*
                          * Show feature info panel
                          */
-                        scope.getPopup(layer).show();
+                        var fi = layer["_M"].layerDescription.featureInfo;
+                        if (!fi || !fi.noMenu) {
+                            scope.getPopup(layer).show();
+                        }
 
                     }
                     else {
