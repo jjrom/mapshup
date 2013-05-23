@@ -283,8 +283,9 @@
                              * +--------+--------+--------+
                              * 
                              *           Download
+                             *           Download serie
                              */
-                            $('#side2').html('<p class="title">' + self._("Available products") + '</p><div class="quickselector"><ul id="' + id + '"></ul></div><div class="center"><a id="' + id + 'd" class="button inline download">&nbsp;&nbsp;' + self._("Download product") + '&nbsp;&nbsp;</a></div>');
+                            $('#side2').html('<p class="title">' + self._("Available products") + '</p><div class="quickselector"><ul id="' + id + '"></ul></div><div class="center"><a id="' + id + 'd" class="button inline download">&nbsp;&nbsp;' + self._("Download product") + '&nbsp;&nbsp;</a></div></br><div class="center"><a id="' + id + 'da" class="button inline downloadall">&nbsp;&nbsp;' + self._("Download serie") + '&nbsp;&nbsp;</a></div>');
 
                             for (i = 0; i < l; i++) {
 
@@ -348,6 +349,16 @@
                                 $(this).attr('target', '_blank').attr('href', href);
 
                                 return true;
+
+                            });
+                            
+                            /*
+                             * Set downladall link
+                             */
+                            $('#' + id + 'da').click(function() {
+
+                                alert("TODO");
+                                return false;
 
                             });
 
@@ -417,6 +428,7 @@
             texts["Available products"] = ["Produits disponibles"];
             texts["Search products"] = ["Recherche de produits"];
             texts["Download product"] = ["Télécharger le produit"];
+            texts["Download serie"] = ["Télécharger la série"];
             texts["All right reserved"] = ["Tous droits réservés"];
             texts["Take 5 project"] = ["Projet Take 5"];
             
