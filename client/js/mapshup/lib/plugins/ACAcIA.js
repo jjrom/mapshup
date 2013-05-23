@@ -140,14 +140,14 @@
                             styleMap: new OpenLayers.StyleMap({
                                 'default': {
                                     pointRadius: 5,
-                                    fillOpacity: 0.1,
-                                    fillColor: 'black',
+                                    fillOpacity: 0.2,
+                                    fillColor: 'darkgray',
                                     strokeColor:"#000",
                                     strokeWidth:1,
                                     label:"${className}",
                                     fontSize:15,
                                     fontColor:"#F00",
-                                    fontStrokeColor:"#000",
+                                    fontStrokeColor:"#F00",
                                     fontStrokeWidth:0
                                 }
                             })
@@ -236,7 +236,7 @@
                         return false;
                     }
 
-                    return true;
+                    return M.apm.update(process);
 
                 });
             
