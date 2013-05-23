@@ -75,7 +75,7 @@ if (abcCheck($_REQUEST) && $url != '') {
      */
     
     $elems = parse_url($url);
-    if ($elems["query"]) {
+    if (isset($elems["query"])) {
         
         /*
          * Extract key/value pairs from url
