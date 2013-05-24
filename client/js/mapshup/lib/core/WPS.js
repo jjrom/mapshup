@@ -1750,7 +1750,14 @@
          * The process list is displayed within the UserManagement shared popup
          */
         this.updateProcessesList = function() {
-
+            
+            /*
+             * Only update processes list if user management is set
+             */
+            if (!this.um) {
+                return false;
+            }
+            
             /*
              * Display Process list
              */
