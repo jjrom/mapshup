@@ -546,7 +546,15 @@
             if (self.sp && $.isFunction(self.sp.remove)) {
                 self.sp.remove();
             }
-
+            
+            /*
+             * Direct search without showing panel
+             */
+            if (layer["_M"].layerDescription.directSearch) {
+                sc.search();
+                return true;
+            }
+            
             /*
              * Set search popup
              */
