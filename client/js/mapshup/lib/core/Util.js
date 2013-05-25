@@ -1078,7 +1078,7 @@
         },
         
         /**
-         * Replace all ',",. and # characters from "str" by "_"
+         * Replace all space,',",.,: and # characters from "str" by "_"
          * 
          * @param {String} str
          */
@@ -1086,7 +1086,7 @@
             if (!str) {
                 return str;
             }
-            return str.replace(/[',", ,\.,#]/g,"_");
+            return str.replace(/[',", ,\.,#,\:,\ ]/g,"_");
         },
     
         /**
