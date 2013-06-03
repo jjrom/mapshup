@@ -684,9 +684,9 @@
                         if (nn === 'value') {
                             p['allowedValues'].push({value: $(this).text()});
                         }
+                        /* TODO
                         else if (nn === 'range') {
-                            // TODO
-                        }
+                        }*/
                     });
                 }
                 else {
@@ -1445,10 +1445,9 @@
                                         else {
                                             p['data']['value'] = $(this).children();
                                         }
-                                    }
+                                    }/* TODO
                                     else if (nn === 'BoundingBox') {
-                                        // TODO    
-                                    }
+                                    }*/
                                 });
 
                             }
