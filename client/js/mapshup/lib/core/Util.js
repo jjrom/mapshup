@@ -1643,7 +1643,18 @@
          * @param {String} returntype : force HTTP header to the return type //optional
          */
         proxify: function(url, returntype) {
-            return this.getAbsoluteUrl(M.Config["general"].proxyUrl)+this.abc+(returntype ? "&returntype="+returntype : "")+"&url="+encodeURIComponent(url);
+            
+            /*
+             * If proxyUrl is set then proxify input url
+             */
+            if (M.Config["general"].proxyUrl && M.Config["general"].proxyUrl !== "") {
+                return this.getAbsoluteUrl(M.Config["general"].proxyUrl)+this.abc+(returntype ? "&returntype="+returntype : "")+"&url="+encodeURIComponent(url);
+            }
+            
+            /*
+             * otherwise, do nothing i.e. just return unmodified url
+             */
+            return url;
         },
         
         /**

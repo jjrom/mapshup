@@ -122,6 +122,9 @@
 
     /**
      * Proxy url. Must be terminated by "?" or "&"
+     * 
+     * WARNING : if null or empty then no proxy is used - only services from the same domain name
+     * would work
      */
     c["general"].proxyUrl = "/proxy.php?";
 
