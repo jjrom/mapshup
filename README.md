@@ -51,6 +51,7 @@ Before installing, you need to double check that the following packages are inst
 * Apache server
 * PHP > 5.0
 * PHP Curl
+* PHP XML package
 * PostgreSQL > 8.3 (optional - for UserManagement and context sharing only)
 * PostGIS > 1.5 (optional - for UserManagement and context sharing only)
 * Mapserver > 5.0 (optional - for on the fly WMS reprojection only)
