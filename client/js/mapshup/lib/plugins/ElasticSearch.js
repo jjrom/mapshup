@@ -52,7 +52,7 @@
         if (M.Plugins.ElasticSearch._o) {
             return M.Plugins.ElasticSearch._o;
         }
-        
+
         /*
          * Reference to ElasticSearch layer
          */
@@ -63,7 +63,7 @@
          */
         this.init = function(options) {
 
-            var searchId = M.Util.getId(), filterId = M.Util.getId(), self = this;
+            var filterId = M.Util.getId(), self = this;
 
             /*
              * init options
@@ -79,18 +79,29 @@
                 title: options.url,
                 classes: "wpsclient",
                 mask: true,
-                html: '<div class="info"><form method="POST" action="#"><input id="' + filterId + '" name="q" type="text" size="40" placeholder="' + M.Util._(options.hint || "e.g. node:tags.amenity=restaurant") + '" autocomplete="off"/><div class="execute"><img src="' + M.Util.getImgUrl('execute.png') + '" id="' + searchId + '" class="button inline" jtitle="' + M.Util._("Execute process") + '"/></div></form></div>'
+                html: '<div class="info"><form method="get" action="#"><input id="' + filterId + '" name="q" type="text" size="40" placeholder="' + M.Util._(options.hint || "e.g. node:tags.amenity=restaurant") + '" autocomplete="off"/></form></div>'
             });
 
-            self.$filter = $('#' + filterId);
-
-            /*
-             * Set execute button
-             */
-            M.tooltip.add($('#' + searchId).click(function() {
-                self.search($.trim(self.$filter.val()));
-                return false;
-            }), 'n', 20);
+            self.$filter = $('#' + filterId)
+            .keydown(function(e) {
+                switch (e.keyCode) {
+                    case 13:
+                    case 16:
+                    case 91:
+                        e.preventDefault();
+                        break;
+                }
+            })
+            .keyup(function(e) {
+                switch (e.keyCode) {
+                    case 9:
+                    case 188:
+                    case 13: // tab comma or return
+                        self.search($.trim(self.$filter.val()));
+                        e.preventDefault();
+                        break;
+                }
+            });
 
             /*
              * Tell user that a new WPS panel is created
@@ -100,7 +111,7 @@
             return self;
 
         };
-        
+
         /*
          * Launch a search request to ElasticSearch
          * 
@@ -129,7 +140,7 @@
              * Create request
              */
             data = '{"size":' + (limit && M.Util.isInt(limit) ? limit : 100) + ',"query":{"filtered":{"query":{"match_all":{}},"filter":{"and":{"filters":[{"geo_shape":{"shape":{"shape":{"type":"envelope","coordinates":' + geoStr + '}}}}';
-            
+
             /*
              * filter should be defined as key=value
              * 
@@ -140,7 +151,7 @@
              */
             if (filter) {
                 var keyval, typeAndfilter = filter.split(':');
-                
+
                 if (typeAndfilter.length === 2) {
                     keyval = typeAndfilter[1].split('=');
                     type = typeAndfilter[0];
@@ -148,11 +159,11 @@
                 else {
                     keyval = typeAndfilter[0].split('=');
                 }
-                
+
                 if (keyval.length === 2) {
                     data += ',{"term":{"' + keyval[0] + '":"' + keyval[1] + '"}}';
                 }
-                
+
             }
             data += ']}}}}}';
 
@@ -160,14 +171,14 @@
              * Launch asynchronous request to Elastic Search server
              */
             M.Util.ajax({
-                url: this.options.url + '/' + (type === 'node' ? 'node' : 'way') +  '/_search',
+                url: this.options.url + '/' + (type === 'way' ? 'way' : 'node') + '/_search',
                 async: true,
                 dataType: "json",
                 type: "POST",
                 data: data,
                 success: function(obj, textStatus, XMLHttpRequest) {
                     if (XMLHttpRequest.status === 200) {
-                        
+
                         if (!self.layer) {
                             self.layer = M.Map.addLayer({
                                 type: "GeoJSON",
@@ -187,7 +198,7 @@
                                 }
                             });
                         }
-                        
+
                         self.layer.destroyFeatures();
                         M.Map.layerTypes["GeoJSON"].load({
                             data: M.Map.Util.elasticResultToGeoJSON(obj),
@@ -203,7 +214,7 @@
                 title: M.Util._("Search for "),
                 cancel: true
             });
-            
+
         };
 
         /*
