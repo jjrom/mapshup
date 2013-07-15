@@ -211,7 +211,7 @@ function elasticResultToGeoJSON($elasticResult) {
      * GeoJSON equivalent are Point, LineString and Polygon
      */
     $mapping = array(
-        'point' => "Polygon",
+        'point' => "Point",
         'linestring' => "LineString",
         'polygon' => "Polygon"
     );
@@ -238,22 +238,13 @@ function elasticResultToGeoJSON($elasticResult) {
     for ($i = 0, $l = count($er); $i < $l; $i++) {
         $hit = $er[$i];
         $id = $hit->_id;
-        $type = $hit->_type;
         $source = $hit->_source;
         $source->shape->type = $mapping[$source->shape->type];
-        $properties = array(
-            'id' => $id,
-            'type' => $type
-        );
         
         /*
          * Add tags properties to properties array
          */
-        $keys = array_keys(get_object_vars($source->tags));
-        for ($i = 0; $i < count($keys); $i++) {
-            $tag = $keys[$i];
-            $properties[$tag] = $source->tags->$tag;
-        }
+        $source->tags->id = $id;
         
         /*
          * Add feature to FeatureCollection
@@ -261,11 +252,11 @@ function elasticResultToGeoJSON($elasticResult) {
         array_push($geojson['features'], array(
             'type' => 'Feature',
             'geometry' => $source->shape,
-            'properties' => $properties
+            'properties' => get_object_vars($source->tags)
         ));
-
+        
     }
-
+    
     return $geojson;
         
 };
