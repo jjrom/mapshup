@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:geo="http://a9.com/-/opensearch/extensions/geo/1.0/">
+	<ShortName>OpenStreetMap</ShortName>
+	<LongName>OpenStreetMap mapshup server</LongName>
+	<Description>OSM</Description>
+        <Url type="application/json" template="/plugins/osm/search.php?format=geosjon&amp;q={searchTerms}&amp;count={count?}&amp;page={startPage?}&amp;bbox={geo:box?}"/>
+</OpenSearchDescription>
