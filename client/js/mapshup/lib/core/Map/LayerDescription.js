@@ -108,7 +108,7 @@
             if (!this.map || !this.obj) {
                 return null;
             }
-            return this.map.layerTypes[this.obj.type]
+            return this.map.layerTypes[this.obj.type];
         };
         
         /*
@@ -116,7 +116,7 @@
          */
         this.get = function() {
             return this.obj;
-        }
+        };
         
         /**
          * Compute a MID from its type

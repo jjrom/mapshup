@@ -122,6 +122,9 @@
 
     /**
      * Proxy url. Must be terminated by "?" or "&"
+     * 
+     * WARNING : if null or empty then no proxy is used - only services from the same domain name
+     * would work
      */
     c["general"].proxyUrl = "/proxy.php?";
 
@@ -225,7 +228,7 @@
      * Available languages. A language file must be called "lang".js and located
      * under the i18n directory (e.g. the "fr" lang corresponds to the "fr.js" file)
      */
-    c["i18n"].langs = ["en", "fr", "ar", "de", "es", "he", "it", "ja", "ru", "zh", "pt"];
+    c["i18n"].langs = ["en", "fr", "de"];
 
     /**
      * Application default lang (one from availableLangs).

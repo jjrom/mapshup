@@ -161,6 +161,107 @@ function posListToGeoJSONGeometry($posList, $order) {
 }
 
 /**
+* Return a GeoJSON FeatureCollection from an ElasticSearch result
+* 
+*  Elastic Search result example :
+*  
+*      {
+*          "took" : 138,
+*          "timed_out" : false,
+*          "_shards" : {
+*              "total" : 5,
+*              "successful" : 5,
+*              "failed" : 0
+*          },
+*          "hits" : {
+*              "total" : 19882872,
+*              "max_score" : 1.0,
+*              "hits" : [
+*                  {
+*                      "_index" : "osm",
+*                      "_type" : "way",
+*                      "_id" : "42165222",
+*                      "_score" : 1.0,
+*                      "_source" :{
+*                          "centroid":[1.9309686748050385,44.192819178853966],
+*                          "lengthKm":6.719306622689737,
+*                          "areaKm2":1.1417793121178532,
+*                          "shape":{
+*                              "type":"polygon",
+*                              "coordinates":[[[1.9304132,44.1974077],[1.9305396000000001,44.195908800000005],[1.931243,44.1946627],[1.9327492000000002,44.1944188],[1.9347191000000001,44.1940934],[1.9348400000000001,44.193344100000004],[1.9360017,44.1927651],[1.9364714,44.191850800000005],[1.9368212,44.191436200000005],[1.9384401000000002,44.1916917],[1.9397132000000001,44.191696300000004],[1.9416863000000002,44.190787400000005],[1.9418085,44.189955000000005],[1.9407707,44.1893691],[1.9391409000000002,44.190778200000004],[1.9387963000000001,44.190361100000004],[1.9391491,44.189612700000005],[1.940776,44.1886194],[1.9395094000000002,44.1876988],[1.9377793,44.186942800000004],[1.9352315000000002,44.1871841],[1.9358037000000001,44.1881022],[1.9341724,44.189594400000004],[1.9324328000000002,44.1901713],[1.929998,44.1907444],[1.9277904000000001,44.1919849],[1.9257061000000002,44.192144500000005],[1.9230418,44.1924671],[1.9210665,44.1936252],[1.9203623,44.194954300000006],[1.9216322000000001,44.195293],[1.9235919000000001,44.1963828],[1.9252103,44.196721600000004],[1.9264845000000002,44.1964769],[1.9272893000000002,44.197312800000006],[1.9275084,44.198978200000006],[1.928201,44.1992315],[1.9297109000000001,44.198487400000005],[1.9304132,44.1974077]]]
+*                          },
+*                          "tags":{"wood":"deciduous","source":"Union européenne - SOeS, CORINE Land Cover, 2006.","CLC:code":"311","CLC:id":"FR-211193","CLC:year":"2006","landuse":"forest"}
+*                      }
+*                  }
+*                  ...etc...
+*              ]
+*          }
+*      }
+* 
+* 
+* 
+* @param {String} elasticResult : a geocoded elasticSearch result
+* @return {Object} : a GeoJSON object
+* 
+*/
+function elasticResultToGeoJSON($elasticResult) {
+    
+    /*
+     * ElasticSearch shape types are point, linestring and polygon
+     * GeoJSON equivalent are Point, LineString and Polygon
+     */
+    $mapping = array(
+        'point' => "Point",
+        'linestring' => "LineString",
+        'polygon' => "Polygon"
+    );
+    
+    /*
+     * Initialize empty GeoJSON FeatureCollection
+     */
+    $geojson = array(
+        'type' => 'FeatureCollection',
+        'features' => array()
+    );
+    
+    /*
+     * Return empty geojson feed if elasticresult is not valid
+     */
+    if (!$elasticResult || !$elasticResult->hits || !$elasticResult->hits->hits) {
+        return $geojson;
+    }
+    
+    /*
+     * Create one feature for each elasticresult
+     */
+    $er = $elasticResult->hits->hits;
+    for ($i = 0, $l = count($er); $i < $l; $i++) {
+        $hit = $er[$i];
+        $id = $hit->_id;
+        $source = $hit->_source;
+        $source->shape->type = $mapping[$source->shape->type];
+        
+        /*
+         * Add tags properties to properties array
+         */
+        $source->tags->id = $id;
+        
+        /*
+         * Add feature to FeatureCollection
+         */
+        array_push($geojson['features'], array(
+            'type' => 'Feature',
+            'geometry' => $source->shape,
+            'properties' => get_object_vars($source->tags)
+        ));
+        
+    }
+    
+    return $geojson;
+        
+};
+
+/**
  * Transforms galactical coordinates into equatorial coordinates
  * into equatorial projection. Assuming J2000 referential
  * 

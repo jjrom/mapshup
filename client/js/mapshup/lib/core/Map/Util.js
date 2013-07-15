@@ -187,7 +187,7 @@
             if (feature.attributes.imageUrl) {
                 return feature.attributes.imageUrl;
             }
-        
+
             /*
              * This is quite experimental :)
              */
@@ -422,7 +422,7 @@
             if (c && c.connector) {
                 return M.Util._(typeof c.connector.metadataTranslator[key] === "string" ? c.connector.metadataTranslator[key] : key);
             }
-            
+
             /*
              * In any case returns a i18n translated string
              */
@@ -510,15 +510,15 @@
         if (!obj) {
             return null;
         }
-        
+
         /*
          * If input bbox is a String then it is supposed that the input string corresponds
          * to an EPSG:4326 string (i.e. lonMin,latMin,lonMax,latMax)
          */
         if (typeof obj === "string") {
             obj = {
-                bounds:obj,
-                srs:'EPSG:4326'
+                bounds: obj,
+                srs: 'EPSG:4326'
             };
         }
 
@@ -527,7 +527,7 @@
         }
 
         var bounds, coords, coords2 = [], srs = obj.srs, crs = obj.crs || "EPSG:4326";
-        
+
         /*
          * Bounds is an array or a string ?
          */
@@ -541,7 +541,7 @@
         else {
             coords = obj.bounds;
         }
-        
+
         /*
          * If srs is specified and srs === EPSG:4326 then
          * order coordinates is lon,lat
@@ -563,14 +563,14 @@
             coords2[3] = Math.min(90, coords[2]);
             coords = coords2;
         }
-        
+
         bounds = new OpenLayers.Bounds(coords[0], coords[1], coords[2], coords[3]);
-        
+
         /*
          * Returns geo bounds
          */
         return srs === "EPSG:3857" || srs === "EPSG:900913" || crs === "EPSG:3857" || crs === "EPSG:900913" ? M.Map.Util.p2d(bounds) : bounds;
-        
+
     };
 
     /**
@@ -595,24 +595,24 @@
         if (!obj) {
             return null;
         }
-        
+
         /*
          * If input bbox is a String then it is supposed that the input string corresponds
          * to an EPSG:4326 string (i.e. lonMin,latMin,lonMax,latMax)
          */
         if (typeof obj === "string") {
             obj = {
-                bounds:obj,
-                srs:'EPSG:4326'
+                bounds: obj,
+                srs: 'EPSG:4326'
             };
         }
-    
+
         if (!obj.bounds) {
             return null;
         }
 
         var avoidBoundError = 0, bounds, coords, srs = obj.srs, crs = obj.crs;
-        
+
         /*
          * Bounds is an array or a string ?
          */
@@ -626,37 +626,37 @@
         else {
             coords = obj.bounds;
         }
-        
+
         /*
          * Avoid reprojection error at the pole
          */
         if (srs === "EPSG:4326") {
-            
+
             if (coords[0] === -180 || coords[1] === -90 || coords[2] === 180 || coords[3] === 90) {
                 avoidBoundError = 1;
             }
 
-            bounds = Map.Util.d2p(new OpenLayers.Bounds(coords[0] + avoidBoundError, coords[1] + avoidBoundError, coords[2]- avoidBoundError, coords[3] - avoidBoundError));
-            
+            bounds = Map.Util.d2p(new OpenLayers.Bounds(coords[0] + avoidBoundError, coords[1] + avoidBoundError, coords[2] - avoidBoundError, coords[3] - avoidBoundError));
+
         }
         else if (crs === "EPSG:4326") {
-            
+
             if (coords[0] === -180 || coords[1] === -90 || coords[2] === 180 || coords[3] === 90) {
                 avoidBoundError = 1;
             }
 
             bounds = Map.Util.d2p(new OpenLayers.Bounds(coords[1] + avoidBoundError, coords[0] + avoidBoundError, coords[3] - avoidBoundError, coords[2] - avoidBoundError));
-            
+
         }
         else {
             bounds = new OpenLayers.Bounds(coords[0], coords[1], coords[2], coords[3]);
         }
-    
+
         /*
          * Returns projected bounds
          */
         return bounds;
-        
+
     };
 
     /**
@@ -1366,5 +1366,81 @@
 
     };
 
+    /**
+     * Return a GeoJSON geometry string from an ElasticSearch result
+     * 
+     *  Elastic Search result example :
+     *  
+     *      {
+     *          "took" : 138,
+     *          "timed_out" : false,
+     *          "_shards" : {
+     *              "total" : 5,
+     *              "successful" : 5,
+     *              "failed" : 0
+     *          },
+     *          "hits" : {
+     *              "total" : 19882872,
+     *              "max_score" : 1.0,
+     *              "hits" : [
+     *                  {
+     *                      "_index" : "osm",
+     *                      "_type" : "way",
+     *                      "_id" : "42165222",
+     *                      "_score" : 1.0,
+     *                      "_source" :{
+     *                          "centroid":[1.9309686748050385,44.192819178853966],
+     *                          "lengthKm":6.719306622689737,
+     *                          "areaKm2":1.1417793121178532,
+     *                          "shape":{
+     *                              "type":"polygon",
+     *                              "coordinates":[[[1.9304132,44.1974077],[1.9305396000000001,44.195908800000005],[1.931243,44.1946627],[1.9327492000000002,44.1944188],[1.9347191000000001,44.1940934],[1.9348400000000001,44.193344100000004],[1.9360017,44.1927651],[1.9364714,44.191850800000005],[1.9368212,44.191436200000005],[1.9384401000000002,44.1916917],[1.9397132000000001,44.191696300000004],[1.9416863000000002,44.190787400000005],[1.9418085,44.189955000000005],[1.9407707,44.1893691],[1.9391409000000002,44.190778200000004],[1.9387963000000001,44.190361100000004],[1.9391491,44.189612700000005],[1.940776,44.1886194],[1.9395094000000002,44.1876988],[1.9377793,44.186942800000004],[1.9352315000000002,44.1871841],[1.9358037000000001,44.1881022],[1.9341724,44.189594400000004],[1.9324328000000002,44.1901713],[1.929998,44.1907444],[1.9277904000000001,44.1919849],[1.9257061000000002,44.192144500000005],[1.9230418,44.1924671],[1.9210665,44.1936252],[1.9203623,44.194954300000006],[1.9216322000000001,44.195293],[1.9235919000000001,44.1963828],[1.9252103,44.196721600000004],[1.9264845000000002,44.1964769],[1.9272893000000002,44.197312800000006],[1.9275084,44.198978200000006],[1.928201,44.1992315],[1.9297109000000001,44.198487400000005],[1.9304132,44.1974077]]]
+     *                          },
+     *                          "tags":{"wood":"deciduous","source":"Union européenne - SOeS, CORINE Land Cover, 2006.","CLC:code":"311","CLC:id":"FR-211193","CLC:year":"2006","landuse":"forest"}
+     *                      }
+     *                  }
+     *                  ...etc...
+     *              ]
+     *          }
+     *      }
+     * 
+     * 
+     * 
+     * @param {String} elasticResult : a geocoded elasticSearch result
+     * @return {Object} : a GeoJSON object
+     * 
+     */
+    Map.Util.elasticResultToGeoJSON = function(elasticResult) {
+
+        var i, id, type, source, l, hit, properties = {}, features = [], mapping = {point: "Point", linestring: "LineString", polygon: "Polygon"};
+
+        for (i = 0, l = elasticResult.hits.hits.length; i < l; i++) {
+            hit = elasticResult.hits.hits[i];
+            id = hit._id;
+            type = hit._type;
+            source = hit._source;
+            
+            /*
+             * ElasticSearch shape types are point, linestring and polygon
+             * GeoJSON equivalent are Point, LineString and Polygon
+             */
+            source.shape.type = mapping[source.shape.type] || source.shape.type;
+            properties = {
+                "id": id,
+                "type": type
+            };
+            $.extend(properties, source.tags);
+            features.push({
+                "type": "Feature",
+                "geometry": source.shape,
+                "properties": properties
+            });
+        }
+
+        return {
+            "type": "FeatureCollection",
+            "features": features
+        };
+    };
 
 })(window.M, window.M.Map);
