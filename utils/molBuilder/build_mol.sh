@@ -42,20 +42,19 @@ then
         echo ""
         echo " ### OpenLayers builder for mapshup client ### "
         echo ""
-        echo "    Create a mol directory for OpenLayers <version>"
-        echo "    This script assumes that OpenLayers library is located OpenLayers/version/"
+        echo "    Create a mapshup build of OpenLayers under 'mol' directory"
         echo ""
-        echo "    Usage : $0 <version>"
+        echo "    Usage : $0 <OpenLayers directory>"
         echo ""
         echo "###"
         exit 0
 fi
 
-echo "Building mol for OpenLayers version $1"
+echo "Building mol for $1"
 
 # First create mol
 here=`pwd`
-oldir=`echo OpenLayers/$1`
+oldir=$1
 moldir='mol'
 
 if [ ! -x $moldir ]
@@ -100,23 +99,22 @@ cp -R addons/PolygonCluster.js $oldir/lib/OpenLayers/Strategy/
 
 echo "Building OpenLayers.js..."
 cd $oldir/build
-./build.py ../../../jOpenLayers_build.cfg
-cp OpenLayers.js ../../../mol/OpenLayers.js
+./build.py $here/jOpenLayers_build.cfg
+cp OpenLayers.js $here/mol/OpenLayers.js
 
 echo "Building OpenLayersOptimized.js..."
 cd $oldir/build
-./build.py ../../../jOpenLayersOptimized_build.cfg
-cp OpenLayers.js ../../../mol/OpenLayersOptimized.js
+./build.py $here/jOpenLayersOptimized_build.cfg
+cp OpenLayers.js $here/mol/OpenLayersOptimized.js
 
 
 echo "Building OpenLayers mobile structure..."
-rm -Rf ../../../mol/m
-mkdir ../../../mol/m
-./build.py ../../../jOpenLayersMobile_build.cfg
-cp OpenLayers.js ../../../mol/m/OpenLayers.js
-cp -R ../../../mol/img ../../../mol/m/img
-cp -R ../../../mol/theme ../../../mol/m/theme
-
+rm -Rf $here/mol/m
+mkdir $here/mol/m
+./build.py $here/jOpenLayersMobile_build.cfg
+cp OpenLayers.js $here/mol/m/OpenLayers.js
+cp -R $here/mol/img $here/mol/m/img
+cp -R $here/mol/theme $here/mol/m/theme
 
 cd $here
 echo "Done !"
