@@ -104,6 +104,9 @@ if ($q) {
     if (count($keyval) === 2) {
         $data .= ',{"term":{"' . $keyval[0] . '":"' . $keyval[1] . '"}}';
     }
+    else {
+        $data .= ',{"term":{"name":"' . $keyval[0] . '"}}';
+    }
 }
 $data .= ']}}}}}';
 
