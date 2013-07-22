@@ -1192,7 +1192,7 @@
                 else {
                     self._bof = false;
                 }
-            
+                
             });
             
             /*
@@ -1257,8 +1257,8 @@
                 /*
                  * Define action on mousemove
                  */
-                M.$map.mousemove(function (e){
-
+                self.map.events.register('mousemove', self.map, function(e){
+                
                     /*
                      * Set the mousePosition object
                      */
@@ -1291,7 +1291,7 @@
                 /*
                  * Hide divs when mouse is outside of M.$map
                  */
-                M.$map.mouseleave(function (e){
+                self.map.events.register('mouseout', self.map, function (e){
                     if (M.Map.$coords) {
                         M.Map.$coords.hide();
                     }
