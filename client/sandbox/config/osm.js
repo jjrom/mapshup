@@ -5,7 +5,7 @@
      */
     c["general"].rootUrl = 'http://localhost/mapshup';
     c["general"].serverRootUrl = 'http://localhost/mapshups';
-    c["general"].indexPath = "/sandbox/es.html";
+    c["general"].indexPath = "/sandbox/osm.html";
     
     /*
      * Remove layers
@@ -18,20 +18,15 @@
      */
     c.remove("plugins", "GoogleEarth");
     
-    /**
-     * Add ElasticSearch search server
+    /*
+     * Add Elastic Search plugin
      */
-    c.remove("plugins", "Search");
-    c.add("plugins",
-    {
-        name:"Search",
-        options:{
-            services: [
-            {
-                url:"/plugins/osm/opensearch.xml"
-            }
-            ]
+    c.add("plugins", {
+        name:"OpenStreetMap",
+        options: {
+            url:"http://es.mapshup.info/osm/"
         }
     });
+    
 
 })(window.M.Config);
