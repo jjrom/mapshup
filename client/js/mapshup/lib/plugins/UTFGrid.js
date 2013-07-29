@@ -91,7 +91,7 @@
             /*
              * Define action on mousemove
              */
-            M.$map.mousemove(function (e){
+            M.Map.map.events.register('mousemove', M.Map.map, function(e){
                 
                 /*
                  * Never display UTFGrid info if a vector feature is already hilited
@@ -136,7 +136,7 @@
                                 items[OpenLayers.Util.indexOf(M.Map.map.layers, layer)] = {
                                     attributes:layer.getFeatureInfo(lonLat),
                                     modifiers:layer["_M"].layerDescription["info"]
-                                }
+                                };
                             }
                             
                             show = true;

@@ -36,7 +36,11 @@
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
 /**
- * UTFGrid support (see http://mbtiles.org/)
+ * UTFGrid support (see https://github.com/mapbox/utfgrid-spec/)
+ * 
+ * @param {MapshupObject} M
+ * @param {MapshupMapObject} Map
+ * 
  */
 (function (M,Map){
     
@@ -50,6 +54,9 @@
          *       title:
          *       url: // template to UTFGrid server 
          *  };
+         *  
+         *  @param {Object} layerDescription
+         *  @param {Object} options
          */
         add: function(layerDescription, options) {
 
@@ -74,7 +81,7 @@
             $.extend(options,{
                 title:M.Util.getTitle(layerDescription),
                 url:layerDescription.url,
-                useJSONP:true,
+                useJSONP:false,
                 displayInLayerSwitcher:false,
                 utfgridResolution:layerDescription.utfgridResolution || 4
             });
@@ -91,9 +98,12 @@
         /**
          * MANDATORY
          * Compute an unique MID based on layerDescription
+         * 
+         * @param {Object} layerDescription
          */
         getMID:function(layerDescription) {
             return layerDescription.MID || M.Util.crc32(layerDescription.type + (layerDescription.url || ""));
         }
-    }
+    };
+    
 })(window.M, window.M.Map);
