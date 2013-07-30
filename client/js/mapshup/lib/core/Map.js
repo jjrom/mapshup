@@ -1330,6 +1330,13 @@
                             if (e.feature) {
 
                                 /*
+                                 * Change mouse cursor to pointer hover feature
+                                 */
+                                if (e.feature.geometry) {
+                                    $('#' + e.feature.geometry.id).css('cursor', 'pointer');
+                                }
+
+                                /*
                                  * Never hilite an already selected or hilited feature
                                  */
                                 if (M.Map.featureInfo.hilited) {
