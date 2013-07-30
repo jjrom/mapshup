@@ -36,111 +36,97 @@
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
 (function(M) {
-    
+
     /*
      * Initialize M.Map
      */
     M = M || {};
-    
+
     /*
      * Initialize M.Map
      * 
      * This is the main mapshup object
      */
     M.Map = {
-        
         /**
          * Reference to featureHilite jquery object
          */
-        $featureHilite:$(),
-        
+        $featureHilite: $(),
         /**
          * Hack to avoid Logger plugin to re-log history
          * extent when they are requested through UserManagement
          * plugin
          */
         doNotLog: false,
-        
         /**
          * Stpre current navigation state
          */
-        currentState:null,
-        
+        currentState: null,
         /*
          * Predefined cluster strategy options
          */
-        clusterOpts:{
+        clusterOpts: {
             distance: 30,
             threshold: 3
         },
-        
         /**
          * Plate Carrée projection object
          */
         pc: new OpenLayers.Projection("EPSG:4326"),
-
         /**
          * Spherical Mercator projection object
          */
         sm: new OpenLayers.Projection("EPSG:900913"),
-
         /**
          * An array of LayersGroup
          */
         layersGroups: [],
-
         /**
          * Registered layer types
          */
         layerTypes: [],
-
         /**
          * Map object reference
          */
-        map:null,
-
+        map: null,
         /**
          * Last mouse click within the map object
          * (from top,left)
          */
-        mouseClick: new OpenLayers.Pixel(0,0),
-
+        mouseClick: new OpenLayers.Pixel(0, 0),
         /**
          * Current mouse position within the map object
          * (from top,left)
          */
-        mousePosition: new OpenLayers.Pixel(0,0),
-
+        mousePosition: new OpenLayers.Pixel(0, 0),
         /**
          * Predefined layerDescriptions object
          * Used by AddLayer plugin
          */
-        predefined:{
-            
+        predefined: {
             /**
              * Hash of array containing layerDescription
              * The hash keys are the layerDescription types
              */
-            items:[],
-            
+            items: [],
             /**
              * Add a new layer description to the item list
              * 
              * @param {Object} p
              */
             add: function(p) {
-                
-                var i,l,t,
-                add = true,
-                self = this;
-                
+
+                var i, l, t,
+                        add = true,
+                        self = this;
+
                 /*
                  * Paranoid mode
                  */
                 if (!p || !p.hasOwnProperty("type")) {
                     return false;
                 }
-                
+
                 /*
                  * Roll over t to check if layer Description already exists
                  */
@@ -152,35 +138,31 @@
                         break;
                     }
                 }
-            
+
                 /*
                  * Add new layer description
                  */
                 if (add) {
                     t.push(p);
                 }
-                
+
                 return true;
             }
-            
-        },
 
+        },
         /**
          * Number of call to the window.setInterval function
          */
-        refreshCycle:0,
-
+        refreshCycle: 0,
         /**
          * selectableLayers object contains all the layers that can be selected with
          * the "__CONTROL_SELECT__" control tool
          */
         selectableLayers: {
-
             /**
              * Array containing all selectable layers (i.e. not background layers, only vectors)
              */
             items: [],
-
             /**
              * Add a new layer to the selectable list
              * 
@@ -188,15 +170,15 @@
              */
             add: function(layer) {
                 layer.events.on({
-                    "featureselected":function(e) {
+                    "featureselected": function(e) {
                         M.Map.featureInfo.select(e["feature"]);
                     },
-                    "featureunselected":function(e) {
+                    "featureunselected": function(e) {
                         M.Map.featureInfo.unselect(e["feature"]);
                     }
                 });
                 this.items.push(layer);
-                
+
                 /*
                  * By default, selectable layer is hilitable
                  * unless specified that it is not
@@ -204,44 +186,40 @@
                 if (layer['_M'].hilitable) {
                     M.Map.hilitableLayers.add(layer);
                 }
-                
+
                 M.Map.resetControl();
             },
-
             /**
              * Remove a layer from the selectable list
              * 
              * @param {OpenLayers.Layer} layer
              */
             remove: function(layer) {
-                
+
                 for (var i = 0, l = this.items.length; i < l; i++) {
                     if (this.items[i].id === layer.id) {
-                        this.items.splice(i,1);
+                        this.items.splice(i, 1);
                         break;
                     }
                 }
-                
+
                 /*
                  * By default, selectable layer is hilitable
                  * unless specified that it is not
                  */
                 M.Map.hilitableLayers.remove(layer);
-                 
+
             }
         },
-        
         /**
          * hilitableLayers object contains all the layers that can be hilited with
          * the "__CONTROL_HIGHLITE__" control tool
          */
         hilitableLayers: {
-
             /**
              * Array containing all selectable layers (i.e. not background layers, only vectors)
              */
             items: [],
-
             /**
              * Add a new layer to the selectable list
              * 
@@ -250,7 +228,6 @@
             add: function(layer) {
                 this.items.push(layer);
             },
-
             /**
              * Remove a layer from the selectable list
              * 
@@ -259,13 +236,12 @@
             remove: function(layer) {
                 for (var i = 0, l = this.items.length; i < l; i++) {
                     if (this.items[i].id === layer.id) {
-                        this.items.splice(i,1);
+                        this.items.splice(i, 1);
                         break;
                     }
                 }
             }
         },
-            
         /*
          * Add GeoJSON feature to mapshup stuff layer
          * The stuff layer is a vector layer that contains
@@ -280,13 +256,13 @@
          * 
          */
         addToStuffLayer: function(data, options) {
-            
+
             if (typeof data !== "object") {
                 return null;
             }
-            
+
             options = options || {};
-            
+
             if (!this._stuffLayer) {
                 this._stuffLayer = this.addLayer({
                     type: "GeoJSON",
@@ -306,7 +282,7 @@
                     }
                 });
             }
-        
+
             /*
              * Add new feature(s) and center on it
              */
@@ -315,9 +291,8 @@
                 layer: this._stuffLayer,
                 zoomOnNew: options.zoomOn || false
             });
-        
-        },
 
+        },
         /*
          *
          * This fonction is the entry point to add any kind of layers
@@ -348,7 +323,7 @@
              * Create a layerDescriptionObj from current layerDescription
              */
             var ldo = new this.LayerDescription(_layerDescription, this);
-            
+
             /**
              * Check if layerDescription object is valid i.e. its layerType is registered
              * Only layers registered within this.Config.layerTypes array
@@ -392,19 +367,19 @@
                 if (!noDeletionCheck && M.Config["general"].confirmDeletion) {
 
                     M.Util.askFor({
-                        title:M.Util._("Delete layer"),
-                        content:M.Util._("Do you really want to remove layer")+" "+newLayer.name,
-                        dataType:"list",
-                        value:[{
-                                title:M.Util._("Yes"), 
-                                value:"y"
+                        title: M.Util._("Delete layer"),
+                        content: M.Util._("Do you really want to remove layer") + " " + newLayer.name,
+                        dataType: "list",
+                        value: [{
+                                title: M.Util._("Yes"),
+                                value: "y"
                             },
                             {
-                                title:M.Util._("No"), 
-                                value:"n"
+                                title: M.Util._("No"),
+                                value: "n"
                             }
-                            ],
-                       callback:function(v){
+                        ],
+                        callback: function(v) {
                             if (v === "y") {
                                 M.Map.removeLayer(newLayer);
                                 M.Map.addLayer(_layerDescription);
@@ -422,7 +397,7 @@
              * Get a reference to the layerDescription object
              */
             var layerDescription = ldo.obj;
-            
+
             /**
              * Ensure that layerDescription.url is an absolute url
              */
@@ -449,79 +424,58 @@
              * M specific properties.
              */
             options["_M"] = {
-
                 /** True : add opacity buttons in LayersManager panel */
-                allowChangeOpacity:M.Util.getPropertyValue(layerDescription, "allowChangeOpacity", false),
-
+                allowChangeOpacity: M.Util.getPropertyValue(layerDescription, "allowChangeOpacity", false),
                 /** True : layer is clusterized if it is supported in the layerTypes */
-                clusterized:M.Util.getPropertyValue(layerDescription, "clusterized", M.Util.getPropertyValue(layerType, "clusterized", false)),
-
+                clusterized: M.Util.getPropertyValue(layerDescription, "clusterized", M.Util.getPropertyValue(layerType, "clusterized", false)),
                 /** Total number of feature within layer (see "layersend" event) */
-                count:0,
-                
+                count: 0,
                 /** True : layer is editable which means that feature can be modified and/or deleted individually */
-                editable:M.Util.getPropertyValue(layerDescription, "editable", false),
-
+                editable: M.Util.getPropertyValue(layerDescription, "editable", false),
                 /** By default, a layer is not in a group */
-                group:null,
-
+                group: null,
                 /** True : layer is selectable through click in the map (i.e. add to __CONTROL_SELECT__) */
-                hilitable:M.Util.getPropertyValue(layerDescription, "hilitable", M.Util.getPropertyValue(layerType, "hilitable", true)),
-
+                hilitable: M.Util.getPropertyValue(layerDescription, "hilitable", M.Util.getPropertyValue(layerType, "hilitable", true)),
                 /** Icon */
-                icon:M.Util.getPropertyValue(layerDescription, "icon", M.Util.getImgUrl(M.Util.getPropertyValue(layerType, "icon", null))),
-
+                icon: M.Util.getPropertyValue(layerDescription, "icon", M.Util.getImgUrl(M.Util.getPropertyValue(layerType, "icon", null))),
                 /** True : the layer is load during startup */
-                initial:M.Util.getPropertyValue(layerDescription, "initial", false),
-                
+                initial: M.Util.getPropertyValue(layerDescription, "initial", false),
                 /** True : the layer content is initialized */
-                initialized:M.Util.getPropertyValue(_options, "forceInitialized", false),
-
+                initialized: M.Util.getPropertyValue(_options, "forceInitialized", false),
                 /** True : the layer content is loaded */
-                isLoaded:true,
-
+                isLoaded: true,
                 /** Unique M identifier for this layer */
-                MID:MID,
-
+                MID: MID,
                 /** LayerDescription for this layer : use for context saving */
-                layerDescription:layerDescription,
-                
+                layerDescription: layerDescription,
                 /** True : the layer is a mapshup layer - mapshup layers are not part of a saved context */
-                MLayer:M.Util.getPropertyValue(layerDescription, "MLayer", false),
-
+                MLayer: M.Util.getPropertyValue(layerDescription, "MLayer", false),
                 /** True : avoid zoomon on layer name click in LayersManager panel */
-                noZoomOn:M.Util.getPropertyValue(layerDescription, "noZoomOn", false),
-                
+                noZoomOn: M.Util.getPropertyValue(layerDescription, "noZoomOn", false),
                 /** Pagination should be an object - see below */
-                pagination:M.Util.getPropertyValue(layerDescription, "pagination", null),
-                
+                pagination: M.Util.getPropertyValue(layerDescription, "pagination", null),
                 /** True : for catalog layers, quicklook attached to feature results can be added as an image layer on the map  */
-                qlToMap:M.Util.getPropertyValue(layerDescription, "qlToMap", false),
-
+                qlToMap: M.Util.getPropertyValue(layerDescription, "qlToMap", false),
                 /** True : add refresh button in LayersManager panel */
-                refreshable:M.Util.getPropertyValue(layerDescription, "refreshable", false),
-
+                refreshable: M.Util.getPropertyValue(layerDescription, "refreshable", false),
                 /** Refresh time interval for this layer is multicated by refreshFactor */
-                refreshFactor:M.Util.getPropertyValue(layerDescription, "refreshFactor", 1),
-
+                refreshFactor: M.Util.getPropertyValue(layerDescription, "refreshFactor", 1),
                 /** True : layer is selectable through click in the map (i.e. add to __CONTROL_SELECT__) */
-                selectable:M.Util.getPropertyValue(layerDescription, "selectable", M.Util.getPropertyValue(layerType, "selectable", false)),
-
+                selectable: M.Util.getPropertyValue(layerDescription, "selectable", M.Util.getPropertyValue(layerType, "selectable", false)),
                 /** True : no remove button in LayersManager panel */
-                unremovable:M.Util.getPropertyValue(layerDescription, "unremovable", false),
-                
+                unremovable: M.Util.getPropertyValue(layerDescription, "unremovable", false),
                 /** True : use Micro Info popup instead of Feature Info popup (see FeatureInfo.js) */
-                microInfoTemplate:M.Util.getPropertyValue(layerDescription, "microInfoTemplate", {})
+                microInfoTemplate: M.Util.getPropertyValue(layerDescription, "microInfoTemplate", {})
 
             };
-            
+
             /*
              * Micro Info Template is automatically enabled for touch device
              */
             if (M.Util.device.touch) {
                 options["_M"].microInfoTemplate.enable = true;
             }
-            
+
             /*
              * Some OpenLayers properties are linked to layerType :
              * 
@@ -558,10 +512,10 @@
                  * Tell user a non mapshup layer has been added (only if it has been loaded)
                  */
                 /* TODO : remove
-                if (!newLayer["_M"].MLayer && newLayer["_M"].isLoaded) {
-                    M.Util.message(M.Util._("Added")+ " : " + M.Util._(newLayer.name));
-                }
-                */
+                 if (!newLayer["_M"].MLayer && newLayer["_M"].isLoaded) {
+                 M.Util.message(M.Util._("Added")+ " : " + M.Util._(newLayer.name));
+                 }
+                 */
 
                 /*
                  * If no "loadstart" has been defined
@@ -613,7 +567,7 @@
 
                     });
                 }
-                
+
 
                 /*
                  * Set the visibility of the layer depending on the "hidden" property
@@ -627,12 +581,12 @@
                  * Add newLayer to the map
                  */
                 this.map.addLayer(newLayer);
-                
+
                 /*
                  * Add newLayer to the TimeLine
                  */
                 M.timeLine.add(newLayer);
-                
+
                 /*
                  * First baseLayer is set as the new baseLayer
                  * (i.e. replace the EmptyBaseLayer layer)
@@ -678,15 +632,15 @@
                     newLayer["_M"].group = layerGroup;
                     layerGroup.add(newLayer);
                 }
-                
+
                 /* 
                  * Trigger events layersend
                  */
                 this.events.trigger("layersend", {
-                    action:"add",
-                    layer:newLayer
+                    action: "add",
+                    layer: newLayer
                 });
-                
+
                 /*
                  * Set opacity
                  */
@@ -695,10 +649,9 @@
                 }
 
             }
-            
+
             return newLayer;
         },
-        
         /**
          * Method: getState
          * Get the current map state and return it.
@@ -706,7 +659,7 @@
          * Returns:
          * {Object} An object representing the current state.
          */
-        getState:function() {
+        getState: function() {
             return {
                 center: this.map.getCenter(),
                 resolution: this.map.getResolution(),
@@ -714,7 +667,6 @@
                 units: this.map.getUnits() || this.map.units || this.map.baseLayer.units
             };
         },
-
         /**
          * Load a context
          * 
@@ -737,26 +689,26 @@
          */
         loadContext: function(context) {
 
-            var id,b,layer,i,j,k,l,s,
-            self = this;
+            var id, b, layer, i, j, k, l, s,
+                    self = this;
 
             /*
              * Paranoid mode
              */
             context = context || {};
-            
+
             /*
              * Set location
              */
             if (context.location) {
-                self.map.setCenter(self.Util.d2p(new OpenLayers.LonLat(context.location.lon,context.location.lat)), Math.max(context.location.zoom, self.lowestZoomLevel));
+                self.map.setCenter(self.Util.d2p(new OpenLayers.LonLat(context.location.lon, context.location.lat)), Math.max(context.location.zoom, self.lowestZoomLevel));
             }
-            
+
             /*
              * Set layers
              */
             context.layers = context.layers || [];
-            
+
             /*
              * Parse context layer descriptions and compare
              * it with existing layers.
@@ -767,78 +719,78 @@
              *   - map layers that are not in the context are removed
              *   - context layers that are already in the map are updated
              */
-            
+
             /*
              * Remove layers
              */
             for (i = 0, l = self.map.layers.length; i < l; i++) {
-                
+
                 /*
                  * By default, remove the layer
                  */
                 b = true;
-                
+
                 layer = self.map.layers[i];
-                
+
                 /*
                  * mapshup layers are excluded from the processing
                  */
                 if (layer && layer["_M"] && !layer["_M"].MLayer) {
-                    
+
                     id = layer["_M"].MID;
-                    
+
                     /*
                      * Roll over context layers
                      */
                     for (j = 0, k = context.layers.length; j < k; j++) {
-                        
+
                         /*
                          * The layer is present in the context layer list. No need to remove it
                          */
                         if (id === (new self.LayerDescription(context.layers[j], self)).getMID()) {
                             b = false;
                             break;
-                            
+
                         }
 
                     }
-                    
+
                     /*
                      * Remove the layer
                      */
                     if (b) {
                         self.removeLayer(self.Util.getLayerByMID(id), false);
                     }
-                    
+
                 }
-                
-                
+
+
             }
-            
+
             /*
              * Add or update layers
              */
             for (i = 0, l = context.layers.length; i < l; i++) {
-                
+
                 id = (new self.LayerDescription(context.layers[i], self)).getMID();
-                
+
                 /*
                  * By default, add the layer
                  */
                 b = true;
-                
+
                 /*
                  * Roll over existing layers
                  */
                 for (j = 0, k = self.map.layers.length; j < k; j++) {
-                    
+
                     layer = self.map.layers[j];
-                    
+
                     /*
                      * mapshup layers are excluded from the processing
                      */
                     if (layer["_M"] && !layer["_M"].MLayer) {
-                        
+
                         /*
                          * The layer already exist - update it
                          */
@@ -846,37 +798,37 @@
                             b = false;
                             break;
                         }
-                        
+
                     }
-                    
+
                 }
-                
+
                 /*
                  * Add layer
                  */
                 if (b) {
-                    self.addLayer(context.layers[i],{
-                        noDeletionCheck:true,
-                        forceInitialized:true
+                    self.addLayer(context.layers[i], {
+                        noDeletionCheck: true,
+                        forceInitialized: true
                     });
                 }
                 /*
                  * Update layer
                  */
                 else {
-                    
+
                     /*
                      * Set visibility
                      */
                     if (!layer.isBaseLayer) {
                         M.Map.Util.setVisibility(layer, !context.layers[i].hidden);
                     }
-                    
+
                     /*
                      * Launch search on catalogs
                      */
                     s = context.layers[i].search;
-            
+
                     if (s) {
 
                         //
@@ -887,13 +839,13 @@
                         //
                         // Launch unitary search
                         //
-                        layer["_M"].searchContext.search({nextRecord:s.nextRecord});
+                        layer["_M"].searchContext.search({nextRecord: s.nextRecord});
 
                     }
-                    
+
                 }
             }
-            
+
             /*
              * Set default background
              */
@@ -903,9 +855,8 @@
                     self.map.setBaseLayer(layer);
                 }
             }
-            
+
         },
-        
         /*
          * Get current map context represented by
          * 
@@ -916,26 +867,26 @@
          */
         getContext: function() {
 
-            var i,l,layer,c,key,center,ld, self = this;
-            
+            var i, l, layer, c, key, center, ld, self = this;
+
             /*
              * Get map center in Lat/Lon (epsg:4326)
              */
-            center = self.Util.p2d(self.map.getCenter()); 
+            center = self.Util.p2d(self.map.getCenter());
 
             /*
              * Initialize context
              */
             c = {
-                location:{
-                    bg:self.map.baseLayer["_M"].MID,
-                    lat:center.lat,
-                    lon:center.lon,
-                    zoom:self.map.getZoom()
+                location: {
+                    bg: self.map.baseLayer["_M"].MID,
+                    lat: center.lat,
+                    lon: center.lon,
+                    zoom: self.map.getZoom()
                 },
-                layers:[]
+                layers: []
             };
-            
+
             /*
              * Roll over each layer
              */
@@ -956,9 +907,9 @@
                      * layer has been added through context
                      */
                     ld = {
-                        initial:true
+                        initial: true
                     };
-                    
+
                     /*
                      * Clone layerDescription omitting layer and ol properties
                      * to avoid serialization cycling during JSON.stringify processing
@@ -968,30 +919,30 @@
                             ld[key] = layer["_M"].layerDescription[key];
                         }
                     }
-                    
+
                     /*
                      * Layer is hidden
                      */
                     ld.hidden = !layer.getVisibility() && !layer.isBaseLayer ? true : false;
-                    
+
                     /*
                      * Layer got a non empty searchContext
                      */
                     if (layer["_M"].searchContext && layer["_M"].searchContext.items.length > 0) {
                         ld.search = {
-                            MID:layer["_M"].MID,
-                            items:layer["_M"].searchContext.items,
-                            nextRecord:layer["_M"].searchContext.nextRecord
+                            MID: layer["_M"].MID,
+                            items: layer["_M"].searchContext.items,
+                            nextRecord: layer["_M"].searchContext.nextRecord
                         };
                     }
-                    
+
                     /*
                      * Add a layer description
                      */
                     c.layers.push(ld);
-                    
+
                 }
-                
+
             }
 
             /*
@@ -999,7 +950,6 @@
              */
             return c;
         },
-        
         /**
          * Map initialization
          *
@@ -1009,12 +959,12 @@
          * @param {Object} _config
          */
         init: function(_config) {
-            
+
             /*
              * Reference to Map object
              */
             var self = this;
-            
+
             /**
              * Set OpenLayers config option
              */
@@ -1028,8 +978,8 @@
             /**
              * Disable select feature on map pan
              */
-            OpenLayers.Handler.Feature=OpenLayers.Class(OpenLayers.Handler.Feature,{
-                stopDown:false
+            OpenLayers.Handler.Feature = OpenLayers.Class(OpenLayers.Handler.Feature, {
+                stopDown: false
             });
 
             /*
@@ -1041,7 +991,7 @@
              * Force M CSS to overide default OpenLayers CSS
              */
             _config.mapOptions.theme = null;
-            
+
             /*
              * Set initialLocation
              */
@@ -1066,58 +1016,63 @@
              * instead of Navigation
              */
             var opt = {
-                id:"__CONTROL_NAVIGATION__",
+                id: "__CONTROL_NAVIGATION__",
                 documentDrag: true,
                 /* Disable oncontextmenu on right clicks */
-                handleRightClicks:true,
-                zoomWheelEnabled:true,
-                mouseWheelOptions:{
-                    interval:50,
-                    cumulative:false
+                handleRightClicks: true,
+                zoomWheelEnabled: true,
+                mouseWheelOptions: {
+                    interval: 50,
+                    cumulative: false
                 },
-                dragPanOptions:{
-                    enableKinetic:true,
+                dragPanOptions: {
+                    enableKinetic: true,
                     /*
                      * When drag starts, store the clicked point and the time of click in milliseconds
                      */
-                    panMapStart:function(e){
-                        
+                    panMapStart: function(e) {
+
                         // Begin reproduce OpenLayers DragPan.js panMapStart function
-                        if(this.kinetic) {
+                        if (this.kinetic) {
                             this.kinetic.begin();
                         }
                         // End reproduce OpenLayers DragPan.js panMapStart function
                         self._clk = {
-                            x:e.x,
-                            y:e.y,
-                            d:(new Date()).getTime()
+                            x: e.x,
+                            y: e.y,
+                            d: (new Date()).getTime()
                         };
-                    
+
                         return true;
                     },
                     /*
                      * When mouse up, if mouse have not moved and if the time between up and down is large enough,
                      * then display the contextual menu
                      */
-                    panMapUp:function(e){
+                    panMapUp: function(e) {
                         if (self._clk) {
-                            
+
                             /*
                              * No drag occured
                              */
                             if (e.x === self._clk.x && e.y === self._clk.y) {
-                                
+
                                 /*
                                  * User clicks was larger enough to display the contextual menu
                                  */
                                 if ((new Date()).getTime() - self._clk.d > 200) {
                                     self.mouseClick = {
-                                        x:e.x,
-                                        y:e.y
+                                        x: e.x,
+                                        y: e.y
                                     };
                                     M.menu.show();
                                 }
-                                
+                                /*
+                                 * Short click -> trigger a mapclicked event
+                                 */
+                                else {
+                                    M.Map.events.trigger('mapclicked', e);
+                                }
                             }
                         }
                         return true;
@@ -1125,7 +1080,7 @@
                 }
             };
             _config.mapOptions.controls = M.Util.device.touch ? [new OpenLayers.Control.TouchNavigation(opt)] : [new OpenLayers.Control.Navigation(opt)];
-            
+
             /**
              * Create the mapfile
              */
@@ -1136,47 +1091,47 @@
              * Usefull to avoid crash if no baseLayer are specified
              */
             self.map.addLayer(new OpenLayers.Layer("EmptyBaseLayer", {
-                _M:{
-                    MID:"EmptyBaseLayer"
+                _M: {
+                    MID: "EmptyBaseLayer"
                 },
-                isBaseLayer:true,
-                displayInLayerSwitcher:false
+                isBaseLayer: true,
+                displayInLayerSwitcher: false
             }));
 
             /*
              * Create an events object
              */
             self.events = new self.Events(self);
-            
+
             /*
              * Initialize featureInfo
              */
             self.featureInfo = new self.FeatureInfo();
-            
+
             /*
              * Update menu position on map move
              */
-            self.map.events.register('move', self.map, function(){
+            self.map.events.register('move', self.map, function() {
                 if (M.menu) {
                     M.menu.updatePosition();
                 }
             });
-            
+
             /*
              * Call Map 'moveend' events on map 'moveend'
              */
-            self.map.events.register('moveend', self, function(){
-                
+            self.map.events.register('moveend', self, function() {
+
                 /*
                  * Propagate moveend to registered plugin
                  */
                 M.Map.events.trigger('moveend');
-                
+
                 /*
                  * Store the new lastExtent
                  */
                 self.currentState = M.Map.getState();
-                
+
                 /*
                  * Set Geohash
                  * 
@@ -1192,36 +1147,36 @@
                 else {
                     self._bof = false;
                 }
-                
+
             });
-            
+
             /*
              * Detect back/forward click
              */
-            setInterval(function(){
-                
+            setInterval(function() {
+
                 /*
                  * Note : set _bof to true to indicates not to recenter map on moveend
                  * (avoid infinite loop)
                  */
                 if (self.hash && (window.location.hash !== self.hash)) {
-                    
+
                     self.hash = window.location.hash;
                     self._bof = true;
-                    
+
                     /* hash structure is '#<geohash>:<zoomLevel>' */
                     var a = self.hash.split(':');
                     self.map.setCenter(self.Util.d2p(self.Util.Geohash.decode(a[0])), parseInt(a[1]));
-                    
+
                 }
-            
+
             }, 100);
-        
+
             /**
              * onmouseover event definition is only
              * valid if the current device is not a touch device
              */
-            if(!M.Util.device.touch) {
+            if (!M.Util.device.touch) {
 
                 /*
                  * Create "coords" div to display mouse position info
@@ -1235,7 +1190,7 @@
                     if ($('#coords').length === 0) {
                         M.Util.$$('#coords', M.$map);
                     }
-                    
+
                     self.$coords = $('#coords');
                 }
 
@@ -1249,7 +1204,7 @@
                      * (Note : this allow to display hilited feature info outside the map)
                      */
                     if (self.$featureHilite.length === 0) {
-                        self.$featureHilite = M.Util.$$('#'+M.Util.getId(), M.$map).addClass("featureHilite").hide();
+                        self.$featureHilite = M.Util.$$('#' + M.Util.getId(), M.$map).addClass("featureHilite").hide();
                     }
 
                 }
@@ -1257,13 +1212,13 @@
                 /*
                  * Define action on mousemove
                  */
-                self.map.events.register('mousemove', self.map, function(e){
-                
+                self.map.events.register('mousemove', self.map, function(e) {
+
                     /*
                      * Set the mousePosition object
                      */
                     var offset = M.$map.offset();
-                     
+
                     M.Map.mousePosition = new OpenLayers.Pixel(e.pageX - offset.left, e.pageY - offset.top);
 
                     /*
@@ -1274,7 +1229,7 @@
                             'top': M.Map.mousePosition.y - 20,
                             'left': M.Map.mousePosition.x
                         }).show();
-                      
+
                     }
 
                     /*
@@ -1291,7 +1246,7 @@
                 /*
                  * Hide divs when mouse is outside of M.$map
                  */
-                self.map.events.register('mouseout', self.map, function (e){
+                self.map.events.register('mouseout', self.map, function(e) {
                     if (M.Map.$coords) {
                         M.Map.$coords.hide();
                     }
@@ -1311,7 +1266,7 @@
              * Initialize groups
              */
             if (_config.groups) {
-                for (var i=0, l = _config.groups.length; i < l; i++) {
+                for (var i = 0, l = _config.groups.length; i < l; i++) {
                     self.layersGroup[_config.groups.name] = new self.LayersGroup(self, _config.groups.name, _config.groups.icon);
                 }
             }
@@ -1334,20 +1289,20 @@
                 controls.push(new OpenLayers.Control.ScaleLine({
                     id: "__CONTROL_SCALELINE__",
                     /* Geodetic measurement is activated for Spherical Mercator measurements */
-                    geodetic:self.map.projection.projCode === "EPSG:3857" ? true : false
+                    geodetic: self.map.projection.projCode === "EPSG:3857" ? true : false
                 }));
             }
-            
+
             /*
              * Select feature Control :
              *  This control is always active except during drawing
              */
             controls.push(new OpenLayers.Control.SelectFeature(self.selectableLayers.items, {
                 id: "__CONTROL_SELECT__",
-                clickout:false,
-                toggle:true,
-                multiple:false,
-                hover:false
+                clickout: false,
+                toggle: true,
+                multiple: false,
+                hover: false
             }));
 
             /*
@@ -1356,10 +1311,10 @@
             if (_config.general.featureHilite) {
                 controls.push(new OpenLayers.Control.SelectFeature(self.hilitableLayers.items, {
                     id: "__CONTROL_HIGHLITE__",
-                    hover:true,
-                    highlightOnly:true,
+                    hover: true,
+                    highlightOnly: true,
                     eventListeners: {
-                        beforefeaturehighlighted:function(e){
+                        beforefeaturehighlighted: function(e) {
 
                             /*
                              * If menu is visible do not hilite feature
@@ -1368,7 +1323,7 @@
                             if (M.menu && M.menu.$m.is(':visible')) {
                                 return false;
                             }
-                            
+
                             /*
                              * Paranoid mode
                              */
@@ -1387,17 +1342,17 @@
                                         return false;
                                     }
                                 }
-                                
+
                                 /*
                                  * Title is first 'name' or 'title' or 'identifier' or 'id'
                                  */
                                 self.$featureHilite.html(M.Util.stripTags(M.Map.Util.Feature.getTitle(e.feature))).attr("hilited", "hilited").show();
 
                             }
-                            
+
                             return true;
                         },
-                        featureunhighlighted:function(e){
+                        featureunhighlighted: function(e) {
                             self.$featureHilite.empty().attr("hilited", "").hide();
                         }
                     }
@@ -1408,7 +1363,7 @@
              * Attribution control (see OpenLayers documentation)
              */
             controls.push(new OpenLayers.Control.Attribution({
-                id:"__CONTROL_ATTRIBUTION__"
+                id: "__CONTROL_ATTRIBUTION__"
             }));
 
             /*
@@ -1420,23 +1375,23 @@
              * Overview map control
              */
             if (_config.general.overviewMap !== "none") {
-                var overviewMapExtent = new OpenLayers.Bounds(-180,-90,180,90);
+                var overviewMapExtent = new OpenLayers.Bounds(-180, -90, 180, 90);
                 var overviewMapControl = new OpenLayers.Control.OverviewMap({
                     mapOptions: {
-                        theme:false,
-                        projection:this.map.displayProjection,
-                        maxExtent:overviewMapExtent,
-                        numZoomLevels:1,
-                        autoPan:false,
-                        restrictedExtent:overviewMapExtent
+                        theme: false,
+                        projection: this.map.displayProjection,
+                        maxExtent: overviewMapExtent,
+                        numZoomLevels: 1,
+                        autoPan: false,
+                        restrictedExtent: overviewMapExtent
                     },
                     /* Overviewmap is visibility */
-                    maximized:_config.general.overviewMap === "opened" ? true : false,
-                    size:new OpenLayers.Size('250','125'),
-                    layers:[new OpenLayers.Layer.Image('ImageLayer', M.Util.getImgUrl('overviewmap.png'),
-                        overviewMapExtent,
-                        new OpenLayers.Size('250','125')
-                        )]
+                    maximized: _config.general.overviewMap === "opened" ? true : false,
+                    size: new OpenLayers.Size('250', '125'),
+                    layers: [new OpenLayers.Layer.Image('ImageLayer', M.Util.getImgUrl('overviewmap.png'),
+                                overviewMapExtent,
+                                new OpenLayers.Size('250', '125')
+                                )]
                 });
                 self.map.addControl(overviewMapControl);
             }
@@ -1446,8 +1401,8 @@
              * Map is centered at initialLocation unless a map.restrictedExtent
              * is defined. In this case, the map is centered to this restrictedExtent
              */
-            self.map.restrictedExtent ? self.map.zoomToExtent(self.map.restrictedExtent) : self.setCenter(self.Util.d2p(new OpenLayers.LonLat(self.initialLocation.lon,self.initialLocation.lat)), self.initialLocation.zoom, true);
-            
+            self.map.restrictedExtent ? self.map.zoomToExtent(self.map.restrictedExtent) : self.setCenter(self.Util.d2p(new OpenLayers.LonLat(self.initialLocation.lon, self.initialLocation.lat)), self.initialLocation.zoom, true);
+
             /**
              * Set lowest zoom level
              * The map cannot be zoomout to a lower value than lowestZoomLevel
@@ -1461,14 +1416,14 @@
              * synchronized setTimeout to guarantee that actions
              * are executed before a new setTimeout is launched
              */
-            (function loopsiloopsi(){
+            (function loopsiloopsi() {
                 /**
                  * Update the refreshCycle counter
                  */
                 M.Map.refreshCycle++;
                 var i,
-                layer;
-                for (i=M.Map.map.layers.length;i--;) {
+                        layer;
+                for (i = M.Map.map.layers.length; i--; ) {
                     layer = M.Map.map.layers[i];
 
                     /**
@@ -1478,20 +1433,20 @@
                     if (!layer.isBaseLayer && layer["_M"]) {
                         if (layer["_M"].refresh && ((M.Map.refreshCycle % layer["_M"].refreshFactor) === 0)) {
                             layer.refresh({
-                                force:true
+                                force: true
                             });
                         }
 
                     }
                 }
-                
+
                 /**
                  * Respawn a timeout AFTER previous code has been executed
                  */
                 window.setTimeout(loopsiloopsi, M.Config["general"].refreshInterval || 1000);
 
             })();
-            
+
             /*
              * Set __CONTROL_NAVIGATION__ the default map control
              */
@@ -1501,21 +1456,20 @@
              * Add M event : update map size when window size change
              */
             M.events.register("resizeend", self, function(self) {
-                
+
                 /*
                  * Update map size
                  */
                 self.map.updateSize();
-                
+
                 /*
                  * Trigger 'resizeend' event for each registered plugins
                  */
                 self.events.trigger("resizeend");
-                
-            });
-        
-        },
 
+            });
+
+        },
         /**
          * Remove layer
          * 
@@ -1540,25 +1494,25 @@
 
 
                 M.Util.askFor({
-                    title:M.Util._("Delete layer"),
-                    content:M.Util._("Do you really want to remove layer")+" "+layer.name,
-                    dataType:"list",
-                    value:[{
-                        title:M.Util._("Yes"), 
-                        value:"y"
-                    },
-                    {
-                        title:M.Util._("No"), 
-                        value:"n"
-                    }
+                    title: M.Util._("Delete layer"),
+                    content: M.Util._("Do you really want to remove layer") + " " + layer.name,
+                    dataType: "list",
+                    value: [{
+                            title: M.Util._("Yes"),
+                            value: "y"
+                        },
+                        {
+                            title: M.Util._("No"),
+                            value: "n"
+                        }
                     ],
-                    callback:function(v){
+                    callback: function(v) {
                         if (v === "y") {
                             M.Map.removeLayer(layer);
                         }
                     }
                 });
-              
+
                 return false;
             }
 
@@ -1569,13 +1523,13 @@
              * (e.g. see LayersManager plugin)
              */
             layer._tobedestroyed = true;
-                    
+
             /*
              * Trigger "layersend" to registered handlers
              */
             this.events.trigger("layersend", {
-                action:"remove",
-                layer:layer
+                action: "remove",
+                layer: layer
             });
 
             /*
@@ -1590,7 +1544,7 @@
             if (layer["_M"] && layer["_M"].group) {
                 layer["_M"].group.remove(layer);
             }
-            
+
             /*
              * Remove SearchContext within layer
              */
@@ -1602,7 +1556,7 @@
              * Remove layer from TimeLine
              */
             M.timeLine.remove(layer);
-            
+
             /*
              * If layer is an initial layer then its MID is stored
              * to be sure that it will be indicated as removed in the
@@ -1610,8 +1564,8 @@
              */
             if (layer["_M"] && layer["_M"].MLayer) {
                 this.removedLayers.push({
-                    MID:layer["_M"].MID,
-                    layerDescription:layer["_M"].layerDescription
+                    MID: layer["_M"].MID,
+                    layerDescription: layer["_M"].layerDescription
                 });
             }
 
@@ -1619,11 +1573,10 @@
              * Finally remove the layer from M.Map.map.layers
              */
             layer.destroy();
-            
+
             return true;
 
         },
-
         /**
          * Deactivate control and activate SelectFeature control
          * 
@@ -1642,8 +1595,8 @@
              * to ensure that highlite/select controls are actives
              */
             var sfControl = this.Util.getControlById("__CONTROL_SELECT__"),
-            hfControl = this.Util.getControlById("__CONTROL_HIGHLITE__");
-            
+                    hfControl = this.Util.getControlById("__CONTROL_HIGHLITE__");
+
             if (sfControl) {
 
                 /*
@@ -1662,7 +1615,7 @@
                  * Reactivate Select/Highlite feature controls if
                  * selectable layers are defined
                  */
-                if (this.selectableLayers.items.length>0) {
+                if (this.selectableLayers.items.length > 0) {
 
                     /*
                      * First highlite...
@@ -1670,7 +1623,7 @@
                     if (hfControl) {
                         hfControl.activate();
                     }
-                    
+
                     /*
                      * ...and AFTER select
                      */
@@ -1678,19 +1631,18 @@
                 }
             }
         },
-
         /*
          * Setcenter
          */
-        setCenter: function(lonlat,zoom,doNotLog) {
-            
+        setCenter: function(lonlat, zoom, doNotLog) {
+
             /*
              * Tell Map not to log this map move
              */
             this.doNotLog = doNotLog || false;
-            
+
             if (zoom !== null) {
-                this.map.setCenter(lonlat,zoom);
+                this.map.setCenter(lonlat, zoom);
             }
             else {
                 if (M.Util.device.touch || M.Config["general"].teleport) {
@@ -1701,7 +1653,6 @@
                 }
             }
         },
-
         /**
          * Zoom to the input bounds + a half of the bounds
          * If bounds is too small (point), then the map is centered on the
@@ -1712,7 +1663,7 @@
         zoomTo: function(bounds) {
 
             var self = this;
-            
+
             /*
              * Paranoid mode
              */
@@ -1724,10 +1675,10 @@
              * Get the bounds + a half of the bounds 
              */
             var w = bounds.getWidth(),
-            h = bounds.getHeight(),
-            c = bounds.getCenterLonLat(),
-            e = M.Util._("Cannot zoom : this feature is outside authorized extent");
-    
+                    h = bounds.getHeight(),
+                    c = bounds.getCenterLonLat(),
+                    e = M.Util._("Cannot zoom : this feature is outside authorized extent");
+
             /**
              * Bounds is too small => center to bounds
              */
@@ -1736,7 +1687,7 @@
                     M.Util.message(e);
                 }
                 else {
-                    self.map.setCenter(c, Math.max(9,self.map.getZoom()));
+                    self.map.setCenter(c, Math.max(9, self.map.getZoom()));
                 }
             }
             /**
@@ -1749,10 +1700,10 @@
                 else {
                     self.map.zoomToExtent(bounds);
                 }
-            }       
+            }
 
         }
-        
+
     };
-    
+
 })(window.M);

@@ -39,13 +39,8 @@
 /**
  * Define M.Map events
  * 
- * Note on actions. Action name can be :
- * 
- *   - "add" : when a layer is added
- *   - "remove" : when a layer is removed
- *   - "update" : when a layer is updated (for instance after all WMS tiles has been loaded)
- *   - "features" : when features are added to a layer and replaced eventual existing layer features 
- *   - "featureskeep" : when features are added to existing features within a layer
+ * @param {MapshupObject} M
+ *   
  */
 (function (M) {
       
@@ -100,7 +95,13 @@
              * Array containing handlers to be call after
              * a change in visibility layer
              */
-            visibilitychanged:[]
+            visibilitychanged:[],
+                    
+            /*
+             * Array containing handlers to be call after
+             * a short click on the map (i.e. long click and pan do not trigger event)
+             */
+             mapclicked:[]
         };
        
         /*
@@ -296,7 +297,10 @@
              */
             else {
                 /*
-                 * extra is a layer or a feature object
+                 * Depending on event, "extra" can be :
+                 *   - a layer object
+                 *   - a feature object
+                 *   - a mouse click event (for mapclicked event)
                  */
                 for (i = 0, l = self.events[eventname].length; i < l; i++) {
                     obj = self.events[eventname][i];
@@ -312,5 +316,6 @@
         
         return this;
 
-    }
+    };
+    
 })(window.M);
