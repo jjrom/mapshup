@@ -1067,6 +1067,10 @@ a.tab img {
  *
  =========================================*/
 
+.pointer {
+    cursor:pointer !important;
+}
+
 .shadow {
     box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
     -o-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
