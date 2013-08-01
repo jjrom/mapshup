@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>mapshup</title>
+        <script type="text/javascript">
+            var uagent = navigator.userAgent.toLowerCase();
+            if (/msie (\d+\.\d+);/.test(uagent)) { 
+                if (9 > new Number(RegExp.$1)) {
+                    window.location = 'error.html';
+                }
+            }
+ 
+            if (uagent.indexOf("android") > -1 || uagent.indexOf("ipad") > -1 || uagent.indexOf("iphone") > -1 || uagent.indexOf("ipod") > -1) {
+                window.location = 'indext.html' + document.location.search;
+            }
+        </script>
+        <link rel="shortcut icon" href="./favicon.ico" />
+        <link rel="stylesheet" type="text/css" href="../js/mol/theme/default/style.css" />
+        <link rel="stylesheet" type="text/css" href="../js/mol/theme/default/google.tidy.css" />
+        <link rel="stylesheet" type="text/css" href="../js/mapshup/theme/default/mapshup.css" />
+        <link rel="stylesheet" type="text/css" href="../js/mjquery/mjquery.css" />
+    </head>
+    <body>
+        <div id="mwrapper" class="wrapper">
+            <div id="Mheader"></div>
+            <div id="wcontainer" class="map">
+                <div id="mapcontainer">
+                    <div id="map"></div>
+                </div>
+            </div>
+            <div id="Mfooter"></div>
+        </div>
+        <!-- Google maps -->
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.8&sensor=false"></script>
+        <!-- jquery -->
+        <script type="text/javascript" src="../js/mjquery/mjquery.js"></script>
+        <!-- Openlayers -->
+        <script type="text/javascript" src="../js/mol/OpenLayers.js"></script>
+        <!-- mapshup -->
+        <script type="text/javascript" src="../js/mapshup/lib/core/mapshup.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Config.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Util.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Events.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/TimeLine.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Activity.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Toolbar.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Mask.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Tooltip.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Menu.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/TabPaginator.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/SouthPanel.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/SidePanel.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Popup.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/WPS.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/DDZone.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Map.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Map/Util.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Map/Util/GML.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Map/Util/KML.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Map/Events.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Map/LayersGroup.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Map/FeatureInfo.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Map/LayerDescription.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/core/Map/SearchContext.js"></script>
+        
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/Atom.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/Bing.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/Catalog.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/Flickr.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/Generic.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/GeoJSON.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/GeoRSS.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/Google.js"></script> 
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/GPX.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/Image.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/KML.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/MBT.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/Photography.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/Pleiades.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/Sentinel.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/SHP.js"></script> 
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/TMS.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/WFS.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/WMS.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/WMTS.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/Wikipedia.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/XYZ.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/Youtube.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/layerTypes/UTFGrid.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/BackgroundsManager.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Catalog.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Catalog/CSWEOCharter.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Catalog/CSWISO.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Catalog/CSWEO.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Catalog/CSWEOr5.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Catalog/CSWEOr5ebRR.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Catalog/SPOTRest.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Catalog/OpenSearch.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Distance.js"></script>       
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Geonames.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Navigation.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Share.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/RastersManager.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/LayersManager.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/AddLayer.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/LayerInfo.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Drawing.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/DrawBox.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Export.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/FeatureEdition.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Flickr.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Routing.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Streetview.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/GoogleEarth.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Search.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/UserManagement.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/Help.js"></script>
+        <script type="text/javascript" src="../js/mapshup/lib/plugins/UTFGrid.js"></script>
+        
+        <script type="text/javascript" src="../js/mapshup/config/default.js"></script>
+        <script type="text/javascript" src="config/utfgrid.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                M.load();
+            });
+        </script>
+    </body>
+</html>
