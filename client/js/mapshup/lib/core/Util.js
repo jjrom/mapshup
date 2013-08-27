@@ -1047,7 +1047,7 @@
             /*
              * Set content
              */
-            $content = $('.content',$d).html(decodeURIComponent(content));
+            $content = $('.content',$d).html(content);
             self.addClose($content,function(e){
                 delete self.messages[$d.attr('id')];
                 $d.remove();
