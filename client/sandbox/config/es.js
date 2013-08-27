@@ -6,6 +6,7 @@
     c["general"].rootUrl = 'http://localhost/mapshup';
     c["general"].serverRootUrl = 'http://localhost/mapshups';
     c["general"].indexPath = "/sandbox/es.html";
+    c["general"].confirmDeletion = false;
     
     /*
      * Remove layers
