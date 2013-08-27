@@ -244,7 +244,7 @@
                         else if (v.length >= self.minChars) {
                             self.$suggest.show();
                             $('.val', self.$suggest).each(function(){
-                                $(this).html(v);
+                                $(this).html(M.Util.stripTags(v));
                             });
                         }
                         else {
