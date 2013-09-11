@@ -218,7 +218,7 @@
             var describeFeatureType = null;
 
             if (XMLHttpRequestObj.status !== 200) {
-                return null
+                return null;
             }
 
             try {
@@ -291,6 +291,7 @@
                             url:M.Util.proxify(layerDescription.url+"request=DescribeFeatureType&service=WFS", "XML"),
                             async:true,
                             obj:this.obj,
+                            dataType:"xml",
                             success:function(data, textStatus, XMLHttpRequest) {
 
                                 /*
