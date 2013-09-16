@@ -367,52 +367,55 @@
                     type = 'output';
                     putsDescription = descriptor.processOutputsDescription;
                 }
+                
+                // Be sure that putsDescription exits - correct issue #16
+                if (putsDescription) {
+                    for (i = 0, l = putsDescription.length; i < l; i++) {
 
-                for (i = 0, l = putsDescription.length; i < l; i++) {
+                        put = putsDescription[i];
+                        id = M.Util.getId();
 
-                    put = putsDescription[i];
-                    id = M.Util.getId();
+                        /*
+                         * Create Input or Output div with a CSS 'input' class.
+                         * The 'input' (or 'output') class is necessary since the pre-execute function
+                         * will roll over each div with class 'input' (or 'output') to construct the
+                         * execute query.
+                         * 
+                         */
+                        $('.content', $list).append('<span id="' + id + '" class="' + type + '"><span class="title" jtitle="' + put['abstract'] + '">' + (put['title'] || put['identifier']) + '&nbsp;:&nbsp;</span></span> ');
 
-                    /*
-                     * Create Input or Output div with a CSS 'input' class.
-                     * The 'input' (or 'output') class is necessary since the pre-execute function
-                     * will roll over each div with class 'input' (or 'output') to construct the
-                     * execute query.
-                     * 
-                     */
-                    $('.content', $list).append('<span id="' + id + '" class="' + type + '"><span class="title" jtitle="' + put['abstract'] + '">' + (put['title'] || put['identifier']) + '&nbsp;:&nbsp;</span></span> ');
+                        /*
+                         * Attach Input identifier to the 'input' div
+                         * This is done by using the jQuery .data() function
+                         */
+                        $id = $("#" + id).data('identifier', put['identifier']);
 
-                    /*
-                     * Attach Input identifier to the 'input' div
-                     * This is done by using the jQuery .data() function
-                     */
-                    $id = $("#" + id).data('identifier', put['identifier']);
+                        /*
+                         * Add a tooltip on the input title
+                         * This tooltip contains input abstract
+                         */
+                        M.tooltip.add($(".title", $id), 's');
 
-                    /*
-                     * Add a tooltip on the input title
-                     * This tooltip contains input abstract
-                     */
-                    M.tooltip.add($(".title", $id), 's');
+                        /*
+                         * The hard part...
+                         */
+                        if (put.literalData) {
+                            this.displayLiteralData(descriptor, put, $id);
+                        }
+                        else if (put.literalOutput) {
+                            this.displayLiteralOutput(descriptor, put, $id);
+                        }
+                        else if (put.complexData) {
+                            this.displayComplexData(descriptor, put, $id);
+                        }
+                        else if (put.complexOutput) {
+                            this.displayComplexOutput(descriptor, put, $id);
+                        }
+                        else if (put.boundingBoxData) {
+                            this.displayBoundingBoxData(descriptor, put, $id);
+                        }
 
-                    /*
-                     * The hard part...
-                     */
-                    if (put.literalData) {
-                        this.displayLiteralData(descriptor, put, $id);
                     }
-                    else if (put.literalOutput) {
-                        this.displayLiteralOutput(descriptor, put, $id);
-                    }
-                    else if (put.complexData) {
-                        this.displayComplexData(descriptor, put, $id);
-                    }
-                    else if (put.complexOutput) {
-                        this.displayComplexOutput(descriptor, put, $id);
-                    }
-                    else if (put.boundingBoxData) {
-                        this.displayBoundingBoxData(descriptor, put, $id);
-                    }
-
                 }
             }
 
