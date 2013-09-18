@@ -62,19 +62,19 @@ define("MSP_FLICKR_KEY",""); // api key for jeobrowserTest user
 /**
  * gdal_translate path
  */
-define("MSP_GDAL_TRANSLATE_PATH","/Library/Frameworks/GDAL.framework/Programs/gdal_translate");
+define("MSP_GDAL_TRANSLATE_PATH","/usr/local/bin/gdal_translate");
 
 /**
  * gdal_merge.py path
  */
-define("MSP_GDAL_MERGE_PATH","/Library/Frameworks/GDAL.framework/Programs/gdal_merge.py");
+define("MSP_GDAL_MERGE_PATH","/usr/local/bin/gdal_merge.py");
 
 /**
  * Log directory : should be writable by webserver user
  * but not accessible from the Webserver (for security reasons)
  * !! Trailing "/" is MANDATORY !!
  */
-define("MSP_LOG_DIR", "/Users/jrom/Documents/Devel/mercurial/mapshup/_logs/");
+define("MSP_LOG_DIR", "/Users/jrom/data/_logs/");
 
 /**
  * Mapserver Url
@@ -85,48 +85,48 @@ define("MSP_MAPSERVER_URL", "http://localhost/cgi-bin/mapserv");
 /**
  * Mapserver fontset file
  */
-define("MSP_MAPSERVER_FONTSET", "/Users/jrom/Documents/Devel/mercurial/mapshup/server/mapserver/font.list");
+define("MSP_MAPSERVER_FONTSET", "/Users/jrom/Devel/mapshup/server/mapserver/font.list");
 
 /**
  * Mapserver symbolset file
  */
-define("MSP_MAPSERVER_SYMBOLSET", "/Users/jrom/Documents/Devel/mercurial/mapshup/server/mapserver/reference.sym");
+define("MSP_MAPSERVER_SYMBOLSET", "/Users/jrom/Devel/mapshup/server/mapserver/reference.sym");
 
 /**
  * Mapfile directory : should be writable by webserver user
  * but not accessible from the Webserver (for security reasons)
  * !! Trailing "/" is MANDATORY !!
  */
-define("MSP_MAPFILE_DIR", "/Users/jrom/Documents/Devel/_mapshuplogs/");
+define("MSP_MAPFILE_DIR", "/Users/jrom/data/_logs/");
 
 /**
  * mbtiles directory (see http://www.mbtiles.org) : should be writable by webserver user
  * but not accessible from the Webserver (for security reasons)
  * !! Trailing "/" is MANDATORY !!
  */
-define("MSP_MBTILES_DIR", "/Users/jrom/Documents/Devel/_mapshupdata/");
+define("MSP_MBTILES_DIR", "/Users/jrom/data/_logs/");
 
 /**
  * ogrinfo path
  */
-define("MSP_OGRINFO_PATH","/Library/Frameworks/GDAL.framework/Programs/ogrinfo");
+define("MSP_OGRINFO_PATH","/usr/local/bin/ogrinfo");
 
 /**
  * Upload directory : should be writable by webserver user
  * but not accessible from the Webserver (to allow user to get the data)
  * !! Trailing "/" is MANDATORY !!
  */
-define("MSP_UPLOAD_DIR", "/Users/jrom/Documents/Devel/_mapshuplogs/");
+define("MSP_UPLOAD_DIR", "/Users/jrom/data/_logs/");
 
 /**
  * Url to the getFile service
  */
-define("MSP_GETFILE_URL", "http://localhost/mspsrv/utilities/getFile.php?file=");
+define("MSP_GETFILE_URL", "http://localhost/mapshups/utilities/getFile.php?file=");
 
 /**
  * Url to the getKml service
  */
-define("MSP_GETKML_URL", "http://localhost/mspsrv/utilities/getKML.php?kml=");
+define("MSP_GETKML_URL", "http://localhost/mapshups/utilities/getKML.php?kml=");
 
 /**
  * Default number of results per page
