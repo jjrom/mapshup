@@ -209,7 +209,7 @@
                         p.totalResults = options.data.hasOwnProperty("totalResults") ? options.data.totalResults : l;
                         
                     }
-                
+                    
                     /*
                      * By default, GeoJSON stream is assume to be in EPSG:4326 projection
                      * unless srs is specified in EPSG:3857 or EPSG:900913
@@ -359,6 +359,6 @@
             return true;
         }
         
-    }
+    };
     
 })(window.M, window.M.Map);
