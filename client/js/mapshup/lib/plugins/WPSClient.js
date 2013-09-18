@@ -98,7 +98,7 @@
             if (!M.apm) {
                 M.apm = new M.WPS.asynchronousProcessManager();
             }
-        
+
             return self;
 
         };
@@ -367,7 +367,7 @@
                     type = 'output';
                     putsDescription = descriptor.processOutputsDescription;
                 }
-                
+
                 // Be sure that putsDescription exits - correct issue #16
                 if (putsDescription) {
                     for (i = 0, l = putsDescription.length; i < l; i++) {
@@ -463,10 +463,10 @@
              * When the process is finished, the user is notified and the TimeOut function is removed
              */
             if (process.statusLocation && process.status === "ProcessAccepted") {
-               /*
-                * ProcessAccepted
-                *  => add a new process to the asynchronous manager
-                */
+                /*
+                 * ProcessAccepted
+                 *  => add a new process to the asynchronous manager
+                 */
                 return M.apm.add(process, {
                     wpsUrl: process.descriptor.wps.url,
                     identifier: process.descriptor.identifier
@@ -482,24 +482,24 @@
                 return M.apm.update(process);
             }
             if (process.statusLocation) {
-                
+
                 /*
                  * ProcessAccepted
                  *  => add a new process to the asynchronous manager
-                 */  
+                 */
                 if (process.status === "ProcessAccepted") {
-                   return M.apm.add(process, {
-                       wpsUrl:process.descriptor.wps.url,
-                       identifier:process.descriptor.identifier
-                   });
+                    return M.apm.add(process, {
+                        wpsUrl: process.descriptor.wps.url,
+                        identifier: process.descriptor.identifier
+                    });
                 }
-                
+
                 /*
                  * ProcessStarted, ProcessSucceeded or ProcessFailed
                  *  => store result in the User processes list
-                 */  
+                 */
                 return M.apm.update(process);
-                            
+
             }
             /*
              * Asynchronous case - Bad implementation case
@@ -561,13 +561,13 @@
                                 processid: process.descriptor.identifier,
                                 description: process.descriptor["abstract"],
                                 time: (new Date()).toISOString()
-                            }),{
-                                zoomOn:true
+                            }), {
+                                zoomOn: true
                             });
                         }
                         else if (geoType === 'JSON') {
-                            M.Map.addToStuffLayer(JSON.parse(result.data.value),{
-                                zoomOn:true
+                            M.Map.addToStuffLayer(typeof result.data.value === 'object' ? result.data.value : JSON.parse(result.data.value), {
+                                zoomOn: true
                             });
                         }
                         else if (geoType === 'WMS') {
@@ -580,11 +580,11 @@
                     else if (result.reference) {
                         var id = M.Util.getId(),
                                 popup = new M.Popup({
-                                        modal:false,
-                                        noHeader:true,
-                                        autoSize:true,
-                                        body:process.descriptor.title + ' <a id="' + id + '" href="' + result.reference.href + '" class="button inline colored paddedright" target="_blank">' + M.Util._("Download result") + '</a>'
-                                }).show();
+                            modal: false,
+                            noHeader: true,
+                            autoSize: true,
+                            body: process.descriptor.title + ' <a id="' + id + '" href="' + result.reference.href + '" class="button inline colored paddedright" target="_blank">' + M.Util._("Download result") + '</a>'
+                        }).show();
                         $('#' + id).click(function() {
                             popup.hide();
                         });
@@ -1092,7 +1092,7 @@
                                  */
                                 $parent.removeData('fileUrl').data('data', M.Map.Util.Feature.toGeo(event.feature, data["default"])).data('format', data["default"]);
                                 self.setPuts(descriptor, type);
-                                
+
                                 /*
                                  * Store drawn feature
                                  */
@@ -1100,8 +1100,8 @@
                                     var f = event.feature.clone();
                                     M.Map.Util.p2d(f.geometry);
                                     M.Map.addToStuffLayer({
-                                        features:[JSON.parse(drawingPlugin.GeoJSONFormat.write(f))],
-                                        type:"FeatureCollection"
+                                        features: [JSON.parse(drawingPlugin.GeoJSONFormat.write(f))],
+                                        type: "FeatureCollection"
                                     });
                                 }
                                 catch (e) {
@@ -1271,7 +1271,7 @@
 
                 })($mtype, data.supported[i].mimeType, data["default"].mimeType);
             }
-            
+
         };
 
 
