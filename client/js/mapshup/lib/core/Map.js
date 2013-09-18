@@ -269,6 +269,7 @@
                     title: "Stuff",
                     clusterized: false, // Very important !
                     editable: true,
+                    unremovable: true,
                     ol: {
                         styleMap: new OpenLayers.StyleMap({
                             'default': {
