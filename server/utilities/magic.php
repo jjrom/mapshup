@@ -41,6 +41,9 @@ include_once '../config.php';
 include_once '../functions/general.php';
 include_once '../functions/magicutils.php';
 
+// Remove PHP Warning
+error_reporting(E_ERROR | E_PARSE);
+
 /*
  * This script returns json
  */
