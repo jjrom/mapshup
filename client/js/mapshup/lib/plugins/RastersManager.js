@@ -138,7 +138,7 @@
             /*
              * Roll over layer descrpiption properties
              */
-            self.item.$content.html('<table class="lmrcfg sortable"><thead style="text-align:center;"><tr><th>'+M.Util._("Icon")+'</th><th>'+M.Util._("Opacity")+'</th><th></th><th></th></tr></thead><tbody></tbody></table>');
+            self.item.$content.html('<table class="lmrcfg sortable"><thead style="text-align:center;"><tr><th>'+M.Util._("Preview")+'</th><th>'+M.Util._("Opacity")+'</th><th></th><th></th></tr></thead><tbody></tbody></table>');
 
             $tb = $('tbody', self.item.$content).sortable({
                 revert: true,

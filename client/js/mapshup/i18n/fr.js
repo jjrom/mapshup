@@ -180,7 +180,7 @@
     i["Share"]="Partager";
     i["Show"]="Afficher";
     i["Show quicklook"]="Afficher l'image";
-    i["Show raster layers"]="Définir le point d'arrivée";
+    i["Show raster layers"]="Couches raster";
     i["Show thematic metadata"]="Afficher les informations thématiques";
     i["Sign in"]="Connection";
     i["Sign out"]="Déconnection";
