@@ -95,12 +95,14 @@
     i["Get more results"]="さらに結果を取得する";
     i["Global view"]="グローバル表示";
     i["Google libraries not loaded. Streetview is disabled"]="Googleライブラリがロードできません。ストリートビューが無効です";
+    i["Help"]="ヘルプ";
     i["Hi"]="やあ";
     i["Hide"]="非表示";
     i["Hide this layer"]="このレイヤを非表示にする";
     i["Hide thematic metadata"]="分類説明を非表示にする";
     i["Images"]="画像";
     i["in"]="中";
+    i["Info"]="情報";
     i["Initializing 3D mode"]="3Dモードを開始しています";
     i["is empty"]="は空です";
     i["is hidden"]="は非表示です";
@@ -122,6 +124,7 @@
     i["Map context successfully saved"]="マップコンテキストを保存しました";
     i["Measure distance"]="距離を測る";
     i["Modification mode"]="修正モード";
+    i["Modify"]="修正";
     i["My history"]="履歴";
     i["My searches"]="マイサーチ";
     i["Navigation history"]="ナビゲーション履歴";
@@ -172,9 +175,12 @@
     i["Searching"]="検索中";
     i["Server error"]="サーバーエラー";
     i["Set"]="セット";
+    i["Set start point"]="開始点をセット";
+    i["Set end point"]="終了点をセット";
     i["Share"]="共有";
     i["Show"]="表示";
     i["Show quicklook"]="クイックルックを表示";
+    i["Show raster layers"]="ラスターレイヤーを表示";
     i["Show thematic metadata"]="分類説明を表示する";
     i["Sign in"]="サインイン";
     i["Sign out"]="サインアウト";
