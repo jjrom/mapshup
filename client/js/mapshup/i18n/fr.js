@@ -95,12 +95,14 @@
     i["Get more results"]="Afficher plus de résultats";
     i["Global view"]="Vue globale";
     i["Google libraries not loaded. Streetview is disabled"]="La bibliothèque Google n&#39;est pas chargée. Streetview est désactivé";
+    i["Help"]="Aide";
     i["Hi"]="Salut";
     i["Hide"]="Masquer";
     i["Hide this layer"]="Masquer cette couche";
     i["Hide thematic metadata"]="Masquer les informations thématiques";
     i["Images"]="Images";
     i["in"]="dans";
+    i["Info"]="Info";
     i["Initializing 3D mode"]="Initialisation du mode 3D";
     i["is empty"]="est vide";
     i["is hidden"]="est masqué";
@@ -122,6 +124,7 @@
     i["Map context successfully saved"]="Contexte sauvegardé avec succès";
     i["Measure distance"]="Mesurer une distance";
     i["Modification mode"]="Mode modification";
+    i["Modify"]="modifier";
     i["My history"]="Mon historique";
     i["My searches"]="Mes recherches";
     i["Navigation history"]="Historique de navigation";
@@ -172,9 +175,12 @@
     i["Searching"]="Recherche";
     i["Server error"]="Erreur serveur";
     i["Set"]="Définir";
+    i["Set end point"]="Définir le point d'arrivée";
+    i["Set start point"]="Définir le point de départ";
     i["Share"]="Partager";
     i["Show"]="Afficher";
     i["Show quicklook"]="Afficher l'image";
+    i["Show raster layers"]="Définir le point d'arrivée";
     i["Show thematic metadata"]="Afficher les informations thématiques";
     i["Sign in"]="Connection";
     i["Sign out"]="Déconnection";

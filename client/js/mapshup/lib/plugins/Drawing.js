@@ -262,7 +262,7 @@
                         self.control = null;
 
                     },
-                    body:'<span class="marged">'+M.Util._("You are in drawing mode")+'&nbsp;&nbsp;<a href="#" class="button inline t" id="'+id+'">'+M.Util._("modify")+'</a> <a href="#" class="button validate inline s">'+M.Util._("Save")+'</a></span>'
+                    body:'<span class="marged">'+M.Util._("You are in drawing mode")+'&nbsp;&nbsp;<a href="#" class="button inline t" id="'+id+'">'+M.Util._("Modify")+'</a> <a href="#" class="button validate inline s">'+M.Util._("Save")+'</a></span>'
                 });
                 
                 /*
@@ -286,7 +286,7 @@
             /*
              * Set popup body
              */
-            $('.t', self.infoPopup.$b).html(self.status === "draw" ? M.Util._("modify") : M.Util._("draw"));
+            $('.t', self.infoPopup.$b).html(self.status === "draw" ? M.Util._("Modify") : M.Util._("draw"));
             
             /*
              * Display popup
@@ -507,7 +507,7 @@
             /*
              * Change info status
              */
-            self.status = "modify";
+            self.status = "Modify";
             self.showStatus();
             
             /*
@@ -560,7 +560,7 @@
                 onClose: function() {
                     M.mask.hide();
                 },
-                body: '<form class="marged"><label>' + M.Util._("Feature title") + '<br/><input id="featureTitle" type="text"/></label><br/><label>' + M.Util._("Feature description") + '<br/><textarea id="featureDesc"/></label><div style="margin:10px 0px;"><a href="#" class="button inline colored" id="featureDescV">' + M.Util._("Validate") + '</a></div></form>'
+                body: '<form class="marged"><label>' + M.Util._("Title") + '<br/><input id="featureTitle" type="text"/></label><br/><label>' + M.Util._("Description") + '<br/><textarea id="featureDesc"/></label><div style="margin:10px 0px;"><a href="#" class="button inline colored" id="featureDescV">' + M.Util._("Validate") + '</a></div></form>'
             });
             popup.show();
 
