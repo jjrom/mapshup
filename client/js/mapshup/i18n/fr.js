@@ -98,6 +98,7 @@
     i["Help"]="Aide";
     i["Hi"]="Salut";
     i["Hide"]="Masquer";
+    i["Hide the parent layer"]="Masquer la couche correspondante";
     i["Hide this layer"]="Masquer cette couche";
     i["Hide thematic metadata"]="Masquer les informations thématiques";
     i["Images"]="Images";
@@ -125,6 +126,7 @@
     i["Measure distance"]="Mesurer une distance";
     i["Modification mode"]="Mode modification";
     i["Modify"]="modifier";
+    i["More info"]="Informations";
     i["My history"]="Mon historique";
     i["My searches"]="Mes recherches";
     i["Navigation history"]="Historique de navigation";

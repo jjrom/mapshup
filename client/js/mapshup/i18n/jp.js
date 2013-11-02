@@ -98,6 +98,7 @@
     i["Help"]="ヘルプ";
     i["Hi"]="やあ";
     i["Hide"]="非表示";
+    i["Hide the parent layer"]="このフィーチャを含むレイヤを非表示にする";
     i["Hide this layer"]="このレイヤを非表示にする";
     i["Hide thematic metadata"]="分類説明を非表示にする";
     i["Images"]="画像";
@@ -125,11 +126,12 @@
     i["Measure distance"]="距離を測る";
     i["Modification mode"]="修正モード";
     i["Modify"]="修正";
+    i["More info"]="詳細情報";
     i["My history"]="履歴";
     i["My searches"]="マイサーチ";
     i["Navigation history"]="ナビゲーション履歴";
     i["Next view"]="次を見る";
-    i["No"]="ありません";
+    i["No"]="いいえ";
     i["No account yet ?"]="アカウントの取得はまだですか？";
     i["No description available"]="説明情報はありません";
     i["No information available here"]="ここで表示可能は情報はありません";
