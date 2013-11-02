@@ -395,7 +395,7 @@
                 data: M.Util.abc + "&email=" + email + "&username=" + username,
                 success: function(data) {
                     if (data.error) {
-                        M.Util.message(data.error["message"]);
+                        M.Util.message(M.Util._(data.error["message"]));
                     }
                     else {
                         M.Util.message(M.Util._("A password has been sent to your mailbox"));
