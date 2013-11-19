@@ -330,6 +330,23 @@
                 
             }
             /*
+             * Add Layer
+             */
+            else if (kvp["layers"]) {
+                try {
+                    var ls = JSON.parse(decodeURIComponent(kvp["layers"].replace(window.location.hash, "")));
+                    if (!$.isArray(ls)) {
+                        ls = [ls];
+                    }
+                    for (i = 0, l = ls.length; i < l; i++) {
+                        self.Config.add("layers", ls[i]);
+                    }
+                    self.setLang(kvp);
+                }catch(e){
+                    // Nevermind
+                }
+            }
+            /*
              * If there is no kvp["uid"] defined, then go the next initialization step,
              * i.e. set mapshup lang
              */
