@@ -144,7 +144,7 @@
                     $d.append('<li id="' + item.id + '" jtitle="' + item.name + '" class="thumbs"><img src="' + options.rootUrl + '/' + item.icon + '"/></li>');
                     M.tooltip.add($('#' + item.id), 's');
                     
-                    if (!item.activate && M.Map.Util.getLayerByMID(item.layerMID)) {
+                    if (!item.active && M.Map.Util.getLayerByMID(item.layerMID)) {
                         M.Map.Util.setVisibility(M.Map.Util.getLayerByMID(item.layerMID), false);
                     }
                     
