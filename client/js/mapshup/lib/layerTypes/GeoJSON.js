@@ -337,7 +337,8 @@
                     if (!self.load({
                         data:data, 
                         layerDescription:layerDescription, 
-                        layer:this.layer
+                        layer:this.layer,
+                        zoomOnNew:layerDescription.zoomOnNew
                     })) {
                             
                         /*
