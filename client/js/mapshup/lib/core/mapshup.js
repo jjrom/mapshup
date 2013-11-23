@@ -334,7 +334,7 @@
              */
             else if (kvp["layers"]) {
                 try {
-                    var ls = JSON.parse(decodeURIComponent(kvp["layers"].replace(window.location.hash, "")));
+                    var ls = JSON.parse(decodeURIComponent(kvp["layers"].replace(window.location.hash, '')));
                     if (!$.isArray(ls)) {
                         ls = [ls];
                     }
@@ -343,7 +343,8 @@
                     }
                     self.setLang(kvp);
                 }catch(e){
-                    // Nevermind
+                    M.Util.message('Error : cannot read input layer');
+                    self.setLang(kvp);
                 }
             }
             /*
