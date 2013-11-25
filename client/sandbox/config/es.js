@@ -17,7 +17,7 @@
     /*
      * Remove plugins
      */
-    c.remove("plugins", "GoogleEarth");
+    //c.remove("plugins", "GoogleEarth");
     
     /**
      * Add ElasticSearch search server
