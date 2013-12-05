@@ -508,7 +508,14 @@
              * Add newLayer to map
              */
             if (newLayer) {
-
+                
+                /*
+                 * Zoom on layer
+                 */
+                if (newLayer['_M'].layerDescription && newLayer['_M'].layerDescription.zoomOnNew) {
+                    this.zoomTo(newLayer.getDataExtent() || newLayer["_M"].bounds);
+                }
+                        
                 /*
                  * Tell user a non mapshup layer has been added (only if it has been loaded)
                  */
@@ -563,7 +570,7 @@
                          * Set a flag to indicate that this layer has been initialized
                          */
                         this._M.initialized = true;
-
+                        
                         return true;
 
                     });
