@@ -279,15 +279,15 @@
     /** Default layers */
     c.add("layers", {
         type:"Google",
-        title:"Streets",
+        title:"Satellite",
+        googleType:"satellite",
         numZoomLevels:22,
         unremovable:true
     });
     
     c.add("layers", {
         type:"Google",
-        title:"Satellite",
-        googleType:"satellite",
+        title:"Streets",
         numZoomLevels:22,
         unremovable:true
     });
