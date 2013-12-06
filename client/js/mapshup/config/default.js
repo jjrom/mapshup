@@ -798,4 +798,15 @@
         name:"FeatureEdition"
     });
     
+    /**
+     * API plugin
+     */
+    c.add("plugins",
+    {
+        name:"API",
+        options:{
+            authorized:'*'
+        }
+    });
+    
 })(window.M.Config);

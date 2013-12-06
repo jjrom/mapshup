@@ -90,3 +90,4 @@ lib/plugins/WorldGrid.js
 lib/plugins/Slacker.js
 #lib/plugins/ACAcIA.js
 lib/plugins/QuickSelector.js
+lib/plugins/API.js
