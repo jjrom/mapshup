@@ -124,7 +124,7 @@
              */
             if (self.options.home) {
                 tb.add({
-                    icon: "center.png",
+                    title: "&#8226;",
                     tt: "Global view",
                     onoff: false,
                     onactivate: function(scope, item) {
