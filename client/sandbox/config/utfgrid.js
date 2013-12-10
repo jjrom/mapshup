@@ -28,7 +28,7 @@
     c.add("layers", {
         type: "UTFGrid",
         title: "UTFGrid test",
-        url: c["general"].serverRootUrl + "/plugins/utfgrids/serve.php?name=countries_utfgrids&zxy=${z}/${x}/${y}",
+        url: c["general"].serverRootUrl + "/plugins/utfgrids/serve.php?name=utfgrids_countries&zxy=${z}/${x}/${y}",
         z: [0, 5],
         bbox: {
             bounds: "-180,-90,180,90",
