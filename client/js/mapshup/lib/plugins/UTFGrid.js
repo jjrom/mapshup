@@ -153,7 +153,7 @@
             M.Map.events.register("mapclicked", self, function(event, scope) {
                 
                 var bbox, data = scope.getData(M.Map.map.getLonLatFromPixel(M.Map.mousePosition));
-                
+               
                 /*
                  * Zoom on first object if bbox is defined
                  */
