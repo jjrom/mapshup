@@ -224,7 +224,22 @@
                         }).read(options.data);
                     }
                     
-                    options.layer.addFeatures(features);
+                    /*
+                     * Cluster is a bit special...needs to remove every feature
+                     * and then add it again !
+                     */
+                    if (options.layer['_M'].clusterized) {
+                        var allfeatures = Map.Util.getFeatures(options.layer),
+                            afl = allfeatures.length;
+                        for (var i = 0, l = features.length; i < l; i++) {
+                            allfeatures[afl + i] = features[i];
+                        }
+                        options.layer.destroyFeatures();
+                        options.layer.addFeatures(allfeatures);
+                    }
+                    else {
+                        options.layer.addFeatures(features);
+                    }
                     
                     /*
                      * Zoom on new added features otherwise zoom on layer
