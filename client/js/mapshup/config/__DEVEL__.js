@@ -69,4 +69,8 @@
     c.remove("plugins", "WorldGrid");
     c.remove("plugins", "Welcome");
     
+    c.extend("LayersManager", {
+        slideOverMap:true
+    });
+    
 })(window.M.Config);

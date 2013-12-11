@@ -83,6 +83,11 @@
          * Thumb width is square thumb width (50px) + padding (4px)
          */
         this.tw = 54;
+        
+        /**
+         * Tools item height (TODO : NOT USED - set to 0)
+         */
+        this.tih = 0;
 
         /**
          * Panel initialisation
@@ -106,22 +111,30 @@
              */
             $.extend(self.options, {
                 position: M.Util.getPropertyValue(self.options, "position", "n"),
-                onTheFly: M.Util.getPropertyValue(options, "onTheFly", true)
+                onTheFly: M.Util.getPropertyValue(self.options, "onTheFly", true),
+                slideOverMap: M.Util.getPropertyValue(self.options, "slideOverMap", true)
             });
-
+ 
             /*
              * Check if you are not on a touch device...
              */
             if (M.Util.device.touch) {
                 self.options.onTheFly = false;
             }
-
+            
+            /*
+             * Move map down to the size of the tools item height
+             * 
+             * TODO : NOT USED - should be used when
+             */
+            //M.$mcontainer.css(self.options.position === 'n' ? 'top' : 'bottom', self.tih);
+            
             /*
              * Create a Panel div within M.$mcontainer
              * 
              * <div id="..." class="lm {lmn or lms}"></div>
              */
-            self.$d = M.Util.$$('#' + M.Util.getId(), M.$mcontainer).addClass('lm lm' + self.options.position);
+            self.$d = M.Util.$$('#' + M.Util.getId(), self.options.slideOverMap ? M.$mcontainer : M.$container).addClass('lm lm' + self.options.position);
 
             /*
              * Track layersend events
@@ -948,8 +961,8 @@
          */
         this.show = function(item) {
 
-            var self = this;
-
+            var self = this, h = self.$d.height();
+            
             /*
              * Paranoid mode
              */
@@ -977,12 +990,30 @@
             /*
              * Show panel
              */
-            self.$d.stop().animate(self.options.position === 'n' ? {
-                'top': '0px'
-            } : {
-                'bottom': '0px'
-            }, 200);
-
+            if (self.options.slideOverMap) {
+                self.$d.stop().animate(self.options.position === 'n' ? {
+                    'top': '0px'
+                } : {
+                    'bottom': '0px'
+                }, 200);
+            }
+            else {
+                self.$d.stop().animate(self.options.position === 'n' ? {
+                    'top': '0px'
+                } : {
+                    'bottom': '0px'
+                },
+                {
+                    duration: 200,
+                    queue: true,
+                    step: function(now, fx) {
+                        M.$mcontainer.css(self.options.position === 'n' ? 'top' : 'bottom', self.tih + h + now);
+                    },
+                    complete: function() {
+                        M.Map.map.updateSize();
+                    }
+                });
+            }
             /*
              * Set the visible status to true
              */
@@ -999,7 +1030,7 @@
          */
         this.hide = function(item) {
 
-            var self = this;
+            var self = this, h = self.$d.height();
 
             /*
              * If item is not active, do nothing
@@ -1022,12 +1053,31 @@
             /*
              * Hide panel
              */
-            self.$d.stop().animate(self.options.position === 'n' ? {
-                'top': '-59px'
-            } : {
-                'bottom': '-59px'
-            }, 200);
-
+            if (self.options.slideOverMap) {
+                self.$d.stop().animate(self.options.position === 'n' ? {
+                    'top': '-59px'
+                } : {
+                    'bottom': '-59px'
+                }, 200);
+            }
+            else {
+                self.$d.stop().animate(self.options.position === 'n' ? {
+                    'top': '-' + h + 'px'
+                } : {
+                    'bottom': '-' + h + 'px'
+                },
+                {
+                    duration: 200,
+                    queue: true,
+                    step: function(now, fx) {
+                        M.$mcontainer.css(self.options.position === 'n' ? 'top' : 'bottom', self.tih + h + now);
+                    },
+                    complete: function() {
+                        M.Map.map.updateSize();
+                    }
+                });
+            } 
+           
             /*
              * Hide tools
              */
