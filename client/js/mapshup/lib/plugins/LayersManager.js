@@ -111,6 +111,7 @@
              */
             $.extend(self.options, {
                 position: M.Util.getPropertyValue(self.options, "position", "n"),
+                tabLeftOffset:M.Util.getPropertyValue(self.options, "tabLeftOffset", 35),
                 onTheFly: M.Util.getPropertyValue(self.options, "onTheFly", true),
                 slideOverMap: M.Util.getPropertyValue(self.options, "slideOverMap", true)
             });
@@ -256,7 +257,7 @@
              * Add tab tabPaginator
              * IMPORTANT ! Must be set AFTER the SouthPanel resizeend event
              */
-            self.tabPaginator = new M.TabPaginator({target: self, $container: M.$mcontainer, left:35});
+            self.tabPaginator = new M.TabPaginator({target: self, $container: M.$mcontainer, left:self.options.tabLeftOffset});
 
             return self;
 
