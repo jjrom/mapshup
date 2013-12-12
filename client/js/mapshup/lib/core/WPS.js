@@ -1186,7 +1186,7 @@
                     if (put.fileUrl) {
                         template = M.Util.parseTemplate(M.WPS.complexDataInputReferenceTemplate, {
                             identifier: put.identifier,
-                            reference: put.fileUrl.replace('&', '&#038;') // URIEncode should be better but not supported by Constellation server
+                            reference: put.fileUrl.split('&').join('&#038;') // URIEncode should be better but not supported by Constellation server
                         });
                     }
                     /*
