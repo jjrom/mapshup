@@ -517,7 +517,7 @@
              *  
              */
             data = '<w:trainingList gml:id="trainingFeature" xsi:schemaLocation="' + this.options.trainingListSchemaLocation + '" xmlns:w="constellation-sdi/WS/wps" xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">';
-            data += '<w:trainingImage>' + this.imageToClassifyUrl + '</w:trainingImage>';     
+            data += '<w:trainingImage>' + this.imageToClassifyUrl.replace(/[&]/g, '&#038;') + '</w:trainingImage>';     
             for (i = 0, l = this.classesLayer.features.length; i < l; i++ ) {
                 f = this.classesLayer.features[i];
                 data += '<w:imageClass><w:imageClassType><w:className>' + f.attributes.className + '</w:className><w:classNumber>' + f.attributes.classNumber + '</w:classNumber><w:classGeometry>' + M.Map.Util.GML.featureToGML(f) + '</w:classGeometry></w:imageClassType></w:imageClass>';
