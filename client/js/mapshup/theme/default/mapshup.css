@@ -805,7 +805,7 @@ a.tab:hover
     font-size:1.5em;
     text-align: justify;
     padding:0px 30px;
-    /*overflow-y: auto;*/
+    overflow: auto;
 }
 .fi .info table {
     margin-left:10px;

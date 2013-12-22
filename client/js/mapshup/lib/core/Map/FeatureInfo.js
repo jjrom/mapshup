@@ -981,10 +981,10 @@
              * Set quicklook width and height to respectively
              * 40% and 90% of the main wrapper 
              */
-            $('.body', $target).append('<div class="ql" style="float:left;width:50%;">' + (ql ? '<img src="' + ql + '"/>' : '') + '</div><div class="info"></div>');
+            $('.body', $target).append('<div class="ql" style="float:left;width:49%;">' + (ql ? '<img src="' + ql + '"/>' : '') + '</div><div class="info"></div>');
             $('.ql img', $target).css({
-                'max-width': Math.round($('#mwrapper').width() * 4 / 10),
-                'max-height': Math.round($('#mwrapper').height() * 9 / 10)
+                'max-width': Math.round($('#mwrapper').width() * 4 / 10) - 10,
+                'max-height': Math.round($('#mwrapper').height() * 9 / 10) - 10
             });
 
             /*
