@@ -1043,7 +1043,7 @@
                     /*
                      * Special keywords
                      */
-                    if (k === 'identifier' || k === 'icon' || k === 'thumbnail' || k === 'quicklook' || k === 'imageUrl' || k === 'modified' || k === 'color') {
+                    if (k === 'self' || k === 'identifier' || k === 'icon' || k === 'thumbnail' || k === 'quicklook' || k === 'imageUrl' || k === 'modified' || k === 'color') {
                         continue;
                     }
 
