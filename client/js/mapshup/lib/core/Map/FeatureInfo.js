@@ -981,21 +981,17 @@
              * Set quicklook width and height to respectively
              * 40% and 90% of the main wrapper 
              */
-            $('.body', $target).append('<div class="ql" style="float:left;width:49%;">' + (ql ? '<img src="' + ql + '"/>' : '') + '</div><div class="info"></div>');
-            $('.ql img', $target).css({
-                'max-width': Math.round($('#mwrapper').width() * 4 / 10) - 10,
-                'max-height': Math.round($('#mwrapper').height() * 9 / 10) - 10
-            });
-
-            /*
-             * Set header
-             */
-            $('.title', $target).attr('title', feature.layer.name + ' | ' + title).html(title);
-
-            /*
-             * Show activity indicator during image loading
-             */
             if (ql) {
+                
+                $('.body', $target).append('<div class="ql" style="float:left;width:49%;"><img src="' + ql + '"/></div><div class="info"></div>');
+                $('.ql img', $target).css({
+                    'max-width': Math.round($('#mwrapper').width() * 4 / 10),
+                    'max-height': Math.round($('#mwrapper').height() * 9 / 10)
+                });
+               
+               /*
+                * Show activity indicator during image loading
+                */
                 var image = new Image();
                 image.src = ql;
                 M.activity.show();
@@ -1005,6 +1001,14 @@
                     M.activity.hide();
                 });
             }
+            else {
+                $('.body', $target).append('<div class="info"></div>');
+            }
+
+            /*
+             * Set header
+             */
+            $('.title', $target).attr('title', feature.layer.name + ' | ' + title).html(title);
 
             /*
              * Roll over layer types to detect layer features that should be
@@ -1032,7 +1036,7 @@
                 /*
                  * Default feature info are set within an html table
                  */
-                $('.info', $target).html('<table></table>');
+                $('.info', $target).html('<table style="width:' + (ql ? '45' : '95') + '%"></table>');
                 $info = $('.info table', $target);
 
                 /*
@@ -1080,7 +1084,20 @@
                             if (k === "services") {
                                 continue;
                             }
-
+                            
+                            /*
+                             * ATOM special case
+                             */
+                            if (k === "atom") {
+                                if (v['id']) {
+                                    $info.append('<tr><td title="' + M.Util._('identifier') + '">' + M.Util._('identifier') + '</td><td>&nbsp;</td><td>' + v['id'] + '<td></tr>');
+                                }
+                                if (v['updated']) {
+                                    $info.append('<tr><td title="' + M.Util._('updated') + '">' + M.Util._('updated') + '</td><td>&nbsp;</td><td>' + v['updated'] + '<td></tr>');
+                                }
+                                continue;
+                            }
+                            
                             /*
                              * Roll over properties name
                              */
