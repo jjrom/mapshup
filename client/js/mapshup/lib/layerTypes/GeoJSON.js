@@ -106,7 +106,7 @@
              */
             newLayer.events.register("featuresadded", newLayer, function() {
 
-                /*
+               /*
                 * Tell mapshup that features were added
                 */
                 Map.events.trigger("layersend", {
@@ -121,12 +121,26 @@
              * read from data description
              */
             if (layerDescription.hasOwnProperty("data")) {
+                newLayer.destroyFeatures();
                 if (!self.load({
                     data:layerDescription.data,
                     layerDescription:layerDescription, 
-                    layer:newLayer
+                    layer:newLayer,
+                    zoomOnNew:layerDescription.zoomOnNew
                 })) {
-                //M.Map.removeLayer(newLayer, false);
+                   /*
+                    * Tell mapshup that layer is loaded
+                    */
+                    this.layer["_M"].isLoaded = true;
+
+                    /*
+                    * Tell mapshup that no features were added
+                    */
+                    Map.events.trigger("layersend", {
+                        action:"features",
+                        layer:this.layer
+                    });
+                    //M.Map.removeLayer(newLayer, false);
                 }
             }
             /*
