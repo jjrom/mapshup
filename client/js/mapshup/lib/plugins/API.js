@@ -128,6 +128,9 @@
             if (command === 'addLayer') {
                 M.Map.addLayer(options, {noDeletionCheck: true});
             }
+            else if (command === 'removeLayer') {
+                M.Map.removeLayer(getLayerByMID(options.MID));
+            }
         };
 
         /*
