@@ -131,14 +131,14 @@
                    /*
                     * Tell mapshup that layer is loaded
                     */
-                    this.layer["_M"].isLoaded = true;
+                    newLayer["_M"].isLoaded = true;
 
                     /*
                     * Tell mapshup that no features were added
                     */
                     Map.events.trigger("layersend", {
                         action:"features",
-                        layer:this.layer
+                        layer:newLayer
                     });
                     //M.Map.removeLayer(newLayer, false);
                 }
