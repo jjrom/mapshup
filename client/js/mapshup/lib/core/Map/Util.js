@@ -748,7 +748,7 @@
         return Map.map.getControlsBy("id", id)[0];
     };
 
-
+    
     /**
      * Return an array of unclusterized features for Point cluster 
      * 
@@ -889,6 +889,29 @@
 
     };
 
+    /**
+     * Return feature base on its attributes['identifier']
+     * 
+     * @param {OpenLayer.Layer} layer
+     * @param {string} identifier
+     */
+    Map.Util.getFeature = function(layer, identifier) {
+        
+        if (!layer || !identifier || !layer.features) {
+            return null;
+        }
+        
+        var features = Map.Util.getFeatures(layer);
+        
+        for (var i = 0, l = features.length; i < l; i++) {
+            if (features[i].attributes  && features[i].attributes.identifier === identifier) {
+                return features[i];
+            }
+        }
+
+        return null;
+    };
+    
     /*
      * This function will return a formated LonLat
      * 
@@ -1276,14 +1299,21 @@
 
     /*
      * Center the map on the layer extent.
+     * 
      * This centering is only done if the layer, or part of the added layer,
      * is not already visible in the map view
+     * 
+     * If force is set to true, the layer in centered even if part of the entire layer
+     * is visible
      *
      * Note : if the layer has already been loaded then the _M.initialized attribute
      * is set to true and the map is not centered any more on this layer even if
      * its content changes
+     * 
+     * @param {OpenLayer.Layer} layer
+     * @param {boolean} force
      */
-    Map.Util.zoomOn = function(layer) {
+    Map.Util.zoomOn = function(layer, force) {
 
         var extent;
 
@@ -1295,16 +1325,25 @@
         }
 
         /*
+         * Vector layers have a getDataExtent() function that returns bounds
+         * Raster layer such as WMS or Image should have a ["_M"].bounds property
+         * set during initialization
+         */
+        extent = layer.getDataExtent() || layer["_M"].bounds;
+        
+        /*
+         * Force zoom
+         */
+        if (force && extent) {
+            M.Map.zoomTo(extent);
+            return true;
+        }
+
+        /*
          * Only zoom on layer that are initialized
          */
         if (layer["_M"].initialized) {
 
-            /*
-             * Vector layers have a getDataExtent() function that returns bounds
-             * Raster layer such as WMS or Image should have a ["_M"].bounds property
-             * set during initialization
-             */
-            extent = layer.getDataExtent() || layer["_M"].bounds;
             if (extent) {
 
                 /*
@@ -1315,7 +1354,7 @@
                     M.Map.zoomTo(extent);
                     return true;
                 }
-
+                
             }
         }
 

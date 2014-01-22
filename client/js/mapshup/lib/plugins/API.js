@@ -125,11 +125,24 @@
          * @param {Object} options
          */
         this.dispatch = function(command, options) {
-            if (command === 'addLayer') {
-                M.Map.addLayer(options, {noDeletionCheck: true});
-            }
-            else if (command === 'removeLayer') {
-                M.Map.removeLayer(getLayerByMID(options.MID));
+
+            options = options || {};
+            
+            switch (command) {
+                case 'addLayer':
+                    M.Map.addLayer(options, {noDeletionCheck: true});
+                    break;
+                case 'removeLayer' :
+                    M.Map.removeLayer(M.Map.Util.getLayerByMID(options.MID));
+                    break;
+                case 'zoomOnLayer' :
+                    M.Map.Util.zoomOn(M.Map.Util.getLayerByMID(options.MID), true);
+                    break;
+                case 'zoomOnFeature' :
+                    M.Map.Util.Feature.zoomOn(M.Map.Util.getFeature(M.Map.Util.getLayerByMID(options.MID), options.fid));
+                    break;
+                default :
+                    break;
             }
         };
 
