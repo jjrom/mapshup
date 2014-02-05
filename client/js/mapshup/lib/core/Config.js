@@ -63,6 +63,20 @@
                 lon:0,
                 lat:0,
                 zoom:0
+            },
+            projections:{
+                'EPSG:4326': {
+                    projection: new OpenLayers.Projection('EPSG:4326'),
+                    units: 'degrees',
+                    maxExtent: new OpenLayers.Bounds(-180,-90,180,90),
+                    numZoomLevels: 22
+                },
+                'EPSG:3857': {
+                    projection: new OpenLayers.Projection('EPSG:3857'),
+                    units: 'm',
+                    maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
+                    numZoomLevels: 22
+                }                
             }
         },
 
