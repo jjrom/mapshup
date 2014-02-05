@@ -508,14 +508,14 @@
              * Add newLayer to map
              */
             if (newLayer) {
-                
+
                 /*
                  * Zoom on layer
                  */
                 if (newLayer['_M'].layerDescription && newLayer['_M'].layerDescription.zoomOnNew) {
                     this.zoomTo(newLayer.getDataExtent() || newLayer["_M"].bounds);
                 }
-                        
+
                 /*
                  * Tell user a non mapshup layer has been added (only if it has been loaded)
                  */
@@ -570,7 +570,7 @@
                          * Set a flag to indicate that this layer has been initialized
                          */
                         this._M.initialized = true;
-                        
+
                         return true;
 
                     });
@@ -600,7 +600,7 @@
                  * (i.e. replace the EmptyBaseLayer layer)
                  */
                 if (newLayer.isBaseLayer && !this.hasNonEmptyBaseLayer) {
-                    this.map.setBaseLayer(newLayer);
+                    this.setBaseLayer(newLayer);
                     this.removeLayer(this.Util.getLayerByMID("EmptyBaseLayer"), false);
                     this.hasNonEmptyBaseLayer = true;
                 }
@@ -860,7 +860,7 @@
             if (context.location.bg) {
                 layer = self.Util.getLayerByMID(context.location.bg);
                 if (layer && layer.isBaseLayer) {
-                    self.map.setBaseLayer(layer);
+                    self.setBaseLayer(layer);
                 }
             }
 
@@ -1717,6 +1717,13 @@
                 }
             }
 
+        },
+        /*
+         * Change base layer and update projection
+         * if needed
+         */
+        setBaseLayer: function(layer) {
+            this.map.setBaseLayer(layer);
         }
 
     };

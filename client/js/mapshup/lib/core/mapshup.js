@@ -559,7 +559,7 @@
             if (c["general"].location.bg) {
                 bg = self.Map.Util.getLayerByMID(c["general"].location.bg);
                 if (bg && bg.isBaseLayer) {
-                    self.Map.map.setBaseLayer(bg);
+                    self.Map.setBaseLayer(bg);
                 }
             }
             
