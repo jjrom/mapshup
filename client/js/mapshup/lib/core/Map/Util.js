@@ -569,7 +569,7 @@
         /*
          * Returns geo bounds
          */
-        return srs === "EPSG:3857" || srs === "EPSG:900913" || crs === "EPSG:3857" || crs === "EPSG:900913" ? M.Map.Util.p2d(bounds) : bounds;
+        return srs === "EPSG:4326" || crs === "EPSG:4326" ? bounds : M.Map.Util.p2d(bounds);
 
     };
 

@@ -1296,8 +1296,8 @@
             if (_config.general.displayScale && $.isFunction(OpenLayers.Control.ScaleLine)) {
                 controls.push(new OpenLayers.Control.ScaleLine({
                     id: "__CONTROL_SCALELINE__",
-                    /* Geodetic measurement is activated for Spherical Mercator measurements */
-                    geodetic: self.map.projection.projCode === "EPSG:3857" ? true : false
+                    /* Geodetic measurement is activated for non plate carree measurements */
+                    geodetic: self.map.projection.projCode === "EPSG:4326" ? false : true
                 }));
             }
 
