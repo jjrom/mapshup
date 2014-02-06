@@ -233,7 +233,7 @@
                     }
                     else {
                         features = new OpenLayers.Format.GeoJSON({
-                            internalProjection:Map.map.projection,
+                            internalProjection:Map.map.getProjectionObject(),
                             externalProjection:Map.pc
                         }).read(options.data);
                     }

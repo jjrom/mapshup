@@ -81,12 +81,12 @@
             /*
              * Set title
              */
-            layerDescription.title = M.Util.getTitle(layerDescription)
+            layerDescription.title = M.Util.getTitle(layerDescription);
             
             /*
              * Set layerDescription.srs to the map projection
              */
-            layerDescription.srs = Map.map.projection.projCode
+            layerDescription.srs = Map.map.getProjectionObject().projCode;
 
             if (!layerDescription.url) {
 

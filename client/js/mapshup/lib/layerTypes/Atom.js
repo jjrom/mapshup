@@ -177,7 +177,7 @@
                 }
                 else {
                     features = new OpenLayers.Format.Atom({
-                        internalProjection:Map.map.projection,
+                        internalProjection:Map.map.getProjectionObject(),
                         externalProjection:Map.pc
                     }).read(data);
                 }

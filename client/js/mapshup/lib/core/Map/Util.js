@@ -1152,14 +1152,14 @@
      * Transform input object from display projection (epsg4326) to map projection 
      */
     Map.Util.d2p = function(obj) {
-        return obj.transform(Map.pc, Map.map.projection);
+        return obj.transform(Map.pc, Map.map.getProjectionObject());
     };
 
     /*
      * Transform input object from map projection to display projection (epsg4326)
      */
     Map.Util.p2d = function(obj) {
-        return obj.transform(Map.map.projection, Map.pc);
+        return obj.transform(Map.map.getProjectionObject(), Map.pc);
     };
 
     /**

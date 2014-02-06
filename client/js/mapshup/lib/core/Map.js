@@ -1297,7 +1297,7 @@
                 controls.push(new OpenLayers.Control.ScaleLine({
                     id: "__CONTROL_SCALELINE__",
                     /* Geodetic measurement is activated for non plate carree measurements */
-                    geodetic: self.map.projection.projCode === "EPSG:4326" ? false : true
+                    geodetic: self.map.getProjectionObject().projCode === "EPSG:4326" ? false : true
                 }));
             }
 
@@ -1721,9 +1721,69 @@
         /*
          * Change base layer and update projection
          * if needed
+         * 
+         * @param {OpenLayers.Layer} baseLayer
          */
-        setBaseLayer: function(layer) {
-            this.map.setBaseLayer(layer);
+        setBaseLayer: function(baseLayer) {
+            
+            var i, j, mapProj, baseProj;
+            
+            /*
+             * Set new base baseLayer
+             */
+            this.map.setBaseLayer(baseLayer);
+            
+            /*
+             * The current map projection
+             */
+            mapProj = (this.map.projection && this.map.projection instanceof OpenLayers.Projection) ? this.map.projection : new OpenLayers.Projection(this.map.projection);
+            
+            /*
+             * The projection of the new base layer
+             */
+            baseProj = baseLayer.projection;
+            
+            /*
+             * If new base layer projection is different from the map projection
+             * we need to change the map projection to the new base layer projection
+             * and reproject every non base layers
+             */
+            if (!(baseProj.equals(mapProj))) {
+                
+                /*
+                 * Set map projection to new base layer projection
+                 */
+                this.map.projection = baseProj;
+                this.map.maxExtent = baseLayer.maxExtent;
+                
+                this.map.setCenter(this.map.getCenter().transform(mapProj, baseProj), this.map.getZoom(), false, true);
+                
+                /*
+                 * Reproject all map layers that are not base layers
+                 */
+                for (i = 0; i < this.map.layers.length; i++) {
+                    if (this.map.layers[i].isBaseLayer === false) {
+                 
+                        this.map.layers[i].addOptions({projection: baseProj}, true);
+                        
+                        /*
+                         * Reproject vector features
+                         */ 
+                        for (j = 0; j < this.map.layers[i].features.length; j++) {
+                            this.map.layers[i].features[j].geometry.transform(mapProj, baseProj);
+                        }
+                        
+                        this.map.layers[i].redraw();
+                    }
+                }
+                
+                /*
+                 * Force map size update to ensure Google layers to be redrawn
+                 * correctly
+                 */
+                this.map.updateSize();
+            }
+            
         }
 
     };

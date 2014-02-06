@@ -604,7 +604,7 @@
                          * Note: result is in EPSG:4326
                          */
                         var features = new OpenLayers.Format.GeoJSON({
-                            internalProjection:M.Map.map.projection,
+                            internalProjection:M.Map.map.getProjectionObject(),
                             externalProjection:M.Map.pc
                         }).read(data);
                         

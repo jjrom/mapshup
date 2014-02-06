@@ -122,34 +122,38 @@
             }
 
             /**
-             * If the srs is different from get map srs, M creates
+             * If layer is not a baseLayer with projection object set...
+             * 
+             * Check the srs of layer : if different from get map srs, then Mapshup creates
              * a mapfile on server side to allow on the fly reprojection of the WMS tiles
+             * 
              */
-            projection = M.Util.getPropertyValue(Map.map, "projection", Map.pc);
+            if (!options.projection || !layerDescription.isBaseLayer) {
+                projection = M.Util.getPropertyValue(Map.map, "projection", Map.pc);
+                if (layerDescription.srs !== projection.projCode) {
+                    OpenLayers.Request.GET({
+                        url: M.Util.getAbsoluteUrl(M.Config["general"].reprojectionServiceUrl) + M.Util.abc + "&url=" + encodeURIComponent(layerDescription.url) + "&layers=" + encodeURIComponent(layerDescription.layers) + "&srs=" + layerDescription.srs,
+                        callback: function(request) {
+                            var json = (new OpenLayers.Format.JSON()).read(request.responseText);
 
-            if (layerDescription.srs !== projection.projCode) {
-                OpenLayers.Request.GET({
-                    url: M.Util.getAbsoluteUrl(M.Config["general"].reprojectionServiceUrl) + M.Util.abc + "&url=" + encodeURIComponent(layerDescription.url) + "&layers=" + encodeURIComponent(layerDescription.layers) + "&srs=" + layerDescription.srs,
-                    callback: function(request) {
-                        var json = (new OpenLayers.Format.JSON()).read(request.responseText);
-
-                        /**
-                         * Add a new property "projectedUrl" that should be used
-                         * in place of original url
-                         */
-                        if (json.success) {
-                            layerDescription.projectedUrl = json.url;
-                            layerDescription.srs = Map.map.projection.projCode;
-                            Map.addLayer(layerDescription);
+                            /**
+                             * Add a new property "projectedUrl" that should be used
+                             * in place of original url
+                             */
+                            if (json.success) {
+                                layerDescription.projectedUrl = json.url;
+                                layerDescription.srs = Map.map.getProjectionObject().projCode;
+                                Map.addLayer(layerDescription);
+                            }
+                            else {
+                                M.Util.message(M.Util._("Error : cannot reproject this layer"));
+                            }
                         }
-                        else {
-                            M.Util.message(M.Util._("Error : cannot reproject this layer"));
-                        }
-                    }
-                });
-                return null;
+                    });
+                    return null;
+                }
             }
-
+            
             /**
              * Input "options" modification
              * If no BBOX is given, default is set to -170,-80,170,80
@@ -545,11 +549,11 @@
                      * M server will reproject the layer on the fly
                      */
                     for (var srs in layer.srs) {
-                        if (srs === Map.map.projection.projCode) {
+                        if (srs === Map.map.getProjectionObject().projCode) {
                             break;
                         }
                     }
-                    if (srs !== Map.map.projection.projCode) {
+                    if (srs !== Map.map.getProjectionObject().projCode) {
                         srs = Map.pc;
                     }
                     d.srs = srs;
@@ -678,7 +682,7 @@
 
                         /*
                          * Now the tricky part. If projectedUrl is defined, it means
-                         * that the original WMS server is not in map.projection.
+                         * that the original WMS server is not in map.getProjectionObject().
                          * Thus we need to call WMS server with epsg:4326 projection
                          */
                         if (layerDescription.projectedUrl) {
