@@ -82,13 +82,12 @@
          */
         this.init = function(options) {
 
-            var item, options, id = M.Util.getId(), i, l, self = this;
+            var item, id = M.Util.getId(), i, l, self = this;
 
             /*
              * Init options
              */
             options = options || {};
-            options.rootUrl =  options.rootUrl || "";
             self.items = options.items || [];
             
             /* 
@@ -138,7 +137,6 @@
                 /*
                  * Activate or not
                  */
-                
                 (function(item, $d) {
 
                     $d.append('<li id="' + item.id + '" jtitle="' + item.name + '" class="thumbs"><img src="' + (options.rootUrl ? options.rootUrl + '/' : '') + item.icon + '"/></li>');
@@ -146,6 +144,10 @@
                     
                     if (!item.active && M.Map.Util.getLayerByMID(item.layerMID)) {
                         M.Map.Util.setVisibility(M.Map.Util.getLayerByMID(item.layerMID), false);
+                    }
+                    
+                    if (item.active) {
+                        self.activate(item, true);
                     }
                     
                     /*
@@ -189,7 +191,7 @@
                     });
 
                 })(item, $('ul', $('#' + id)));
-
+                
             }
         
             /*
