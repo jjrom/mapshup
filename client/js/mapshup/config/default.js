@@ -280,6 +280,7 @@
     c.add("layers", {
         type:"Google",
         title:"Satellite",
+        MID:"GoogleSatellite",
         googleType:"satellite",
         numZoomLevels:22,
         unremovable:true
@@ -288,6 +289,7 @@
     c.add("layers", {
         type:"Google",
         title:"Streets",
+        MID:"GoogleStreets",
         numZoomLevels:22,
         unremovable:true
     });
@@ -295,6 +297,7 @@
     c.add("layers", {
         type:"Google",
         title:"Relief",
+        MID:"GoogleRelief",
         googleType:"terrain",
         numZoomLevels:22,
         unremovable:true
@@ -303,6 +306,7 @@
     c.add("layers", {
         type:"XYZ",
         title:"MapQuest OSM",
+        MID:"MapQuestOSM",
         url:["http://otile1.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
         "http://otile2.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
         "http://otile3.mqcdn.com/tiles/1.0.0/osm/${z}/${x}/${y}.png",
@@ -314,6 +318,7 @@
     c.add("layers", {
         type:"XYZ",
         title:"OpenStreetMap",
+        MID:"OpenStreetMap",
         url:["http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
         "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
         "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"],
