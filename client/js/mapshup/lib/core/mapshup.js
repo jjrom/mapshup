@@ -135,6 +135,10 @@
 
 /**
  * Create the util object for mapshup
+ * 
+ * @param {Object} window 
+ * @param {Object} navigator
+ * 
  */
 (function(window,navigator) {
     
@@ -143,7 +147,7 @@
      */
     window.M = {
         
-        VERSION_NUMBER:'mapshup 2.3',
+        VERSION_NUMBER:'mapshup 2.4',
         
         /**
          * Plugin objects are defined within M.Plugins
@@ -360,10 +364,10 @@
         /**
          * Retrieve mapshup default lang file
          * 
-         * @param kvp: Key value pair object.
+         * @param {Object} kvp : Key value pair object.
          *             If kvp["lang"] is defined, it superseed the default lang configuration
          * 
-         * @param ctx: Context
+         * @param {Object} ctx : Context
          */
         setLang:function(kvp, ctx) {
             
@@ -616,14 +620,14 @@
 
             });
             
-            /**
+            /*
              * Force mapshup resize
              */
             setTimeout(function(){
                 self.events.trigger('resizeend');
             }, 1000);
             
-            /**
+            /*
              * Prevent Drag&drop over everything
              */
             $(window).bind('drop dragover',function(e){
@@ -635,6 +639,8 @@
         
         /**
          * Remove object from the mapshup context
+         * 
+         * @param {Object} obj
          */
         remove: function(obj) {
 
