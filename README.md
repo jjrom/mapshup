@@ -60,31 +60,26 @@ Note: to get these packages installed you can take a look at https://github.com/
 
 In the following, we suppose that
 * $MAPSHUP_SRC is the directory where mapshup sources will be installed
-* $MAPSHUP_HOME is the directory where mapshup will be installed. This directory should be under Apache root directory
+* $MAPSHUP_TARGET is the directory where mapshup will be installed. This directory should be under Apache root directory
 
 Retrieve sources
 
     git clone https://github.com/jjrom/mapshup.git $MAPSHUP_SRC
     
-Compile mapshup
+Build mapshup
 
-    /bin/rm -Rf $MAPSHUP_HOME
-    $MAPSHUP_SRC/utils/packer/pack.sh $MAPSHUP_SRC $MAPSHUP_HOME blacker $MAPSHUP_SRC/client/js/mapshup/config/example.js 0 0
-
-Database installation (optional - for UserManagement and context sharing only)
-
-Edit install_mapshupdb.sh to put the right postgis paths if needed
-See $MAPSHUP_HOME/s/README_INSTALL.txt  
+    /bin/rm -Rf $MAPSHUP_TARGET
+    $MAPSHUP_SRC/build.sh -t $MAPSHUP_TARGET -c $MAPSHUP_SRC/client/js/mapshup/config/example.js
     
-    cd $MAPSHUP_HOME/s/_installdb
+Install database (optional - for UserManagement and context sharing only)
+
+    # Edit install_mapshupdb.sh to put the right postgis paths if needed
+    # See $MAPSHUP_TARGET/s/README_INSTALL.txt  
+    
+    cd $MAPSHUP_TARGET/s/_installdb
     ./install_mapshupdb.sh
-
-Clean installation files
-
-    rm -Rf $MAPSHUP_HOME/s/README_INSTALL.txt
-    rm -Rf $MAPSHUP_HOME/s/_installdb
 
 Configuration
 
-Edit $MAPSHUP_HOME/s/config.php
-Note : the current build suppose that mapshup directory is accessible through http://localhot/mapshup. If it is not the case, change it within $MAPSHUP_HOME/js/mapshup/config/example.js 
+Edit $MAPSHUP_TARGET/s/config.php
+Note : the current build suppose that mapshup directory is accessible through http://localhot/mapshup. If it is not the case, change it within $MAPSHUP_TARGET/js/mapshup/config/example.js 

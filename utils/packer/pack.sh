@@ -106,17 +106,17 @@ then
             /bin/cp $CONFIG $TARGET/js/mapshup/config
             CONFIG_FILE=`basename $CONFIG`
             
-            # Copy index*.html files and replace __DEVEL__.js with input config file
-            cat $CLIENTDIR/index_prod.html | sed s/__DEVEL__\.js/$CONFIG_FILE/g > $TARGET/tmp_index.html
-            cat $CLIENTDIR/index_prodt.html | sed s/__DEVEL__\.js/$CONFIG_FILE/g > $TARGET/tmp_indext.html
+            # Copy index*.html files and replace __CONFIG__ with input config file
+            cat $CLIENTDIR/index_prod.html | sed s/__CONFIG__/$CONFIG_FILE/g > $TARGET/tmp_index.html
+            cat $CLIENTDIR/index_prodt.html | sed s/__CONFIG__/$CONFIG_FILE/g > $TARGET/tmp_indext.html
 
             # Replace theme name in index files
             sed s/__THEME__/$THEME/g $TARGET/tmp_index.html > $TARGET/index.html
             sed s/__THEME__/$THEME/g $TARGET/tmp_indext.html > $TARGET/indext.html
         else
             # Copy index*.html files
-            cat $CLIENTDIR/index_prod.html | grep -v "__DEVEL__\.js" > $TARGET/index.html
-            cat $CLIENTDIR/index_prodt.html | grep -v "__DEVEL__\.js" > $TARGET/indext.html
+            cat $CLIENTDIR/index_prod.html | grep -v "__CONFIG__" > $TARGET/index.html
+            cat $CLIENTDIR/index_prodt.html | grep -v "__CONFIG__" > $TARGET/indext.html
         fi
         
         /bin/cp -Rf $CLIENTDIR/blank.html $TARGET/

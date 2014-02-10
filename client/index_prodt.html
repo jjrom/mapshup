@@ -11,6 +11,8 @@
         <link rel="stylesheet" type="text/css" href="js/mol/theme/default/google.tidy.css" />
         <link rel="stylesheet" type="text/css" href="js/mapshup/theme/__THEME__/mapshupt.css" />
         <link rel="stylesheet" type="text/css" href="js/mjquery/mjquery.css" />
+        
+        <!-- REMOVE IF DISTANCE PLUGIN IS NOT USED -->
         <link rel="stylesheet" type="text/css" href="js/mjquery/mjquery.jqplot.css" />
     </head>
     <body>
@@ -24,11 +26,17 @@
             <div id="Mfooter"></div>
         </div>
         <script type="text/javascript" src="js/mjquery/mjquery.js"></script>
+        
+        <!-- REMOVE IF DISTANCE PLUGIN IS NOT USED -->
         <script type="text/javascript" src="js/mjquery/mjquery.jqplot.js"></script>
+        
+        <!-- REMOVE IF TIMELINE IS NOT USED -->
+        <script type="text/javascript" src="js/mjquery/mjquery.ui.js"></script>
+        
         <script type="text/javascript" src="js/mol/m/OpenLayers.js"></script>
         <script type="text/javascript" src="js/mapshup/mapshupt.js"></script>
         <script type="text/javascript" src="js/mapshup/config/default.js"></script>
-        <script type="text/javascript" src="js/mapshup/config/__DEVEL__.js"></script>
+        <script type="text/javascript" src="js/mapshup/config/__CONFIG__"></script>
         <script type="text/javascript" src="js/mapshup/config/touch.js"></script>
         <script type="text/javascript">
             $(document).ready(function () {
