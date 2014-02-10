@@ -79,10 +79,7 @@
         /**
          * Menu initialisation
          *
-         * <div id="jMenu">
-         *      <div class="wrapper">
-         *          <ul></ul>
-         *      </div>
+         * <div id="menu">
          * </div>
          */
         this.init = function() {
@@ -113,7 +110,7 @@
             }
 
             /*
-             * Create the jMenu div
+             * Create the menu div
              */
             M.$map.append('<div id="menu"><div class="cross"><img src="'+M.Util.getImgUrl("x.png")+'"</div></div>');
             
