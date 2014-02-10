@@ -53,13 +53,16 @@
     /*
      * Update configuration options
      */
-    c["general"].rootUrl = "http://localhost/mapshup/client";
-    c["general"].serverRootUrl = "http://localhost/mapshup/server";
+    c["general"].rootUrl = 'http://localhost/mapshup';
+    c["general"].serverRootUrl = 'http://localhost/mapshups';
+    c["general"].indexPath = "/sandbox/index.html";
     c["general"].themePath = "/js/mapshup/theme/default";
-    c["general"].indexPath = "/index.html";
     c["general"].mapserverUrl = "http://localhost/cgi-bin/mapserv?";
     c['upload'].allowedMaxSize = 5000000;
     c['upload'].allowedMaxNumber = 5;
+    c['general'].timeLine = {
+        enable:true //true to enable timeLine, false otherwise
+    };
     
     /*
      * Remove plugins
