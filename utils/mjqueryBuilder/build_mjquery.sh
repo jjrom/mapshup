@@ -51,18 +51,8 @@ fi
 
 echo "Building mjquery.js"
 cat $jquerydir/jquery-1.10.2.min.js > $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.min.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jquery-ui-touchpunch/jquery-ui-touchpunch.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/mousewheel/jquery.mousewheel.min.js >> $mjquerydir/mjquery.js.tmp
 cat $jquerydir/nanoscroller/jquery.nanoscroller.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSliderMouseTouch.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSliderDraggable.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSliderHandle.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSliderBar.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSliderLabel.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/jQRangeSlider.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/jQDateRangeSliderHandle.js >> $mjquerydir/mjquery.js.tmp
-cat $jquerydir/jQRangeSlider/mjQDateRangeSlider.js >> $mjquerydir/mjquery.js.tmp
 
 echo "Compress mjquery.js"
 java -jar ../packer/compiler.jar $mjquerydir/mjquery.js.tmp > $mjquerydir/mjquery.js.tmp2
@@ -71,6 +61,22 @@ cat ./license.txt $mjquerydir/mjquery.js.tmp2 > $mjquerydir/mjquery.js
 echo "Compress mjquery.css"
 cat $jquerydir/nanoscroller/nanoscroller.css > $mjquerydir/mjquerytmp.css
 java -jar ../packer/yuicompressor-2.4.2.jar $mjquerydir/mjquerytmp.css > $mjquerydir/mjquery.css
+
+echo "Building mjquery.ui.js"
+cat $jquerydir/jquery-ui-1.9.1.custom/js/jquery-ui-1.9.1.custom.min.js > $mjquerydir/mjquery.ui.js.tmp
+cat $jquerydir/jquery-ui-touchpunch/jquery-ui-touchpunch.min.js >> $mjquerydir/mjquery.ui.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderMouseTouch.js >> $mjquerydir/mjquery.ui.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderDraggable.js >> $mjquerydir/mjquery.ui.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderHandle.js >> $mjquerydir/mjquery.ui.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderBar.js >> $mjquerydir/mjquery.ui.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSliderLabel.js >> $mjquerydir/mjquery.ui.js.tmp
+cat $jquerydir/jQRangeSlider/jQRangeSlider.js >> $mjquerydir/mjquery.ui.js.tmp
+cat $jquerydir/jQRangeSlider/jQDateRangeSliderHandle.js >> $mjquerydir/mjquery.ui.js.tmp
+cat $jquerydir/jQRangeSlider/mjQDateRangeSlider.js >> $mjquerydir/mjquery.ui.js.tmp
+
+echo "Compress mjquery.ui.js"
+java -jar ../packer/compiler.jar $mjquerydir/mjquery.ui.js.tmp > $mjquerydir/mjquery.ui.js.tmp2
+cat ./license.txt $mjquerydir/mjquery.ui.js.tmp2 > $mjquerydir/mjquery.ui.js
 
 echo "Building mjquery.jqplot.js"
 cat $jquerydir/jqplot/jquery.jqplot.min.js > $mjquerydir/mjquery.jqplot.js.tmp
@@ -88,6 +94,7 @@ java -jar ../packer/compiler.jar $mjquerydir/mjquery.jqplot.js.tmp > $mjquerydir
 cat ./license.txt $mjquerydir/mjquery.jqplot.js.tmp2 > $mjquerydir/mjquery.jqplot.js
 
 /bin/rm $mjquerydir/mjquery.js.tmp*
+/bin/rm $mjquerydir/mjquery.ui.js.tmp*
 /bin/rm $mjquerydir/mjquerytmp.css
 /bin/rm $mjquerydir/mjquery.jqplot.js.tmp*
 
