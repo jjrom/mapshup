@@ -126,6 +126,7 @@ then
         /bin/cp -Rf $CLIENTDIR/license-fr.txt $TARGET/
         /bin/cp -Rf $CLIENTDIR/license-en.txt $TARGET/
         /bin/cp -Rf $CLIENTDIR/favicon.ico $TARGET/
+        /bin/cp -Rf $CLIENTDIR/reset.css $TARGET/
 
         # Copy server file to export directory
         /bin/cp -Rf $SERVERDIR $TARGET/s

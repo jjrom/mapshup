@@ -58,6 +58,7 @@
     c["general"].indexPath = "/sandbox/index.html";
     c["general"].themePath = "/js/mapshup/theme/default";
     c["general"].mapserverUrl = "http://localhost/cgi-bin/mapserv?";
+    c['general'].enableHistory = false;
     c['upload'].allowedMaxSize = 5000000;
     c['upload'].allowedMaxNumber = 5;
     c['general'].timeLine = {

@@ -68,6 +68,8 @@
             
             /**
              * Get cookie
+             * 
+             * @param {String} name
              */
             get: function(name) {
                 var nameEQ = name + "=",
@@ -85,13 +87,19 @@
             
             /**
              * Delete cookie "name"
+             * 
+             * @param {String} name
              */
             remove:function(name) {
                 this.set(name,"",-1);
             },
             
-            /*
+            /**
              * Set cookie "name=value" valid for days
+             * 
+             * @param {String} name
+             * @param {String} value
+             * @param {String} days
              */
             set: function(name,value,days) {
 
@@ -127,42 +135,42 @@
 
         device:(function() {
 
-            /**
+            /*
              * Initialize user agent string to lower case
              */
             var device,
             touch,
             uagent = navigator.userAgent.toLowerCase();
 
-            /**
+            /*
              * android ?
              */
             if (uagent.indexOf("android") !== -1) {
                 device = "android";
                 touch = true;
             }
-            /**
+            /*
              * iphone ?
              */
             else if (uagent.indexOf("iphone") !== -1) {
                 device = "iphone";
                 touch = true;
             }
-            /**
+            /*
              * ipod ?
              */
             else if (uagent.indexOf("ipod") !== -1) {
                 device = "ipod";
                 touch = true;
             }
-            /**
+            /*
              * ipad ?
              */
             else if (uagent.indexOf("ipad") !== -1) {
                 device = "ipad";
                 touch = true;
             }
-            /**
+            /*
              * Normal device
              */
             else {
@@ -176,7 +184,7 @@
             };
         })(),
 
-        /**
+        /*
          * Escapable and meta character protection
          * See https://github.com/douglascrockford/JSON-js/blob/master/json2.js
          *
@@ -202,6 +210,8 @@
          * Internationalisation i18n function.
          * Each displayed message are translated through
          * this function
+         * 
+         * @param {String} s
          */
         _: function(s) {
             if (M.i18n === undefined) {
@@ -220,6 +230,9 @@
          * If this div already exist, jsut return it
          *
          * Nota : if "context" is not specified, "divName" is created under "body"
+         * 
+         * @param {String} divName
+         * @param {String} context
          */
         $$: function(divName, context) {
             context = context || 'body';
@@ -254,9 +267,11 @@
          * 
          * Code from Keith Devens
          * (see http://keithdevens.com/weblog/archive/2007/Jun/07/javascript.clone)
+         * 
+         * @param srcInstance
          */
         clone: function(srcInstance) {
-            if(typeof(srcInstance) != 'object' || srcInstance == null) {
+            if(typeof(srcInstance) !== 'object' || srcInstance === null) {
                 return srcInstance;
             }
             var i, newInstance = srcInstance.constructor();
@@ -269,7 +284,7 @@
         /**
          * Return GetCapabilities from an OGC service
          * 
-         * @param XMLHttRequestObj : the XMLHttpRequest object
+         * @param XMLHttpRequestObj : the XMLHttpRequest object
          * @param format : format of the GetCapabilities file.
          *                 can be one of :
          *                      new OpenLayers.Format.WFSCapabilities()
@@ -281,7 +296,7 @@
             var capability = null;
 
             if (XMLHttpRequestObj.status !== 200 || !format) {
-                return null
+                return null;
             }
             try {
                 capability = format.read(M.Util.textToXML(XMLHttpRequestObj.responseText));
@@ -373,6 +388,9 @@
         /**
          * Add a "display image" action to the given jquery 'a'
          * A click on 'a' will open the image within a fullscreen popup
+         * 
+         * @param {String} href
+         * @param {String} title
          */
         showPopupImage:function(href, title) {
 
@@ -580,7 +598,7 @@
         stringToRealType:function(string) {
             
             if (!string) {
-                return string
+                return string;
             }
             
             if ($.isNumeric(string)) {
@@ -633,7 +651,7 @@
         /**
          * Strip HTML tags from input string
          *
-         * @param <String> html : an html input string
+         * @param {String} html : an html input string
          */
         stripTags: function(html) {
             var tmp = document.createElement("DIV");
@@ -644,6 +662,9 @@
         /**
          * Launch an ajax call
          * This function relies on jquery $.ajax function
+         * 
+         * @param {Object} obj
+         * @param {Object} options
          */
         ajax: function(obj, options) {
 
@@ -802,19 +823,20 @@
                 /*
                  * Set drop zone
                  */
-                new M.DDZone({
-                    parent:popup.$b,
-                    maximumMegaBytes:options.maximumMegaBytes,
-                    supportedFormats:options.supportedFormats,
-                    file:options.file,
-                    fileUrl:options.fileUrl,
-                    success:function(_data) {
-                        popup.center();
-                        data = _data;
-                        $('#'+id).show();
-                    }
-                });
-                
+                if (M.DDZone) {
+                    new M.DDZone({
+                        parent:popup.$b,
+                        maximumMegaBytes:options.maximumMegaBytes,
+                        supportedFormats:options.supportedFormats,
+                        file:options.file,
+                        fileUrl:options.fileUrl,
+                        success:function(_data) {
+                            popup.center();
+                            data = _data;
+                            $('#'+id).show();
+                        }
+                    });
+                }
                 popup.append('<p class="big center padded"><br/><a href="#" class="button inline validate" id="'+id+'">'+M.Util._("Set")+'</a></p>', 'body');
                 $('#'+id).click(function(){
                     
@@ -1039,7 +1061,7 @@
                     $message.css({
                         'top':top
                     });
-                    top = $message.offset().top + $message.height() - 25;
+                    top = $message.position().top + $message.height() + 5;
                 }
                 
             };
@@ -1071,7 +1093,8 @@
             }
             
             $d.css({
-                'left': (M.$container.width() - $d.width()) / 2
+                'left': (M.$container.width() - $d.width()) / 2,
+                'top' : 30
             });
 
             return $d;
@@ -1185,13 +1208,13 @@
          * Return a unique id
          */
         getId: function() {
-            return "id"+this.sequence++;
+            return "mid"+this.sequence++;
         },
         
         /**
          * Return a unique id
          * 
-         * @param string : f - fileName
+         * @param {String} f : fileName
          */
         getImgUrl: function(f) {
             
@@ -1206,6 +1229,10 @@
         
         /**
          * Return the obj.property value if defined or value if not
+         * 
+         * @param {Object} obj
+         * @param {Object} property
+         * @param {String} value
          */
         getPropertyValue: function(obj, property, value) {
             
@@ -1332,6 +1359,8 @@
          *   - 4 decimal values comma separated A,B,C,D
          *   - A < C
          *   - B < D
+         *   
+         * @param {String} str
          */
         isBBOX: function (str) {
             if (!str || str.length === 0) {
@@ -1354,6 +1383,8 @@
 
         /**
          * Check if a string is a valid date i.e. YYYY-MM-DD
+         * 
+         * @param {String} str
          */
         isDate: function(str) {
 
@@ -1403,6 +1434,8 @@
         /**
          * Check if a string is a valid date or date interval
          * i.e. YYYY-MM-DD or YYYY-MM-DD/YYYY-MM-DD
+         * 
+         * @param {String} str
          */
         isDateOrInterval:function(str) {
             
@@ -1455,12 +1488,14 @@
                 return false;
             } 
             
-            return true
+            return true;
 
         },
         
         /**
          * Check if a string is a valid email adress
+         * 
+         * @param {String} str
          */
         isEmailAdress: function (str) {
             if (!str || str.length === 0) {
@@ -1504,6 +1539,8 @@
         /**
          * Check if a string is a valid ISO8601 date or interval
          * i.e. YYYY-MM-DDTHH:mm:ss or YYYY-MM-DDTHH:mm:ss/YYYY-MM-DDTHH:mm:ss
+         * 
+         * @param {String} str
          */
         isISO8601: function (str) {
 
@@ -1547,6 +1584,8 @@
         
         /**
          * Check if a string is a valid time i.e. HH:mm:ss or HH:mm:ssZ
+         * 
+         * @param {String} str
          */
         isTime: function(str) {
 
@@ -1611,7 +1650,7 @@
          * Add pagination info to an input url
          *
          * @param {String} url : url to paginate
-         * @param {Object} pagination : pagination info
+         * @param {Object} p : pagination info
          *                  {
          *                      nextRecord:{
          *                          name: // name of the nextRecord key
@@ -1622,6 +1661,7 @@
          *                          value: // value of numRecordsPerPage
          *                      }
          *                  }
+         *                  
          */
         paginate: function(url, p) {
             if (p) {
@@ -1741,7 +1781,7 @@
                     /*
                     * Return value or unmodified key if value is null
                     */
-                    return value != null ? value : "$"+key+"$";
+                    return value !== null ? value : "$"+key+"$";
                     
                 });
                 
@@ -1757,6 +1797,8 @@
          *  - If no "?" character is found, returns url+"?"
          *  - else if last character is "?" or "&", returns url
          *  - else if a "?" character is found but the last character is not "&", returns url+"&"
+         *
+         * @param {String} url
          */
         repareUrl: function(url) {
             if (!url) {
@@ -1852,6 +1894,9 @@
         /**
          * Sort input array in alphabetical order
          * using key property
+         * 
+         * @param {Array} arr
+         * @param {String} key
          */ 
         sortArray:function(arr, key) {
             if (typeof arr === "object" && arr.length && key) {

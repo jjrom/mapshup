@@ -34,41 +34,10 @@
  *
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
- */
+*/
 /**
- * Generic layer type
- */
-(function (M, Map){
-    
-    Map.layerTypes["Generic"] = {
-
-        /**
-         * MANDATORY
-         */
-        icon:"map.png",
-
-        /**
-         * MANDATORY
-         *
-         * layerDescription = {
-         *  type:"Generic",
-         *  title:"",
-         *  layer:,
-         *  icon:
-         */
-        add: function(layerDescription, options) {
-            
-            /*
-             * Set title
-             */
-            layerDescription.title = M.Util.getTitle(layerDescription);
-            
-            if (!layerDescription.layer) {
-                return new OpenLayers.Layer.Vector(layerDescription.title, options);
-            }
-            layerDescription.layer["_M"] = options._M;
-            return layerDescription.layer;
-        }
-    };
-
-})(window.M, window.M.Map);
+ *
+ * RESET CSS - From http://meyerweb.com/eric/thoughts/2007/05/01/reset-reloaded/
+*/
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outline:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+html,body {height:100%;}

@@ -88,6 +88,11 @@
      */
     c["general"].displayScale = true;
     
+    /**
+     * True to enable navigation history
+     */
+    c["general"].enableHistory = true;
+    
     /*
      * If true, feature are highlited when mouse over
      * (Note : this option is automatically set to false for touch devices)

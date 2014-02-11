@@ -71,7 +71,7 @@
             /*
              * Create the help container over everything else
              */
-            self.$d = M.Util.$$('#' + M.Util.getId(), $('#mwrapper')).addClass("overall help").hide();
+            self.$d = M.Util.$$('#' + M.Util.getId(), $('#mapshup')).addClass("overall help").hide();
 
             /*
              * Register action within header

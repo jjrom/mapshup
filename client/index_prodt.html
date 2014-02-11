@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/> 
         <meta name="apple-mobile-web-app-capable" content="yes"/>
         <link rel="shortcut icon" href="./favicon.ico" />
+        <link rel="stylesheet" type="text/css" href="reset.css" />
         <link rel="stylesheet" type="text/css" href="js/mol/theme/default/style.css" />
         <link rel="stylesheet" type="text/css" href="js/mol/theme/default/style.mobile.css" />
         <link rel="stylesheet" type="text/css" href="js/mol/theme/default/google.tidy.css" />
@@ -16,15 +17,9 @@
         <link rel="stylesheet" type="text/css" href="js/mjquery/mjquery.jqplot.css" />
     </head>
     <body>
-        <div id="mwrapper" class="wrapper">
-            <div id="Mheader"></div>
-            <div id="wcontainer" class="map">
-                <div id="mapcontainer">
-                    <div id="map"></div>
-                </div>
-            </div>
-            <div id="Mfooter"></div>
-        </div>
+        <!-- Full screen map -->
+        <div id="mapshup" style="position:absolute;left:0px;right:0px;top:0px;bottom:0px;"></div>
+        
         <script type="text/javascript" src="js/mjquery/mjquery.js"></script>
         
         <!-- REMOVE IF DISTANCE PLUGIN IS NOT USED -->

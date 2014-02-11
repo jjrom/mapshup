@@ -298,7 +298,7 @@
         this.clear = function(notTime) {
             this.items = [];
             this.setGeo(this.useGeo);
-            if (notTime) {
+            if (M.timeLine && notTime) {
                 this.setTime(M.timeLine.getInterval());
             }
         };

@@ -159,7 +159,7 @@
                 duration: 200,
                 queue: true,
                 step: function(now, fx) {
-                    M.$container.css('left', - now - self.w);
+                    M.$mcontainer.css('left', - now - self.w);
                 },
                 complete: function() {
                     M.Map.map.updateSize();
@@ -213,7 +213,7 @@
                 duration: 200,
                 queue: true,
                 step: function(now, fx) {
-                    M.$container.css('left', - now - self.w);
+                    M.$mcontainer.css('left', - now - self.w);
                 },
                 complete: function() {
                     M.Map.map.updateSize();

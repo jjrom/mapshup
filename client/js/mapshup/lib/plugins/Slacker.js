@@ -116,7 +116,7 @@
              *      </div>
              * </div>
              */
-            self.$d = M.Util.$$('#slacker', $('#mwrapper')).addClass('shadow').html('<div class="container"><table><tr></tr></table></div>');
+            self.$d = M.Util.$$('#slacker', $('#mapshup')).addClass('shadow').html('<div class="container"><table><tr></tr></table></div>');
             
             /*
              * Insert slacker panel between theBar and map
@@ -127,7 +127,7 @@
             });
             
             $t = $('#timeLine');
-            if ($t.length > 0 && M.timeLine.position === 'top') {
+            if ($t.length > 0 && M.timeLine && M.timeLine.position === 'top') {
                 $t.css({
                    'top':$t.offset().top + self.$d.height()
                 });

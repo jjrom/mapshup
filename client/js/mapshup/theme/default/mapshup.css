@@ -35,73 +35,48 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
 */
-/**
- *
- * RESET CSS - From http://meyerweb.com/eric/thoughts/2007/05/01/reset-reloaded/
-*/
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outline:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
-
-/*********************************************
- * Beginning of mapshup css definition
- *
- *  blue  : #375863 57,88,99
- *  gris : 999  153, 153,153
- *  orange clair : #f3961c 243,150,28
- *  orange foncé : #c76400 199,100,0
- *  Sulphur sulphur yellow   [255,200,50]   #ffc832
- *  Green RGB: 183, 213, 81 b7d551
- *  facebook navy blue #3B5998
- *
- ***********************************************/
-
-/***********************************************
- *
- * CSS pre-defined properties
- *
- ***********************************************/
-html,body {
-    height:100%;
-}
-body {
+#mapshup {
     font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
     font-size:12px;
     background-color:transparent;
-    /* Everything is on one page */
-    overflow:hidden;
+    margin:0;
+    padding:0;
+    overflow:hidden !important; /* Everything is on one page */
+    position:relative;
 }
-h1 {
+#mapshup h1 {
     text-transform: uppercase;
     font-size:1.2em;
 }
-a {
+#mapshup a {
     color:#3b5998;
     text-decoration:none;
     padding:5px;
     outline:none;
 }
 
-a:hover {
+#mapshup a:hover {
     outline:none;
 }
 
-img {
+#mapshup img {
     border-width:0px;
 }
 
-img.middle {
+#mapshup img.middle {
     vertical-align: middle;
 }
 
-img.square {
+#mapshup img.square {
     height:75px;
     width:75px;
 }
 
-ul {
+#mapshup ul {
     list-style:none;
 }
 
-input[type="password"],input[type="text"] {
+#mapshup input[type="password"],#mapshup input[type="text"] {
     -moz-border-bottom-colors: none;
     -moz-border-image: none;
     -moz-border-left-colors: none;
@@ -118,7 +93,7 @@ input[type="password"],input[type="text"] {
     margin: 0;
     padding: 0 8px;
 }
-input:focus,input[type="password"]:hover,input[type="text"]:hover {
+#mapshup input:focus,input[type="password"]:hover,#mapshup input[type="text"]:hover {
     -moz-border-bottom-colors: none;
     -moz-border-image: none;
     -moz-border-left-colors: none;
@@ -129,18 +104,18 @@ input:focus,input[type="password"]:hover,input[type="text"]:hover {
     border-style: solid;
     border-width: 1px;
 }
-input:placeholder {
+#mapshup input:placeholder {
     color:#666;
 }
 
-table thead {
+#mapshup table thead {
     background-color:#ccc;
     color:#666;
     text-transform:uppercase;
     height:20px;
     line-height:20px;
 }
-td {
+#mapshup td {
     padding:5px;
 }
 /*===================================
@@ -150,7 +125,7 @@ td {
 *====================================*/
 
 /* Semi-transparent window over everything except askFor popups */
-.overall {
+#mapshup .overall {
     background-color:rgba(243,150,28,0.9);
     color:#fff;
     position:absolute;
@@ -160,7 +135,7 @@ td {
     height:100%;
     z-index:34900;
 }
-.overall span.close, .rm span.close {
+#mapshup .overall span.close, #mapshup .rm span.close {
     color:#fff;
     font-size:5em;
     top:10px;
@@ -176,44 +151,44 @@ td {
  ***********************************/
 
 /* Darker color - BLACK */
-body, .po .generic, .selected
+#mapshup .po .generic, #mapshup .selected
 {
     color:#000;
 }
 /* Lighter color - WHITE */
-#coords,
-#theBar,
-#tooltip .inner,
-#theBar .logo a,
-#slacker,
-a.tab,
-.button,
-.button a,
-.mask .content,
-.mask .loading a,
-.tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
-.hover:hover,
-.featureHilite,
-.olControlAttribution,
-.lm,
-.lm .thumbs .mask,
-.lm .thumbs ul li a,
-span.hilite
+#mapshup #coords,
+#mapshup #theBar,
+#mapshup-tooltip .inner,
+#mapshup #theBar .logo a,
+#mapshup #slacker,
+#mapshup a.tab,
+#mapshup .button,
+#mapshup .button a,
+#mapshup .mask .content,
+#mapshup .mask .loading a,
+#mapshup .tbnwh, #mapshup .tbnwv, #mapshup .tbneh, #mapshup .tbnev, #mapshup .tbswh, #mapshup .tbswv, #mapshup .tbseh, #mapshup .tbsev,
+#mapshup .hover:hover,
+#mapshup .featureHilite,
+#mapshup .olControlAttribution,
+#mapshup .lm,
+#mapshup .lm .thumbs .mask,
+#mapshup .lm .thumbs ul li a,
+#mapshup span.hilite
 {
     color:#fff;
 }
 
 /* Main colored background-color - ORANGE CLAIR */
-#theBar,
-#slacker,
-.fipopup,
-.tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev,
-.featureHilite,
-.pnsi,
-.spn,
-.sp a.active,
-a.tab.active,
-a.tab:hover
+#mapshup #theBar,
+#mapshup #slacker,
+#mapshup .fipopup,
+#mapshup .tbnwh, #mapshup .tbnwv, #mapshup .tbneh, #mapshup .tbnev, #mapshup .tbswh, #mapshup .tbswv, #mapshup .tbseh, #mapshup .tbsev,
+#mapshup .featureHilite,
+#mapshup .pnsi,
+#mapshup .spn,
+#mapshup .sp a.active,
+#mapshup a.tab.active,
+#mapshup a.tab:hover
 {
     background-color:#f3961c;
 }
@@ -224,39 +199,19 @@ a.tab:hover
  *
  ***********************************/
 
-/* mapshup container */
-.wrapper {
-    min-height:100%;
-    height: auto !important;
-    height: 100%;
-    margin:0px 0px -100px;
-}
-
-/* Header */
-#Mheader {
-    position:absolute;
-    top:0px;
-    left:0px;
-    height:0px;
-    width:100%;
-}
-
-/* Footer */
-#Mfooter {
-    position:absolute;
-    bottom:0px;
-    left:0px;
-    height:0px;
-    width:100%;
-}
-
 /* map container */
-#mapcontainer {
+#mapshup #wcontainer {
     position:absolute;
     width:100%;
     height:100%;
 }
-#map {
+#mapshup #mapcontainer {
+    position:relative;
+    overflow:hidden !important;
+    width:100%;
+    height:100%;
+}
+#mapshup #map {
     position:absolute;
     background:#ddd url(img/mapbg.png);
     width:100%;
@@ -265,64 +220,55 @@ a.tab:hover
     margin:0;
     overflow:hidden;
 }
-.map {
-    position:absolute;
-    top:35px; /* Fullscreen map should be 0px */
-    left:0px;
-    right:0px;
-    bottom:0px;
-    overflow:hidden;
-}
 
 /* header bar */
-#theBar {
+#mapshup #theBar {
     position:absolute;
     top:0px;
-    left:0px;
     height:35px;
     line-height:35px;
     width:100%;
     overflow:hidden;
     z-index:34500;
 }
-#theBar .container {
+#mapshup #theBar .container {
     position:absolute;
     top:0px;
     left:35px;
     right:35px;
     height:100%;
 }
-#theBar .logo {
+#mapshup #theBar .logo {
     position:absolute;
     left:0px;
 }
-#theBar .logo a {
+#mapshup #theBar .logo a {
     font-family:tahoma,verdana,arial,sans-serif;
     font-size:20px;
     line-height:35px;
 }
 
-#theBar .searchBar {
+#mapshup #theBar .searchBar {
     position:absolute;
     left:120px;
 }
-#theBar .searchBar input[type="text"] {
+#mapshup #theBar .searchBar input[type="text"] {
     background: url(img/ossearch.png) no-repeat 10px 6px #fff;
     font-size: 12px;
     width: 350px;
     padding-left:35px;
 }
 
-#theBar .leftBar {
+#mapshup #theBar .leftBar {
     position:absolute;
 }
 
-#theBar .userBar {
+#mapshup #theBar .userBar {
     position:absolute;
     right:0px;
 }
 
-#theBar h1 {
+#mapshup #theBar h1 {
     text-align:right;
     padding-right:5px;
     font-weight:lighter;
@@ -330,7 +276,7 @@ a.tab:hover
 }
 
 /* contextual menu displayed after long click on the map */
-#menu {
+#mapshup #menu {
     position:absolute;
     cursor:pointer;
     width:auto;
@@ -338,17 +284,17 @@ a.tab:hover
     display:none;
     z-index:10000;
 }
-#menu img {
+#mapshup #menu img {
     vertical-align:middle;
 }
-#menu .cross {
+#mapshup #menu .cross {
     position:absolute;
     top:-13px;
     left:-8px;
     height:14px;
     width:14px;
 }
-#menu .item {
+#mapshup #menu .item {
     position:absolute;
     height:20px;
     width:180px;
@@ -362,13 +308,13 @@ a.tab:hover
     transform: rotate(-10deg);
 }
 
-#menu .item:hover {
+#mapshup #menu .item:hover {
     background-color:#ccc;
     border: 1px solid #eee;
 }
 
 /* Coordinates following the mouse */
-#coords {
+#mapshup #coords {
     position:absolute;
     background-color:transparent;
     text-align:left;
@@ -380,13 +326,13 @@ a.tab:hover
 }
 
 /* Semi-transparent mask - displayed when an ajax call is performed for example */
-.mask {
+#mapshup .mask {
     position:absolute;
     background-color:rgba(0,0,0,0.5);
     width:100%;
     z-index:35000;
 }
-.mask .content {
+#mapshup .mask .content {
     position:relative;
     text-transform:uppercase;
     margin:auto;
@@ -395,17 +341,17 @@ a.tab:hover
     text-align:center;
     z-index:35001;
 }
-.mask .loading {
+#mapshup .mask .loading {
     margin-top:10px;
 }
-.mask .loading a {
+#mapshup .mask .loading a {
     background-color:#666;
 }
 
 /**
  * Help
 */
-.help .item {
+#mapshup .help .item {
     position:absolute; /* top/left must be set for each help blocks */
     text-align:justify;
     height:auto;
@@ -413,7 +359,7 @@ a.tab:hover
     font-size:1.1em;
     line-height:16px;
 }
-.help p {
+#mapshup .help p {
     padding-top:10px;
 }
 
@@ -422,8 +368,17 @@ a.tab:hover
 *  Tooltip
 *
 *=======================================*/
-#tooltip { position:absolute; display:none; padding: 5px; background-repeat: no-repeat; z-index:36000; overflow:hidden; }
-#tooltip .inner { padding: 5px 8px 4px 8px; background-color: #000; max-width: 200px; text-align: left; }
+#mapshup-tooltip {
+    position:absolute;
+    display:none;
+    font-family:"lucida grande",tahoma,verdana,arial,sans-serif;
+    font-size:12px;
+    padding: 5px;
+    background-repeat: no-repeat;
+    z-index:36000;
+    overflow:hidden;
+}
+#mapshup-tooltip .inner { padding: 5px 8px 4px 8px; background-color: #000; max-width: 200px; text-align: left; }
 
 
 /*======================================
@@ -436,26 +391,26 @@ a.tab:hover
 *     - TimeLine
 *
 *======================================*/
-.tools {
+#mapshup .tools {
     cursor:pointer;
 }
-.tools .item {
+#mapshup .tools .item {
     text-align:center;
     white-space:nowrap;
     line-height:24px;
     padding:6px 7px 5px 7px;
     height:24px;
 }
-.tools .item:hover {
+#mapshup .tools .item:hover {
     background-color:#c76400;
 }
-.tools .item img {
+#mapshup .tools .item img {
     max-width:16px;
     max-height:16px;
 }
 
 /* LayersManager specific */
-.lm .tools {
+#mapshup .lm .tools {
     position:absolute;
     top:24px;
     right:0px;
@@ -481,12 +436,12 @@ a.tab:hover
  *      .tbsev : South East Vertical
  *
 ===========================================*/
-.tb .item {
+#mapshup .tb .item {
     position:relative;
     text-align:center;
     white-space:nowrap;
 }
-.tb .item span.counter {
+#mapshup .tb .item span.counter {
     position:absolute;
     background: none repeat scroll 0 0 red;
     bottom: 2px;
@@ -494,65 +449,65 @@ a.tab:hover
     right: -2px;
 }
 /* Position for North toobar */
-.tbneh, .tbnev, .tbnwh {
+#mapshup .tbneh, #mapshup .tbnev, #mapshup .tbnwh {
     top:130px;
 }
 
-.tbnwv {
+#mapshup .tbnwv {
     top:110px;
 }
 
 /* Position for South toolbar */
-.tbseh, .tbsev, .tbswh, .tbswv {
+#mapshup .tbseh, #mapshup .tbsev, #mapshup .tbswh, #mapshup .tbswv {
     bottom:20px;
 }
 
 /* Position for East Horizontal toolbar */
-.tbneh, .tbseh {
+#mapshup .tbneh, #mapshup .tbseh {
     right:20px;
 }
 
 /* Position for East Vertical toolbar */
-.tbnev, .tbsev {
+#mapshup .tbnev, #mapshup .tbsev {
     right:0px;
 }
 
 /* Position for West Horizontal toolbar */
-.tbnwh, .tbswh {
+#mapshup .tbnwh, #mapshup .tbswh {
     left:20px;
 }
 
 /* Position for West Vertical toolbar */
-.tbnwv, .tbswv {
+#mapshup .tbnwv, #mapshup .tbswv {
     left:0px;
 }
 
 /* Horizontal toolbar */
-.tbh {
+#mapshup .tbh {
     width:auto;
     height:40px;
 }
-.tbh .item {
+#mapshup .tbh .item {
     min-width:40px;
     height:100%;
     display:inline-block;
 }
-.tbh .item img {
+#mapshup .tbh .item img {
     max-width:40px;
     max-height:40px;
 }
 /* Vertical toolbar */
-.tbv {
+#mapshup .tbv {
     height:auto;
     width:40px;
 }
-.tbv .item {
+#mapshup .tbv .item {
     min-width:100%;
     height:40px;
 }
 
 /* Common definition for predefined toolbars */
-.tbnwh, .tbnwv, .tbneh, .tbnev, .tbswh, .tbswv, .tbseh, .tbsev {
+#mapshup .tbnwh, #mapshup .tbnwv, #mapshup .tbneh, #mapshup .tbnev, #mapshup .tbswh, #mapshup .tbswv, #mapshup .tbseh, #mapshup .tbsev {
     box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
     -o-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
     -webkit-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
@@ -566,22 +521,22 @@ a.tab:hover
 * South panel
 *
 *===========================================*/
-.pns {
+#mapshup .pns {
     position:absolute;
     left:0px;
     z-index:20000;
 }
-.pns .mask {
+#mapshup .pns .mask {
     background-color:rgba(243,150,28,0.9);
 }
-.pns .mask .content {
+#mapshup .pns .mask .content {
     font-size:1.8em;
 }
 
-.pnsit {
+#mapshup .pnsit {
     background-color:rgba(243,150,28,0.9);
 }
-.pnsi,.pnsit {
+#mapshup .pnsi,#mapshup .pnsit {
     border-top: 2px dashed #fff;
     border-right: 2px dashed #fff;
 }
@@ -589,7 +544,7 @@ a.tab:hover
 /* =======================================
  * SidePanel
  * ======================================*/
-.spn {
+#mapshup .spn {
     position:absolute;
     top:0px;
 }
@@ -599,17 +554,17 @@ a.tab:hover
 *    Search panel
 *
 ===========================================*/
-.sp {
+#mapshup .sp {
     width:80%;
     height:auto;
     max-height:80%;
     top:100px;
     line-height:30px;
 }
-.sp .content {
+#mapshup .sp .content {
     padding:10px;
 }
-.sp a:hover{
+#mapshup .sp a:hover{
     border-bottom:1px solid #c76400;
 }
 
@@ -618,19 +573,19 @@ a.tab:hover
 *   Popup window
 *
 ========================================*/
-.po {
+#mapshup .po {
     position:absolute;
     display:none;
 }
 
 /* Popup fixed size */
-.pona {
+#mapshup .pona {
     top:150px;
     width:500px;
 }
 
 /* Popup auto size */
-.poa {
+#mapshup .poa {
     top:150px;
     width:auto;
     max-width:500px;
@@ -638,20 +593,20 @@ a.tab:hover
 }
 
 /* Popup search */
-.sp {
+#mapshup .sp {
     width:80%;
     max-height:80%;
 }
 
-.po p {
+#mapshup .po p {
     padding-left:10px;
 }
 
-.po .body {
+#mapshup .po .body {
     overflow:auto;
 }
 
-.po .header {
+#mapshup .po .header {
     background-color:#eee;
     color:#666;
     text-align:center;
@@ -662,69 +617,69 @@ a.tab:hover
     width:100%;
 }
 
-.po .footer {
+#mapshup .po .footer {
     height:40px;
     line-height:40px;
     text-align:center;
 }
-.po .generic {
+#mapshup .po .generic {
     background-color:#fff;
     padding:15px;
 }
 
-.po .title {
+#mapshup .po .title {
     text-transform:uppercase;
     font-weight: bold;
 }
 
-.po .description {
+#mapshup .po .description {
     padding:5px 0px 5px 10px;
 }
 
 /* For share popup */
-.po .share {
+#mapshup .po .share {
     text-align:center;
     margin:10px 0px;
     font-size:2em;
 }
-.po .share .embed {
+#mapshup .po .share .embed {
     margin-top:25px;
 }
-.po .share textarea {
+#mapshup .po .share textarea {
     margin-top:10px;
     width:100%;
     resize:none;
 }
-.po .share a {
+#mapshup .po .share a {
     margin-right:10px;
 }
 
 /* For search popup */
-.po .search {
+#mapshup .po .search {
     margin:10px 0px;
     font-size:1.2em;
 }
-.po .search .launch {
+#mapshup .po .search .launch {
     text-align:center;
     font-size:1.2em;
     padding:10px;
 }
-.po .search .launch a {
+#mapshup .po .search .launch a {
     margin-right:10px;
 }
 
 /* For popup images */
-.imageContent {
+#mapshup .imageContent {
     background-color:#fff;
     z-index:38001;
 }
-.imageContent .innerTitle {
+#mapshup .imageContent .innerTitle {
     text-align:center;
     overflow:hidden;
 }
 
 /* Popup with arrow (used by FeatureInfo fmenu) */
-.apo, .napo {
+#mapshup .apo, #mapshup .napo {
     background-clip: padding-box;
     border: 1px solid #ccc;
     padding: 5px;
@@ -732,7 +687,7 @@ a.tab:hover
     height:100%;
     position: relative;
 }
-.apo:before{
+#mapshup .apo:before{
     content: ' ';
     border-color: #ccc transparent transparent;
     border-style: solid;
@@ -741,7 +696,7 @@ a.tab:hover
     bottom: -22px;
     left: 18px;
 }
-.apo:after{
+#mapshup .apo:after{
     content:' ';
     border-color: #eee transparent transparent;
     border-style: solid;
@@ -752,7 +707,7 @@ a.tab:hover
 }
 
 /* Hilite class for feature information */
-.featureHilite {
+#mapshup .featureHilite {
     position:absolute;
     border: 1px solid #fff;
     max-width:250px;
@@ -766,7 +721,7 @@ a.tab:hover
 * FeatureInfo Popup
 *
 =========================================*/
-.fipopup {
+#mapshup .fipopup {
     position:absolute;
     width:auto;
     min-width:200px;
@@ -776,49 +731,49 @@ a.tab:hover
     display:none;
     z-index:20000;
 }
-.fipopup.apo:after {
+#mapshup .fipopup.apo:after {
     border-color: #f3961c transparent transparent;
 }
-.fipopup .body {
+#mapshup .fipopup .body {
     overflow:hidden;
 }
 
-.fi {
+#mapshup .fi {
     width:100%;
     height:100%;
     text-align:center;
 }
-.fi .header {
+#mapshup .fi .header {
     font-size:2em;
     padding:50px;
     text-transform:uppercase;
 }
-.fi .title {
+#mapshup .fi .title {
     overflow:hidden;
     text-overflow:ellipsis;
 }
-.fi .ql {
+#mapshup .fi .ql {
     margin:20px;
     border-right: 3px dashed #fff;
 }
-.fi .info {
+#mapshup .fi .info {
     font-size:1.5em;
     text-align: justify;
     padding:0px 30px;
     overflow: auto;
 }
-.fi .info table {
+#mapshup .fi .info table {
     margin-left:10px;
 }
-.fi td {
+#mapshup .fi td {
     padding:5px 0px;
 }
-.fi tr:nth-child(even) {
+#mapshup .fi tr:nth-child(even) {
     background:#666;
 }
 
 /* Micro Info popup */
-.mip {
+#mapshup .mip {
     position:absolute;
     top:90px;
     right:50px;
@@ -828,16 +783,16 @@ a.tab:hover
     padding:20px;
     font-size:1.1em;
 }
-.mip h2 {
+#mapshup .mip h2 {
     color:#f3961c;
     padding-bottom:5px;
 }
-.mip p {
+#mapshup .mip p {
     text-align:justify;
 }
 
 /* message */
-.message {
+#mapshup .message {
     position:absolute;
     height:auto;
     max-width:80%;
@@ -845,7 +800,7 @@ a.tab:hover
     display:none;
     z-index:38000;
 }
-.message .content {
+#mapshup .message .content {
     height:auto;
     width:auto;
     text-align:center;
@@ -854,13 +809,13 @@ a.tab:hover
     padding:20px;
     z-index:38001;
 }
-.message span.close {
+#mapshup .message span.close {
     font-size:1.5em;
     color:#666;
 }
 
 /* Tab definition */
-a.tab {
+#mapshup a.tab {
     position:absolute;
     background-color:rgba(0,0,0,0.5);
     font-size:10px;
@@ -870,17 +825,17 @@ a.tab {
     text-transform:uppercase;
     cursor:pointer;
 }
-a.ptab {
+#mapshup a.ptab {
     padding:0px 5px 0px 5px !important;
     font-size:2em;
     background-color:#000;
 }
-a.tab img {
+#mapshup a.tab img {
     vertical-align:middle;
     height:16px;
 }
 
-.tab span.loading {
+#mapshup .tab span.loading {
     background:transparent url(img/loading.gif) no-repeat center center;
     position:absolute;
     right:10px;
@@ -891,7 +846,7 @@ a.tab img {
 /*
  * Pure CSS close button
 */
-.tab span.close {
+#mapshup .tab span.close {
     top:0px;
     left:5px;
     width:15px;
@@ -903,12 +858,12 @@ a.tab img {
 /*
  * TimeLine
 */
-#timeLine
+#mapshup #timeLine
 {
     background-color:#f3961c;
 }
 
-#timeLine {
+#mapshup #timeLine {
     position:absolute;
     left:0px;
     height:40px;
@@ -916,7 +871,7 @@ a.tab img {
     color:#fff;
     z-index:34500;
 }
-#timeLine .mask{
+#mapshup #timeLine .mask{
     position:absolute;
     width:100%;
     height:40px;
@@ -928,7 +883,7 @@ a.tab img {
     cursor:pointer;
     z-index:20100;
 }
-#timeLine .tools {
+#mapshup #timeLine .tools {
     position:absolute;
     display:inline;
     width:auto;
@@ -936,7 +891,7 @@ a.tab img {
     right:35px;
     z-index:100;
 }
-#timeLine .tools .item {
+#mapshup #timeLine .tools .item {
     text-align:center;
     white-space:nowrap;
     line-height:40px;
@@ -945,7 +900,7 @@ a.tab img {
     height:40px;
     display:inline-block;
 }
-.timeLine {
+#mapshup .timeLine {
     position:absolute;
     top:0px;
     left:35px;
@@ -953,13 +908,13 @@ a.tab img {
     height:100%;
 }
 
-.ui-rangeSlider{
+#mapshup .ui-rangeSlider{
     font-size:1em;
     height:100%;
     z-index:1;
 }
 
-.ui-rangeSlider-innerBar{
+#mapshup .ui-rangeSlider-innerBar{
     position:absolute;
     overflow:hidden;
     left:0px;
@@ -968,33 +923,33 @@ a.tab img {
     z-index:2;
 }
 
-.ui-rangeSlider-scaleBar{
+#mapshup .ui-rangeSlider-scaleBar{
     position:absolute;
     left:0px;
     height:100%;
     z-index:1;
 }
 
-.ui-rangeSlider-scaleUnit{
+#mapshup .ui-rangeSlider-scaleUnit{
     position:absolute;
     font-size:0.8em;
     color:#000;
     bottom:0px;
     z-index:1;
 }
-.ui-rangeSlider-bigScaleUnit{
+#mapshup .ui-rangeSlider-bigScaleUnit{
     position:absolute;
     height:100%;
     font-size:1.5em;
     z-index:3;
 }
-.ui-rangeSlider-bgy{
+#mapshup .ui-rangeSlider-bgy{
     position:absolute;
     line-height:40px;
     height:100%;
     z-index:1;
 }
-.ui-rangeSlider-bgm{
+#mapshup .ui-rangeSlider-bgm{
     position:absolute;
     line-height:20px;
     height:20px;
@@ -1002,7 +957,7 @@ a.tab img {
     z-index:2;
 }
 
-.ui-rangeSlider-handle{
+#mapshup .ui-rangeSlider-handle{
     position:absolute;
     width:10px;
     height:40px;
@@ -1011,7 +966,7 @@ a.tab img {
     cursor:col-resize;
     z-index:4;
 }
-.ui-rangeSlider-bar{
+#mapshup .ui-rangeSlider-bar{
     position:absolute;
     height:40px;
     margin: 1px 0px;
@@ -1022,7 +977,7 @@ a.tab img {
     top:-1px;
     z-index:3;
 }
-.ui-rangeSlider-mask {
+#mapshup .ui-rangeSlider-mask {
     position:absolute;
     height:40px;
     margin: 1px 0px;
@@ -1031,31 +986,31 @@ a.tab img {
     z-index:3;
 }
 
-.ui-rangeSlider-bar.ui-draggable-dragging{
+#mapshup .ui-rangeSlider-bar.ui-draggable-dragging{
     cursor:-moz-grabbing;
     cursor:grabbing;
 }
 
 
-.ui-rangeSlider-container{
+#mapshup .ui-rangeSlider-container{
     position:absolute;
     top:0px;
     height:100%;
     margin:0px 0px 50px 0px;
 }
 
-.ui-rangeSlider .ui-rangeSlider-container{
+#mapshup .ui-rangeSlider .ui-rangeSlider-container{
     margin:0;
 }
 
-.ui-rangeSlider-label{
+#mapshup .ui-rangeSlider-label{
     padding:10px 10px;
     margin:0px 2px 2px;
     background-color:#f3961c;
     cursor:col-resize;
     z-index:50;
 }
-.userBar img {
+#mapshup .userBar img {
     vertical-align: middle;
     max-height: 16px;
 }
@@ -1066,11 +1021,11 @@ a.tab img {
  *
  =========================================*/
 
-.pointer {
+#mapshup .pointer {
     cursor:pointer !important;
 }
 
-.shadow {
+#mapshup .shadow {
     box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
     -o-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
     -webkit-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
@@ -1078,7 +1033,7 @@ a.tab img {
 }
 
 /* CSS definition for subscript text */
-.subscript {
+#mapshup .subscript {
     font-size:xx-small;
     vertical-align:bottom;
     top:1em;
@@ -1086,30 +1041,30 @@ a.tab img {
 }
 
 /* Expand width and height to the max */
-.whole {
+#mapshup .whole {
     height:100%;
     width:100%;
     overflow:auto;
 }
 
-.hover {
+#mapshup .hover {
     cursor:pointer;
 }
-.hover:hover {
+#mapshup .hover:hover {
     background-color:rgba(199,100,0,0.3);
 }
-.active, .selected {
+#mapshup .active, #mapshup .selected {
     background-color:rgba(199,100,0,0.3);
 }
-.inactive {
+#mapshup .inactive {
     -moz-opacity:.50; filter:alpha(opacity=50); opacity:.50;
 }
-.bold {
+#mapshup .bold {
     font-weight:bold;
 }
 
 /* Button */
-.button {
+#mapshup .button {
     background: #5C6166;
     font-family:Arial, sans-serif;
     display: block;
@@ -1119,47 +1074,47 @@ a.tab img {
     text-decoration: none;
     cursor:pointer;
 }
-.button:hover {
+#mapshup .button:hover {
     background:#939CA3;
 }
 
-.button.inline {
+#mapshup .button.inline {
     display:inline;
 }
-.button.colored {
+#mapshup .button.colored {
     background: #E57300;
 }
-.button.colored:hover {
+#mapshup .button.colored:hover {
     background: #D17000;
 }
 
-.button.validate {
+#mapshup .button.validate {
     background:olivedrab;
 }
-.button.facebook {
+#mapshup .button.facebook {
     background:#3B5998;
 }
-.button.twitter {
+#mapshup .button.twitter {
     background:#4099FF;
 }
-.button.email {
+#mapshup .button.email {
     background:#939CA3;
 }
-.button.signin {
+#mapshup .button.signin {
     background:#f00;
 }
-.button.signin:hover {
+#mapshup .button.signin:hover {
     background:#666;
 }
-.button.signup {
+#mapshup .button.signup {
     background:#000;
 }
-.button.signup:hover {
+#mapshup .button.signup:hover {
     background:#666;
 }
 
 /* Pure CSS close button */
-.close {
+#mapshup .close {
     position:absolute;
     top:0px;
     right:-8px;
@@ -1169,81 +1124,81 @@ a.tab img {
     font-size:2em;
     color:#666;
 }
-.close:before {
+#mapshup .close:before {
     content:"\00D7";
 }
 
-.image {
+#mapshup .image {
     padding:0px;
     background-color:transparent;
 }
 
-.image:hover {
+#mapshup .image:hover {
     border-bottom:1px solid #c76400;
 }
 
-.center {
+#mapshup .center {
     text-align: center;
 }
 
-.left {
+#mapshup .left {
     text-align: left;
 }
 
-.right {
+#mapshup .right {
     text-align: right;
 }
 
-.jstfy {
+#mapshup .jstfy {
     text-align: justify;
 }
 
-.big {
+#mapshup .big {
     font-size:1.5em;
 }
 
-.small {
+#mapshup .small {
     font-size:0.8em;
 }
-.smaller {
+#mapshup .smaller {
     font-size:0.5em;
 }
 
-.padded {
+#mapshup .padded {
     padding:10px;
 }
 
-.paddedleft {
+#mapshup .paddedleft {
     padding-left:10px;
 }
 
-.paddedright {
+#mapshup .paddedright {
     padding-right:10px;
 }
 
-.warning {
+#mapshup .warning {
     background-color:#f00;
     padding:4px;
 }
 
-.marged {
+#mapshup .marged {
     margin:10px;
 }
 
-.hidden {
+#mapshup .hidden {
     -moz-opacity:.40; filter:alpha(opacity=40); opacity:.40;
 }
-.clickable {
+#mapshup .clickable {
     cursor: pointer;
 }
-.sortable {
+#mapshup .sortable {
     cursor: move;
 }
 
 /*
  * A drag&drop zone - see M.DDZone
 */
-.ddzone {
+#mapshup .ddzone {
     border: 2px dashed #BBBBBB;
     border-radius: 5px 5px 5px 5px;
     color: #BBBBBB;
@@ -1251,7 +1206,7 @@ a.tab img {
     padding: 25px;
     text-align: center;
 }
-.ddhover {
+#mapshup .ddhover {
     background-color:pink;
     color:#FFF;
     border: 2px dashed #FFF;
@@ -1260,23 +1215,23 @@ a.tab img {
 /* ===============================
  * Thumbnail
  * ============================== */
-.thumbs {
+#mapshup .thumbs {
     margin-top:2px;
     padding:2px;
     height:50px;
     width:50px;
     cursor:pointer;
 }
-.thumbs:hover img, .thumbs.hilite img {
+#mapshup .thumbs:hover img, #mapshup .thumbs.hilite img {
     border:2px solid #f3961c;
 }
-.thumbs img {
+#mapshup .thumbs img {
     width:44px;
     height:44px;
     background-color:#000;
     border:2px solid #f9f9f9;
 }
-.thumbs span.title {
+#mapshup .thumbs span.title {
     position:absolute;
     top:3px;
     bottom:3px;
@@ -1386,7 +1341,7 @@ div.olControlMousePosition {
     background-color:#eee;
 }
 
-#__CONTROL_ATTRIBUTION__ {
+#mapshup #__CONTROL_ATTRIBUTION__ {
     background-color: rgba(255, 255, 255, 0.7);
     color: #000000;
     font-size: 0.9em;
@@ -1399,7 +1354,7 @@ div.olControlMousePosition {
  ============================*/
 
 /* LayersManager.js */
-.lm {
+#mapshup .lm {
     position:absolute;
     background-color:#000;
     left:0px;
@@ -1409,38 +1364,38 @@ div.olControlMousePosition {
 }
 
 /* North and South positionning differs */
-.lmn {
+#mapshup .lmn {
     top:-59px;
 }
-.lmn a.tab{
+#mapshup .lmn a.tab{
     bottom:-24px;
 }
 
-.lms {
+#mapshup .lms {
     bottom:-59px;
 }
-.lms a.tab, .pns a.tab{
+#mapshup .lms a.tab, #mapshup .pns a.tab{
     top:-24px;
 }
 
-.lm .content {
+#mapshup .lm .content {
     position:absolute;
     left:0px;
     width:100%;
     height:58px;
     text-transform:uppercase;
 }
-.lm .content h2 {
+#mapshup .lm .content h2 {
     padding-top:20px;
 }
-.lm .content .info{
+#mapshup .lm .content .info{
     height:20px;
     overflow:hidden;
     position:absolute;
     top:58px;
     width:100%;
 }
-.lm .content .previous, .lm .content .next {
+#mapshup .lm .content .previous, #mapshup .lm .content .next {
     position:absolute;
     top:10px;
     font-size:3em;
@@ -1451,17 +1406,17 @@ div.olControlMousePosition {
     text-align:center;
     z-index:10;
 }
-.lm .content .previous {
+#mapshup .lm .content .previous {
     left:5px;
 }
 
-.lm .content .next {
+#mapshup .lm .content .next {
     right:5px;
 }
-.lm .content .previous a, .lm .content .next a {
+#mapshup .lm .content .previous a, #mapshup .lm .content .next a {
     color:#eee;
 }
-.lm .thumbsWrapper{
+#mapshup .lm .thumbsWrapper{
     height:100%;
     left:35px;
     right:35px;
@@ -1469,7 +1424,7 @@ div.olControlMousePosition {
     position:absolute;
     top:0;
 }
-.lm .mask{
+#mapshup .lm .mask{
     position:absolute;
     width:100%;
     height:100%;
@@ -1479,10 +1434,10 @@ div.olControlMousePosition {
     text-transform: uppercase;
     z-index:20100;
 }
-.lm .maskh{
+#mapshup .lm .maskh{
     cursor:pointer;
 }
-.lm .content ul{
+#mapshup .lm .content ul{
     list-style:none;
     margin:0px;
     padding:0px;
@@ -1491,23 +1446,23 @@ div.olControlMousePosition {
     left:0px;
     top:0px;
 }
-.lm .content ul li {
+#mapshup .lm .content ul li {
     position:relative;
     float:left;
 }
 /* BackgroundsManager.js, Context.js and UserManagement.js */
-.bgm, .shr, .umgmt {
+#mapshup .bgm, #mapshup .shr, #mapshup .umgmt {
     display:inline;
     width:auto;
     height:35px;
 }
-.bgm .item, .shr .item, .umgmt .item {
+#mapshup .bgm .item, #mapshup .shr .item, #mapshup .umgmt .item {
     min-width:25px;
     height:100%;
     display:inline-block;
 }
 
-.umgmt .item {
+#mapshup .umgmt .item {
     width:35px;
     height:100%;
     margin:0px 3px;
@@ -1515,12 +1470,12 @@ div.olControlMousePosition {
 }
 
 /* Share.js */
-.shr {
+#mapshup .shr {
     margin-left:20px;
 }
 
 /* AddLayer.js */
-#ddzone {
+#mapshup #ddzone {
     position:absolute;
     top:0px;
     left:0px;
@@ -1533,7 +1488,7 @@ div.olControlMousePosition {
     color:#fff;
     z-index:34000;
 }
-#ddzone .content {
+#mapshup #ddzone .content {
     position:relative;
     margin:auto;
     top:0px;
@@ -1543,26 +1498,26 @@ div.olControlMousePosition {
 }
 
 /* Catalog.js */
-.father {
+#mapshup .father {
     font-weight: bold;
 }
-.catalog img {
+#mapshup .catalog img {
     height:32px;
     width:32px;
     vertical-align: middle;
 }
-.catalog th {
+#mapshup .catalog th {
     text-align:left;
     padding:5px;
 }
-.catalog td {
+#mapshup .catalog td {
     padding:5px;
     font-size:0.8em;
     border-top:1px solid #ccc;
 }
 
 /* Geonames.js */
-#gnm {
+#mapshup #gnm {
     position:absolute;
     width:auto;
     min-width:200px;
@@ -1571,35 +1526,35 @@ div.olControlMousePosition {
     background-color:#f3961c;
     z-index:10100;
 }
-#gnm.apo:after {
+#mapshup #gnm.apo:after {
     border-color: #f3961c transparent transparent;
 }
-#gnm .header{
+#mapshup #gnm .header{
     float:none;
     padding:5px 5px 5px 5px;
     text-align:left;
     vertical-align:middle;
 }
-#gnm .title {
+#mapshup #gnm .title {
     font-weight: bold;
 }
-#gnm img {
+#mapshup #gnm img {
     max-height:16px;
     max-width:16px;
 }
 
-#gnm .item {
+#mapshup #gnm .item {
     font-size:1.5em;
     padding-right:10px;
 }
 
 /* UserManagement.js */
-.loginPanel input {
+#mapshup .loginPanel input {
     margin:10px 0px;
 }
 
 /* UTFGrid */
-.utfginfo {
+#mapshup .utfginfo {
     position:absolute;
     cursor:pointer;
     color:#fff;
@@ -1614,19 +1569,19 @@ div.olControlMousePosition {
     display:none;
     z-index:30000;
 }
-.utfginfo:hover {
+#mapshup .utfginfo:hover {
     background-color:#3399ff;
 }
 
 /* slacker */
-#slacker {
+#mapshup #slacker {
     position:absolute;
     top:35px; /* Just below #theBar */
     width:100%;
     height:45px;
     z-index:20000;
 }
-#slacker .container {
+#mapshup #slacker .container {
     position:absolute;
     color:#000;
     text-shadow: #fff 1px 1px 1px;
@@ -1636,22 +1591,22 @@ div.olControlMousePosition {
     right:35px;
     height:100%;
 }
-#slacker .element {
+#mapshup #slacker .element {
     width:100px;
 }
 
-#slacker .icon {
+#mapshup #slacker .icon {
     width:30px;
 }
 
 /* slacker table layout */
-#slacker .title {
+#mapshup #slacker .title {
     padding-top:5px;
 }
-td.value {
+#mapshup td.value {
     width:30px;
 }
-td.clear {
+#mapshup td.clear {
     padding:0 10px;
 }
 
@@ -1685,58 +1640,58 @@ td.clear {
     z-index:4;
 }
 /* WPSClient */
-.wpsclient {
+#mapshup .wpsclient {
     height:auto;
     padding:20px;
     font-size:1.1em;
     line-height:16px;
 }
-.wpsclient a {
+#mapshup .wpsclient a {
     color:#fff;
 }
-.wpsclient h1 {
+#mapshup .wpsclient h1 {
     color:#fff;
 }
-.wpsclient p {
+#mapshup .wpsclient p {
     padding-top:10px;
 }
-.wpsclient .input, .wpsclient .output {
+#mapshup .wpsclient .input, #mapshup .wpsclient .output {
     padding-right:30px;
     white-space:nowrap;
 }
-.wpsclient .processes {
+#mapshup .wpsclient .processes {
     padding:10px;
     height:100px;
     width:auto;
     line-height:35px;
 }
-.wpsclient .processes a.active {
+#mapshup .wpsclient .processes a.active {
     background-color:#f00;
 }
-.wpsclient .describe {
+#mapshup .wpsclient .describe {
     background:#eee;
     padding:5px 100px 5px 5px;
     margin-bottom:10px;
 }
-.wpsclient .describe h1 {
+#mapshup .wpsclient .describe h1 {
     color:#f00;
 }
-.wpsclient .describe .execute {
+#mapshup .wpsclient .describe .execute {
     position:absolute;
     padding:10px;
     top:25px;
     right:20px;
 }
-.wpsclient .describe .execute img {
+#mapshup .wpsclient .describe .execute img {
     height:16px;
     vertical-align:middle;
 } 
-.wpsclient .list {
+#mapshup .wpsclient .list {
     padding:5px 5px 5px 15px;
     height:100px;
     line-height:35px;
 }
-.wpsclient .hilite, .acacia .hilite{
+#mapshup .wpsclient .hilite, #mapshup .acacia .hilite{
     background-color:olivedrab;
     padding:4px;
 }
@@ -1744,7 +1699,7 @@ td.clear {
 /*
  * Search suggest is above mask
 */
-.searchSuggest {
+#mapshup .searchSuggest {
     position:absolute;
     background-color: #fff;
     box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
@@ -1753,58 +1708,58 @@ td.clear {
     -moz-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
     z-index:36000;
 }
-li.as-result-item {
+#mapshup li.as-result-item {
     margin: 0 0 0 0;
     padding: 5px 12px;
     border: 1px solid #fff;
     border-bottom: 1px solid #ddd;
     cursor: pointer;
 }
-li.as-result-item img {
+#mapshup li.as-result-item img {
     width:32px;
     height:32px;
 }
 
-li:first-child.as-result-item {
+#mapshup li:first-child.as-result-item {
     margin: 0;
 }
-li.as-result-item.active {
+#mapshup li.as-result-item.active {
     background-color:#f3961c;
     color: #fff;
 }
-li.as-result-item em, li.as-result-item .val {
+#mapshup li.as-result-item em, #mapshup li.as-result-item .val {
     font-weight:bold;
     background-color:#666;
     color:#fff;
     padding: 0 5px;
 }
 /* RastersManager */
-.rm {
+#mapshup .rm {
     padding:30px;
 }
-.rm table {
+#mapshup .rm table {
     width:100%;
     text-align:left;
 }
-.rm table tr {
+#mapshup .rm table tr {
     border: 2px solid #fff;
 }
-.rm table tr:nth-child(even) {
+#mapshup .rm table tr:nth-child(even) {
     background:#666;
 }
 
 /* QuickSelector */
-.quickselector {
+#mapshup .quickselector {
     position:absolute;
     bottom:20px;
     right:20px;
     z-index:20000;
 }
-.quickselector ul li {
+#mapshup .quickselector ul li {
     position:relative;
     float:left;
 }
-.quickselector .thumbs img {
+#mapshup .quickselector .thumbs img {
     border:2px solid #000;
     box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
     -o-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
@@ -1812,9 +1767,9 @@ li.as-result-item em, li.as-result-item .val {
     -moz-box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.5);
     -moz-opacity:.90; filter:alpha(opacity=90); opacity:.90;
 }
-.quickselector .thumbs:hover img {
+#mapshup .quickselector .thumbs:hover img {
     -moz-opacity:1; filter:alpha(opacity=100); opacity:1;
 }
-.quickselector .thumbs img.active {
+#mapshup .quickselector .thumbs img.active {
     border:2px solid #f3961c;
 }

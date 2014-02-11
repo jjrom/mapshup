@@ -140,6 +140,11 @@
              */
             if (!options.enable) {
                 self.enabled = false;
+                $('#wcontainer').css({
+                    'top':$('#theBar').height(),
+                    'height':$('#wcontainer').height() - $('#theBar').height()
+                });
+                
                 return false;
             }
         
@@ -179,7 +184,7 @@
              * </div>
              * 
              */
-            self.$d = M.Util.$$('#timeLine', $('#mwrapper')).html('<div class="timeLine"></div><div class="mask"><h2>'+M.Util._("Date filter disabled")+'</h2>('+M.Util._("Click to enable")+')</div>');
+            self.$d = M.Util.$$('#timeLine', $('#mapshup')).html('<div class="timeLine"></div><div class="mask"><h2>'+M.Util._("Date filter disabled")+'</h2>('+M.Util._("Click to enable")+')</div>');
             
             /*
              * Create actions Toolbar
@@ -301,16 +306,19 @@
              * 
              */
             if (self.position.hasOwnProperty('top')) {
-                self.$d.css('top', self.position.top + $('#theBar').offset().top + $('#theBar').height());
-                $('.map').css({
-                    'top':$('.map').offset().top + self.position.top + self.$d.height()
+                self.$d.css('top', self.position.top + $('#theBar').height());
+                $('#wcontainer').css({
+                    'top':self.$d.position().top + self.$d.height(),
+                    'height':$('#wcontainer').height() - $('#theBar').height() - self.$d.height()
                 });
                 $('.ui-rangeSlider-label').css('top', 45);
             }
             else if (self.position.hasOwnProperty('bottom')) {
                 self.$d.css('bottom', self.position.bottom);
-                $('.map').css({
-                    'bottom':self.position.bottom + self.$d.height()
+                $('#wcontainer').css({
+                    'top':$('#theBar').height(),
+                    'bottom':self.position.bottom + self.$d.height(),
+                    'height':$('#wcontainer').height() - $('#theBar').height() - self.$d.height()
                 });
                 $('.ui-rangeSlider-label').css('top', -35);
             } 

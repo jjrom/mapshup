@@ -720,7 +720,7 @@
              */
             if (!self._popup) {
                 self._popup = new M.Popup({
-                    parent: $('#mwrapper'),
+                    parent: $('#mapshup'),
                     modal: false,
                     centered: false,
                     noHeader: false,
@@ -735,7 +735,7 @@
                 });
 
                 self._popup.$d.css({
-                    'top': this.$d.offset().top + $('#theBar').outerHeight() + 5,
+                    'top': $('#theBar').outerHeight() + 5,
                     'right': $('#theBar .container').css('right'),
                     'width': 300
                 });

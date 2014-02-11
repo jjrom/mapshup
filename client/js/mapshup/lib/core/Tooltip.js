@@ -43,9 +43,6 @@
 
     /**
      * Create Tooltip object
-     * 
-     * @param {jquery DOM Element} domelement : jquery DOM Element containing a jtitle attribute
-     * @param {String} direction : direction of tooltip ('n','s','e','w')
      */
     M.Tooltip = function () {
         
@@ -64,7 +61,7 @@
             /*
              * jTooltip div reference
              */
-            this.$t = M.Util.$$('#tooltip');
+            this.$t = M.Util.$$('#mapshup-tooltip');
 
             /*
              * Reference to the current element
@@ -176,7 +173,7 @@
                 });
             }
            
-        }
+        };
         
         /*
          * Remove tooltip
@@ -184,7 +181,7 @@
         this.remove = function() {
             this.$t.hide();
             this.c = null;
-        }
+        };
         
         /*
          * Initialize object
@@ -198,6 +195,6 @@
         
         return this;
         
-    }
+    };
     
 })(window.M);

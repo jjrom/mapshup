@@ -116,7 +116,7 @@
              *  
              *
              */
-            self.$suggest = M.Util.$$('#'+M.Util.getId()).addClass('searchSuggest')
+            self.$suggest = M.Util.$$('#'+M.Util.getId(), $('#mapshup')).addClass('searchSuggest')
             .html('<div class="as-results"><ul class="as-list"></ul></div>')
             .css({
                 'top':sb.offset().top + sb.outerHeight(),
@@ -574,7 +574,9 @@
                     layer["_M"].setTime = function(interval) {
                         self.search(service, {getParams:getParams});
                     };
-                    M.timeLine.add(layer);
+                    if (M.timeLine) {
+                        M.timeLine.add(layer);
+                    }
                 }
             }
             
@@ -626,7 +628,7 @@
             /*
              * Get time
              */
-            if (M.timeLine.enabled) {
+            if (M.timeLine && M.timeLine.enabled) {
                 interval =  M.timeLine.getInterval();
             }
             

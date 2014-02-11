@@ -147,7 +147,7 @@
      */
     window.M = {
         
-        VERSION_NUMBER:'mapshup 2.4',
+        VERSION_NUMBER:'mapshup 2.5',
         
         /**
          * Plugin objects are defined within M.Plugins
@@ -172,7 +172,7 @@
                 return self.Util.extractKVP(window.location.href);
             })();    
             
-            /**
+            /*
              * If M.Config is not defined, everything stops !
              */
             if (self.Config === undefined) {
@@ -208,11 +208,27 @@
                 }
                 catch(e){}
             }
-        
-            /**
-             * Initialize #map reference
+            
+            /*
+             * If #masphup div does not exist do not load mapshup
              */
-            self.$map = $('#map');
+            if ($('#mapshup').length === 0) {
+                alert('GRAVE : no <div id="mapshup"> defined. Load aborted');
+                exit();
+            }
+            
+            /*
+             * Create mapshup container structure
+             * 
+             *      <div id="mapshup">
+             *          <div id="wcontainer">
+             *              <div id="mapcontainer">
+             *                  <div id="map"></div>
+             *              </div>
+             *          </div>
+             *      </div>
+             */
+            $('#mapshup').html('<div id="wcontainer"><div id="mapcontainer"><div id="map"></div></div></div>');
             
             /**
              * Create header structure
@@ -226,12 +242,17 @@
              *      </div>
              * </div>
              */
-            self.$header = self.Util.$$('#theBar', $('#mwrapper')).addClass('shadow').html('<div class="container"><div class="logo hover"><a href="http://www.mapshup.info" target="_blank">mapshup</a></div><div class="searchBar"></div><div class="leftBar"></div><div class="userBar"></div></div>');
+            self.$header = self.Util.$$('#theBar', $('#mapshup')).addClass('shadow').html('<div class="container"><div class="logo hover"><a href="http://www.mapshup.info" target="_blank">mapshup</a></div><div class="searchBar"></div><div class="leftBar"></div><div class="userBar"></div></div>');
+            
+            /**
+             * Initialize div elements reference
+             */
+            self.$map = $('#map');
             
             /**
              * Initialize map container reference
              */
-            self.$mcontainer = self.$map.parent();
+            self.$mcontainer = $('#mapcontainer');
             
             /**
              * Initialize #wcontainer reference
@@ -261,7 +282,9 @@
             /**
              * Initialize timeLine
              */
-            self.timeLine = new self.TimeLine(self.Config["general"].timeLine);
+            if (self.TimeLine) {
+                self.timeLine = new self.TimeLine(self.Config["general"].timeLine);
+            }
             
             /*
              * Initialize Side panel
@@ -567,14 +590,6 @@
                 }
             }
             
-            /*
-             * Detect window resize
-             *   On window resizing, div position and dimension
-             *   are modified to reflect map new size
-             *   Plugins must register a "resizeend" event to
-             *   resize
-             */
-            
             /* Store current window size */
             self._wd = {
                 w:window.innerWidth,
@@ -587,6 +602,15 @@
                 'height':self.$mcontainer.height()
             });
             
+            /*
+             * Detect window resize
+             * 
+             *   On window resizing, div position and dimension
+             *   are modified to reflect map new size
+             *   
+             *   Plugins must register a "resizeend" event to
+             *   resize
+             */
             $(window).bind('resize', function(){
                 
                 /*
@@ -597,15 +621,21 @@
                 fn = setTimeout(function(){
                     
                     /*
-                     * Resize M.$map container div following window resize
+                     * Resize map container width following window resize
                      */
-                    self.$mcontainer.css({
-                        'width':self.$mcontainer.width() + (window.innerWidth - self._wd.w),
-                        'height':self.$mcontainer.height() + (window.innerHeight - self._wd.h)
-                    });
-
+                    if (!$('#mapshup').hasClass('noResizeWidth')) {
+                        self.$mcontainer.css({'width':self.$mcontainer.width() + (window.innerWidth - self._wd.w)});
+                    }
+                    
                     /*
-                     * Set  M._ww andreference to the new window size
+                     * Resize map container height for non embeded context
+                     */
+                    if (!$('#mapshup').hasClass('noResizeHeight')) {
+                        self.$mcontainer.css({'height':self.$mcontainer.height() + (window.innerHeight - self._wd.h)});
+                    }
+                    
+                    /*
+                     * Set  M._wd to reference to the new window size
                      */
                     self._wd = {
                         w:window.innerWidth,

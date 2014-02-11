@@ -268,7 +268,9 @@
                              * Remove catalog from TimeLine if it does not have dates search
                              */
                             if (!self.startDateAlias && !self.completionDateAlias) {
-                                M.timeLine.remove(self.catalog);
+                                if (M.timeLine) {
+                                    M.timeLine.remove(self.catalog);
+                                }
                                 delete self.catalog["_M"].setTime;
                             }
                         

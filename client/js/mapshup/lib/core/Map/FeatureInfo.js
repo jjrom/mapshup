@@ -964,7 +964,7 @@
              *      
              * 
              */
-            $target = M.Util.$$('#' + M.Util.getId(), $('#mwrapper'))
+            $target = M.Util.$$('#' + M.Util.getId(), $('#mapshup'))
                     .addClass("overall")
                     .append('<div class="fi"><div class="header"><div class="title"></div></div><div class="body"></div></div>');
 
@@ -985,8 +985,8 @@
                 
                 $('.body', $target).append('<div class="ql" style="float:left;width:49%;"><img src="' + ql + '"/></div><div class="info"></div>');
                 $('.ql img', $target).css({
-                    'max-width': Math.round($('#mwrapper').width() * 4 / 10),
-                    'max-height': Math.round($('#mwrapper').height() * 9 / 10)
+                    'max-width': Math.round($('#mapshup').width() * 4 / 10),
+                    'max-height': Math.round($('#mapshup').height() * 9 / 10)
                 });
                
                /*

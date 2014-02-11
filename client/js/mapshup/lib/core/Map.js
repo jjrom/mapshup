@@ -593,8 +593,10 @@
                 /*
                  * Add newLayer to the TimeLine
                  */
-                M.timeLine.add(newLayer);
-
+                if (M.timeLine) {
+                    M.timeLine.add(newLayer);
+                }
+                
                 /*
                  * First baseLayer is set as the new baseLayer
                  * (i.e. replace the EmptyBaseLayer layer)
@@ -1148,8 +1150,10 @@
                  * to avoid infinite loop
                  */
                 if (!self._bof) {
-                    self.hash = M.Map.Util.Geohash.encode(self.Util.p2d(self.map.getCenter().clone())) + ":" + self.map.getZoom();
-                    window.location.hash = self.hash;
+                    if (M.Config["general"].enableHistory) {
+                        self.hash = M.Map.Util.Geohash.encode(self.Util.p2d(self.map.getCenter().clone())) + ":" + self.map.getZoom();
+                        window.location.hash = self.hash;
+                    }
                     self._bof = false;
                 }
                 else {
@@ -1570,8 +1574,10 @@
             /*
              * Remove layer from TimeLine
              */
-            M.timeLine.remove(layer);
-
+            if (M.timeLine) {
+                M.timeLine.remove(layer);
+            }
+            
             /*
              * If layer is an initial layer then its MID is stored
              * to be sure that it will be indicated as removed in the
