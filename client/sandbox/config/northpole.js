@@ -6,7 +6,7 @@
     c["general"].rootUrl = 'http://localhost/mapshup';
     c["general"].serverRootUrl = 'http://localhost/mapshups';
     c["general"].indexPath = "/sandbox/northpole.html";
-    c["general"].themePath = "/js/mapshup/theme/blacker";
+    c["general"].themePath = "/js/mapshup/theme/default";
     c["general"].confirmDeletion = false;
     
     /*
@@ -30,9 +30,11 @@
     c.add("layers", {
         name:"NorthPole",
         type:"WMS",
-        url:"http://localhost/cgi-bin/mapserv?service=WMS&map=/Users/jrom/data/mapserver/north_pole.map&",
-        layers:"countries",
-        srs:"EPSG:3857",
+        //url:"http://localhost/cgi-bin/mapserv?service=WMS&map=/Users/jrom/data/mapserver/north_pole.map&",
+        //layers:"countries",
+        url:"http://54.209.145.225:8080/constellation/WS/wms/default?",
+        layers:"bluemarble",
+        //srs:"EPSG:3857",
         MID:"NorthPole",
         isBaseLayer:true,
         ol:{
