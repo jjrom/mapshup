@@ -139,7 +139,7 @@
                  */
                 (function(item, $d) {
 
-                    $d.append('<li id="' + item.id + '" jtitle="' + item.name + '" class="thumbs"><img src="' + (options.rootUrl ? options.rootUrl + '/' : '') + item.icon + '"/></li>');
+                    $d.append('<li id="' + item.id + '" jtitle="' + M.Util._(item.name) + '" class="thumbs"><img src="' + (options.rootUrl ? options.rootUrl + '/' : '') + item.icon + '"/></li>');
                     M.tooltip.add($('#' + item.id), 's');
                     
                     if (!item.active && M.Map.Util.getLayerByMID(item.layerMID)) {
