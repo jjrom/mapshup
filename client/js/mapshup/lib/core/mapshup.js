@@ -163,14 +163,34 @@
          *          M.load();
          *      });
          * 
+         * Note : default language files can be superseeded through options parameters
+         * e.g.
+         *        options = {
+         *          i18n: {
+         *              fr:{
+         *                  'text 1':'traduction 1',
+         *                  'text 2':'traduction 2',
+         *                  ...etc...
+         *              },
+         *              en:{
+         *                  'text 1':'translation 1',
+         *                  'text 2':'translation 2',
+         *                  ...etc...
+         *              }
+         *          }
+         *        }
+         * @param {object} options
+         * 
          */
-        load:function() {
+        load:function(options) {
             
             var ctx = null,
             self = this,
             kvp = (function () {
                 return self.Util.extractKVP(window.location.href);
             })();    
+            
+            options = options || {};
             
             /*
              * If M.Config is not defined, everything stops !
@@ -338,7 +358,7 @@
                         /*
                          * Continue initialization - set lang
                          */
-                        self.setLang(kvp, ctx);
+                        self.setLang(kvp, {context:ctx, i18n:options['i18n']});
                         
                     },
                     error: function(data) {
@@ -347,7 +367,7 @@
                         /*
                          * Continue initialization - set lang
                          */
-                        self.setLang(kvp);
+                        self.setLang(kvp, {i18n:options['i18n']});
                         
                     }
                 }, {
@@ -368,10 +388,10 @@
                     for (i = 0, l = ls.length; i < l; i++) {
                         self.Config.add("layers", ls[i]);
                     }
-                    self.setLang(kvp);
+                    self.setLang(kvp, {i18n:options['i18n']});
                 }catch(e){
                     M.Util.message('Error : cannot read input layer');
-                    self.setLang(kvp);
+                    self.setLang(kvp, {i18n:options['i18n']});
                 }
             }
             /*
@@ -379,7 +399,7 @@
              * i.e. set mapshup lang
              */
             else {
-                self.setLang(kvp);
+                self.setLang(kvp, {i18n:options['i18n']});
             }
             
         },
@@ -390,9 +410,9 @@
          * @param {Object} kvp : Key value pair object.
          *             If kvp["lang"] is defined, it superseed the default lang configuration
          * 
-         * @param {Object} ctx : Context
+         * @param {Object} options
          */
-        setLang:function(kvp, ctx) {
+        setLang:function(kvp, options) {
             
             /*
              * Read KVP from URL if any
@@ -402,7 +422,9 @@
             check2 = -1,
             self = this,
             c = self.Config["i18n"];
-
+            
+            options = options || {};
+            
             /*
              * Set lang from kvp
              */
@@ -469,7 +491,17 @@
                 async:true,
                 dataType:"script",
                 success:function() {
-                    self.init(kvp, ctx);
+                    
+                    /*
+                     * Superseed lang file
+                     */
+                    if (options['i18n'] && options['i18n'][c.lang]) {                       
+                        for(var key in options['i18n'][c.lang]) {
+                            M.i18n[key] = options['i18n'][c.lang][key];
+                        }
+                    }
+                    
+                    self.init(kvp, options['context']);
                 },
                 /* Lang does not exist - load english */
                 error:function() {
@@ -479,7 +511,7 @@
                         dataType:"script",
                         success:function() {
                             c.lang = "en";
-                            self.init(kvp, ctx);
+                            self.init(kvp, options['context']);
                         }
                     });
                 }
