@@ -109,15 +109,12 @@ then
             
             # Copy index*.html files and replace __CONFIG__ with input config file
             cat $CLIENTDIR/index_prod.html | sed s/__CONFIG__/$CONFIG_FILE/g > $TARGET/tmp_index.html
-            cat $CLIENTDIR/index_prodt.html | sed s/__CONFIG__/$CONFIG_FILE/g > $TARGET/tmp_indext.html
-
+            
             # Replace theme name in index files
             sed s/__THEME__/$THEME/g $TARGET/tmp_index.html > $TARGET/index.html
-            sed s/__THEME__/$THEME/g $TARGET/tmp_indext.html > $TARGET/indext.html
         else
             # Copy index*.html files
             cat $CLIENTDIR/index_prod.html | grep -v "__CONFIG__" > $TARGET/index.html
-            cat $CLIENTDIR/index_prodt.html | grep -v "__CONFIG__" > $TARGET/indext.html
         fi
         
         /bin/cp -Rf $CLIENTDIR/blank.html $TARGET/
@@ -132,9 +129,6 @@ then
         # Copy server file to export directory
         /bin/cp -Rf $SERVERDIR $TARGET/s
 
-        # Touch files
-        /bin/cp -Rf $CLIENTDIR/js/mapshup/theme/$THEME/mapshup.css $TARGET/js/mapshup/theme/$THEME/mapshupt.css
-
 fi
 
 DIR=`dirname $0`
@@ -142,7 +136,7 @@ CSS_COMPRESSOR=`echo $DIR"/yuicompressor-2.4.2.jar"`
 JS_COMPRESSOR=`echo $DIR"/compiler.jar"`
 LICENSE=`echo $DIR"/license.txt"`
 
-if [ $BUILDFILE -eq "0" ]
+if [ $BUILDFILE = "0" ]
 then
     BUILDFILE=`echo $TARGET/js/mapshup/buildfile.txt`
 fi
@@ -169,28 +163,9 @@ java -jar $JS_COMPRESSOR $TARGET/js/mapshup/_mapshup.js > $TARGET/js/mapshup/map
 cat $LICENSE $TARGET/js/mapshup/mapshup.js.tmp > $TARGET/js/mapshup/_mapshup.js
 
 echo ""
-echo "Concatenate js files to _mapshupt.js"
-touch $TARGET/js/mapshup/_mapshupt.js
-JSFILES=`grep "\.js" $BUILDFILE | grep -v "#" |  grep -v "NOTOUCH" | awk '{print $1}'`
-for js in $JSFILES
-do
-	cat $TARGET/js/mapshup/$js >> $TARGET/js/mapshup/_mapshupt.js
-done
-
-echo ""
-echo "Compress mapshupt.js file..."
-java -jar $JS_COMPRESSOR $TARGET/js/mapshup/_mapshupt.js > $TARGET/js/mapshup/mapshupt.js.tmp
-cat $LICENSE $TARGET/js/mapshup/mapshupt.js.tmp > $TARGET/js/mapshup/_mapshupt.js
-
-echo ""
 echo "Compress default.js file..."
 java -jar $JS_COMPRESSOR $TARGET/js/mapshup/config/default.js > $TARGET/js/mapshup/config/default.js.tmp
 cat $LICENSE $TARGET/js/mapshup/config/default.js.tmp > $TARGET/js/mapshup/config/default.js
-
-echo ""
-echo "Compress touch.js file..."
-java -jar $JS_COMPRESSOR $TARGET/js/mapshup/config/touch.js > $TARGET/js/mapshup/config/touch.js.tmp
-cat $LICENSE $TARGET/js/mapshup/config/touch.js.tmp > $TARGET/js/mapshup/config/touch.js
 
 echo ""
 echo "Compress css files..."
@@ -198,24 +173,14 @@ java -jar $CSS_COMPRESSOR $TARGET/js/mapshup/theme/$THEME/mapshup.css > $TARGET/
 cat $LICENSE $TARGET/js/mapshup/theme/$THEME/mapshup.css.tmp > $TARGET/js/mapshup/theme/$THEME/mapshup.css
 
 echo ""
-echo "Compress css files for mobile..."
-java -jar $CSS_COMPRESSOR $TARGET/js/mapshup/theme/$THEME/mapshup.css > $TARGET/js/mapshup/theme/$THEME/mapshupt.css.tmp
-cat $LICENSE $TARGET/js/mapshup/theme/$THEME/mapshupt.css.tmp > $TARGET/js/mapshup/theme/$THEME/mapshupt.css
-
-echo ""
 echo "Clean..."
 /bin/rm -Rf $TARGET/js/mapshup/buildfile.txt
 /bin/rm -Rf $TARGET/js/mapshup/mapshup.js.tmp
-/bin/rm -Rf $TARGET/js/mapshup/mapshupt.js.tmp
 /bin/rm -Rf $TARGET/js/mapshup/config/default.js.tmp
-/bin/rm -Rf $TARGET/js/mapshup/config/touch.js.tmp
 /bin/rm -Rf $TARGET/js/mapshup/theme/$THEME/mapshup.css.tmp
-/bin/rm -Rf $TARGET/js/mapshup/theme/$THEME/mapshupt.css.tmp
 /bin/rm -Rf $TARGET/js/mapshup/lib
 /bin/rm -Rf $TARGET/tmp_index.html
-/bin/rm -Rf $TARGET/tmp_indext.html
 mv $TARGET/js/mapshup/_mapshup.js $TARGET/js/mapshup/mapshup.js
-mv $TARGET/js/mapshup/_mapshupt.js $TARGET/js/mapshup/mapshupt.js
 
 echo ""
 echo "Done !"

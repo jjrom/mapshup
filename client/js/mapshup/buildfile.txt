@@ -31,7 +31,7 @@ lib/layerTypes/Flickr.js
 lib/layerTypes/Generic.js
 lib/layerTypes/GeoJSON.js
 lib/layerTypes/GeoRSS.js
-lib/layerTypes/Google.js // NOTOUCH 
+lib/layerTypes/Google.js
 lib/layerTypes/GPX.js
 lib/layerTypes/Image.js
 lib/layerTypes/KML.js
@@ -39,7 +39,7 @@ lib/layerTypes/MBT.js
 lib/layerTypes/Photography.js
 lib/layerTypes/Pleiades.js
 lib/layerTypes/Sentinel.js
-lib/layerTypes/SHP.js // NOTOUCH 
+lib/layerTypes/SHP.js
 lib/layerTypes/TMS.js
 lib/layerTypes/UTFGrid.js
 lib/layerTypes/WFS.js
@@ -63,13 +63,13 @@ lib/plugins/Catalog/OpenSearch.js
 lib/plugins/Distance.js
 lib/plugins/Drawing.js
 lib/plugins/DrawBox.js
-lib/plugins/Export.js // NOTOUCH
+lib/plugins/Export.js
 lib/plugins/FeatureEdition.js
 lib/plugins/Flickr.js
 lib/plugins/Geonames.js
 #lib/plugins/GetFeatureInfo.js
 #lib/plugins/GetLandCover.js
-lib/plugins/GoogleEarth.js // NOTOUCH
+lib/plugins/GoogleEarth.js
 lib/plugins/Help.js
 #lib/plugins/LayerInfo.js
 lib/plugins/RastersManager.js
@@ -81,7 +81,7 @@ lib/plugins/Navigation.js
 lib/plugins/Routing.js
 lib/plugins/Search.js
 lib/plugins/Share.js
-lib/plugins/Streetview.js // NOTOUCH 
+lib/plugins/Streetview.js
 lib/plugins/UTFGrid.js
 lib/plugins/UserManagement.js
 lib/plugins/WPSClient.js

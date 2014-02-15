@@ -44,7 +44,7 @@ then
         echo ""
         echo "    Create a mapshup build of OpenLayers under 'mol' directory"
         echo ""
-        echo "    Usage : $0 <OpenLayers directory>"
+        echo "    Usage : $0 <OpenLayers source directory>"
         echo ""
         echo "###"
         exit 0
@@ -108,13 +108,13 @@ cd $oldir/build
 cp OpenLayers.js $here/mol/OpenLayersOptimized.js
 
 
-echo "Building OpenLayers mobile structure..."
-rm -Rf $here/mol/m
-mkdir $here/mol/m
-./build.py $here/jOpenLayersMobile_build.cfg
-cp OpenLayers.js $here/mol/m/OpenLayers.js
-cp -R $here/mol/img $here/mol/m/img
-cp -R $here/mol/theme $here/mol/m/theme
+#echo "Building OpenLayers mobile structure..."
+#rm -Rf $here/mol/m
+#mkdir $here/mol/m
+#./build.py $here/jOpenLayersMobile_build.cfg
+#cp OpenLayers.js $here/mol/m/OpenLayers.js
+#cp -R $here/mol/img $here/mol/m/img
+#cp -R $here/mol/theme $here/mol/m/theme
 
 cd $here
 echo "Done !"

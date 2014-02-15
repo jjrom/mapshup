@@ -3,18 +3,8 @@
     <head>                    
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <title>mapshup</title>
-        <script type="text/javascript">
-            var uagent = navigator.userAgent.toLowerCase();
-            if (/msie (\d+\.\d+);/.test(uagent)) { 
-                if (9 > new Number(RegExp.$1)) {
-                    window.location = 'error.html';
-                }
-            }
- 
-            if (uagent.indexOf("android") > -1 || uagent.indexOf("ipad") > -1 || uagent.indexOf("iphone") > -1 || uagent.indexOf("ipod") > -1) {
-                window.location = 'indext.html' + document.location.search;
-            }
-        </script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/> 
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
         <link rel="shortcut icon" href="./favicon.ico" />
         <link rel="stylesheet" type="text/css" href="reset.css" />
         <link rel="stylesheet" type="text/css" href="js/mol/theme/default/style.css" />
@@ -31,7 +21,7 @@
         <div id="mapshup" style="position:absolute;left:0px;right:0px;top:0px;bottom:0px;"></div>
         
         <!-- REMOVE IF GOOGLE IS NOT USED -->
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.7&sensor=false"></script>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.14&sensor=false"></script>
         
         <!-- REMOVE IF GOOGLE EARTH IS NOT USED -->
         <script type="text/javascript" src="http://www.google.com/jsapi"></script>
@@ -39,7 +29,7 @@
         
         <script type="text/javascript" src="js/mjquery/mjquery.js"></script>
         
-        <!-- REMOVE IF DISTANCE PLUGIN IS NOT USED -->
+        <!-- REMOVE IF DISTANCE PLUGIN AND RASTERSMANAGER PLUGINS ARE NOT USED -->
         <script type="text/javascript" src="js/mjquery/mjquery.jqplot.js"></script>
         
         <!-- REMOVE IF TIMELINE IS NOT USED -->
@@ -49,6 +39,47 @@
         <script type="text/javascript" src="js/mapshup/mapshup.js"></script>
         <script type="text/javascript" src="js/mapshup/config/default.js"></script>
         <script type="text/javascript" src="js/mapshup/config/__CONFIG__"></script>
+        <!-- Mobile device detection -->
+        <script type="text/javascript">
+            
+            var uagent = navigator.userAgent.toLowerCase();
+            
+            /*
+             * IE < 9 is not supported
+             */
+            if (/msie (\d+\.\d+);/.test(uagent)) { 
+                if (9 > new Number(RegExp.$1)) {
+                    window.location = 'error.html';
+                }
+            }
+            
+            /*
+             * This is a touch device
+             */
+            if (uagent.indexOf("android") > -1 || uagent.indexOf("ipad") > -1 || uagent.indexOf("iphone") > -1 || uagent.indexOf("ipod") > -1) {
+                M.Config.remove("plugins", "Welcome");
+                M.Config.remove("plugins", "GoogleEarth");
+                M.Config.remove("plugins", "Download");
+                M.Config.remove("plugins", "LayersInfo");
+
+                /* Bing layers replace Google layers */
+                M.Config.remove("layers", "Satellite");
+                M.Config.remove("layers", "Streets");
+                M.Config.remove("layers", "Relief");
+                M.Config.add("layers", {
+                    type:"Bing",
+                    title:"Satellite",
+                    key:"AmraZAAcRFVn6Vbxk_TVhhVZNt66x4_4SV_EvlfzvRC9qZ_2y6k1aNsuuoYS0UYy",
+                    bingType:"Aerial"
+                });
+                M.Config.add("layers", {
+                    type:"Bing",
+                    title:"Streets",
+                    key:"AmraZAAcRFVn6Vbxk_TVhhVZNt66x4_4SV_EvlfzvRC9qZ_2y6k1aNsuuoYS0UYy",
+                    bingType:"Road"
+                });
+            }
+        </script>
         <script type="text/javascript">
             $(document).ready(function () {
                 M.load();
