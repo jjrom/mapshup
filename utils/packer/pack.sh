@@ -85,8 +85,6 @@ then
 	/bin/cp -Rf $CLIENTDIR/js/mapshup/lib $TARGET/js/mapshup
 	/bin/cp -Rf $CLIENTDIR/js/mapshup/theme $TARGET/js/mapshup
 	/bin/cp $CLIENTDIR/js/mapshup/config/default.js $TARGET/js/mapshup/config
-	/bin/cp $CLIENTDIR/js/mapshup/config/touch.js $TARGET/js/mapshup/config
-        /bin/cp $CLIENTDIR/js/mapshup/config/help_*.js $TARGET/js/mapshup/config
 	
         # Copy external javascript libraries
 	/bin/cp -Rf $CLIENTDIR/js/mjquery $TARGET/js
@@ -97,7 +95,10 @@ then
 	/bin/cp -Rf $CLIENTDIR/img $TARGET/img
 
         # Copy presentation files
-        /bin/cp -Rf $CLIENTDIR/welcome.html_files $TARGET/
+        if [ -d $CLIENTDIR/welcome.html_files ]
+        then
+            /bin/cp -Rf $CLIENTDIR/welcome.html_files $TARGET/
+        fi
 
         # Copy index*.html files
         # If config file is specified...
