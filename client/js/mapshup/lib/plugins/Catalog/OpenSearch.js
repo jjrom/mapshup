@@ -213,10 +213,12 @@
                                  * Note that the added entry is linked with the catalog layer so
                                  * that search within the bar are displayed within the same layer
                                  * as the search done with the layer search action
+                                 * 
+                                 * Note2: this does not apply to catalog with layerDescription.inactive set to 'true' 
                                  */
                                 if (unNameSpacedKey === 'searchTerms') {
                                     self.searchKeyAlias = key;
-                                    if (M.Plugins.Search && M.Plugins.Search._o) {
+                                    if (!catalog["_M"].layerDescription.inactive && M.Plugins.Search && M.Plugins.Search._o) {
                                         M.Plugins.Search._o.add(catalog["_M"].layerDescription.url, {
                                             layer:catalog
                                         });

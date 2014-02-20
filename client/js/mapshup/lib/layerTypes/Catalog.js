@@ -79,6 +79,7 @@
          *       nextRecord:(optional)
          *       numRecordsPerPage:(optional)
          *       collection:(optional),
+         *       inactive: (optional - default false)
          *       extras:[
          *          order:"latlon" (optional)
          *       ]
@@ -133,6 +134,11 @@
              */
             layerDescription.collection = M.Util.getPropertyValue(layerDescription, "collection", "");
 
+            /*
+             * Set inactive status
+             */
+            layerDescription.inactive = M.Util.getPropertyValue(layerDescription, "inactive", false);
+            
             /*
              * Cluster strategy
              * 

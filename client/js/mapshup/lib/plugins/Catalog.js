@@ -157,6 +157,8 @@
         /**
          * This method is called by LayersManager plugin
          * Add a "Search" action to the LayersManager menu item
+         * 
+         * Note : this does not apply to catalog layer with layerDescription.inactive status set to 'true'
          */
         this.getLayerActions = function(layer) {
 
@@ -165,7 +167,7 @@
             /**
              * layers of type catalogs get a "Search" action
              */
-            if (layer && layer["_M"].layerDescription.type === "Catalog") {
+            if (layer && layer["_M"].layerDescription.type === "Catalog" && !layer["_M"].layerDescription.inactive) {
                 return [
                     {
                         id: M.Util.getId(),
