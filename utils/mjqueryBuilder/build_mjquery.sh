@@ -93,6 +93,10 @@ echo "Compress mjquery.jqplot.js"
 java -jar ../packer/compiler.jar $mjquerydir/mjquery.jqplot.js.tmp > $mjquerydir/mjquery.jqplot.js.tmp2
 cat ./license.txt $mjquerydir/mjquery.jqplot.js.tmp2 > $mjquerydir/mjquery.jqplot.js
 
+echo "Building mjquery.ui.css"
+cp $jquerydir/jquery-ui-1.9.1.custom/css/ui-lightness/jquery-ui-1.9.1.custom.min.css $mjquerydir/mjquery.ui.css
+cp -R $jquerydir/jquery-ui-1.9.1.custom/css/ui-lightness/images $mjquerydir/
+
 /bin/rm $mjquerydir/mjquery.js.tmp*
 /bin/rm $mjquerydir/mjquery.ui.js.tmp*
 /bin/rm $mjquerydir/mjquerytmp.css
