@@ -110,8 +110,11 @@
                 transitionEffect:'resize',
                 type:layerDescription.googleType
             });
-
-            return new OpenLayers.Layer.Google(layerDescription.title,options);
+            
+            var newLayer = new OpenLayers.Layer.Google(layerDescription.title,options);
+            newLayer.projection = new OpenLayers.Projection("EPSG:3857");
+            
+            return newLayer;
         },
 
         /**
@@ -121,6 +124,6 @@
         getMID:function(layerDescription) {
             return layerDescription.MID || M.Util.crc32(layerDescription.type + (layerDescription.googleType || "roadmap"));
         }
-    }
+    };
     
 })(window.M, window.M.Map);

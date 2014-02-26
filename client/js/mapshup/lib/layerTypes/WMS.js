@@ -97,7 +97,7 @@
              * Set layerDescription.srs if not set
              */
             layerDescription.srs = M.Util.getPropertyValue(layerDescription, "srs", Map.pc.projCode);
-
+            
             /*
              * Set version default to 1.1.1 if not specified
              */
