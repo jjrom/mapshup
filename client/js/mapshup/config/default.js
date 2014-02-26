@@ -442,6 +442,9 @@
      *                  
      *     closeOnRaster: // If true, a close button is added to each raster thumbnails
      *                       default is false
+     *                       
+     *     slideOverMap: // If true layersManager slides over the map, otherwise
+     *                      layersManager push the map (default true)
      */
     c.add("plugins",
     {
