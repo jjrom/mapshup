@@ -1781,7 +1781,7 @@
                     /*
                     * Return value or unmodified key if value is null
                     */
-                    return value !== null ? value : "$"+key+"$";
+                    return value != null ? value : "$"+key+"$";
                     
                 });
                 
