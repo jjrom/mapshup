@@ -71,10 +71,7 @@
             }
             );
 
-            var newLayer = new OpenLayers.Layer.Bing(options);
-            newLayer.projection = new OpenLayers.Projection("EPSG:3857");
-            
-            return newLayer;
+            return new OpenLayers.Layer.Bing(options);
 
         },
 

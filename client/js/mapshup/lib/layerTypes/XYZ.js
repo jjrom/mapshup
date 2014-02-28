@@ -81,10 +81,7 @@
             /*
              * Layer creation
              */
-            var newLayer = new OpenLayers.Layer.XYZ(layerDescription.title, layerDescription.url, options);
-            newLayer.projection = new OpenLayers.Projection("EPSG:3857");
-            
-            return newLayer;
+            return new OpenLayers.Layer.XYZ(layerDescription.title, layerDescription.url, options);
 
         },
 

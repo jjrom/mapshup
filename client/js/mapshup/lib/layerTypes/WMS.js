@@ -81,7 +81,7 @@
          */
         add: function(layerDescription, options) {
 
-            var version, projection, bbox;
+            var version, projection, srs, bbox;
 
             /**
              * If url is a GetMap then base url is extracted
@@ -128,18 +128,27 @@
              * a mapfile on server side to allow on the fly reprojection of the WMS tiles
              * 
              */
+            /*
+             *  TODO - TO REMOVE
+             *
             if (!options.projection || !layerDescription.isBaseLayer) {
+                
                 projection = M.Util.getPropertyValue(Map.map, "projection", Map.pc);
-                if (layerDescription.srs !== projection.projCode) {
+                srs = layerDescription.srs;
+                
+                // EPSG:3857, EPSG:900913 and EPSG:3785 are the same projection !!!
+                if (projection.projCode === 'EPSG:3857') {
+                    if (srs === 'EPSG:900913' || srs === 'EPSG:3857' || srs === 'EPSG:3785') {
+                        srs = 'EPSG:3857';
+                    }
+                }
+                if (srs !== projection.projCode) {
                     OpenLayers.Request.GET({
                         url: M.Util.getAbsoluteUrl(M.Config["general"].reprojectionServiceUrl) + M.Util.abc + "&url=" + encodeURIComponent(layerDescription.url) + "&layers=" + encodeURIComponent(layerDescription.layers) + "&srs=" + layerDescription.srs,
                         callback: function(request) {
                             var json = (new OpenLayers.Format.JSON()).read(request.responseText);
 
-                            /**
-                             * Add a new property "projectedUrl" that should be used
-                             * in place of original url
-                             */
+                            // Add a new property "projectedUrl" that should be used in place of original url
                             if (json.success) {
                                 layerDescription.projectedUrl = json.url;
                                 layerDescription.srs = Map.map.getProjectionObject().projCode;
@@ -153,7 +162,8 @@
                     return null;
                 }
             }
-            
+            *
+            */
             /**
              * Input "options" modification
              * If no BBOX is given, default is set to -170,-80,170,80

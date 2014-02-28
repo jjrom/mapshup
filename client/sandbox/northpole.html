@@ -38,8 +38,8 @@
         <script type="text/javascript" src="../js/proj4js/proj4js-min.js"></script>
         <script type="text/javascript">
             /* Mercator projection */
-            Proj4js.defs["EPSG:3395"] = "+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
-            Proj4js.defs["EPSG:3857"] = Proj4js.defs["EPSG:3395"];
+            Proj4js.defs["EPSG:3857"] = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs"; 
+            Proj4js.defs["EPSG:900913"] = Proj4js.defs["EPSG:3857"];
             /* NSIDC EASE-Grid North (North Pole projection) */
             Proj4js.defs["EPSG:3408"] = "+proj=laea +lat_0=90 +lon_0=0 +x_0=0 +y_0=0 +a=6371228 +b=6371228 +units=m +no_defs";
         </script>
