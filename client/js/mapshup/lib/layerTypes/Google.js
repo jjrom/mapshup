@@ -111,7 +111,10 @@
                 type:layerDescription.googleType
             });
             
-            return new OpenLayers.Layer.Google(layerDescription.title,options);
+            var newLayer = new OpenLayers.Layer.Google(layerDescription.title,options);
+            newLayer.projection = new OpenLayers.Projection("EPSG:3857");
+            
+            return newLayer;
         },
 
         /**
