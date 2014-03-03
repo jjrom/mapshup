@@ -128,21 +128,9 @@
              * a mapfile on server side to allow on the fly reprojection of the WMS tiles
              * 
              */
-            /*
-             *  TODO - TO REMOVE
-             *
             if (!options.projection || !layerDescription.isBaseLayer) {
-                
                 projection = M.Util.getPropertyValue(Map.map, "projection", Map.pc);
-                srs = layerDescription.srs;
-                
-                // EPSG:3857, EPSG:900913 and EPSG:3785 are the same projection !!!
-                if (projection.projCode === 'EPSG:3857') {
-                    if (srs === 'EPSG:900913' || srs === 'EPSG:3857' || srs === 'EPSG:3785') {
-                        srs = 'EPSG:3857';
-                    }
-                }
-                if (srs !== projection.projCode) {
+                if (layerDescription.srs !== projection.projCode) {
                     OpenLayers.Request.GET({
                         url: M.Util.getAbsoluteUrl(M.Config["general"].reprojectionServiceUrl) + M.Util.abc + "&url=" + encodeURIComponent(layerDescription.url) + "&layers=" + encodeURIComponent(layerDescription.layers) + "&srs=" + layerDescription.srs,
                         callback: function(request) {
@@ -162,8 +150,7 @@
                     return null;
                 }
             }
-            *
-            */
+            
             /**
              * Input "options" modification
              * If no BBOX is given, default is set to -170,-80,170,80
