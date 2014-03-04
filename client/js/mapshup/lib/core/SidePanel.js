@@ -77,6 +77,12 @@
         this.w = M.Util.getPropertyValue(options, "w", 400);
         
         /*
+         * If true, the side panel is display over the map
+         * If false, the panel "push" the map
+         */
+        this.over = M.Util.getPropertyValue(options, "over", true);
+
+        /*
          * Item container padding
          */
         this.padding = {
@@ -102,13 +108,13 @@
             if (M.SidePanel._o) {
                 return M.SidePanel._o;
             }
-
+            
             /*
              * Create a Panel div within M.$container
              * 
              * <div id="..." class="spn"></div>
              */
-            self.$d = M.Util.$$('#' + M.Util.getId(), M.$container).addClass('spn').css({
+            self.$d = M.Util.$$('#' + M.Util.getId(), self.over ? M.$mcontainer : M.$container).addClass('spn').css({
                 'right': -self.w,
                 'height': '100%',
                 'width': self.w
@@ -148,24 +154,47 @@
                 return false;
 
             }
-
+            
             /*
              * Show panel
              */
-            self.$d.stop().animate({
-                'right': 0
-            },
-            {
-                duration: 200,
-                queue: true,
-                step: function(now, fx) {
-                    M.$mcontainer.css('left', - now - self.w);
+            if (self.over) {
+                
+                /*
+                 * Move vertical toolbar
+                 */
+                var verticalToolbar = (new M.Toolbar({
+                    position: 'ne',
+                    orientation: 'v'
+                }));
+                
+                self.$d.stop().animate({
+                    'right': '0'
                 },
-                complete: function() {
-                    M.Map.map.updateSize();
-                }
-            });
-
+                {
+                    duration: 200,
+                    queue: true,
+                    step: function(now, fx) {
+                        verticalToolbar.$d.css('right', self.w + now);
+                    }
+                });
+            }
+            else {
+                self.$d.stop().animate({
+                    'right': 0
+                },
+                {
+                    duration: 200,
+                    queue: true,
+                    step: function(now, fx) {
+                        M.$mcontainer.css('left', - now - self.w);
+                    },
+                    complete: function() {
+                        M.Map.map.updateSize();
+                    }
+                });
+            }
+            
             /*
              * Set the visible status to true
              */
@@ -206,20 +235,42 @@
              */
             self.isVisible = false;
 
-            self.$d.stop().animate({
-                'right': -self.w
-            },
-            {
-                duration: 200,
-                queue: true,
-                step: function(now, fx) {
-                    M.$mcontainer.css('left', - now - self.w);
+            if (self.over) {
+                
+                /*
+                 * Move vertical toolbar
+                 */
+                var verticalToolbar = (new M.Toolbar({
+                    position: 'ne',
+                    orientation: 'v'
+                }));
+                
+                self.$d.stop().animate({
+                    'right': -self.w
                 },
-                complete: function() {
-                    M.Map.map.updateSize();
-                }
-            });
-
+                {
+                    duration: 200,
+                    queue: true,
+                    step: function(now, fx) {
+                        verticalToolbar.$d.css('right', self.w + now);
+                    }
+                });
+            }
+            else {
+                self.$d.stop().animate({
+                    'right': -self.w
+                },
+                {
+                    duration: 200,
+                    queue: true,
+                    step: function(now, fx) {
+                        M.$mcontainer.css('left', - now - self.w);
+                    },
+                    complete: function() {
+                        M.Map.map.updateSize();
+                    }
+                });
+            }
             return true;
 
         };

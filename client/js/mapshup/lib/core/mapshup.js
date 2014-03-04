@@ -310,6 +310,7 @@
              * Initialize Side panel
              */
             self.sidePanel = (new self.SidePanel({
+                over:self.Config.panels.side.over,
                 position:self.Config.panels.side.position,
                 w:self.Config.panels.side.w
             }));
