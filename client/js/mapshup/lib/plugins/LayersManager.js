@@ -113,7 +113,8 @@
                 position: M.Util.getPropertyValue(self.options, "position", "n"),
                 tabLeftOffset:M.Util.getPropertyValue(self.options, "tabLeftOffset", 35),
                 onTheFly: M.Util.getPropertyValue(self.options, "onTheFly", true),
-                slideOverMap: M.Util.getPropertyValue(self.options, "slideOverMap", true)
+                slideOverMap: M.Util.getPropertyValue(self.options, "slideOverMap", true),
+                noTools: M.Util.getPropertyValue(self.options, "noTools", false)
             });
  
             /*
@@ -327,7 +328,7 @@
                 /*
                  * Append tab to panel
                  */
-                self.$d.append('<a id="' + tid + '" class="vtab tab">' + (content.icon ? '<img src="' + content.icon + '" width="16px">&nbsp;' : '') + '<span class="lmt">' + M.Util._(content.title) + '</span><span class="tools"></span><span class="loading"></span></a>');
+                self.$d.append('<a id="' + tid + '" class="vtab tab">' + (content.icon ? '<img src="' + content.icon + '" width="16px">&nbsp;' : '') + '<span class="lmt">' + M.Util._(content.title) + '</span>' + (self.options.noTools ? '' : '<span class="tools"></span>') + '<span class="loading"></span></a>');
 
                 /*
                  * Set item
