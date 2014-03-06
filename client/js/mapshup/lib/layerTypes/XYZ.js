@@ -41,7 +41,12 @@
 (function (M,Map){
     
     Map.layerTypes["XYZ"] = {
-
+        
+        /*
+         * This is a raster layer
+         */
+        isRaster: true,
+        
         /**
          * MANDATORY
          *

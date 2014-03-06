@@ -43,7 +43,12 @@
 (function (M,Map){
     
     Map.layerTypes["MBT"] = {
-
+        
+        /*
+         * This is a raster layer
+         */
+        isRaster: true,
+        
         /**
          * MANDATORY
          *

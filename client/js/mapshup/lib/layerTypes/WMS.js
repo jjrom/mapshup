@@ -41,6 +41,12 @@
 (function(M, Map) {
 
     Map.layerTypes["WMS"] = {
+        
+        /*
+         * This is a raster layer
+         */
+        isRaster: true,
+        
         /**
          * MANDATORY
          */

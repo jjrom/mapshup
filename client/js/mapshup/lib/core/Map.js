@@ -445,6 +445,8 @@
                 initialized: M.Util.getPropertyValue(_options, "forceInitialized", false),
                 /** True : the layer content is loaded */
                 isLoaded: true,
+                /** True : the layer is a raster layer */
+                isRaster: layerType.isRaster ? true : false,
                 /** Unique M identifier for this layer */
                 MID: MID,
                 /** LayerDescription for this layer : use for context saving */

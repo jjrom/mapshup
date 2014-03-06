@@ -42,6 +42,11 @@
     
     Map.layerTypes["Image"] = {
     
+        /*
+         * This is a raster layer
+         */
+        isRaster: true,
+        
         /**
          * MANDATORY
          */

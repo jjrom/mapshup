@@ -42,6 +42,11 @@
     
     Map.layerTypes["WMTS"] = {
         
+        /*
+         * This is a raster layer
+         */
+        isRaster: true,
+        
         /**
          * MANDATORY
          */

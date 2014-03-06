@@ -1078,38 +1078,16 @@
 
     /**
      * Return true if the layer is a raster layer
-     * A raster layer is one of the following :
-     *     - Image
-     *     - MBT
-     *     - SHP
-     *     - TMS
-     *     - WMS
-     *     - WMTS
-     *     - XYZ
-     *  
+     * 
      *  @param {OpenLayers.Layer} layer
      */
     Map.Util.isRaster = function(layer) {
 
-        var i, l, b = false, rasters = ["Image", "MBT", "SHP", "TMS", "WMS", "WMTS", "XYZ"];
-
         if (!layer || !layer['_M']) {
-            return b;
+            return false;
         }
 
-        /* 
-         * Rasters layers are processed differently from vector layers.
-         * A vector layer got its own individual tab.
-         * All raster layers are displayed within a single "rasters" tab 
-         */
-        for (i = 0, l = rasters.length; i < l; i++) {
-            if (rasters[i] === layer['_M']['layerDescription'].type) {
-                b = true;
-                break;
-            }
-        }
-
-        return b;
+        return layer['_M'].isRaster;
     };
 
 
