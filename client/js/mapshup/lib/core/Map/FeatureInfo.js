@@ -807,6 +807,13 @@
             if (feature && feature.layer['_M'].clusterType === "Polygon") {
                 M.sidePanel.hide(self.sidePanelItem);
             }
+            
+            /*
+             * Call back function on unselect
+             */
+            if (feature && feature.layer["_M"].layerDescription.featureInfo && $.isFunction(feature.layer["_M"].layerDescription.featureInfo.onUnselect)){
+                feature.layer["_M"].layerDescription.featureInfo.onUnselect(feature);
+            }
 
             M.Map.featureInfo.selected = null;
 
@@ -841,7 +848,7 @@
                 }
 
             }, 10);
-
+            
         };
 
         /**
