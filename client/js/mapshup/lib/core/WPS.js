@@ -1490,9 +1490,16 @@
      * 
      * The APM is used to store asynchronous processes and results
      * It is called by the WPSClientPlugin
+     * 
+     * @param {function} callback
      */
-    M.WPS.asynchronousProcessManager = function() {
+    M.WPS.asynchronousProcessManager = function(callback) {
 
+        /*
+         * Callback function to be called each time asynchronousProcessManager is updated
+         */
+        this.callback = callback;
+        
         /*
          * Unique identifier of the asynchronousProcessManager item 
          * within the UserManagement toolbar
@@ -1597,12 +1604,10 @@
          * Add a process to the list of asynchronous processes
          * 
          * @param {M.WPS.Process} process : Process
-         * @param {Object} options : additional info used to reconstruct M.WPS and M.WPSDescriptor instance
-         *                           from a context when user signed in
-         *                           {
-         *                              wpsUrl: // WPS endpoint url
-         *                              identifier: // WPS ProcessDescriptor unique identifier
-         *                           }
+         * @param {Object} options : options
+         *                  {
+         *                      callback : // callback function called each time process status is update
+         *                  }
          */
         this.add = function(process, options) {
 
@@ -1614,7 +1619,9 @@
             if (!process) {
                 return false;
             }
-
+            
+            options = options || {};
+            
             /*
              * Be sure to avoid multiple registry of the same running process
              * The unicity is guaranted by the statusLocation which is unique for a given
@@ -1634,7 +1641,8 @@
                     id: M.Util.getId(),
                     statusLocation: process.statusLocation,
                     time: (new Date()).toISOString(),
-                    process: process
+                    process: process,
+                    callback: options.callback
                 });
 
                 /*
@@ -1642,6 +1650,12 @@
                  */
                 self.update(process);
 
+            }
+            /*
+             * Process is already in the processes list
+             */
+            else {
+                M.Util.message('<span class="status">' + process.descriptor.title + " : " + M.Util._("Warning ! Process not added (previously sent)") + '</span>');
             }
         };
 
@@ -1749,6 +1763,15 @@
          * The process list is displayed within the UserManagement shared popup
          */
         this.updateProcessesList = function() {
+            
+            /*
+             * Call callback function
+             */
+            for (var i = 0, l = this.items.length; i < l; i++) {
+                if (typeof this.items[i].callback === 'function') {
+                    this.items[i].callback(this.items[i]);
+                }
+            }
             
             /*
              * Only update processes list if user management is set

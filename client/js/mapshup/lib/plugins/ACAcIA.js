@@ -54,7 +54,7 @@
         if (M.Plugins.ACAcIA._o) {
             return M.Plugins.ACAcIA._o;
         }
-
+        
         /*
          * Classification process descriptor
          */
@@ -78,7 +78,7 @@
              *                          className: // Name of the class (e.g. "Water")
              *                          classNumber: // Identifier of the class (e.g. "1")
              *                      }
-             *                      
+             *      callback : // function to be called each time segmentation process is updated               
              */
             self.options = options || {};
 
@@ -214,10 +214,11 @@
                     *  => add a new process to the asynchronous manager
                     */
                     if (process.statusLocation && process.status === "ProcessAccepted") {
-                        return M.apm.add(process, {
+                        return M.apm ? M.apm.add(process, {
+                            callback: options.callback,
                             wpsUrl: process.descriptor.wps.url,
                             identifier: process.descriptor.identifier
-                        });
+                        }) : null;
                     }
                     /*
                      * Asynchronous case - Bad implementation case
@@ -226,7 +227,7 @@
                      * process response located at statusLocation
                      */
                     else if (process.status === "ProcessStarted") {
-                        return M.apm.update(process);
+                        return M.apm ? M.apm.update(process) : null;
                     }
                     /*
                      * Process failed - the very easy part :)
@@ -236,7 +237,7 @@
                         return false;
                     }
 
-                    return M.apm.update(process);
+                    return M.apm ? M.apm.update(process) : null;
 
                 });
             
@@ -575,7 +576,7 @@
              */
             this.classificationDescriptor.execute({storeExecute: true});
         };
-
+          
         /*
          * Set unique instance
          */
