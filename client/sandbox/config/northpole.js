@@ -21,7 +21,7 @@
     c.remove("plugins", "WorldGrid");
     c.remove("plugins", "Slacker");
     c.remove("plugins", "UserManagement");
-
+    c.remove("plugins", "LayersManager");
 
     c["general"].timeLine = {
         enable: false
@@ -52,6 +52,10 @@
             items: [
                 {
                     name: "Spherical Mercator",
+                    bbox:{
+                        bounds:[119.95,19.95,160.05,60.05],
+                        srs: "EPSG:4326"
+                    },
                     icon: "http://i.msdn.microsoft.com/dynimg/IC130641.jpg",
                     layerMID: "GoogleSatellite",
 		    active:true,
