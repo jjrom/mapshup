@@ -1770,6 +1770,7 @@
                  * Reproject all map layers that are not base layers
                  */
                 for (i = 0; i < this.map.layers.length; i++) {
+                    
                     if (this.map.layers[i].isBaseLayer === false) {
                  
                         this.map.layers[i].addOptions({projection: baseProj}, true);
@@ -1777,11 +1778,14 @@
                         /*
                          * Reproject vector features
                          */ 
-                        for (j = 0; j < this.map.layers[i].features.length; j++) {
-                            this.map.layers[i].features[j].geometry.transform(mapProj, baseProj);
+                        if ($.isArray(this.map.layers[i].features)) {
+                            for (j = 0; j < this.map.layers[i].features.length; j++) {
+                                this.map.layers[i].features[j].geometry.transform(mapProj, baseProj);
+                            }
                         }
                         
                         this.map.layers[i].redraw();
+                        
                     }
                 }
                 
