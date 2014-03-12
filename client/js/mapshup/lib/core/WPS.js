@@ -1658,7 +1658,7 @@
          */
         this.add = function(process, options) {
 
-            var i, list, doNotAdd = false, self = this;
+            var i, list = [], doNotAdd = false, self = this;
 
             /*
              * Paranoid mode
