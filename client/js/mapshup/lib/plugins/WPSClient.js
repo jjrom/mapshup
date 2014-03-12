@@ -256,7 +256,7 @@
                     $id.click(function() {
                         $('a', $(this).parent()).removeClass('active');
                         $(this).addClass('active');
-                        item.wps.describeProcess(descriptor.identifier);
+                        item.wps.describeProcess({identifier:descriptor.identifier});
                         return false;
                     });
 

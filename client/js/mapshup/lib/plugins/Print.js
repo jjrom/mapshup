@@ -115,7 +115,7 @@ M.plugins["Print"] = {
             },
             callback: function(request) {
                 M.mask.abort();
-                console.log(request.responseText);
+                //console.log(request.responseText);
             }
         }
         );

@@ -96,7 +96,10 @@
                  * Register GetCapabilites event
                  */
                 wps.events.register("getcapabilities", this, function(scope, wps) {
-                    wps.describeProcess(scope.options.processId);
+                    wps.describeProcess({
+                        identifier:scope.options.processId,
+                        callback:scope.options.callback
+                    });
                 });
 
                 /*

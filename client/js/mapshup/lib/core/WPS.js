@@ -173,11 +173,20 @@
          * and parse result
          * 
          * @param {Array} identifiers : array of Process unique identifiers
+         *                          [
+         *                            {
+         *                              identifier: // process unique identifiers (mandatory)
+         *                              callback : // callback function (optional)
+         *                            },
+         *                            ...
+         *                          ]
+         *                              
+         *              
          * 
          */
         this.describeProcess = function(identifiers) {
 
-            var url, descriptor, self = this;
+            var i, l, list = [], url, descriptor, self = this;
 
             /*
              * Convert input to array if needed
@@ -191,12 +200,24 @@
              * refresh it but do not call service again
              */
             if (identifiers.length === 1) {
-                descriptor = this.getProcessDescriptor(identifiers[0]);
+                
+                /*
+                 * Input identifiers could be a string or an object
+                 */
+                descriptor = this.getProcessDescriptor(identifiers[0].identifier);
                 if (descriptor && descriptor.dataInputsDescription) {
                     self.events.trigger("describeprocess", [descriptor]);
                     return true;
                 }
             }
+            
+            /*
+             * List of identifier
+             */
+            for(i = 0, l = identifiers.length; i < l; i++) {
+                list.push(identifiers[i].identifier);
+            }
+            
             /*
              * Call DescribeProcess through ajax
              */
@@ -204,7 +225,7 @@
                 service: 'WPS',
                 version: self.version,
                 request: 'DescribeProcess',
-                identifier: identifiers.join(',')
+                identifier: list.join(',')
             });
 
             /*
@@ -215,8 +236,20 @@
                 async: true,
                 dataType: 'xml',
                 success: function(xml) {
-                    var i, l, p, processDescriptions = self.parseDescribeProcess(xml), descriptors = [];
+                    var i, j, l, p, processDescriptions = self.parseDescribeProcess(xml), descriptors = [];
                     for (i = 0, l = processDescriptions.length; i < l; i++) {
+                        
+                        /*
+                         * Associate ProcessDescriptor to callback function if defined
+                         */
+                        for (j = identifiers.length; j--;) {
+                            if (identifiers[j].identifier === processDescriptions[i].identifier && dentifiers[j].callback) {
+                                $.extend(processDescriptions[i], {
+                                    callback:identifiers[j].callback
+                                });
+                                break;
+                            }
+                        }
                         p = new M.WPS.ProcessDescriptor(processDescriptions[i]);
                         self.addProcessDescriptor(p);
                         descriptors.push(p);
@@ -891,6 +924,8 @@
      *          title: // process title
      *          abstract: // process description
      *          wps: // reference to the M.WPS parent
+     *          callback: // optional callback function called by Asynchronous Process Manager
+     *                    when process instance is updated
      *      }
      */
     M.WPS.ProcessDescriptor = function(options) {
@@ -899,6 +934,11 @@
          * M.WPS object reference
          */
         this.wps = null;
+
+        /**
+         * Callback function reference
+         */
+        this.callback = null;
 
         /**
          * Process unique identifier 
@@ -954,6 +994,8 @@
          *          title: // process title
          *          abstract: // process description
          *          wps: // reference to the M.WPS parent
+         *          callback: // optional callback function called by Asynchronous Process Manager
+         *                       when process instance is updated
          *      }
          * 
          */
@@ -1504,16 +1546,9 @@
      * 
      * The APM is used to store asynchronous processes and results
      * It is called by the WPSClientPlugin
-     * 
-     * @param {function} callback
      */
-    M.WPS.asynchronousProcessManager = function(callback) {
+    M.WPS.asynchronousProcessManager = function() {
 
-        /*
-         * Callback function to be called each time asynchronousProcessManager is updated
-         */
-        this.callback = callback;
-        
         /*
          * Unique identifier of the asynchronousProcessManager item 
          * within the UserManagement toolbar
@@ -1619,9 +1654,7 @@
          * 
          * @param {M.WPS.Process} process : Process
          * @param {Object} options : options
-         *                  {
-         *                      callback : // callback function called each time process status is update
-         *                  }
+         *                  
          */
         this.add = function(process, options) {
 
@@ -1655,8 +1688,7 @@
                     id: M.Util.getId(),
                     statusLocation: process.statusLocation,
                     time: (new Date()).toISOString(),
-                    process: process,
-                    callback: options.callback
+                    process: process
                 });
 
                 /*
@@ -1782,8 +1814,10 @@
              * Call callback function
              */
             for (var i = 0, l = this.items.length; i < l; i++) {
-                if (typeof this.items[i].callback === 'function') {
-                    this.items[i].callback(this.items[i]);
+                if (this.items[i].process && this.items[i].process.descriptor) {
+                    if (typeof this.items[i].process.descriptor.callback === 'function') {
+                        this.items[i].process.descriptor.callback(this.items[i]);
+                    }
                 }
             }
             
@@ -2110,6 +2144,21 @@
             if (a) {
                 for (i = a.length; i--; ) {
                     a[i].handler(a[i].scope, obj);
+                    
+                    /*
+                     * DescribeProcess
+                     */
+                    if (eventname === 'describeprocess' && M.Util.Cookie.get("processes") && M.apm) {
+                        try {
+                            var statusLocations = JSON.parse(M.Util.Cookie.get("processes"));
+                            for (j = statusLocations.length; j--; )  {
+                                if (!M.apm.get(statusLocations[j])) {
+                                    
+                                }
+                            }
+                        }
+                        catch (e) {}
+                    }
                 }
             }
         };
