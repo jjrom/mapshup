@@ -243,7 +243,7 @@
                          * Associate ProcessDescriptor to callback function if defined
                          */
                         for (j = identifiers.length; j--;) {
-                            if (identifiers[j].identifier === processDescriptions[i].identifier && dentifiers[j].callback) {
+                            if (identifiers[j].identifier === processDescriptions[i].identifier && identifiers[j].callback) {
                                 $.extend(processDescriptions[i], {
                                     callback:identifiers[j].callback
                                 });
