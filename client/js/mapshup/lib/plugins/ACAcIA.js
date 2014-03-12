@@ -211,7 +211,6 @@
                     */
                     if (process.statusLocation && process.status === "ProcessAccepted") {
                         return M.apm ? M.apm.add(process, {
-                            callback: options.callback,
                             wpsUrl: process.descriptor.wps.url,
                             identifier: process.descriptor.identifier
                         }) : null;
