@@ -100,7 +100,7 @@
          * @param {String} url : WPS service endpoint url
          */
         this.init = function(url) {
-            
+
             /*
              * Set Asynchronous Processes Manager for mapshup
              * It is set at the mapshup oarent object (i.e. M) to be
@@ -109,7 +109,7 @@
             if (!M.apm) {
                 M.apm = new M.WPS.asynchronousProcessManager();
             }
-            
+
             /*
              * WPS endpoint url guarantees the object uniqueness 
              */
@@ -200,7 +200,7 @@
              * refresh it but do not call service again
              */
             if (identifiers.length === 1) {
-                
+
                 /*
                  * Input identifiers could be a string or an object
                  */
@@ -210,14 +210,14 @@
                     return true;
                 }
             }
-            
+
             /*
              * List of identifier
              */
-            for(i = 0, l = identifiers.length; i < l; i++) {
+            for (i = 0, l = identifiers.length; i < l; i++) {
                 list.push(identifiers[i].identifier);
             }
-            
+
             /*
              * Call DescribeProcess through ajax
              */
@@ -238,14 +238,14 @@
                 success: function(xml) {
                     var i, j, l, p, processDescriptions = self.parseDescribeProcess(xml), descriptors = [];
                     for (i = 0, l = processDescriptions.length; i < l; i++) {
-                        
+
                         /*
                          * Associate ProcessDescriptor to callback function if defined
                          */
-                        for (j = identifiers.length; j--;) {
+                        for (j = identifiers.length; j--; ) {
                             if (identifiers[j].identifier === processDescriptions[i].identifier && identifiers[j].callback) {
                                 $.extend(processDescriptions[i], {
-                                    callback:identifiers[j].callback
+                                    callback: identifiers[j].callback
                                 });
                                 break;
                             }
@@ -732,8 +732,8 @@
                             p['allowedValues'].push({value: $(this).text()});
                         }
                         /* TODO
-                        else if (nn === 'range') {
-                        }*/
+                         else if (nn === 'range') {
+                         }*/
                     });
                 }
                 else {
@@ -907,7 +907,7 @@
             });
 
         };
-    
+
         this.init(url);
 
         return this;
@@ -1049,7 +1049,7 @@
          * @param {String} identifier
          */
         this.getInputDescription = function(identifier) {
-            
+
             if (this.dataInputsDescription && this.dataInputsDescription.length) {
                 for (var i = 0, l = this.dataInputsDescription.length; i < l; i++) {
                     if (this.dataInputsDescription[i].identifier === identifier) {
@@ -1058,9 +1058,9 @@
                 }
             }
             return null;
-            
+
         };
-    
+
         /**
          * Create a child Process and launch 'execute' request 
          * 
@@ -1480,7 +1480,7 @@
                                 $(this).children().filter(function() {
 
                                     nn = M.Util.stripNS(this.nodeName);
-                                    
+
                                     if (nn === 'LiteralData') {
                                         p['data']['value'] = $(this).text();
                                     }
@@ -1502,8 +1502,8 @@
                                             p['data']['value'] = $(this).children();
                                         }
                                     }/* TODO
-                                    else if (nn === 'BoundingBox') {
-                                    }*/
+                                     else if (nn === 'BoundingBox') {
+                                     }*/
                                 });
 
                             }
@@ -1658,7 +1658,7 @@
          */
         this.add = function(process, options) {
 
-            var self = this;
+            var i, list, doNotAdd = false, self = this;
 
             /*
              * Paranoid mode
@@ -1666,9 +1666,9 @@
             if (!process) {
                 return false;
             }
-            
+
             options = options || {};
-            
+
             /*
              * Be sure to avoid multiple registry of the same running process
              * The unicity is guaranted by the statusLocation which is unique for a given
@@ -1679,9 +1679,7 @@
                 /*
                  * Great news for user :)
                  */
-                if (process.descriptor) {
-                    M.Util.message('<span class="status">' + process.descriptor.title + " : " + M.Util._("Process accepted and running") + '</span>');
-                }
+                M.Util.message('<span class="status">' + process.descriptor.title + " : " + M.Util._("Process accepted and running") + '</span>');
                 
                 /*
                  * Add an entry within the running process hashmap
@@ -1697,15 +1695,40 @@
                  * Update user bar 
                  */
                 self.update(process);
+                
+                /*
+                 * Check "processes" cookie
+                 */
+                if (M.Util.Cookie.get("processes")) {
+                    list = JSON.parse(M.Util.Cookie.get("processes"));
+                    if (!$.isArray(list)) {
+                        list = [];
+                    }
+                    for (i = list.length; i--;) {
+                        if (list[i].statusLocation === process.statusLocation) {
+                            doNotAdd = true;
+                            break;
+                        }
+                    }
+                }
+                /*
+                 * Add process to "processes" cookie
+                 */
+                if (!doNotAdd) {
+                    list.push({
+                        identifier: process.descriptor.identifier,
+                        statusLocation: process.statusLocation
+                    });
+                }
+                
+                M.Util.Cookie.set("processes", JSON.stringify(list), 365);
 
             }
             /*
              * Process is already in the processes list
              */
             else {
-                if (process.descriptor) {
-                    M.Util.message('<span class="status">' + process.descriptor.title + " : " + M.Util._("Warning ! Process not added (previously sent)") + '</span>');
-                }
+                M.Util.message('<span class="status">' + process.descriptor.title + " : " + M.Util._("Warning ! Process not added (previously sent)") + '</span>');
             }
         };
 
@@ -1722,12 +1745,12 @@
             if (!process) {
                 return false;
             }
-            
+
             /*
              * Run timeout function
              */
             if (this.get(process.statusLocation) && process.status !== "ProcessSucceeded") {
-                
+
                 /*
                  * Refresh process result every 3 seconds
                  */
@@ -1761,7 +1784,7 @@
 
                 }, 3000);
             }
-        
+
             /*
              * Set finished status
              */
@@ -1791,7 +1814,7 @@
                  * A clean remove means imperatively to first clear the TimeOut function !
                  */
                 if (this.items[i].statusLocation === statusLocation) {
-                    
+
                     this.items.splice(i, 1);
 
                     /*
@@ -1813,7 +1836,7 @@
          * The process list is displayed within the UserManagement shared popup
          */
         this.updateProcessesList = function() {
-            
+
             /*
              * Call callback function
              */
@@ -1824,14 +1847,14 @@
                     }
                 }
             }
-            
+
             /*
              * Only update processes list if user management is set
              */
             if (!this.um) {
                 return false;
             }
-            
+
             /*
              * Display Process list
              */
@@ -1847,7 +1870,7 @@
                 /*
                  * Add one counter for each unfinished process (i.e. Accepted or Started)
                  */
-                for (i = l; i--;) {
+                for (i = l; i--; ) {
                     if (this.items[i].process.status === "ProcessAccepted" || this.items[i].process.status === "ProcessStarted") {
                         count++;
                     }
@@ -1889,7 +1912,7 @@
                 /*
                  * Process order is first in - first out   
                  */
-                for (i = l; i--;) {
+                for (i = l; i--; ) {
                     (function(item, self) {
 
                         var j, result, $status, $info, $result, id = item.id;
@@ -1902,7 +1925,7 @@
                         $info = $('#' + id + 'info');
                         $result = $('#' + id + 'result');
                         M.tooltip.add($info, 'n');
-                        
+
                         /*
                          * Complete Process info depending on status
                          */
@@ -1912,14 +1935,14 @@
                              * Process succeeded
                              */
                             case "ProcessSucceeded":
-                                
-                               /*
-                                * Update status
-                                */
+
+                                /*
+                                 * Update status
+                                 */
                                 $status.css({
                                     'background-color': 'blue'
                                 });
-                                
+
                                 /* 
                                  * No result = nothing to update
                                  */
@@ -1953,26 +1976,26 @@
                                          * Complex output
                                          */
                                         else {
-                                            
+
                                             /*
                                              * Result display requires a specific user action
                                              */
                                             (function(result, process) {
                                                 $result.html(M.Util._("Display")).addClass("button clickable").click(function(e) {
-                                                    
+
                                                     /*
                                                      * Remove click event
                                                      */
                                                     e.preventDefault();
                                                     $(this).off('click');
-                                                    
+
                                                     /*
                                                      * Update status
                                                      */
                                                     $status.css({
                                                         'background-color': 'olivedrab'
                                                     });
-                                                    
+
                                                     var geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
                                                     if (geoType === 'GML') {
                                                         M.Map.addToStuffLayer(M.Map.Util.GML.toGeoJSON(result.data.value, {
@@ -1980,20 +2003,20 @@
                                                             processid: process.descriptor.identifier,
                                                             description: process.descriptor["abstract"],
                                                             time: (new Date()).toISOString()
-                                                        }),{
-                                                            zoomOn:true
+                                                        }), {
+                                                            zoomOn: true
                                                         });
                                                     }
                                                     else if (geoType === 'JSON') {
-                                                        M.Map.addToStuffLayer(result.data.value,{
-                                                            zoomOn:true
+                                                        M.Map.addToStuffLayer(result.data.value, {
+                                                            zoomOn: true
                                                         });
                                                     }
                                                     else if (geoType === 'WMS') {
                                                         M.Map.addLayer(result.data.value);
                                                     }
-                                                    
-                                                
+
+
                                                 });
                                             })(result, item.process);
 
@@ -2046,7 +2069,8 @@
 
                                 $result.html('<img src="' + M.Util.getImgUrl("loading.gif") + '" class="middle"/>');
 
-                        };
+                        }
+                        ;
 
                         /*
                          * Remove process
@@ -2059,7 +2083,7 @@
                     })(this.items[i], this);
                 }
             }
-            
+
             return true;
         };
 
@@ -2148,7 +2172,7 @@
             if (a) {
                 for (i = a.length; i--; ) {
                     a[i].handler(a[i].scope, obj);
-                    
+
                     /*
                      * Check for processes cookie.
                      * If set, add process instance to Asynchronous Process Manager after a describeProcess
@@ -2160,18 +2184,18 @@
                         if (eventname === 'describeprocess' && M.Util.Cookie.get("processes") && M.apm) {
                             try {
                                 list = JSON.parse(M.Util.Cookie.get("processes"));
-                                for (j = list.length; j--; )  {
-                                    
+                                for (j = list.length; j--; ) {
+
                                     /*
                                      * The process identified by unique "statusLocation" is set in the Cookie
                                      * but not present in the mapshup Asynchronous Process Manager (M.apm)
                                      */
                                     if (!M.apm.get(list[j].statusLocation)) {
-                                        for (k = obj.length; k--;) {
+                                        for (k = obj.length; k--; ) {
                                             if (obj[k].identifier === list[j].identifier) {
                                                 M.apm.add(M.WPS.Process({
-                                                    descriptor:obj[k],
-                                                    statusLocation:list[j].statusLocation
+                                                    descriptor: obj[k],
+                                                    statusLocation: list[j].statusLocation
                                                 }), {
                                                     wpsUrl: obj[k].wps.url,
                                                     identifier: obj[k].identifier
