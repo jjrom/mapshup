@@ -1679,8 +1679,10 @@
                 /*
                  * Great news for user :)
                  */
-                M.Util.message('<span class="status">' + process.descriptor.title + " : " + M.Util._("Process accepted and running") + '</span>');
-
+                if (process.descriptor) {
+                    M.Util.message('<span class="status">' + process.descriptor.title + " : " + M.Util._("Process accepted and running") + '</span>');
+                }
+                
                 /*
                  * Add an entry within the running process hashmap
                  */
@@ -1701,7 +1703,9 @@
              * Process is already in the processes list
              */
             else {
-                M.Util.message('<span class="status">' + process.descriptor.title + " : " + M.Util._("Warning ! Process not added (previously sent)") + '</span>');
+                if (process.descriptor) {
+                    M.Util.message('<span class="status">' + process.descriptor.title + " : " + M.Util._("Warning ! Process not added (previously sent)") + '</span>');
+                }
             }
         };
 
@@ -2128,7 +2132,7 @@
          * Trigger handlers related to an event
          *
          * @param <String> eventname : Event name => 'getcapabilities'
-         * @param <Object> extra : object i.e.
+         * @param <Object> extra : object or array of objects i.e.
          *                              - M.WPS for a 'getcapabilities' event name
          *                              - M.WPS.Process for a 'describeprocess' event name
          *                              - M.WPS.Process for an 'execute' event name
@@ -2136,7 +2140,7 @@
          */
         this.trigger = function(eventname, obj) {
 
-            var i, a = this.events[eventname];
+            var i, j, k, list, a = this.events[eventname];
 
             /*
              * Trigger event to each handlers
@@ -2149,20 +2153,38 @@
                      * Check for processes cookie.
                      * If set, add process instance to Asynchronous Process Manager after a describeProcess
                      */
-                    if (obj && obj.desriptor) {
+                    if (obj) {
+                        if (!$.isArray(obj)) {
+                            obj = [obj];
+                        }
                         if (eventname === 'describeprocess' && M.Util.Cookie.get("processes") && M.apm) {
                             try {
-                                var statusLocations = JSON.parse(M.Util.Cookie.get("processes"));
-                                for (j = statusLocations.length; j--; )  {
-                                    if (!M.apm.get(statusLocations[j])) {
-                                        M.apm.add({
-                                            wpsUrl: obj.descriptor.wps.url,
-                                            identifier: obj.descriptor.identifier
-                                        });
+                                list = JSON.parse(M.Util.Cookie.get("processes"));
+                                for (j = list.length; j--; )  {
+                                    
+                                    /*
+                                     * The process identified by unique "statusLocation" is set in the Cookie
+                                     * but not present in the mapshup Asynchronous Process Manager (M.apm)
+                                     */
+                                    if (!M.apm.get(list[j].statusLocation)) {
+                                        for (k = obj.length; k--;) {
+                                            if (obj[k].identifier === list[j].identifier) {
+                                                M.apm.add(M.WPS.Process({
+                                                    descriptor:obj[k],
+                                                    statusLocation:list[j].statusLocation
+                                                }), {
+                                                    wpsUrl: obj[k].wps.url,
+                                                    identifier: obj[k].identifier
+                                                });
+                                                break;
+                                            }
+                                        }
                                     }
                                 }
                             }
-                            catch (e) {}
+                            catch (e) {
+                                console.log(e);
+                            }
                         }
                     }
                 }
