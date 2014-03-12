@@ -100,7 +100,21 @@
          * @param {String} url : WPS service endpoint url
          */
         this.init = function(url) {
+            
+            /*
+             * Set Asynchronous Processes Manager for mapshup
+             * It is set at the mapshup oarent object (i.e. M) to be
+             * shared by all wps objects 
+             */
+            if (!M.apm) {
+                M.apm = new M.WPS.asynchronousProcessManager();
+            }
+            
+            /*
+             * WPS endpoint url guarantees the object uniqueness 
+             */
             this.url = url;
+
         };
 
         /**

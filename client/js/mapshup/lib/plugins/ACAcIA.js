@@ -106,13 +106,6 @@
                     if ($.isArray(descriptors) && descriptors[0]) {
 
                         /*
-                         * Set Asynchronous Processes Manager
-                         */
-                        if (!M.apm) {
-                            M.apm = new M.WPS.asynchronousProcessManager();
-                        }
-
-                        /*
                          * Store Process description
                          */
                         scope.classificationDescriptor = descriptors[0];

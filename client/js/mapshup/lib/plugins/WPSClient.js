@@ -92,13 +92,6 @@
 
             }
 
-            /*
-             * Set Asynchronous Processes Manager
-             */
-            if (!M.apm) {
-                M.apm = new M.WPS.asynchronousProcessManager();
-            }
-
             return self;
 
         };
@@ -313,7 +306,7 @@
             /*
              * If user is signedIn also add an "Execute in background" button
              */
-            if (M.apm._signedIn) {
+            if (M.apm && M.apm._signedIn) {
                 executeBgId = M.Util.getId();
                 $('.execute', $('.describe', item.$d)).append('&nbsp;<img src="' + M.Util.getImgUrl('sleep.png') + '" id="' + executeBgId + '" class="button inline" jtitle="' + M.Util._("Execute process in background") + '"/>');
                 M.tooltip.add($('#' + executeBgId).click(function() {
@@ -467,10 +460,10 @@
                  * ProcessAccepted
                  *  => add a new process to the asynchronous manager
                  */
-                return M.apm.add(process, {
+                return M.apm ? M.apm.add(process, {
                     wpsUrl: process.descriptor.wps.url,
                     identifier: process.descriptor.identifier
-                });
+                }) : null;
             }
             /*
              * Asynchronous case - Bad implementation case
@@ -479,7 +472,7 @@
              * process response located at statusLocation
              */
             else if (process.status === "ProcessStarted") {
-                return M.apm.update(process);
+                return M.apm ? M.apm.update(process) : null;
             }
             if (process.statusLocation) {
 
@@ -488,17 +481,17 @@
                  *  => add a new process to the asynchronous manager
                  */
                 if (process.status === "ProcessAccepted") {
-                    return M.apm.add(process, {
+                    return M.apm ? M.apm.add(process, {
                         wpsUrl: process.descriptor.wps.url,
                         identifier: process.descriptor.identifier
-                    });
+                    }) : null;
                 }
 
                 /*
                  * ProcessStarted, ProcessSucceeded or ProcessFailed
                  *  => store result in the User processes list
                  */
-                return M.apm.update(process);
+                return M.apm ? M.apm.update(process) : null;
 
             }
             /*
@@ -508,7 +501,7 @@
              * process response located at statusLocation
              */
             else if (process.status === "ProcessStarted") {
-                return M.apm.update(process);
+                return M.apm ? M.apm.update(process) : null;
             }
             /*
              * Process failed - the very easy part :)
