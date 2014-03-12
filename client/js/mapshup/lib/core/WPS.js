@@ -1799,7 +1799,9 @@
          * 
          */
         this.remove = function(statusLocation) {
-
+            
+            var list, i, l, j;
+            
             if (!statusLocation) {
                 return false;
             }
@@ -1807,7 +1809,7 @@
             /*
              * Roll over items
              */
-            for (var i = 0, l = this.items.length; i < l; i++) {
+            for (i = 0, l = this.items.length; i < l; i++) {
 
                 /*
                  * Remove item with corresponding statusLocation
@@ -1821,7 +1823,24 @@
                      * Display processes list
                      */
                     this.updateProcessesList();
-
+                    
+                    /*
+                     * Remove from "processes" cookie
+                     */
+                    if (M.Util.Cookie.get("processes")) {
+                        list = JSON.parse(M.Util.Cookie.get("processes"));
+                        if (!$.isArray(list)) {
+                            list = [];
+                        }
+                        for (j = list.length; j--; ) {
+                            if (list[j].statusLocation === statusLocation) {
+                                list.splice(j, 1);
+                                M.Util.Cookie.set("processes", JSON.stringify(list), 365);
+                                break;
+                            }
+                        }
+                    }
+                   
                     return true;
                 }
             }
