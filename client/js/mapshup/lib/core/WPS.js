@@ -2146,18 +2146,24 @@
                     a[i].handler(a[i].scope, obj);
                     
                     /*
-                     * DescribeProcess
+                     * Check for processes cookie.
+                     * If set, add process instance to Asynchronous Process Manager after a describeProcess
                      */
-                    if (eventname === 'describeprocess' && M.Util.Cookie.get("processes") && M.apm) {
-                        try {
-                            var statusLocations = JSON.parse(M.Util.Cookie.get("processes"));
-                            for (j = statusLocations.length; j--; )  {
-                                if (!M.apm.get(statusLocations[j])) {
-                                    
+                    if (obj && obj.desriptor) {
+                        if (eventname === 'describeprocess' && M.Util.Cookie.get("processes") && M.apm) {
+                            try {
+                                var statusLocations = JSON.parse(M.Util.Cookie.get("processes"));
+                                for (j = statusLocations.length; j--; )  {
+                                    if (!M.apm.get(statusLocations[j])) {
+                                        M.apm.add({
+                                            wpsUrl: obj.descriptor.wps.url,
+                                            identifier: obj.descriptor.identifier
+                                        });
+                                    }
                                 }
                             }
+                            catch (e) {}
                         }
-                        catch (e) {}
                     }
                 }
             }
