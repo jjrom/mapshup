@@ -1069,6 +1069,8 @@
          *                              storeExecute: // boolean (set to true to set asynchronous mode)
          *                              asReference: // boolean (set to true to have complexOutput resulte
          *                                              as an url instead of directly set within the executeResponse
+         *                              parentId: // Unique identifier linked to this process (used by MMI to
+         *                                        // discriminates between different processes instance from the same process descriptor
          *                          }
          */
         this.execute = function(options) {
@@ -1092,7 +1094,9 @@
      * @param {Object} options : WPS process initialization options
      * 
      *      {
-     *          descriptor: // reference to the M.WPS parent
+     *          descriptor: // reference to the M.WPS parent (MANDATORY)
+     *          statusLocation: // reference to the statusLocation url (Optional)
+     *          parentId: // Unique identifier linked to this process (Optional)
      *      }
      */
     M.WPS.Process = function(options) {
@@ -1151,6 +1155,12 @@
          * 
          */
         this.result = null;
+        
+        /**
+         * Unique identifier linked to this process (used by MMI to
+         * discriminates between different processes instance from the same process descriptor 
+         */
+        this.parentId = null;
 
         /**
          * Process initialization
@@ -1170,6 +1180,8 @@
          *                              storeExecute: // boolean (set to true to set asynchronous mode)
          *                              asReference: // boolean (set to true to have complexOutput resulte
          *                                              as an url instead of directly set within the executeResponse
+         *                              parentId: // Unique identifier linked to this process (used by MMI to
+         *                                        // discriminates between different processes instance from the same process descriptor
          *                          }
          */
         this.execute = function(options) {
@@ -1653,16 +1665,9 @@
          * Add a process to the list of asynchronous processes
          * 
          * @param {M.WPS.Process} process : Process
-         * @param {Object} options : options
-         *                          {
-         *                              parentId: // Unique identifier in MMI to link process to. 
-         *                                        // This should be used to discriminates between multiple processes
-         *                                        // instance launched from the same process descriptor (see OWS10.js plugin)
-         *                                        // (optional)
-         *                          }
          *                  
          */
-        this.add = function(process, options) {
+        this.add = function(process) {
 
             var i, list = [], doNotAdd = false, self = this;
 
@@ -1672,8 +1677,6 @@
             if (!process) {
                 return false;
             }
-
-            options = options || {};
 
             /*
              * Be sure to avoid multiple registry of the same running process
@@ -1724,7 +1727,7 @@
                     list.push({
                         identifier: process.descriptor.identifier,
                         statusLocation: process.statusLocation,
-                        parentId: options.parentId
+                        parentId: process.parentId
                     });
                 }
                 
@@ -2221,10 +2224,9 @@
                                             if (obj[k].identifier === list[j].identifier) {
                                                 M.apm.add(M.WPS.Process({
                                                     descriptor: obj[k],
-                                                    statusLocation: list[j].statusLocation
-                                                }), {
+                                                    statusLocation: list[j].statusLocation,
                                                     parentId:list[j].parentId
-                                                });
+                                                }));
                                                 break;
                                             }
                                         }

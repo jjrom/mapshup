@@ -210,10 +210,7 @@
                     *  => add a new process to the asynchronous manager
                     */
                     if (process.statusLocation && process.status === "ProcessAccepted") {
-                        return M.apm ? M.apm.add(process, {
-                            wpsUrl: process.descriptor.wps.url,
-                            identifier: process.descriptor.identifier
-                        }) : null;
+                        return M.apm ? M.apm.add(process) : null;
                     }
                     /*
                      * Asynchronous case - Bad implementation case
@@ -479,11 +476,19 @@
          *      ProcessPaused
          *      ProcessSucceeded
          *      ProcessFailed
+         *      
+         * @param {Object} options : options
+         *                      {
+         *                          parentId: // Unique identifier linked to this process (optional)
+         *                                    // See OWS10.js
+         *                      }
          * 
          */
-        this.process = function() {
+        this.process = function(options) {
             
             var i, l, f, data = '';
+            
+            options = options || {};
             
             /*
              * First clear inputs
@@ -569,7 +574,10 @@
             /*
              * Execute process asynchronously
              */
-            this.classificationDescriptor.execute({storeExecute: true});
+            this.classificationDescriptor.execute({
+                storeExecute: true,
+                parentId: options.parentId
+            });
         };
           
         /*
