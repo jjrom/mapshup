@@ -1192,7 +1192,14 @@
              * Paranoid mode
              */
             options = options || {};
-
+            
+            /*
+             * Update parentId
+             */
+            if (options.parentId) {
+                self.parentId = options.parentId;
+            }
+            
             /*
              * executeResponse can only be stored if the server
              * support it
