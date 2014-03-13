@@ -1654,6 +1654,12 @@
          * 
          * @param {M.WPS.Process} process : Process
          * @param {Object} options : options
+         *                          {
+         *                              parentId: // Unique identifier in MMI to link process to. 
+         *                                        // This should be used to discriminates between multiple processes
+         *                                        // instance launched from the same process descriptor (see OWS10.js plugin)
+         *                                        // (optional)
+         *                          }
          *                  
          */
         this.add = function(process, options) {
@@ -1717,7 +1723,8 @@
                 if (!doNotAdd) {
                     list.push({
                         identifier: process.descriptor.identifier,
-                        statusLocation: process.statusLocation
+                        statusLocation: process.statusLocation,
+                        parentId: options.parentId
                     });
                 }
                 
@@ -2216,8 +2223,7 @@
                                                     descriptor: obj[k],
                                                     statusLocation: list[j].statusLocation
                                                 }), {
-                                                    wpsUrl: obj[k].wps.url,
-                                                    identifier: obj[k].identifier
+                                                    parentId:list[j].parentId
                                                 });
                                                 break;
                                             }
@@ -2225,9 +2231,7 @@
                                     }
                                 }
                             }
-                            catch (e) {
-                                console.log(e);
-                            }
+                            catch (e) {}
                         }
                     }
                 }

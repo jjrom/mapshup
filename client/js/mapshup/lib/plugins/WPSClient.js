@@ -460,10 +460,7 @@
                  * ProcessAccepted
                  *  => add a new process to the asynchronous manager
                  */
-                return M.apm ? M.apm.add(process, {
-                    wpsUrl: process.descriptor.wps.url,
-                    identifier: process.descriptor.identifier
-                }) : null;
+                return M.apm ? M.apm.add(process) : null;
             }
             /*
              * Asynchronous case - Bad implementation case
@@ -481,10 +478,7 @@
                  *  => add a new process to the asynchronous manager
                  */
                 if (process.status === "ProcessAccepted") {
-                    return M.apm ? M.apm.add(process, {
-                        wpsUrl: process.descriptor.wps.url,
-                        identifier: process.descriptor.identifier
-                    }) : null;
+                    return M.apm ? M.apm.add(process) : null;
                 }
 
                 /*
