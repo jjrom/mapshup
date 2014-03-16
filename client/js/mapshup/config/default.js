@@ -588,13 +588,20 @@
 
     /*
      * GetFeatureInfo plugin
+     * 
+     * Options:
+     * 
+     *      responseFormat: // Response format mimetype of GetFeatureInfo request - default is 'text/plain'
+     *      callback : // Callback function to call when successfully get a GetFeatureInfo request
+     *                    This function should take two parameters (identifier, data) where identifier is the
+     *                    identifier of the layer (for instance the 'layers' parameter value for WMS layers) and
+     *                    data is the GetFeatureInfo result in responseFormat format
      */
-    /*
     c.add("plugins",
     {
         name:"GetFeatureInfo"
     });
-    */
+    
     /**
      * Geonames plugin
      * Options:

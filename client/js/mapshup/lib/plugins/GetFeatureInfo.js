@@ -35,107 +35,174 @@
  * The fact that you are presently reading this means that you have had
  * knowledge of the CeCILL-B license and that you accept its terms.
  */
-/*********************************************
- * PLUGIN: GetFeatureInfo
- *********************************************/
-M.plugins["GetFeatureInfo"] = {
 
-    layer:null,
-    
-    /**
-     * Launch a WMS getFeatureInfo request
-     * This function only works if queryables WMS layers
-     * are present
-     */
-    getMenuItems: function() {
-        return {
-            id:"getFeatureInfo",
-            icon:M.Util.getImgUrl("info.png"),
-            title:"Info",
-            tt:"Get feature info",
-            javascript:function() {
-                M.menu.hide();
-                M.plugins["GetFeatureInfo"].getFeatureInfo(M.menu.lonLat);
+/**
+ *
+ * Plugin GetFeatureInfo
+ *
+ * @param {Mapshup} M
+ */
+(function(M) {
+
+    M.Plugins.GetFeatureInfo = function() {
+
+        /*
+         * Only one GetFeatureInfo object instance is created
+         */
+        if (M.Plugins.GetFeatureInfo._o) {
+            return M.Plugins.GetFeatureInfo._o;
+        }
+
+        /**
+         * GetFeatureInfo layer is used to display a cross
+         * on the clicke point
+         */
+        this.layer = null;
+
+        /**
+         * Init plugin
+         * 
+         * @param {Object} options
+         */
+        this.init = function(options) {
+
+            var getFeatureInfoLayer, self = this;
+
+            /*
+             * Init options
+             */
+            self.options = options || {};
+            $.extend(self.options, {
+                
+                /* Response format mimetype of GetFeatureInfo request - default is 'text/plain' */
+                responseFormat: options.mimeType ? options.mimeType : 'text/plain',
+                
+                /* 
+                 * Callback function to call when successfully get a GetFeatureInfo request
+                 * This function should take two parameters (identifier, data) where identifier is the
+                 * identifier of the layer (for instance the 'layers' parameter value for WMS layers) and
+                 * data is the GetFeatureInfo result in responseFormat format
+                 */
+                callback: options.callback && typeof options.callback === 'function' ? callback : self.callback
+                
+            });
+
+            /*
+             * This plugin only work if WMS layerType is defined
+             */
+            if (!M.Map.layerTypes["WMS"]) {
                 return false;
             }
-        }
-    },
 
-    /**
-     * Initialize plugin
-     *
-     * This is MANDATORY
-     */
-    init: function(options) {
+            /**
+             * Create generic getFeatureInfoLayer
+             */
+            getFeatureInfoLayer = new OpenLayers.Layer.Vector("GetFeatureInfo", {
+                displayInLayerSwitcher: false,
+                styleMap: new OpenLayers.StyleMap({
+                    'default': {
+                        externalGraphic: M.Util.getImgUrl("plus.png"),
+                        graphicXOffset: -11,
+                        graphicYOffset: -11,
+                        graphicWidth: 19,
+                        graphicHeight: 19
+                    }
+                })
+            });
 
-        /*
-         * Best practice : init options
-         */
-        this.options = options || {};
+            self.layer = M.Map.addLayer({
+                type: "Generic",
+                title: getFeatureInfoLayer.name,
+                layer: getFeatureInfoLayer,
+                unremovable: true,
+                MLayer: true,
+                selectable: true,
+                /** By default, getFeatureInfoLayer is hidden */
+                hidden: false
+            });
 
-        /*
-         * This plugin only work if WMS layerType is defined
-         */
-        if (!M.Map.layerTypes["WMS"]) {
-            return false;
-        }
+            /*
+             * Add "GetFeatureInfo" in menu item
+             */
+            if (M.menu) {
+                M.menu.add([
+                    {
+                        id: M.Util.getId(),
+                        ic: "info.png",
+                        ti: "Info",
+                        tt: "Get feature info",
+                        cb: function() {
+                            self.getFeatureInfo(M.menu.lonLat);
+                        }
+                    }]);
+            }
 
-        /**
-         * Create generic getFeatureInfoLayer
-         */
-        var getFeatureInfoLayer = new OpenLayers.Layer.Vector("GetFeatureInfo", {
-            displayInLayerSwitcher:false,
-            styleMap:new OpenLayers.StyleMap({
-                'default':{
-                    externalGraphic:M.Util.getImgUrl("plus.png"),
-                    graphicXOffset:-11,
-                    graphicYOffset:-11,
-                    graphicWidth:19,
-                    graphicHeight:19
-                }
-            })
-        });
+            return self;
 
-        this.layer = M.Map.addLayer({
-            type:"Generic",
-            title:getFeatureInfoLayer.name,
-            layer:getFeatureInfoLayer,
-            unremovable:true,
-            MLayer:true,
-            selectable:true,
-            /** By default, getFeatureInfoLayer is hidden */
-            hidden:true
-        });
-
-        return true;
-    },
-
-    /*
-     * Send a getFeatureInfo request
-     */
-    getFeatureInfo: function(lonLat) {
+        };
 
         /**
-         * Set clicked point as the new feature within getFeatureInfoLayer
+         * Send a getFeatureInfo request
+         * 
+         * @param {OpenLayers.LonLat} lonLat
          */
-        var newFeature = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat));
-        this.layer.destroyFeatures();
-        this.layer.addFeatures(newFeature);
+        this.getFeatureInfo = function(lonLat) {
+
+            if (!lonLat) {
+                return false;
+            }
+
+            /**
+             * Set clicked point as the new feature within getFeatureInfoLayer
+             */
+            this.layer.destroyFeatures();
+            this.layer.addFeatures(new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lonLat.lon, lonLat.lat)));
+
+            /*
+             * Call GetFeatureInfo on each queryable WMS layers
+             */
+            var results = M.Map.layerTypes["WMS"].getFeatureInfo(lonLat, {
+                responseFormat: this.options.responseFormat,
+                callback: this.options.callback
+            });
+            
+            /*
+             * results array contains the list of WMS queryied layers
+             * [
+             *  {
+             *      identifier: // WMS 'layers' parameter value is the unique identifier
+             *      name : // layer name for (eventual) user friendly display
+             *  },
+             *  ...
+             * ]
+             *  
+             */
+            if (results.length === 0) {
+                M.Util.message(M.Util._("No information available here"));
+            }
+            
+            return true;
+
+        };
+
+        /**
+         * Callback function to retrieve GetFeatureInfo AJAX call results
+         * 
+         * @param {String} identifier : // layer identifier of the getFeatureInfo callback
+         *                              (i.e. the WMS 'layers' parameter value)
+         *                              
+         * @param {String} data : // GetFeatureInfo result
+         */
+        this.callback = function(identifier, data) {
+            M.Util.message('<h1>' + identifier + '</h1>' + '<description>' + data + '</description>', -1);
+        };
 
         /*
-         * Select feature
+         * Set unique instance
          */
-        M.Map.getControlById("__CONTROL_SELECT__").select(newFeature);
-       
-        /*
-         * Call jFeatureInfo
-         */
-        if (!M.Map.layerTypes["WMS"].getFeatureInfo(lonLat,$('.description', '#jFeatureInfo').empty())) {
-            M.Map.featureInfo.clear();
-            M.Util.message(M.Util._("No information available here"));
-        }
-        
+        M.Plugins.GetFeatureInfo._o = this;
 
-    }
+        return this;
 
-};
+    };
+})(window.M);

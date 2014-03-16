@@ -67,7 +67,7 @@ lib/plugins/Export.js
 lib/plugins/FeatureEdition.js
 lib/plugins/Flickr.js
 lib/plugins/Geonames.js
-#lib/plugins/GetFeatureInfo.js
+lib/plugins/GetFeatureInfo.js
 #lib/plugins/GetLandCover.js
 lib/plugins/GoogleEarth.js
 lib/plugins/Help.js

@@ -37,6 +37,9 @@
  */
 /**
  * WMS layer type
+ * 
+ * @param {Mapshup} M
+ * @param {Mapshup.Map} Map
  */
 (function(M, Map) {
 
@@ -47,15 +50,10 @@
          */
         isRaster: true,
         
-        /**
+        /*
          * MANDATORY
          */
         icon: "wms.png",
-        /**
-         * Layer used to identify the map point
-         * for a getFeatureInfo request
-         */
-        getFeatureInfoLayer: null,
         /*
          * Layers must always be specified
          */
@@ -84,6 +82,8 @@
          *                  (see WMS specification OGC 06-042)
          *  }
          *
+         * @param {Object} layerDescription
+         * @param {Object} options
          */
         add: function(layerDescription, options) {
 
@@ -446,6 +446,9 @@
         },
         /**
          * Return an array of layerDescription derived from capabilities information
+         * 
+         * @param {Object} layerDescription
+         * 
          */
         getLayerDescriptions: function(layerDescription) {
 
@@ -625,46 +628,37 @@
          * Launch a getFeatureInfo on all queryables WMS layers
          *
          * @param {OpenLayers.LonLat} lonLat : clicked point in map coordinates
-         * @param {jquery div} div : div container to write in
+         * @param {Object} options :
+         *                  {
+         *                      responseFormat : // format to get the data back - default is 'text/plain'
+         *                      callback : // callback function to send result back
+         *                  }
          */
-        getFeatureInfo: function(lonLat, div) {
+        getFeatureInfo: function(lonLat, options) {
 
-            /**
-             * By default there is no "good candidates"
+            if (!lonLat) {
+                return [];
+            }
+            
+            options = options || {};
+            
+            var j, layer, layerDescription, url, result, results = [], xy = Map.map.getPixelFromLonLat(lonLat);
+
+            /*
+             * Roll over WMS layers
              */
-            var atLeastOne = false,
-                    /**
-                     * Reference to map object
-                     */
-                    map = Map.map,
-                    /**
-                     * Compute the pixel equivalence to the map lonLat coordinates
-                     */
-                    xy = map.getPixelFromLonLat(lonLat),
-                    /**
-                     * Parse all layers for "good candidates" aka WMS layers with queryable = 1
-                     */
-                    length = map.layers.length,
-                    j,
-                    layer,
-                    layerDescription,
-                    url,
-                    id;
-            for (j = length; j--; ) {
-                layer = map.layers[j];
+            for (j = Map.map.layers.length; j--; ) {
+                
+                layer = Map.map.layers[j];
+                
                 if (layer["_M"]) {
                     layerDescription = layer["_M"].layerDescription;
                     if (layerDescription && layerDescription.type === "WMS" && layerDescription.queryable) {
 
-                        /**
-                         * At least one "good candidate" is present :)
-                         */
-                        atLeastOne = true;
-
                         /*
                          * Set default version if not specified
                          */
-                        layerDescription.version = layerDescription.version || "1.1.0";
+                        layerDescription.version = layerDescription.version || "1.1.1";
 
                         /**
                          * Prepare the getFeatureInfo request
@@ -676,70 +670,66 @@
                         url += "&EXCEPTIONS=application/vnd.ogc.se_xml";
                         url += "&X=" + xy.x;
                         url += "&Y=" + xy.y;
-                        url += "&INFO_FORMAT=text/html",
-                                url += "&QUERY_LAYERS=" + layerDescription.layers;
+                        url += "&INFO_FORMAT=" + (options.responseFormat ? options.responseFormat : "text/plain"),
+                        url += "&QUERY_LAYERS=" + layerDescription.layers;
                         url += "&LAYERS=" + layerDescription.layers;
-                        url += "&WIDTH=" + map.size.w;
-                        url += "&HEIGHT=" + map.size.h;
+                        url += "&WIDTH=" + Map.map.size.w;
+                        url += "&HEIGHT=" + Map.map.size.h;
                         //url += "&FEATURE_COUNT=1";
 
                         /*
-                         * Now the tricky part. If projectedUrl is defined, it means
-                         * that the original WMS server is not in map.getProjectionObject().
-                         * Thus we need to call WMS server with epsg:4326 projection
+                         * If projectedUrl is defined, then it means that the original WMS server
+                         * is not in map.getProjectionObject() and the WMS server should be called
+                         * with epsg:4326 projection
                          */
                         if (layerDescription.projectedUrl) {
-                            var extent = map.p22(map.getExtent().clone());
+                            var extent = Map.map.p2d(map.getExtent().clone());
                             url += "&BBOX=" + extent.toBBOX();
                             url += "&SRS=" + Map.pc.projCode;
                         }
                         else {
-                            url += "&BBOX=" + map.getExtent().toBBOX();
+                            url += "&BBOX=" + Map.map.getExtent().toBBOX();
                             url += "&SRS=" + layerDescription.srs;
                         }
 
                         /**
-                         * Initialize information container
+                         * Initialize result container
                          */
-                        id = M.Util.getId();
-                        div.append("<h1>" + layer.name + "</h1>");
-                        div.append('<div class="' + id + '"><img src="' + M.Util.getImgUrl("loading.gif") + '" class="textmiddle"/> ' + M.Util._("Get data from server..."));
-                        /*
-                         description.append('<iframe src="'+M.Util.proxify(url)+'" width="100%"><img src="'+M.Util.getImgUrl("loading.gif")+'" class="textmiddle"/></iframe>');
-                         */
-                        (function(div, id, url) {
+                        result = {
+                            identifier:layerDescription.layers,
+                            name:layer.name
+                        };
+                        results.push(result);
+                        
+                        (function(result, url) {
                             $.ajax({
                                 url: M.Util.proxify(url),
                                 async: true,
                                 dataType: "text",
                                 success: function(data) {
-                                    $('.' + id, div).html(data);
-                                    //$('.'+id, description).html('<iframe>'+data+'</iframe>');
+                                    if (typeof options.callback === 'function') {
+                                        options.callback(result.identifier, data);
+                                    }
                                 },
                                 error: function(e) {
-                                    $('.' + id, div).html(M.Util._("No result"));
+                                    if (typeof options.callback === 'function') {
+                                        options.callback(result.identifier, null);
+                                    }
                                 }
                             });
-                        })(div, id, url);
+                        })(result, url);
                     }
                 }
             }
 
-            /**
-             * No "good candidate".
-             * Do not display getFeatureInfoLayer
-             * Display an information message
-             */
-            if (!atLeastOne) {
-                return false;
-            }
-
-            return true;
+            return results;
 
         },
         /**
          * MANDATORY
          * Compute an unique MID based on layerDescription
+         * 
+         * @param {Object} layerDescription
          */
         getMID: function(layerDescription) {
             return layerDescription.MID || M.Util.crc32(layerDescription.type + (M.Util.repareUrl(layerDescription.url) || "") + (layerDescription.layers || ""));
