@@ -706,7 +706,7 @@
                              * Update link content text.
                              * Order is identifier -> title -> name
                              */
-                            $id.html(value).addClass('hilite').removeClass('warning');
+                            $id.html(M.Util.shorten(value, 6, true)).attr('title', value).addClass('hilite').removeClass('warning');
 
                             /*
                              * Store new value and update process accordingly
