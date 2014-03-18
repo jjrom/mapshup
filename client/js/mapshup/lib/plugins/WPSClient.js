@@ -662,8 +662,79 @@
                 $av.trigger('change');
             }
             else {
-                $parent.append('<span id="' + id + '" class="hover" title="' + M.Util._("Change value") + '">' + (data.defaultValue || M.Util._("Not set")) + '</span>');
+                
+                var idgeoselect = M.Util.getId(), selectText = M.Util._("Select value from feature");
+                
+                /*
+                 * If dataType is a string add a tool to select a feature
+                 */
+                $parent.append((data.dataType && data.dataType === 'xs:string' ? '<img src="' + M.Util.getImgUrl('earth.png') + '" id="' + idgeoselect + '" class="hover middle" title="' + selectText + '"/> ' : '') + '<span id="' + id + '" class="hover" title="' + M.Util._("Change value") + '">' + (data.defaultValue || M.Util._("Not set")) + '</span>');
+                
                 $id = $('#' + id);
+                
+                /*
+                 * Select geometry within the map
+                 */
+                $('#' + idgeoselect)
+                        .removeClass('hilite')
+                        .addClass('warning')
+                        .click(function(e) {
+
+                    var $mask = self.items[descriptor.wps.url].panelItem.$mask;
+
+                    /*
+                     * Set a callback function on FeatureInfo
+                     */
+                    M.Map.featureInfo.bypassCallback = function(feature) {
+
+                        /*
+                         * Hide mask
+                         */
+                        $mask.hide();
+                        M.Map.featureInfo.bypassCallback = null;
+
+                        /*
+                         * Update "Select on map" action display and store feature in the .data() cache
+                         */
+                        if (feature && feature.attributes) {
+
+                            var value = feature.attributes['identifier'] || feature.attributes['title'] || feature.attributes['name'] || 'unknown';
+                            
+                            $('#' + idgeoselect).attr('title', M.Map.Util.Feature.getTitle(feature)).addClass('hilite').removeClass('warning');
+
+                            /*
+                             * Update link content text.
+                             * Order is identifier -> title -> name
+                             */
+                            $id.html(value).addClass('hilite').removeClass('warning');
+
+                            /*
+                             * Store new value and update process accordingly
+                             */
+                            $parent.data('data', value);
+                            self.setPuts(descriptor, type);
+                            
+                        }
+                    };
+
+                    /*
+                     * Show mask
+                     */
+                    $mask.html('<div class="content">' + selectText + ' (<a href="#" class="cancel">' + M.Util._("Cancel") + '<a/>)</div>').show();
+
+                    /*
+                     * Add a cancel action
+                     */
+                    $('.cancel', $mask).click(function(e) {
+                        M.Map.featureInfo.bypassCallback = null;
+                        $mask.hide();
+                    });
+
+                    return false;
+                });
+
+                
+                
             }
 
             /*
