@@ -668,7 +668,7 @@
                 /*
                  * If dataType is a string add a tool to select a feature
                  */
-                $parent.append((data.dataType && data.dataType === 'xs:string' ? '<img src="' + M.Util.getImgUrl('earth.png') + '" id="' + idgeoselect + '" class="hover middle" title="' + selectText + '"/> ' : '') + '<span id="' + id + '" class="hover" title="' + M.Util._("Change value") + '">' + (data.defaultValue || M.Util._("Not set")) + '</span>');
+                $parent.append((!data.dataType || data.dataType === 'xs:string' ? '<img src="' + M.Util.getImgUrl('earth.png') + '" id="' + idgeoselect + '" class="hover middle" title="' + selectText + '"/> ' : '') + '<span id="' + id + '" class="hover" title="' + M.Util._("Change value") + '">' + (data.defaultValue || M.Util._("Not set")) + '</span>');
                 
                 $id = $('#' + id);
                 
