@@ -110,14 +110,15 @@ then
             
             # Copy index*.html files and replace __CONFIG__ with input config file
             cat $CLIENTDIR/index_prod.html | sed s/__CONFIG__/$CONFIG_FILE/g > $TARGET/tmp_index.html
-            
-            # Replace theme name in index files
-            sed s/__THEME__/$THEME/g $TARGET/tmp_index.html > $TARGET/index.html
+           
         else
             # Copy index*.html files
-            cat $CLIENTDIR/index_prod.html | grep -v "__CONFIG__" > $TARGET/index.html
+            cat $CLIENTDIR/index_prod.html | grep -v "__CONFIG__" > $TARGET/tmp_index.html
         fi
         
+        # Replace theme name in index files
+        sed s/__THEME__/$THEME/g $TARGET/tmp_index.html > $TARGET/index.html
+
         /bin/cp -Rf $CLIENTDIR/blank.html $TARGET/
         /bin/cp -Rf $CLIENTDIR/error.html $TARGET/
         /bin/cp -Rf $CLIENTDIR/welcome.html $TARGET/
