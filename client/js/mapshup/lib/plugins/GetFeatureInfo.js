@@ -83,7 +83,7 @@
                  * identifier of the layer (for instance the 'layers' parameter value for WMS layers) and
                  * data is the GetFeatureInfo result in responseFormat format
                  */
-                callback: options.callback && typeof options.callback === 'function' ? callback : self.callback
+                callback: options.callback && typeof options.callback === 'function' ? options.callback : self.callback
                 
             });
 
