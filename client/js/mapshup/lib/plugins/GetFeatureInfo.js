@@ -75,7 +75,7 @@
             $.extend(self.options, {
                 
                 /* Response format mimetype of GetFeatureInfo request - default is 'text/plain' */
-                responseFormat: options.mimeType ? options.mimeType : 'text/plain',
+                responseFormat: options.responseFormat ? options.responseFormat : 'text/plain',
                 
                 /* 
                  * Callback function to call when successfully get a GetFeatureInfo request
