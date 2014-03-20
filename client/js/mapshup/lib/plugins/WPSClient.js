@@ -697,8 +697,32 @@
                          * Update "Select on map" action display and store feature in the .data() cache
                          */
                         if (feature && feature.attributes) {
-
-                            var value = feature.attributes['identifier'] || feature.attributes['title'] || feature.attributes['name'] || 'unknown';
+                            
+                            /*
+                             * Default value is identifier or id
+                             */
+                            var value = feature.attributes['identifier'] || feature.attributes['id'];
+                            
+                            /*
+                             * No identifier or id attribute ? Check atom
+                             */
+                            if (!value) {
+                                
+                                if (feature.attributes.atom) {
+                                    value = feature.attributes['atom']['id'];
+                                }
+                            }
+                            
+                            /*
+                             * At least title, name or 'unknown'
+                             */
+                            if (!value) {
+                                if (feature.attributes.atom) {
+                                    value = feature.attributes['atom']['id'];
+                                }
+                            }
+                            
+                            value = value || feature.attributes['title'] || feature.attributes['name'] || 'unknown';
                             
                             $('#' + idgeoselect).attr('title', M.Map.Util.Feature.getTitle(feature)).addClass('hilite').removeClass('warning');
 
