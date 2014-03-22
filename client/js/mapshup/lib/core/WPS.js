@@ -77,7 +77,7 @@
         /**
          * WPS Abstract - read from GetCapabilities document
          */
-        this["abstract"] = null;
+        this['abstract'] = null;
 
         /**
          * WPS Service version
@@ -103,7 +103,7 @@
 
             /*
              * Set Asynchronous Processes Manager for mapshup
-             * It is set at the mapshup oarent object (i.e. M) to be
+             * It is set at the mapshup parent object (i.e. M) to be
              * shared by all wps objects 
              */
             if (!M.apm) {
@@ -1799,7 +1799,7 @@
                         }
                     });
 
-                }, 3000);
+                }, M.Config['general'].refreshInterval || 3000);
             }
 
             /*
