@@ -38,12 +38,12 @@
 
 /**
  * WPS protocol reader implementation of OGC 05-007r7 and 08-091r6
- * 
+ *
  * See http://www.opengeospatial.org/standards/wps
- * 
+ *
  * @param {MapshupObject} M
  */
-(function(M) {
+(function (M) {
 
 
     /*
@@ -53,10 +53,10 @@
 
     /**
      * Initialize M.WPS
-     * 
+     *
      * @param {String} url : WPS endpoint url
      */
-    M.WPS = function(url) {
+    M.WPS = function (url) {
 
 
         /**
@@ -96,32 +96,32 @@
 
         /**
          * Initialize WPS class
-         * 
+         *
          * @param {String} url : WPS service endpoint url
          */
-        this.init = function(url) {
+        this.init = function (url) {
 
             /*
              * Set Asynchronous Processes Manager for mapshup
              * It is set at the mapshup parent object (i.e. M) to be
-             * shared by all wps objects 
+             * shared by all wps objects
              */
             if (!M.apm) {
                 M.apm = new M.WPS.asynchronousProcessManager();
             }
 
             /*
-             * WPS endpoint url guarantees the object uniqueness 
+             * WPS endpoint url guarantees the object uniqueness
              */
             this.url = url;
 
         };
-
+        
         /**
          * Call GetCapabilities throught ajax request
          * and parse result
          */
-        this.getCapabilities = function() {
+        this.getCapabilities = function () {
 
             var url, self = this;
 
@@ -153,11 +153,11 @@
                     url: M.Util.proxify(M.Util.repareUrl(url), "XML"),
                     async: true,
                     dataType: 'xml',
-                    success: function(xml) {
+                    success: function (xml) {
                         self.parseCapabilities(xml);
                         self.events.trigger("getcapabilities", self);
                     },
-                    error: function(e) {
+                    error: function (e) {
                         M.Util.message(M.Util._("Error reading Capabilities file"));
                     }
                 }, {
@@ -171,7 +171,7 @@
         /**
          * Call DescribeProcess throught ajax request
          * and parse result
-         * 
+         *
          * @param {Array} identifiers : array of Process unique identifiers
          *                          [
          *                            {
@@ -180,13 +180,14 @@
          *                            },
          *                            ...
          *                          ]
-         *                              
-         *              
-         * 
+         *
+         *
+         *
          */
-        this.describeProcess = function(identifiers) {
+        this.describeProcess = function (identifiers) {
 
-            var i, l, list = [], url, descriptor, self = this;
+            var i, l, list = [],
+                url, descriptor, self = this;
 
             /*
              * Convert input to array if needed
@@ -235,14 +236,15 @@
                 url: M.Util.proxify(M.Util.repareUrl(url), "XML"),
                 async: true,
                 dataType: 'xml',
-                success: function(xml) {
-                    var i, j, l, p, processDescriptions = self.parseDescribeProcess(xml), descriptors = [];
+                success: function (xml) {
+                    var i, j, l, p, processDescriptions = self.parseDescribeProcess(xml),
+                        descriptors = [];
                     for (i = 0, l = processDescriptions.length; i < l; i++) {
 
                         /*
                          * Associate ProcessDescriptor to callback function if defined
                          */
-                        for (j = identifiers.length; j--; ) {
+                        for (j = identifiers.length; j--;) {
                             if (identifiers[j].identifier === processDescriptions[i].identifier && identifiers[j].callback) {
                                 $.extend(processDescriptions[i], {
                                     callback: identifiers[j].callback
@@ -256,7 +258,7 @@
                     }
                     self.events.trigger("describeprocess", descriptors);
                 },
-                error: function(e) {
+                error: function (e) {
                     M.Util.message(M.Util._("Error reading DescribeProcess file"));
                 }
             }, {
@@ -271,9 +273,9 @@
         /**
          * Get an xml GetCapabilities object and return
          * a javascript object
-         * 
+         *
          * GetCapabilities structure is :
-         * 
+         *
          * <wps:Capabilities service="WPS" xml:lang="en-EN" version="1.0.0" updateSequence="1352815432361">
          *      <ows:ServiceIdentification>
          *          [...See Service Identification below...]
@@ -292,11 +294,11 @@
          *      </wps:Languages>
          *      <wps:WSDL xlink:href=""/>
          *  </wps:Capabilities>
-         *  
+         *
          *  @param {XMLObject} xml
-         * 
+         *
          */
-        this.parseCapabilities = function(xml) {
+        this.parseCapabilities = function (xml) {
 
             var self = this;
 
@@ -304,13 +306,13 @@
              * jquery 1.7+ query selector using find('*') and filter()
              * See http://www.steveworkman.com/html5-2/javascript/2011/improving-javascript-xml-node-finding-performance-by-2000/
              */
-            $(xml).find('*').filter(function() {
+            $(xml).find('*').filter(function () {
 
                 /*
                  * Service identification
-                 * 
+                 *
                  * GetCapabilities structure (version 1.0.0)
-                 * 
+                 *
                  * <ows:ServiceIdentification>
                  *      <ows:Title>WPS server</ows:Title>
                  *      <ows:Abstract>WPS server developed by XXX.</ows:Abstract>
@@ -324,15 +326,15 @@
                  *      <ows:Fees>NONE</ows:Fees>
                  *      <ows:AccessConstraints>NONE</ows:AccessConstraints>
                  * </ows:ServiceIdentification>
-                 * 
+                 *
                  * Note that this function only store :
                  *      Title
                  *      Abstract
-                 *      
+                 *
                  */
                 if (M.Util.stripNS(this.nodeName) === 'ServiceIdentification') {
 
-                    $(this).children().filter(function() {
+                    $(this).children().filter(function () {
                         var nn = M.Util.stripNS(this.nodeName);
                         if (nn === 'Title' || nn === 'Abstract') {
                             self[M.Util.lowerFirstLetter(nn)] = $(this).text();
@@ -342,9 +344,9 @@
 
                 /*
                  * Service Provider
-                 * 
+                 *
                  * GetCapabilities structure (version 1.0.0)
-                 * 
+                 *
                  * <ows:ServiceProvider>
                  *      <ows:ProviderName>mapshup</ows:ProviderName>
                  *      <ows:ProviderSite xlink:href="http://www.geomatys.com/"/>
@@ -367,9 +369,9 @@
                  *              </ows:ContactInfo>
                  *     </ows:ServiceContact>
                  * </ows:ServiceProvider>
-                 * 
+                 *
                  * Note that this function only store the following
-                 *      
+                 *
                  *      {
                  *          name
                  *          site
@@ -378,12 +380,12 @@
                  *              position
                  *              phone
                  *              address:{
-                 *              
+                 *
                  *              }
                  *          }
                  *      }
-                 *              
-                 *      
+                 *
+                 *
                  */
                 else if (M.Util.stripNS(this.nodeName) === 'ServiceProvider') {
 
@@ -394,37 +396,37 @@
                      */
                     self.serviceProvider = {};
 
-                    $(this).children().filter(function() {
+                    $(this).children().filter(function () {
 
                         switch (M.Util.stripNS(this.nodeName)) {
                             /* ServiceContact*/
-                            case 'ServiceContact':
-                                $(this).children().each(function() {
-                                    switch (M.Util.stripNS(this.nodeName)) {
-                                        /* ContactInfo*/
-                                        case 'ContactInfo':
-                                            $(this).children().each(function() {
-                                                switch (M.Util.stripNS(this.nodeName)) {
-                                                    /* Phone */
-                                                    case 'Phone':
-                                                        phone = self.parseLeaf($(this));
-                                                        break;
-                                                        /* Address */
-                                                    case 'Address':
-                                                        address = self.parseLeaf($(this));
-                                                        break;
-                                                }
-                                            });
+                        case 'ServiceContact':
+                            $(this).children().each(function () {
+                                switch (M.Util.stripNS(this.nodeName)) {
+                                    /* ContactInfo*/
+                                case 'ContactInfo':
+                                    $(this).children().each(function () {
+                                        switch (M.Util.stripNS(this.nodeName)) {
+                                            /* Phone */
+                                        case 'Phone':
+                                            phone = self.parseLeaf($(this));
                                             break;
-                                        default:
-                                            contact[M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName))] = $(this).text();
+                                            /* Address */
+                                        case 'Address':
+                                            address = self.parseLeaf($(this));
                                             break;
-                                    }
-                                });
-                                break;
-                            default:
-                                self.serviceProvider[M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName))] = $(this).text();
-                                break;
+                                        }
+                                    });
+                                    break;
+                                default:
+                                    contact[M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName))] = $(this).text();
+                                    break;
+                                }
+                            });
+                            break;
+                        default:
+                            self.serviceProvider[M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName))] = $(this).text();
+                            break;
                         }
 
                     });
@@ -437,9 +439,9 @@
 
                 /*
                  * Get individual process descriptor
-                 * 
+                 *
                  * GetCapabilities structure (version 1.0.0)
-                 * 
+                 *
                  * <wps:ProcessOfferings>
                  *      <wps:Process wps:processVersion="1.0.0">
                  *          <ows:Identifier>urn:ogc:cstl:wps:jts:intersection</ows:Identifier>
@@ -448,7 +450,7 @@
                  *      </wps:Process>
                  *      [...]
                  * </wps:ProcessOfferings>
-                 * 
+                 *
                  */
                 else if (M.Util.stripNS(this.nodeName) === 'Process') {
                     self.addProcessDescriptor(new M.WPS.ProcessDescriptor(self.parseLeaf($(this))));
@@ -462,9 +464,9 @@
 
         /**
          * Get an xml DescribeProcess object and return a javascript object
-         * 
+         *
          * DescribeProcess structure is :
-         * 
+         *
          * <wps:ProcessDescriptions xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" service="WPS" version="1.0.0" xml:lang="en-EN">
          *      <ProcessDescription storeSupported="true" statusSupported="true" wps:processVersion="1.0.0">
          *          <ows:Identifier>urn:ogc:cstl:wps:jts:buffer</ows:Identifier>
@@ -479,11 +481,11 @@
          *      </ProcessDescription>
          *      [...]
          *  </wps:ProcessDescriptions>
-         *  
+         *
          *  @param {XMLObject} xml
-         * 
+         *
          */
-        this.parseDescribeProcess = function(xml) {
+        this.parseDescribeProcess = function (xml) {
 
             var self = this;
 
@@ -496,13 +498,13 @@
              * jquery 1.7+ query selector using find('*') and filter()
              * See http://www.steveworkman.com/html5-2/javascript/2011/improving-javascript-xml-node-finding-performance-by-2000/
              */
-            $(xml).find('*').filter(function() {
+            $(xml).find('*').filter(function () {
 
                 /*
                  * Service identification
-                 * 
+                 *
                  * ProcessDescription structure
-                 * 
+                 *
                  * <ProcessDescription>
                  *      <ows:Identifier>urn:ogc:cstl:wps:jts:buffer</ows:Identifier>
                  *      <ows:Title>Jts : Buffer</ows:Title>
@@ -514,7 +516,7 @@
                  *          [...See DataOutputs below...]
                  *      </ProcessOutputs>
                  * </ProcessDescription>
-                 *      
+                 *
                  */
                 if (M.Util.stripNS(this.nodeName) === 'ProcessDescription') {
 
@@ -524,13 +526,12 @@
                     /* Retrieve ProcessDescription attributes */
                     $.extend(p, M.Util.getAttributes($(this)));
 
-                    $(this).children().filter(function() {
+                    $(this).children().filter(function () {
                         nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
                         /* Process Inputs and Outupts*/
                         if (nn === 'dataInputs' || nn === 'processOutputs') {
                             p[nn + 'Description'] = self.parseDescribePuts($(this).children());
-                        }
-                        else if (nn === 'title' || nn === 'identifier' || nn === 'abstract') {
+                        } else if (nn === 'title' || nn === 'identifier' || nn === 'abstract') {
                             p[nn] = $(this).text();
                         }
 
@@ -547,17 +548,18 @@
 
         /**
          * Parse DataInputs (or ProcessOutputs) of the DescribeProcess elements
-         * 
+         *
          * @param {Object} $obj : jQuery object reference to list of 'Input' (or 'Output') elements
          */
-        this.parseDescribePuts = function($obj) {
+        this.parseDescribePuts = function ($obj) {
 
-            var nn, self = this, puts = [];
+            var nn, self = this,
+                puts = [];
 
             /*
              * Parse each 'Input' (or 'Output') elements
              */
-            $obj.each(function() {
+            $obj.each(function () {
 
                 var p = {};
 
@@ -567,20 +569,17 @@
                 /*
                  * Parse each element from current element
                  */
-                $(this).children().filter(function() {
+                $(this).children().filter(function () {
 
                     nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
 
                     if (nn === 'complexData' || nn === 'complexOutput') {
                         p[nn] = self.parseDescribeComplexPut($(this));
-                    }
-                    else if (nn === 'literalData' || nn === 'literalOutput') {
+                    } else if (nn === 'literalData' || nn === 'literalOutput') {
                         p[nn] = self.parseDescribeLiteralPut($(this));
-                    }
-                    else if (nn === 'boundingBoxData' || nn === 'boundingBoxOutput') {
+                    } else if (nn === 'boundingBoxData' || nn === 'boundingBoxOutput') {
                         p[nn] = self.parseDescribeBoundingBoxPut($(this));
-                    }
-                    else if (nn === 'title' || nn === 'identifier' || nn === 'abstract') {
+                    } else if (nn === 'title' || nn === 'identifier' || nn === 'abstract') {
                         p[nn] = $(this).text();
                     }
 
@@ -594,9 +593,9 @@
 
         /**
          * Parse ComplexData (or ComplexOutput) of the DescribeProcess elements
-         * 
+         *
          * Structure :
-         * 
+         *
          *   <ComplexData maximumMegabytes="100">
          *           <Default>
          *                <Format>
@@ -614,12 +613,13 @@
          *                [...]
          *            </Supported>
          *   </ComplexData>
-         * 
+         *
          * @param {Object} $obj : jQuery object reference to a ComplexData (or a ComplexOutput) element
          */
-        this.parseDescribeComplexPut = function($obj) {
+        this.parseDescribeComplexPut = function ($obj) {
 
-            var nn, self = this, p = {};
+            var nn, self = this,
+                p = {};
 
             /* Get attributes - i.e. minOccurs and maxOccurs for Input */
             $.extend(p, M.Util.getAttributes($obj));
@@ -627,16 +627,15 @@
             /*
              * Parse each ComplexData (or ComplexOutput) element
              */
-            $obj.children().filter(function() {
+            $obj.children().filter(function () {
 
                 nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
 
                 if (nn === 'default') {
                     p[nn] = self.parseLeaf($(this).children());
-                }
-                else if (nn === 'supported') {
+                } else if (nn === 'supported') {
                     p[nn] = [];
-                    $(this).children().filter(function() {
+                    $(this).children().filter(function () {
                         p[nn].push(self.parseLeaf($(this)));
                     });
                 }
@@ -649,10 +648,10 @@
 
         /**
          * Parse LiteralData (or LiteralOutput) of the DescribeProcess elements
-         * 
+         *
          * @param {Object} $obj : jQuery object reference to a LiteralData (or a LiteralOutput) element
          */
-        this.parseDescribeLiteralPut = function($obj) {
+        this.parseDescribeLiteralPut = function ($obj) {
 
             var nn, p = {};
 
@@ -662,7 +661,7 @@
             /*
              * Parse each LiteralData (or LiteralOutput) element
              */
-            $obj.children().filter(function() {
+            $obj.children().filter(function () {
                 nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
 
                 /* Get DataType ows:reference */
@@ -672,7 +671,7 @@
 
                 /*
                  * Unit Of Measure case
-                 * 
+                 *
                  *      <UOMs>
                  *          <Default>
                  *              <ows:UOM>m</ows:UOM>
@@ -683,23 +682,22 @@
                  *              <ows:UOM>[mi_i]</ows:UOM>
                  *          </Supported>
                  *      </UOMs>
-                 * 
-                 * 
+                 *
+                 *
                  */
                 if (nn === 'uOMs') {
 
                     p['UOMs'] = {};
 
-                    $(this).children().filter(function() {
+                    $(this).children().filter(function () {
 
                         nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
 
                         if (nn === 'default') {
                             p['UOMs']['default'] = $(this).children().text();
-                        }
-                        else if (nn === 'supported') {
+                        } else if (nn === 'supported') {
                             p['UOMs']['supported'] = [];
-                            $(this).children().filter(function() {
+                            $(this).children().filter(function () {
                                 p['UOMs']['supported'].push($(this).text());
                             });
                         }
@@ -707,7 +705,7 @@
                 }
                 /*
                  * AllowedValues case
-                 * 
+                 *
                  *      <AllowedValues>
                  *          <Value>blabalbl</Value>
                  *          <Value>bliblibli</Value>
@@ -716,27 +714,28 @@
                  *              <MaximumValue></MaximumValue>
                  *          </Range>
                  *      </AllowedValues>
-                 *      
+                 *
                  *      // TODO range
-                 * 
+                 *
                  */
                 else if (nn === 'allowedValues') {
 
                     p['allowedValues'] = [];
 
-                    $(this).children().filter(function() {
+                    $(this).children().filter(function () {
 
                         nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
 
                         if (nn === 'value') {
-                            p['allowedValues'].push({value: $(this).text()});
+                            p['allowedValues'].push({
+                                value: $(this).text()
+                            });
                         }
                         /* TODO
                          else if (nn === 'range') {
                          }*/
                     });
-                }
-                else {
+                } else {
                     p[nn] = $(this).text();
                 }
 
@@ -748,7 +747,7 @@
 
         /**
          * Parse BoundingBoxData (or BoundingBoxOutput) of the DescribeProcess elements
-         * 
+         *
          *   <BoundingBoxData>
          *       <Default>
          *           <CRS>urn:ogc:def:crs:EPSG:6.6:4326</CRS>
@@ -760,26 +759,25 @@
          *           </CRSsType>
          *       </Supported>
          *   </BoundingBoxData>
-         * 
+         *
          * @param {Object} $obj : jQuery object reference to a BoundingBoxData (or a BoundingBoxOutput) element
          */
-        this.parseDescribeBoundingBoxPut = function($obj) {
+        this.parseDescribeBoundingBoxPut = function ($obj) {
 
             var nn, p = {};
 
             /*
              * Parse each ComplexData (or ComplexOutput) element
              */
-            $obj.children().filter(function() {
+            $obj.children().filter(function () {
 
                 nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
 
                 if (nn === 'default') {
                     p[nn] = $(this).children().text();
-                }
-                else if (nn === 'supported') {
+                } else if (nn === 'supported') {
                     p[nn] = [];
-                    $(this).children().filter(function() {
+                    $(this).children().filter(function () {
                         p[nn].push($(this).text());
                     });
                 }
@@ -792,15 +790,15 @@
 
         /**
          * Retrun a json representation of a Leaf jQuery element
-         * 
+         *
          * @param {Object} $obj : jQuery object reference to a Format element
          * @param {boolean} nolower : if true the javascript is not camel-cased
          */
-        this.parseLeaf = function($obj, nolower) {
+        this.parseLeaf = function ($obj, nolower) {
 
             var p = {};
 
-            $obj.children().each(function() {
+            $obj.children().each(function () {
                 p[nolower ? M.Util.stripNS(this.nodeName) : M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName))] = $(this).text();
             });
 
@@ -810,7 +808,7 @@
 
         /**
          * Request 'execute' service on process identified by identifier
-         * 
+         *
          * @param {String} identifier : M.WPS.ProcessDescriptor object identifier
          * @param {Object} options : options to modify execution (optional)
          *                          {
@@ -819,7 +817,7 @@
          *                                              as an url instead of directly set within the executeResponse
          *                          }
          */
-        this.execute = function(identifier, options) {
+        this.execute = function (identifier, options) {
 
             var descriptor = this.getProcessDescriptor(identifier);
 
@@ -839,7 +837,7 @@
          *
          * @param {Object} descriptor : M.WPS.ProcessDescriptor object
          */
-        this.addProcessDescriptor = function(descriptor) {
+        this.addProcessDescriptor = function (descriptor) {
 
             /*
              * Paranoid mode
@@ -866,7 +864,7 @@
          *
          * @param {String} identifier : M.WPS.ProcessDescriptor object identifier
          */
-        this.getProcessDescriptor = function(identifier) {
+        this.getProcessDescriptor = function (identifier) {
             if (!identifier) {
                 return null;
             }
@@ -875,7 +873,7 @@
 
         /**
          * Return WPS server info as an HTML string
-         * 
+         *
          *      <div>
          *          <h1>wps.title</h1>
          *          <p>wps.abstract</p>
@@ -887,9 +885,9 @@
          *              wps.serviceProvider.contact.phone.voice
          *          </p>
          *      </div>
-         * 
+         *
          */
-        this.toHTML = function() {
+        this.toHTML = function () {
 
             /*
              * Only process WPS when getCapabilities is read
@@ -916,9 +914,9 @@
 
     /**
      * WPS ProcessDescriptor
-     * 
+     *
      * @param {Object} options : WPS process initialization options
-     * 
+     *
      *      {
      *          identifier: // process unique identifier
      *          title: // process title
@@ -928,7 +926,7 @@
      *                    when process instance is updated
      *      }
      */
-    M.WPS.ProcessDescriptor = function(options) {
+    M.WPS.ProcessDescriptor = function (options) {
 
         /**
          * M.WPS object reference
@@ -941,7 +939,7 @@
         this.callback = null;
 
         /**
-         * Process unique identifier 
+         * Process unique identifier
          */
         this.identifier = null;
 
@@ -967,16 +965,16 @@
 
         /**
          * List of inputs (Set by M.Plugins.WPSClient for example)
-         * 
-         * Input stucture 
+         *
+         * Input stucture
          *      {
          *          type: // 'LiteralData', 'ComplexData' or 'BoundingBoxData'  - MANDATORY
          *          identifier: // Unique Input identifier - MANDATORY
          *          data: // Data (e.g. value for LiteralData) - MANDATORY ?
-         *          uom: // Unit Of Measure, for LiteralData only - OPTIONAL 
+         *          uom: // Unit Of Measure, for LiteralData only - OPTIONAL
          *          format: // ??? - OPTIONAL
          *      }
-         * 
+         *
          */
         this.inputs = [];
 
@@ -988,7 +986,7 @@
         /*
          * Process initialization
          * options structure :
-         * 
+         *
          *      {
          *          identifier: // process unique identifier
          *          title: // process title
@@ -997,16 +995,16 @@
          *          callback: // optional callback function called by Asynchronous Process Manager
          *                       when process instance is updated
          *      }
-         * 
+         *
          */
-        this.init = function(options) {
+        this.init = function (options) {
             $.extend(this, options);
         };
 
         /**
          * Clear inputs and outputs list
          */
-        this.clear = function() {
+        this.clear = function () {
             this.clearInputs();
             this.clearOutputs();
         };
@@ -1014,41 +1012,41 @@
         /**
          * Clear inputs list
          */
-        this.clearInputs = function() {
+        this.clearInputs = function () {
             this.inputs = [];
         };
 
         /**
          * Clear outputs list
          */
-        this.clearOutputs = function() {
+        this.clearOutputs = function () {
             this.outputs = [];
         };
 
         /**
          * Add an input
-         * 
+         *
          * @param {Object} input (see input structure above in this.inputs comment)
          */
-        this.addInput = function(input) {
+        this.addInput = function (input) {
             this.inputs.push(input);
         };
 
         /**
          * Add an output
-         * 
+         *
          * @param {Object} output (see output structure above in this.outputs comment)
          */
-        this.addOutput = function(output) {
+        this.addOutput = function (output) {
             this.outputs.push(output);
         };
 
         /**
          * Get an input description
-         * 
+         *
          * @param {String} identifier
          */
-        this.getInputDescription = function(identifier) {
+        this.getInputDescription = function (identifier) {
 
             if (this.dataInputsDescription && this.dataInputsDescription.length) {
                 for (var i = 0, l = this.dataInputsDescription.length; i < l; i++) {
@@ -1062,8 +1060,8 @@
         };
 
         /**
-         * Create a child Process and launch 'execute' request 
-         * 
+         * Create a child Process and launch 'execute' request
+         *
          *  @param {Object} options : options to modify execution (optional)
          *                          {
          *                              storeExecute: // boolean (set to true to set asynchronous mode)
@@ -1073,7 +1071,7 @@
          *                                        // discriminates between different processes instance from the same process descriptor
          *                          }
          */
-        this.execute = function(options) {
+        this.execute = function (options) {
             var process = new M.WPS.Process({
                 descriptor: this,
                 inputs: M.Util.clone(this.inputs),
@@ -1090,16 +1088,16 @@
 
     /**
      * WPS Process
-     * 
+     *
      * @param {Object} options : WPS process initialization options
-     * 
+     *
      *      {
      *          descriptor: // reference to the M.WPS parent (MANDATORY)
      *          statusLocation: // reference to the statusLocation url (Optional)
      *          parentId: // Unique identifier linked to this process (Optional)
      *      }
      */
-    M.WPS.Process = function(options) {
+    M.WPS.Process = function (options) {
 
         /**
          * M.WPS.ProcessDescriptor object reference
@@ -1134,14 +1132,14 @@
          *      ProcessPaused
          *      ProcessSucceeded
          *      ProcessFailed
-         * 
+         *
          */
         this.status = null;
 
         /**
          * Result object read from executeResponse
-         * 
-         * Structure 
+         *
+         * Structure
          *      [
          *          {
          *              identifier://
@@ -1152,13 +1150,13 @@
          *          ,
          *          ...
          *      ]
-         * 
+         *
          */
         this.result = null;
-        
+
         /**
          * Unique identifier linked to this process (used by MMI to
-         * discriminates between different processes instance from the same process descriptor 
+         * discriminates between different processes instance from the same process descriptor
          */
         this.parentId = null;
 
@@ -1166,15 +1164,15 @@
          * Process initialization
          *
          * @param {Object} options
-         * 
+         *
          */
-        this.init = function(options) {
+        this.init = function (options) {
             $.extend(this, options);
         };
 
         /**
          * Launch WPS execute request
-         * 
+         *
          * @param {Object} options : options to modify execution (optional)
          *                          {
          *                              storeExecute: // boolean (set to true to set asynchronous mode)
@@ -1184,22 +1182,24 @@
          *                                        // discriminates between different processes instance from the same process descriptor
          *                          }
          */
-        this.execute = function(options) {
+        this.execute = function (options) {
 
-            var i, l, data, template, formatStr, put, outputs = "", inputs = "", self = this;
+            var i, l, data, template, formatStr, put, outputs = "",
+                inputs = "",
+                self = this;
 
             /*
              * Paranoid mode
              */
             options = options || {};
-            
+
             /*
              * Update parentId
              */
             if (options.parentId) {
                 self.parentId = options.parentId;
             }
-            
+
             /*
              * executeResponse can only be stored if the server
              * support it
@@ -1210,8 +1210,8 @@
 
             /*
              * If the first output is a ComplexOutput and its mimeType is not a
-             * Geographical mimeType, then store executeResponse on server 
-             * 
+             * Geographical mimeType, then store executeResponse on server
+             *
              * Note : this does not superseed the input storeExecute options
              */
             if (!options.hasOwnProperty("storeExecute")) {
@@ -1252,8 +1252,7 @@
                         data: put.data,
                         uom: put.uom || ""
                     });
-                }
-                else if (put.type === "ComplexData") {
+                } else if (put.type === "ComplexData") {
 
                     /*
                      * Pass data by reference
@@ -1315,8 +1314,7 @@
                     template = M.Util.parseTemplate(M.WPS.literalOutputTemplate, {
                         identifier: put.identifier
                     });
-                }
-                else if (put.type === "ComplexOutput") {
+                } else if (put.type === "ComplexOutput") {
 
                     /*
                      * Detect if the output is streamed directly within
@@ -1340,8 +1338,7 @@
                         asReference: M.Map.Util.getGeoType(put.mimeType) ? false : options.asReference,
                         format: formatStr
                     });
-                }
-                else if (put.type === "BoundingBoxOutput") {
+                } else if (put.type === "BoundingBoxOutput") {
                     template = M.Util.parseTemplate(M.WPS.boundingBoxOutputTemplate, {
                         identifier: put.identifier
                     });
@@ -1367,7 +1364,7 @@
                 dataType: "xml",
                 contentType: "text/xml",
                 data: data,
-                success: function(xml) {
+                success: function (xml) {
 
                     self.result = self.parseExecuteResponse(xml);
 
@@ -1378,7 +1375,7 @@
                         self.descriptor.wps.events.trigger("execute", self);
                     }
                 },
-                error: function(e) {
+                error: function (e) {
                     M.Util.message(e);
                 }
             }, {
@@ -1392,9 +1389,9 @@
 
         /**
          * Get an xml executeResponse object and return a javascript object
-         * 
+         *
          * executeResponse structure is :
-         * 
+         *
          *      <wps:ExecuteResponse xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1" serviceInstance="http://mywpsserver/?SERVICE=WPS&amp;REQUEST=GetCapabilities" statusLocation="http://mywpsserver/wps/output/d409fb4a-5131-4041-989e-c4de171d2881" service="WPS" version="1.0.0" xml:lang="en-EN">
          *          <wps:Process wps:processVersion="1.0.0">
          *              <ows:Identifier>urn:ogc:cstl:wps:math:add</ows:Identifier>
@@ -1415,18 +1412,20 @@
          *              </wps:Output>
          *          </wps:ProcessOutputs>
          *      </wps:ExecuteResponse>
-         *      
-         *  Note : if "asReference" is set to true in the request, then the <wps:Data> element is replaced by 
-         *  
+         *
+         *  Note : if "asReference" is set to true in the request, then the <wps:Data> element is replaced by
+         *
          *     <wps:Reference href="http://constellation-wps.geomatys.com/cstl-wrapper/wps/output/8ef6ecdf-5f62-4bcd-b0ac-2cae2adcbb43" mimeType="image/png"></wps:Reference>
          *
          *
          * @param {XMLObject} xml
-         * 
+         *
          */
-        this.parseExecuteResponse = function(xml) {
+        this.parseExecuteResponse = function (xml) {
 
-            var sl, nn, result = [], $obj = $(xml), self = this;
+            var sl, nn, result = [],
+                $obj = $(xml),
+                self = this;
 
             /*
              * Trap Exception
@@ -1438,7 +1437,7 @@
 
             /*
              * Retrieve ExecuteResponse statusLocation attribute
-             * 
+             *
              * Note : some server (e.g. Constellation Geomatys) does not set the statusLocation
              * within the message stored at statusLocation url. Thus we set the statusLocation
              * for the first request and do not update it if the response does not have a status location
@@ -1451,7 +1450,7 @@
             /*
              * Process <wps:ProcessOutputs> and <wps:Status> elements
              */
-            $obj.children().children().filter(function() {
+            $obj.children().children().filter(function () {
 
                 /*
                  * Store status
@@ -1463,7 +1462,7 @@
 
                 /*
                  * ProcessOutputs
-                 * 
+                 *
                  * If Status value is "ProcessAccepted" (i.e. immediate answer of an asynchronous
                  * request), then the ProcessOutputs should not be set by server
                  */
@@ -1472,11 +1471,11 @@
                     /*
                      * Process Output i.e. all <wps:Output> elements
                      */
-                    $(this).children().each(function() {
+                    $(this).children().each(function () {
 
                         var p = {};
 
-                        $(this).children().each(function() {
+                        $(this).children().each(function () {
 
                             nn = M.Util.lowerFirstLetter(M.Util.stripNS(this.nodeName));
 
@@ -1496,14 +1495,13 @@
                                 /*
                                  * Parse result within <wps:Data> element
                                  */
-                                $(this).children().filter(function() {
+                                $(this).children().filter(function () {
 
                                     nn = M.Util.stripNS(this.nodeName);
 
                                     if (nn === 'LiteralData') {
                                         p['data']['value'] = $(this).text();
-                                    }
-                                    else if (nn === 'ComplexData') {
+                                    } else if (nn === 'ComplexData') {
                                         $.extend(p['data'], M.Util.getAttributes($(this)));
                                         /*
                                          * WMS output is a json String
@@ -1516,11 +1514,11 @@
                                          */
                                         else if (M.Map.Util.getGeoType(p['data']['mimeType']) === 'JSON') {
                                             p['data']['value'] = JSON.parse($.trim($(this).text()));
-                                        }
-                                        else {
+                                        } else {
                                             p['data']['value'] = $(this).children();
                                         }
-                                    }/* TODO
+                                    }
+                                    /* TODO
                                      else if (nn === 'BoundingBox') {
                                      }*/
                                 });
@@ -1551,7 +1549,7 @@
          *
          * @param {Object} xml
          */
-        this.parseException = function(xml) {
+        this.parseException = function (xml) {
             M.Util.message("TODO - parse Exception");
         };
 
@@ -1562,14 +1560,14 @@
 
     /**
      * WPS Asynchronous Process Manager
-     * 
+     *
      * The APM is used to store asynchronous processes and results
      * It is called by the WPSClientPlugin
      */
-    M.WPS.asynchronousProcessManager = function() {
+    M.WPS.asynchronousProcessManager = function () {
 
         /*
-         * Unique identifier of the asynchronousProcessManager item 
+         * Unique identifier of the asynchronousProcessManager item
          * within the UserManagement toolbar
          */
         this.tbID = M.Util.getId();
@@ -1581,7 +1579,7 @@
 
         /*
          * Hashmap of running asynchronous processes stored by statusLocation url
-         * 
+         *
          * Structure
          *      {
          *          process: // Running WPS Process reference
@@ -1593,13 +1591,13 @@
         /**
          * Initialize manager
          */
-        this.init = function() {
+        this.init = function () {
 
             /*
              * Register to user signIn and signOut events for
-             * background processes 
+             * background processes
              */
-            M.events.register("signin", this, function(scope, um) {
+            M.events.register("signin", this, function (scope, um) {
 
                 /*
                  * Tell WPSClient that user is signed in
@@ -1615,24 +1613,24 @@
                  * Add a new entry in the UserManagement userBar
                  */
                 scope.um.add([{
-                        id: scope.tbID,
-                        icon: M.Util.getImgUrl("execute.png"),
-                        tt: "Processes",
-                        onoff: true,
-                        scope: scope,
-                        onactivate: function(s, item) {
-                            s.isVisible = true;
-                            s.um.getPopup().show();
-                            s.updateProcessesList();
-                        },
-                        ondeactivate: function(s, item) {
-                            s.isVisible = false;
-                            s.um.getPopup().hide();
-                        }
+                    id: scope.tbID,
+                    icon: M.Util.getImgUrl("execute.png"),
+                    tt: "Processes",
+                    onoff: true,
+                    scope: scope,
+                    onactivate: function (s, item) {
+                        s.isVisible = true;
+                        s.um.getPopup().show();
+                        s.updateProcessesList();
+                    },
+                    ondeactivate: function (s, item) {
+                        s.isVisible = false;
+                        s.um.getPopup().hide();
+                    }
                     }]);
             });
 
-            M.events.register("signout", this, function(scope) {
+            M.events.register("signout", this, function (scope) {
 
                 /*
                  * Tell WPSClient that user is signed out
@@ -1647,10 +1645,10 @@
 
         /**
          * Get an asynchronous process from its statusLocation
-         * 
+         *
          * @param {String} statusLocation
          */
-        this.get = function(statusLocation) {
+        this.get = function (statusLocation) {
 
             if (!statusLocation) {
                 return null;
@@ -1670,13 +1668,15 @@
 
         /**
          * Add a process to the list of asynchronous processes
-         * 
+         *
          * @param {M.WPS.Process} process : Process
-         *                  
+         *
          */
-        this.add = function(process) {
+        this.add = function (process) {
 
-            var i, list = [], doNotAdd = false, self = this;
+            var i, list = [],
+                doNotAdd = false,
+                self = this;
 
             /*
              * Paranoid mode
@@ -1696,7 +1696,7 @@
                  * Great news for user :)
                  */
                 M.Util.message('<span class="status">' + process.descriptor.title + " : " + M.Util._("Process accepted and running") + '</span>');
-                
+
                 /*
                  * Add an entry within the running process hashmap
                  */
@@ -1708,10 +1708,10 @@
                 });
 
                 /*
-                 * Update user bar 
+                 * Update user bar
                  */
                 self.update(process);
-                
+
                 /*
                  * Check "processes" cookie
                  */
@@ -1737,7 +1737,7 @@
                         parentId: process.parentId
                     });
                 }
-                
+
                 M.Util.Cookie.set("processes", JSON.stringify(list), 365);
 
             }
@@ -1751,10 +1751,10 @@
 
         /**
          * Update a process when it is over (i.e. status is "ProcessSuceeded")
-         * 
+         *
          * @param {M.WPS.Process} process : Process
          */
-        this.update = function(process) {
+        this.update = function (process) {
 
             /*
              * Paranoid mode
@@ -1771,7 +1771,7 @@
                 /*
                  * Refresh process result every 3 seconds
                  */
-                setTimeout(function() {
+                setTimeout(function () {
 
                     /*
                      * Background execute request
@@ -1782,7 +1782,7 @@
                         type: "GET",
                         dataType: "xml",
                         contentType: "text/xml",
-                        success: function(xml) {
+                        success: function (xml) {
 
                             process.result = process.parseExecuteResponse(xml);
 
@@ -1794,7 +1794,7 @@
                             }
 
                         },
-                        error: function(e) {
+                        error: function (e) {
                             M.Util.message(e);
                         }
                     });
@@ -1811,14 +1811,14 @@
 
         /**
          * Remove a process from the list of asynchronous processes
-         * 
+         *
          * @param {String} statusLocation : statusLocation url (should be unique)
-         * 
+         *
          */
-        this.remove = function(statusLocation) {
-            
+        this.remove = function (statusLocation) {
+
             var list, i, l, j;
-            
+
             if (!statusLocation) {
                 return false;
             }
@@ -1840,7 +1840,7 @@
                      * Display processes list
                      */
                     this.updateProcessesList();
-                    
+
                     /*
                      * Remove from "processes" cookie
                      */
@@ -1849,7 +1849,7 @@
                         if (!$.isArray(list)) {
                             list = [];
                         }
-                        for (j = list.length; j--; ) {
+                        for (j = list.length; j--;) {
                             if (list[j].statusLocation === statusLocation) {
                                 list.splice(j, 1);
                                 M.Util.Cookie.set("processes", JSON.stringify(list), 365);
@@ -1857,7 +1857,7 @@
                             }
                         }
                     }
-                   
+
                     return true;
                 }
             }
@@ -1868,10 +1868,10 @@
 
         /**
          * Update processes list
-         * 
+         *
          * The process list is displayed within the UserManagement shared popup
          */
-        this.updateProcessesList = function() {
+        this.updateProcessesList = function () {
 
             /*
              * Call callback function
@@ -1894,19 +1894,21 @@
             /*
              * Display Process list
              */
-            var $tbody, i, l = this.items.length, count = 0, item = this.um.tb.get(this.tbID), p = this.um.getPopup();
+            var $tbody, i, l = this.items.length,
+                count = 0,
+                item = this.um.tb.get(this.tbID),
+                p = this.um.getPopup();
 
             /*
              * Set a nice running processes counter
              */
             if (l === 0) {
                 $('.counter', item.$d).remove();
-            }
-            else {
+            } else {
                 /*
                  * Add one counter for each unfinished process (i.e. Accepted or Started)
                  */
-                for (i = l; i--; ) {
+                for (i = l; i--;) {
                     if (this.items[i].process.status === "ProcessAccepted" || this.items[i].process.status === "ProcessStarted") {
                         count++;
                     }
@@ -1927,14 +1929,14 @@
             p.$h.html(M.Util._("Running processes"));
 
             /*
-             * The very-easy-to-manage no process case 
+             * The very-easy-to-manage no process case
              */
             if (l === 0) {
                 p.$b.html("No running process");
             }
             /*
              * For each process set an entry with the following actions/infos
-             * 
+             *
              *  Status  identifier  result  remove
              */
             else {
@@ -1946,10 +1948,10 @@
                 $tbody = $('tbody', p.$b);
 
                 /*
-                 * Process order is first in - first out   
+                 * Process order is first in - first out
                  */
-                for (i = l; i--; ) {
-                    (function(item, self) {
+                for (i = l; i--;) {
+                    (function (item, self) {
 
                         var j, result, $status, $info, $result, id = item.id;
 
@@ -1970,148 +1972,145 @@
                             /*
                              * Process succeeded
                              */
-                            case "ProcessSucceeded":
+                        case "ProcessSucceeded":
+
+                            /*
+                             * Update status
+                             */
+                            $status.css({
+                                'background-color': 'blue'
+                            });
+
+                            /* 
+                             * No result = nothing to update
+                             */
+                            if (!$.isArray(item.process.result)) {
+                                return false;
+                            }
+
+                            /*
+                             * Update each element that are identified in the process.result array
+                             */
+                            for (j = item.process.result.length; j--;) {
+
+                                result = item.process.result[j];
 
                                 /*
-                                 * Update status
+                                 * Two cases : data is directly accessible within the result,
+                                 * or data is accessible through an url (reference)
                                  */
-                                $status.css({
-                                    'background-color': 'blue'
-                                });
-
-                                /* 
-                                 * No result = nothing to update
-                                 */
-                                if (!$.isArray(item.process.result)) {
-                                    return false;
-                                }
-
-                                /*
-                                 * Update each element that are identified in the process.result array
-                                 */
-                                for (j = item.process.result.length; j--; ) {
-
-                                    result = item.process.result[j];
+                                if (result.data) {
 
                                     /*
-                                     * Two cases : data is directly accessible within the result,
-                                     * or data is accessible through an url (reference)
+                                     * Simple value => display result
                                      */
-                                    if (result.data) {
-
-                                        /*
-                                         * Simple value => display result
-                                         */
-                                        if (typeof result.data.value !== "object") {
-                                            $result.html(result.data.value);
-                                            $status.css({
-                                                'background-color': 'olivedrab'
-                                            });
-                                        }
-                                        /*
-                                         * Complex output
-                                         */
-                                        else {
-
-                                            /*
-                                             * Result display requires a specific user action
-                                             */
-                                            (function(result, process) {
-                                                $result.html(M.Util._("Display")).addClass("button clickable").click(function(e) {
-
-                                                    /*
-                                                     * Remove click event
-                                                     */
-                                                    e.preventDefault();
-                                                    $(this).off('click');
-
-                                                    /*
-                                                     * Update status
-                                                     */
-                                                    $status.css({
-                                                        'background-color': 'olivedrab'
-                                                    });
-
-                                                    var geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
-                                                    if (geoType === 'GML') {
-                                                        M.Map.addToStuffLayer(M.Map.Util.GML.toGeoJSON(result.data.value, {
-                                                            title: process.descriptor.title,
-                                                            processid: process.descriptor.identifier,
-                                                            description: process.descriptor["abstract"],
-                                                            time: (new Date()).toISOString()
-                                                        }), {
-                                                            zoomOn: true
-                                                        });
-                                                    }
-                                                    else if (geoType === 'JSON') {
-                                                        M.Map.addToStuffLayer(result.data.value, {
-                                                            zoomOn: true
-                                                        });
-                                                    }
-                                                    else if (geoType === 'WMS') {
-                                                        M.Map.addLayer(result.data.value);
-                                                    }
-
-
-                                                });
-                                            })(result, item.process);
-
-                                        }
+                                    if (typeof result.data.value !== "object") {
+                                        $result.html(result.data.value);
+                                        $status.css({
+                                            'background-color': 'olivedrab'
+                                        });
                                     }
                                     /*
-                                     * Reference result
+                                     * Complex output
                                      */
-                                    else if (result.reference) {
+                                    else {
 
                                         /*
                                          * Result display requires a specific user action
                                          */
-                                        (function(result) {
-                                            $result.html(M.Util._("Download")).addClass("button clickable").click(function() {
-                                                window.open(result.reference.href);
+                                        (function (result, process) {
+                                            $result.html(M.Util._("Display")).addClass("button clickable").click(function (e) {
+
+                                                /*
+                                                 * Remove click event
+                                                 */
+                                                e.preventDefault();
+                                                $(this).off('click');
+
+                                                /*
+                                                 * Update status
+                                                 */
                                                 $status.css({
                                                     'background-color': 'olivedrab'
                                                 });
+
+                                                var geoType = M.Map.Util.getGeoType(result.data["mimeType"]);
+                                                if (geoType === 'GML') {
+                                                    M.Map.addToStuffLayer(M.Map.Util.GML.toGeoJSON(result.data.value, {
+                                                        title: process.descriptor.title,
+                                                        processid: process.descriptor.identifier,
+                                                        description: process.descriptor["abstract"],
+                                                        time: (new Date()).toISOString()
+                                                    }), {
+                                                        zoomOn: true
+                                                    });
+                                                } else if (geoType === 'JSON') {
+                                                    M.Map.addToStuffLayer(result.data.value, {
+                                                        zoomOn: true
+                                                    });
+                                                } else if (geoType === 'WMS') {
+                                                    M.Map.addLayer(result.data.value);
+                                                }
+
+
                                             });
-                                        })(result);
+                                        })(result, item.process);
 
                                     }
+                                }
+                                /*
+                                 * Reference result
+                                 */
+                                else if (result.reference) {
+
+                                    /*
+                                     * Result display requires a specific user action
+                                     */
+                                    (function (result) {
+                                        $result.html(M.Util._("Download")).addClass("button clickable").click(function () {
+                                            window.open(result.reference.href);
+                                            $status.css({
+                                                'background-color': 'olivedrab'
+                                            });
+                                        });
+                                    })(result);
 
                                 }
 
-                                break;
-                            case "ProcessFailed":
+                            }
 
-                                /*
-                                 * Update status
-                                 */
-                                $status.css({
-                                    'background-color': 'red'
-                                });
+                            break;
+                        case "ProcessFailed":
 
-                                /*
-                                 * Update result
-                                 */
-                                M.tooltip.add($result.html(M.Util._("Error")).addClass("clickable").attr('jtitle', item.process.statusAbstract), 'n');
-                                break;
-                            default:
+                            /*
+                             * Update status
+                             */
+                            $status.css({
+                                'background-color': 'red'
+                            });
 
-                                /*
-                                 * Update status
-                                 */
-                                $status.css({
-                                    'background-color': 'orange'
-                                });
+                            /*
+                             * Update result
+                             */
+                            M.tooltip.add($result.html(M.Util._("Error")).addClass("clickable").attr('jtitle', item.process.statusAbstract), 'n');
+                            break;
+                        default:
 
-                                $result.html('<img src="' + M.Util.getImgUrl("loading.gif") + '" class="middle"/>');
+                            /*
+                             * Update status
+                             */
+                            $status.css({
+                                'background-color': 'orange'
+                            });
 
-                        }
-                        ;
+                            $result.html('<img src="' + M.Util.getImgUrl("loading.gif") + '" class="middle"/>');
+
+                        };
 
                         /*
                          * Remove process
                          */
-                        $('#' + item.id + 'rm').click(function() {
+                        $('#' + item.id + 'rm').click(function () {
                             self.remove(item.statusLocation);
                             return false;
                         });
@@ -2129,7 +2128,7 @@
     /**
      * WPS events
      */
-    M.WPS.Events = function() {
+    M.WPS.Events = function () {
 
         /*
          * Set events hashtable
@@ -2159,7 +2158,7 @@
          * @param <String> eventname : Event name => 'getcapabilities'
          * @param <function> handler : handler attached to this event
          */
-        this.register = function(eventname, scope, handler) {
+        this.register = function (eventname, scope, handler) {
 
             if (this.events[eventname]) {
                 this.events[eventname].push({
@@ -2173,7 +2172,7 @@
         /*
          * Unregister event
          */
-        this.unRegister = function(scope) {
+        this.unRegister = function (scope) {
 
             var a, i, key, l;
 
@@ -2196,9 +2195,9 @@
          *                              - M.WPS for a 'getcapabilities' event name
          *                              - M.WPS.Process for a 'describeprocess' event name
          *                              - M.WPS.Process for an 'execute' event name
-         *                              
+         *
          */
-        this.trigger = function(eventname, obj) {
+        this.trigger = function (eventname, obj) {
 
             var i, j, k, list, a = this.events[eventname];
 
@@ -2206,7 +2205,7 @@
              * Trigger event to each handlers
              */
             if (a) {
-                for (i = a.length; i--; ) {
+                for (i = a.length; i--;) {
                     a[i].handler(a[i].scope, obj);
 
                     /*
@@ -2220,27 +2219,26 @@
                         if (eventname === 'describeprocess' && M.Util.Cookie.get("processes") && M.apm) {
                             try {
                                 list = JSON.parse(M.Util.Cookie.get("processes"));
-                                for (j = list.length; j--; ) {
+                                for (j = list.length; j--;) {
 
                                     /*
                                      * The process identified by unique "statusLocation" is set in the Cookie
                                      * but not present in the mapshup Asynchronous Process Manager (M.apm)
                                      */
                                     if (!M.apm.get(list[j].statusLocation)) {
-                                        for (k = obj.length; k--; ) {
+                                        for (k = obj.length; k--;) {
                                             if (obj[k].identifier === list[j].identifier) {
                                                 M.apm.add(M.WPS.Process({
                                                     descriptor: obj[k],
                                                     statusLocation: list[j].statusLocation,
-                                                    parentId:list[j].parentId
+                                                    parentId: list[j].parentId
                                                 }));
                                                 break;
                                             }
                                         }
                                     }
                                 }
-                            }
-                            catch (e) {}
+                            } catch (e) {}
                         }
                     }
                 }
@@ -2252,7 +2250,7 @@
     };
 
     /**
-     * 
+     *
      * HTML template to display WPS server information
      * Used by toHTML() function
      *      <div>
@@ -2263,129 +2261,129 @@
      *      </div>
      */
     M.WPS.infoTemplate = '<div>' +
-            '<h1>$title$</h1>' +
-            '<p>$abstract$</p>' +
-            '<p>Version $version$</p>' +
-            '<h2>Provided by <a href="$providerSite$" target="_blank">$providerName$</a></h2>' +
-            '</div>';
+        '<h1>$title$</h1>' +
+        '<p>$abstract$</p>' +
+        '<p>Version $version$</p>' +
+        '<h2>Provided by <a href="$providerSite$" target="_blank">$providerName$</a></h2>' +
+        '</div>';
 
     /**
      * XML POST template for WPS execute request
-     * 
+     *
      *  Template keys :
      *      $identifier$ : process identifier
      *      $dataInputs$ : data inputs (see *PutsTemplate)
      *      $dataOutputs$ : data outputs (see *PutsTemplate)
      *      $status$ : status ??
-     * 
+     *
      */
     M.WPS.executeRequestTemplate = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-            '<wps:Execute service="WPS" version="1.0.0" ' +
-            'xmlns:wps="http://www.opengis.net/wps/1.0.0" ' +
-            'xmlns:ows="http://www.opengis.net/ows/1.1" ' +
-            'xmlns:xlink="http://www.w3.org/1999/xlink" ' +
-            'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-            'xsi:schemaLocation="http://www.opengis.net/wps/1.0.0/wpsExecute_request.xsd">' +
-            '<ows:Identifier>$identifier$</ows:Identifier>' +
-            '<wps:DataInputs>$dataInputs$</wps:DataInputs>' +
-            '<wps:ResponseForm>' +
-            '<wps:ResponseDocument wps:lineage="false" ' +
-            'storeExecuteResponse="$storeExecute$" ' +
-            'status="$status$">$dataOutputs$</wps:ResponseDocument>' +
-            '</wps:ResponseForm>' +
-            '</wps:Execute>';
+        '<wps:Execute service="WPS" version="1.0.0" ' +
+        'xmlns:wps="http://www.opengis.net/wps/1.0.0" ' +
+        'xmlns:ows="http://www.opengis.net/ows/1.1" ' +
+        'xmlns:xlink="http://www.w3.org/1999/xlink" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.opengis.net/wps/1.0.0/wpsExecute_request.xsd">' +
+        '<ows:Identifier>$identifier$</ows:Identifier>' +
+        '<wps:DataInputs>$dataInputs$</wps:DataInputs>' +
+        '<wps:ResponseForm>' +
+        '<wps:ResponseDocument wps:lineage="false" ' +
+        'storeExecuteResponse="$storeExecute$" ' +
+        'status="$status$">$dataOutputs$</wps:ResponseDocument>' +
+        '</wps:ResponseForm>' +
+        '</wps:Execute>';
 
     /**
      * LiteralDataInput template
-     *   
+     *
      *   Template keys :
      *      $identifier$ : Input identifier
      *      $uom$: unit of measure
      *      $data$ : value
-     *    
+     *
      */
     M.WPS.literalDataInputTemplate = '<wps:Input>' +
-            '<ows:Identifier>$identifier$</ows:Identifier>' +
-            '<wps:Data>' +
-            '<wps:LiteralData uom="$uom$">$data$</wps:LiteralData>' +
-            '</wps:Data>' +
-            '</wps:Input>';
+        '<ows:Identifier>$identifier$</ows:Identifier>' +
+        '<wps:Data>' +
+        '<wps:LiteralData uom="$uom$">$data$</wps:LiteralData>' +
+        '</wps:Data>' +
+        '</wps:Input>';
 
     /**
      * ComplexDataInput reference template
-     *   
+     *
      *   Template keys :
      *      $identifier$ : Input identifier
      *      $reference$ : url reference to get input data
      *      $format$ : Input data format
-     *      
+     *
      */
     M.WPS.complexDataInputReferenceTemplate = '<wps:Input>' +
-            '<ows:Identifier>$identifier$</ows:Identifier>' +
-            '<wps:Reference xlink:href="$reference$" $format$/>' +
-            '</wps:Input>';
+        '<ows:Identifier>$identifier$</ows:Identifier>' +
+        '<wps:Reference xlink:href="$reference$" $format$/>' +
+        '</wps:Input>';
 
     /**
      * ComplexDataInput data template
-     *   
+     *
      *   Template keys :
      *      $identifier$ : Input identifier
      *      $format$ : Input data format
      *      $data$ : ???
-     *      
+     *
      */
     M.WPS.complexDataInputTemplate = '<wps:Input>' +
-            '<ows:Identifier>$identifier$</ows:Identifier>' +
-            '<wps:Data>' +
-            '<wps:ComplexData $format$>$data$</wps:ComplexData>' +
-            '</wps:Data>' +
-            '</wps:Input>';
+        '<ows:Identifier>$identifier$</ows:Identifier>' +
+        '<wps:Data>' +
+        '<wps:ComplexData $format$>$data$</wps:ComplexData>' +
+        '</wps:Data>' +
+        '</wps:Input>';
 
 
     /**
      * BoundingBoxDataInput template
-     *   
+     *
      *   Template keys :
      *      $identifier$ : Input identifier
      *      $dimension$ : dimension of the BoundingBox (generally ???)
-     *      $crs$ : CRS (Coordinates Reference System) for the bounding box 
+     *      $crs$ : CRS (Coordinates Reference System) for the bounding box
      *      $minx$ $miny$ $maxx$ $maxy$ : Bounding Box coordinates expressed in {crs} coordinates
-     *      
+     *
      *
      */
     M.WPS.boundingBoxDataInputTemplate = '<wps:Input>' +
-            '<ows:Identifier>$identifier$</ows:Identifier>' +
-            '<wps:Data>' +
-            '<wps:BoundingBoxData ows:dimensions="$dimension$" ows:crs="$crs$">' +
-            '<ows:LowerCorner>$minx$ $miny$</ows:LowerCorner>' +
-            '<ows:UpperCorner>$maxx$ $maxy$</ows:UpperCorner>' +
-            '</wps:BoundingBoxData>' +
-            '</wps:Data>' +
-            '</wps:Input>';
+        '<ows:Identifier>$identifier$</ows:Identifier>' +
+        '<wps:Data>' +
+        '<wps:BoundingBoxData ows:dimensions="$dimension$" ows:crs="$crs$">' +
+        '<ows:LowerCorner>$minx$ $miny$</ows:LowerCorner>' +
+        '<ows:UpperCorner>$maxx$ $maxy$</ows:UpperCorner>' +
+        '</wps:BoundingBoxData>' +
+        '</wps:Data>' +
+        '</wps:Input>';
 
     /**
      * ComplexOutput template
-     * 
+     *
      *   Template keys :
      *      $asReference$ : ???
      *      $identifier$ : Output identifier
-     *  
+     *
      */
     M.WPS.complexOutputTemplate = '<wps:Output asReference="$asReference$" $format$>' +
-            '<ows:Identifier>$identifier$</ows:Identifier>' +
-            '</wps:Output>';
+        '<ows:Identifier>$identifier$</ows:Identifier>' +
+        '</wps:Output>';
 
 
     /**
      * LiteralOutput template
-     * 
+     *
      *   Template keys :
      *      $identifier$ : Output identifier
-     * 
+     *
      */
     M.WPS.literalOutputTemplate = '<wps:Output asReference="false">' +
-            '<ows:Identifier>$identifier$</ows:Identifier>' +
-            '</wps:Output>';
+        '<ows:Identifier>$identifier$</ows:Identifier>' +
+        '</wps:Output>';
 
     /**
      * BoundingBoxOutpput template
