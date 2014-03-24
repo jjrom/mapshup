@@ -49,7 +49,7 @@
     c.add("layers", {
         type:"MBT",
         title:"World",
-        t:"world-dark"
+        t:"world-light"
     });
 
 })(window.M.Config);
