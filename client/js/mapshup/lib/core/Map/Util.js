@@ -280,7 +280,8 @@
             }
 
             /*
-             * Otherwise returns name or title or identifier or id
+             * Otherwise returns in the following order (first found = exit)
+             *  name, title, identifier, fid or id or ""
              */
             for (k in {
                 name: 1,
@@ -290,6 +291,9 @@
                 if (feature.attributes[k]) {
                     return Map.Util.Feature.getValue(feature, k, feature.attributes[k]);
                 }
+            }
+            if (feature.fid) {
+                return Map.Util.Feature.getValue(feature, 'identifier', feature.attributes[k]);
             }
             return feature.id || "";
 
@@ -890,7 +894,7 @@
     };
 
     /**
-     * Return feature base on its attributes['identifier']
+     * Return feature base on its fid
      * 
      * @param {OpenLayer.Layer} layer
      * @param {string} identifier
@@ -904,7 +908,7 @@
         var features = Map.Util.getFeatures(layer);
         
         for (var i = 0, l = features.length; i < l; i++) {
-            if (features[i].attributes  && features[i].attributes.identifier === identifier) {
+            if (features[i].fid === identifier) {
                 return features[i];
             }
         }
