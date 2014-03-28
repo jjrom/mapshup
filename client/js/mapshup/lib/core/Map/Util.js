@@ -293,7 +293,7 @@
                 }
             }
             if (feature.fid) {
-                return Map.Util.Feature.getValue(feature, 'identifier', feature.attributes[k]);
+                return Map.Util.Feature.getValue(feature, 'identifier', feature.fid);
             }
             return feature.id || "";
 
