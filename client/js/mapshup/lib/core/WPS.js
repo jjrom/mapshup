@@ -2093,6 +2093,12 @@
                              * Update result
                              */
                             M.tooltip.add($result.html(M.Util._("Error")).addClass("clickable").attr('jtitle', item.process.statusAbstract), 'n');
+                            
+                            /*
+                             * Remove process from Asynchronous Process Manager
+                             */
+                            self.remove(item.process.statusLocation);
+                             
                             break;
                         default:
 
