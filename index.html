@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Mapshup by jjrom</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Mapshup</h1>
+        <p>Webmapping made easy</p>
+
+        <p class="view"><a href="https://github.com/jjrom/mapshup">View the Project on GitHub <small>jjrom/mapshup</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/jjrom/mapshup/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/jjrom/mapshup/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/jjrom/mapshup">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="mapshup" class="anchor" href="#mapshup"><span class="octicon octicon-link"></span></a>mapshup</h1>
+
+<p>(See installation at the end of the README file)</p>
+
+<h2>
+<a name="project-info" class="anchor" href="#project-info"><span class="octicon octicon-link"></span></a>Project info</h2>
+
+<ul>
+<li><a href="https://github.com/jjrom/mapshup">Download the sources</a></li>
+<li><a href="http://engine.mapshup.info">Try the demo</a></li>
+<li>See <a href="http://vimeo.com/45164288">mapshup in video</a> or take a look at the <a href="https://speakerdeck.com/jjrom/mapshup">Keynote</a>
+</li>
+<li>Follow <a href="https://twitter.com/mapshup">mapshup on Twitter</a>
+</li>
+</ul><h2>
+<a name="what-is-mapshup-" class="anchor" href="#what-is-mapshup-"><span class="octicon octicon-link"></span></a>What is mapshup ?</h2>
+
+<p>Mapshup provides an innovative and efficient access to Geospatial web services.
+It brings on an unique map a mashup of different services - Earth Observation data catalogs,
+OpenStreetMap/Bing/Google maps services, news feed, wikipedia articles, photos and videos from social networks,
+etc. - to easily build a comprehensive "information context" and help decision making for end users.</p>
+
+<p><img src="https://raw.github.com/jjrom/mapshup/master/utils/stuff/2012.11.23%20-%20mapshup.004.jpg" alt="mapshup"></p>
+
+<p>Mapshup is based on standard web technologies  (i.e. javascript/css/HTML5). The user interface is designed to
+work both on desktop and on touch devices through a web browser.</p>
+
+<p>It is able to connect to a large range of services including : OpenStreetMap/Bing/Google maps, OGC services
+(WMS, WFS, CSW and WPS), Earth Observation catalogs (ESA G-Pod catalog, ESA HMA catalogs, OpenSearch catalogs),
+Google Earth plugin, Google Streetview, Google Elevation, Flickr API, Youtube API, Wikipedia API, Geonames,
+RSS and Atom feeds, MapBox mbtiles, Pléiades metadata, Sentinel 2 metadata.</p>
+
+<p>Out of the box functionalities include : auto-detection of data layers through drag&amp;drop of files and/or urls to the
+map, 2D and 3D support, content creation, context saving and sharing through email/facebook/twitter.</p>
+
+<p>The user interface is "map centric". All information is displayed within the map wich represents 100% of the view
+excepted for the top header bar wich contains generic actions (a free text search input form, the map backgrounds
+switcher, the share button, the help button, the login information).</p>
+
+<p>The user interface is designed to be easy to use on touch devices. As a consequence every functionality is
+accessible through one single touch and "hidden" menu are avoided as possible, making the user experience very
+intuitive</p>
+
+<h2>
+<a name="architecture" class="anchor" href="#architecture"><span class="octicon octicon-link"></span></a>Architecture</h2>
+
+<p><img src="https://raw.github.com/jjrom/mapshup/master/utils/stuff/2012.11.23%20-%20mapshup.008.jpg" alt="mapshup architecture"></p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Note: the following scripts only work on Linux or Mac OS X</p>
+
+<p>Before installing, you need to double check that the following packages are installed :</p>
+
+<ul>
+<li>Apache server</li>
+<li>PHP &gt; 5.0</li>
+<li>PHP Curl</li>
+<li>PHP XML package</li>
+<li>PostgreSQL &gt; 8.3 (optional - for UserManagement and context sharing only)</li>
+<li>PostGIS &gt; 1.5 (optional - for UserManagement and context sharing only)</li>
+<li>Mapserver &gt; 5.0 (optional - for on the fly WMS reprojection only)</li>
+</ul><p>Note: to get these packages installed you can take a look at <a href="https://github.com/jjrom/GisOnOsX/blob/master/README.md">https://github.com/jjrom/GisOnOsX/blob/master/README.md</a> (Mac OS X) or at <a href="https://github.com/jjrom/InstallALinuxServerForMapshup/blob/master/README.md">https://github.com/jjrom/InstallALinuxServerForMapshup/blob/master/README.md</a> (Linux)</p>
+
+<p>In the following, we suppose that</p>
+
+<ul>
+<li>$MAPSHUP_SRC is the directory where mapshup sources will be installed</li>
+<li>$MAPSHUP_TARGET is the directory where mapshup will be installed. This directory should be under Apache root directory</li>
+</ul><p>Retrieve sources</p>
+
+<pre><code>git clone https://github.com/jjrom/mapshup.git $MAPSHUP_SRC
+</code></pre>
+
+<p>Build mapshup</p>
+
+<pre><code>/bin/rm -Rf $MAPSHUP_TARGET
+$MAPSHUP_SRC/build.sh -t $MAPSHUP_TARGET -c $MAPSHUP_SRC/client/js/mapshup/config/example.js
+</code></pre>
+
+<p>Install database (optional - for UserManagement and context sharing only)</p>
+
+<pre><code># Edit install_mapshupdb.sh to put the right postgis paths if needed
+# See $MAPSHUP_TARGET/s/README_INSTALL.txt  
+
+cd $MAPSHUP_TARGET/s/_installdb
+./install_mapshupdb.sh
+</code></pre>
+
+<p>Configuration</p>
+
+<p>Edit $MAPSHUP_TARGET/s/config.php
+Note : the current build suppose that mapshup directory is accessible through http://localhot/mapshup. If it is not the case, change it within $MAPSHUP_TARGET/js/mapshup/config/example.js </p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/jjrom">jjrom</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-1386506-8");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
