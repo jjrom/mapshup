@@ -248,7 +248,7 @@
              *          </div>
              *      </div>
              */
-            $('#mapshup').html('<div id="wcontainer"><div id="mapcontainer"><div id="map"></div></div></div>');
+            $('#mapshup').append('<div id="wcontainer"><div id="mapcontainer"><div id="map"></div></div></div>');
             
             /**
              * Create header structure
