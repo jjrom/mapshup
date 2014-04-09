@@ -1685,7 +1685,7 @@
          * @param {boolean} partial // if true then only zoom if bounds does not intersect map extent
          */
         zoomTo: function(bounds, partial) {
-
+            
             var self = this;
 
             /*
@@ -1693,6 +1693,13 @@
              */
             if (!bounds) {
                 return;
+            }
+            
+            /*
+             * If partial is not set, assume it is true 
+             */
+            if ($.type(partial) !== "boolean") {
+                partial = true;
             }
             
             /*
