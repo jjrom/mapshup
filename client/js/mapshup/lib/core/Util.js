@@ -376,7 +376,7 @@
                 }
             }
             
-            newParams = $.extend(newParams, sourceParams);
+            newParams = $.extend(sourceParams, newParams);
 
             for (key in newParams) {
                 newParamsString += key+"="+newParams[key]+"&";
