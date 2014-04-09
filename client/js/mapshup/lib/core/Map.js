@@ -515,7 +515,7 @@
                  * Zoom on layer
                  */
                 if (newLayer['_M'].layerDescription && newLayer['_M'].layerDescription.zoomOnNew) {
-                    this.zoomTo(newLayer.getDataExtent() || newLayer["_M"].bounds);
+                    this.zoomTo(newLayer.getDataExtent() || newLayer["_M"].bounds, newLayer['_M'].layerDescription.zoomOnNew === 'always' ? false : true);
                 }
 
                 /*
@@ -1682,8 +1682,9 @@
          * bounds with a zoom level of 14
          * 
          * @param {OpenLayers.Bounds} bounds
+         * @param {boolean} partial // if true then only zoom if bounds does not intersect map extent
          */
-        zoomTo: function(bounds) {
+        zoomTo: function(bounds, partial) {
 
             var self = this;
 
@@ -1693,7 +1694,14 @@
             if (!bounds) {
                 return;
             }
-
+            
+            /*
+             * Do not zoom if input bounds intersect map bounds
+             */
+            if (partial && self.map.getExtent().containsBounds(bounds, true)) {
+                return;
+            }
+            
             /*
              * Get the bounds + a half of the bounds 
              */
