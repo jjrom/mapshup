@@ -446,7 +446,7 @@
                         icon: "center.png",
                         title: "Center view on layer",
                         callback: function() {
-                            M.Map.zoomTo(content.layer.getDataExtent());
+                            M.Map.zoomTo(content.layer.getDataExtent(), false);
                         }
                     });
                 }
