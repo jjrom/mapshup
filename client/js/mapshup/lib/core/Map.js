@@ -1757,6 +1757,12 @@
             this.map.setBaseLayer(baseLayer);
             
             /*
+             * This is mandatory to force unzoom to level lower than 3
+             * Note : OpenLayers Bug ???
+             */
+            this.map.baseLayer.wrapDateLine = false;
+            
+            /*
              * The current map projection
              */
             mapProj = (this.map.projection && this.map.projection instanceof OpenLayers.Projection) ? this.map.projection : new OpenLayers.Projection(this.map.projection);

@@ -114,7 +114,6 @@
                             onoff:false,
                             onactivate:function(scope, item) {
                                 M.Map.setBaseLayer(layer);
-                                M.Map.map.baseLayer.wrapDateLine = false;
                             }
                         });
                     
