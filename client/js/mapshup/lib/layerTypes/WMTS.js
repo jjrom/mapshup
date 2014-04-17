@@ -74,7 +74,16 @@
          *       prefixMatrix : // prefix to generate matrixIds array (i.e. "EPSG:4326:" will generate
          *                         ["EPSG:4326:0", "EPSG:4326:1", etc.]
          *       matrixLength: // size of the matrix (22 by default)
+         *       time : // optional - only used for WMS Time layer
          *  };
+         *  
+         *  Note: "time" property is an object with two parameters
+         *  time: {
+         *      default: // mandatory default value
+         *      values:[] // optional, array of possible values
+         *                  e.g. ["1995-01-01/2011-12-31/PT5M"]
+         *                  (see WMS specification OGC 06-042)
+         *  }
          *
          */
         add: function(layerDescription, options) {
@@ -110,7 +119,54 @@
                 attribution:layerDescription.attribution || null
             });
             
-            return new OpenLayers.Layer.WMTS(options);
+            /*
+             * Time component
+             */
+            if (layerDescription.time && layerDescription.time.hasOwnProperty("default")) {
+                options.time = layerDescription.time["default"];
+            }
+            
+            var newLayer =  new OpenLayers.Layer.WMTS(options);
+            
+            /*
+             * Add a setTime function
+             */
+            if (layerDescription.hasOwnProperty("time")) {
+
+                newLayer["_M"].setTime = function(interval) {
+
+                    /*
+                     * Currently only the first value of the interval is 
+                     * sent to the WMS server
+                     */
+                    var time, self = this;
+
+                    if ($.isArray(interval)) {
+                        time = interval[0];
+                    }
+                    else {
+                        time = '';
+                    }
+                    
+                    /*
+                     * Remove hours
+                     */
+                    var arr = time.split('T');
+                    time = arr[0];
+                    
+                    if (self.layerDescription.time) {
+                        self.layerDescription.time = self.layerDescription.time || {};
+                        self.layerDescription.time["value"] = time;
+                        newLayer.mergeNewParams({
+                            'TIME': time
+                        });
+                    }
+
+                };
+
+            }
+            
+            return newLayer;
             
             /*
             $.ajax({
