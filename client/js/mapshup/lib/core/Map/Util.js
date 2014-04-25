@@ -471,20 +471,28 @@
          * Zoom on features
          * 
          * @param {Array} features : array of OpenLayers Features
+         * @param {boolean} partial : true to only zoom if features are not in the map view
          */
-        zoomOn: function(features) {
+        zoomOn: function(features, partial) {
 
             if (!$.isArray(features)) {
                 features = [features];
             }
-
+            
+            /*
+             * If partial is not set, assume it is true 
+             */
+            if ($.type(partial) !== "boolean") {
+                partial = true;
+            }
+            
             var i, l, bounds = new OpenLayers.Bounds();
 
             for (i = 0, l = features.length; i < l; i++) {
                 bounds.extend(features[i].geometry.getBounds());
             }
 
-            M.Map.zoomTo(bounds);
+            M.Map.zoomTo(bounds, partial);
 
         }
 

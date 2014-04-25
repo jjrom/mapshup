@@ -259,7 +259,7 @@
                      * Zoom on new added features otherwise zoom on layer
                      */
                     if (options.zoomOnNew) {
-                        Map.Util.Feature.zoomOn(features);
+                        Map.Util.Feature.zoomOn(features, options.zoomOnNew === 'always' ? false : true);
                     }
                     else {
                         Map.Util.zoomOn(options.layer);
