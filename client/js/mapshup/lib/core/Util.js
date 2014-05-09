@@ -379,7 +379,9 @@
             newParams = $.extend(sourceParams, newParams);
 
             for (key in newParams) {
-                newParamsString += key+"="+newParams[key]+"&";
+                if (newParams[key] !== null) {
+                    newParamsString += key+"="+newParams[key]+"&";
+                }
             }
             return sourceBase+"?"+newParamsString;
             
