@@ -1642,6 +1642,10 @@
                 if (s === 'http://' || s === 'https:/' || s === 'ftp://') {
                     return true;
                 }
+                
+                if (str.substr(0,2) === '//') {
+                    return true;
+                }
             }
                 
             return false;
