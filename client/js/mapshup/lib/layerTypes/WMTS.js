@@ -71,6 +71,7 @@
          *       layer:,
          *       matrixSet:,
          *       format: // default is image/png
+         *       matrixIds: // [level of TileMatrix in GetCapabilities]
          *       prefixMatrix : // prefix to generate matrixIds array (i.e. "EPSG:4326:" will generate
          *                         ["EPSG:4326:0", "EPSG:4326:1", etc.]
          *       matrixLength: // size of the matrix (22 by default)
@@ -98,8 +99,10 @@
             /*
              * Generate tileMatrix
              */
-            for (i = 0; i <= l; ++i) {
-                matrixIds[i] = (layerDescription.prefixMatrix ? layerDescription.prefixMatrix : "") + i;
+            if (!layerDescription.matrixIds) {
+                for (i = 0; i <= l; ++i) {
+                    matrixIds[i] = (layerDescription.prefixMatrix ? layerDescription.prefixMatrix : "") + i;
+                }
             }
             
             $.extend(options, {
@@ -107,7 +110,7 @@
                 url:layerDescription.url,
                 layer:layerDescription.layer,
                 matrixSet:layerDescription.matrixSet,
-                matrixIds:matrixIds,
+                matrixIds:layerDescription.matrixIds ? layerDescription.matrixIds : matrixIds,
                 maxZoomLevel:l,
                 format:layerDescription.format || "image/png",
                 style: layerDescription.style || "normal",
