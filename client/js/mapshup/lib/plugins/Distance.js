@@ -324,7 +324,7 @@
                                             return "green";
                                         }
                                         else if (point === self.options.samples) {
-                                            return "red"
+                                            return "red";
                                         }
                                         else if (point % 5 === 0) {
                                             return "alt";
@@ -502,7 +502,7 @@
                 negativeSeriesColors:['#555']
             });
             
-        }
+        };
         
         /*
          * Set unique instance
@@ -511,6 +511,6 @@
         
         return this;
         
-    }
+    };
 })(window.M);
 
