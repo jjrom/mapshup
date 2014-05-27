@@ -677,7 +677,7 @@
                             onSearch = layer["_M"].layerDescription.onSearch || {};
                             
                             if (onSearch.zoom) {
-                                M.Map.zoomTo(layer.getDataExtent());
+                                M.Map.zoomTo(layer.getDataExtent(), false);
                             }
                             else {
                                 M.Map.Util.zoomOn(layer);
