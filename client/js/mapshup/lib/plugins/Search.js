@@ -726,7 +726,7 @@
                 if (kvps[key] === "") {
                     continue;
                 }
-                url += key + "=" + kvps[key] + '&';
+                url += key + "=" + encodeURIComponent(kvps[key]) + '&';
             }
             
             return {
