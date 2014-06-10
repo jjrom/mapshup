@@ -56,7 +56,7 @@ header("Content-type: application/json; charset=utf-8");
  * http://www.flickr.com/services/api/misc.api_keys.html
  * 
  */
-$url = 'http://api.flickr.com/services/rest/?method=flickr.photos.search&format=json&api_key=' . MSP_FLICKR_KEY . '&has_geo=1&';
+$url = 'https://api.flickr.com/services/rest/?method=flickr.photos.search&format=json&api_key=' . MSP_FLICKR_KEY . '&has_geo=1&';
 
 /*
  * Set request parameters
