@@ -131,158 +131,175 @@
                         /*
                          * WARNING : only GeoJSON format is supported !!
                          */
-                        if (description.formats && description.formats["GeoJSON"]) {
+                        if (description.formats) {
+                            
+                            var choosenFormat = null;
                             
                             /*
-                             * Extract base url and KVP from the URLTemplate
+                             * First look for a GeoJSON format then Atom then KML
                              */
-                            var j,
-                            k,
-                            key,
-                            parts2,
-                            unNameSpacedKey,
-                            kvps = "",
-                            parts = description.formats["GeoJSON"].URLTemplate.split("?"),
-                            // url is the first part of the URLTemplate i.e. everything before '?'
-                            url = parts[0]+"?";
-                                
-                            // Other kvps are the rest of the URLTemplate
-                            for (j = 1, k = parts.length; j < k; j++) {
-                                kvps += "?"+parts[j];
+                            if (description.formats["GeoJSON"]) {
+                                choosenFormat = "GeoJSON";
                             }
-                            kvps = M.Util.extractKVP(kvps);
+                            else if (description.formats["Atom"]) {
+                                choosenFormat = "Atom";
+                            }
+                            else if (description.formats["KML"]) {
+                                choosenFormat = "KML";
+                            }
+                            
+                            if (choosenFormat) {
                                 
-                            /*
-                             * KVP analysis
-                             * Non template parameters (i.e. parameter not containing a '{') are
-                             * considered to be part of the base url (i.e. added to the base url) 
-                             */
-                            for (key in kvps) {
-                                
-                                /* Non template parameter */
-                                if (kvps[key].indexOf('{') === -1) {
-                                    url += key + "=" + kvps[key] + '&';
+                                /*
+                                 * Extract base url and KVP from the URLTemplate
+                                 */
+                                var j,
+                                k,
+                                key,
+                                parts2,
+                                unNameSpacedKey,
+                                kvps = "",
+                                parts = description.formats["GeoJSON"].URLTemplate.split("?"),
+                                // url is the first part of the URLTemplate i.e. everything before '?'
+                                url = parts[0]+"?";
+
+                                // Other kvps are the rest of the URLTemplate
+                                for (j = 1, k = parts.length; j < k; j++) {
+                                    kvps += "?"+parts[j];
                                 }
-                                
+                                kvps = M.Util.extractKVP(kvps);
+
                                 /*
-                                 * Template parameter can be prefixed by namespace
+                                 * KVP analysis
+                                 * Non template parameters (i.e. parameter not containing a '{') are
+                                 * considered to be part of the base url (i.e. added to the base url) 
                                  */
-                                parts2 = kvps[key].split(":");
-                                unNameSpacedKey = (parts2.length === 2 ? parts2[1] : parts2[0]).replace('{', '').replace('}', '').replace('?', '');
-                                
-                                /*
-                                 * The "modified" parameter is a reserved keyword
-                                 * (see PSC-IF-40-0037-CN v1.0)
-                                 */
-                                if (key === "modified") {
-                                    continue;
-                                }
-                                
-                                /*
-                                 * If value = {time:start} add a date filter
-                                 */
-                                if (kvps[key].indexOf('time:start') === 1) {
-                                    self.startDateAlias = key;
-                                }
-                                
-                                /*
-                                 * If value = {time:end} add a date filter 
-                                 */
-                                if (kvps[key].indexOf('time:end') === 1) {
-                                    self.completionDateAlias = key;
-                                }
-                                
-                                /*
-                                 * If value = count then corresponding key should replace "numRecordsPerPage" property name
-                                 */
-                                if (unNameSpacedKey === 'count') {
-                                    self.numRecordsPerPageAlias = key;
-                                }
-                                
-                                /*
-                                 * If value = startIndex then corresponding key should replace "nextRecord" property name
-                                 */
-                                if (unNameSpacedKey === 'startIndex') {
-                                    self.nextRecordAlias = key;
-                                }
-                                
-                                /*
-                                 * If searchTerms is set, then add also an entry in the search Bar
-                                 * (See Search.js Plugin)
-                                 * 
-                                 * Note that the added entry is linked with the catalog layer so
-                                 * that search within the bar are displayed within the same layer
-                                 * as the search done with the layer search action
-                                 * 
-                                 * Note2: this does not apply to catalog with layerDescription.inactive set to 'true' 
-                                 */
-                                if (unNameSpacedKey === 'searchTerms') {
-                                    self.searchKeyAlias = key;
-                                    if (!catalog["_M"].layerDescription.inactive && M.Plugins.Search && M.Plugins.Search._o) {
-                                        M.Plugins.Search._o.add(catalog["_M"].layerDescription.url, {
-                                            layer:catalog
-                                        });
+                                for (key in kvps) {
+
+                                    /* Non template parameter */
+                                    if (kvps[key].indexOf('{') === -1) {
+                                        url += key + "=" + encodeURIComponent(kvps[key]) + '&';
+                                    }
+
+                                    /*
+                                     * Template parameter can be prefixed by namespace
+                                     */
+                                    parts2 = kvps[key].split(":");
+                                    unNameSpacedKey = (parts2.length === 2 ? parts2[1] : parts2[0]).replace('{', '').replace('}', '').replace('?', '');
+
+                                    /*
+                                     * The "modified" parameter is a reserved keyword
+                                     * (see PSC-IF-40-0037-CN v1.0)
+                                     */
+                                    if (key === "modified") {
+                                        continue;
+                                    }
+
+                                    /*
+                                     * If value = {time:start} add a date filter
+                                     */
+                                    if (kvps[key].indexOf('time:start') === 1) {
+                                        self.startDateAlias = key;
+                                    }
+
+                                    /*
+                                     * If value = {time:end} add a date filter 
+                                     */
+                                    if (kvps[key].indexOf('time:end') === 1) {
+                                        self.completionDateAlias = key;
+                                    }
+
+                                    /*
+                                     * If value = count then corresponding key should replace "numRecordsPerPage" property name
+                                     */
+                                    if (unNameSpacedKey === 'count') {
+                                        self.numRecordsPerPageAlias = key;
+                                    }
+
+                                    /*
+                                     * If value = startIndex then corresponding key should replace "nextRecord" property name
+                                     */
+                                    if (unNameSpacedKey === 'startIndex') {
+                                        self.nextRecordAlias = key;
+                                    }
+
+                                    /*
+                                     * If searchTerms is set, then add also an entry in the search Bar
+                                     * (See Search.js Plugin)
+                                     * 
+                                     * Note that the added entry is linked with the catalog layer so
+                                     * that search within the bar are displayed within the same layer
+                                     * as the search done with the layer search action
+                                     * 
+                                     * Note2: this does not apply to catalog with layerDescription.inactive set to 'true' 
+                                     */
+                                    if (unNameSpacedKey === 'searchTerms') {
+                                        self.searchKeyAlias = key;
+                                        if (!catalog["_M"].layerDescription.inactive && M.Plugins.Search && M.Plugins.Search._o) {
+                                            M.Plugins.Search._o.add(catalog["_M"].layerDescription.url, {
+                                                layer:catalog
+                                            });
+                                        }
                                     }
                                 }
-                            }
-                            
-                            /*
-                             * Get filters from json url description
-                             */
-                            if (description.MDescriptionUrl) {
-                                
+
                                 /*
-                                 * Get filters
+                                 * Get filters from json url description
                                  */
-                                $.ajax({
-                                    url:M.Util.proxify(M.Util.getAbsoluteUrl(description.MDescriptionUrl)),
-                                    dataType:"json",
-                                    success:function(data2){
-                                        
-                                        /*
-                                         * Yes i got some filters !
-                                         */
-                                        if (data2.filters) {
-                                            for (var i = 0, l = data2.filters.length; i < l; i++) {
-                                                self.filters.push(data2.filters[i]);
+                                if (description.MDescriptionUrl) {
+
+                                    /*
+                                     * Get filters
+                                     */
+                                    $.ajax({
+                                        url:M.Util.proxify(M.Util.getAbsoluteUrl(description.MDescriptionUrl)),
+                                        dataType:"json",
+                                        success:function(data2){
+
+                                            /*
+                                             * Yes i got some filters !
+                                             */
+                                            if (data2.filters) {
+                                                for (var i = 0, l = data2.filters.length; i < l; i++) {
+                                                    self.filters.push(data2.filters[i]);
+                                                }
                                             }
+
+                                            /*
+                                             * Refresh tab for this connector catalog
+                                             */
+                                            if (self.filterCallback) {
+                                                self.filterCallback(self.catalog);
+                                            }
+
                                         }
-                                        
-                                        /*
-                                         * Refresh tab for this connector catalog
-                                         */
-                                        if (self.filterCallback) {
-                                            self.filterCallback(self.catalog);
-                                        }
-                                        
-                                    }
-                                });
-                                
-                            }
-                            
-                            /*
-                             * !! IMPORTANT !!
-                             * Set the searchUrl
-                             */
-                            self.searchUrl = M.Util.getAbsoluteUrl(M.Util.repareUrl(url));
-                            
-                            /*
-                             * Remove catalog from TimeLine if it does not have dates search
-                             */
-                            if (!self.startDateAlias && !self.completionDateAlias) {
-                                if (M.timeLine) {
-                                    M.timeLine.remove(self.catalog);
+                                    });
+
                                 }
-                                delete self.catalog["_M"].setTime;
+
+                                /*
+                                 * !! IMPORTANT !!
+                                 * Set the searchUrl
+                                 */
+                                self.searchUrl = M.Util.getAbsoluteUrl(M.Util.repareUrl(url));
+
+                                /*
+                                 * Remove catalog from TimeLine if it does not have dates search
+                                 */
+                                if (!self.startDateAlias && !self.completionDateAlias) {
+                                    if (M.timeLine) {
+                                        M.timeLine.remove(self.catalog);
+                                    }
+                                    delete self.catalog["_M"].setTime;
+                                }
+
+                                /*
+                                 * Callback to effectively add the catalog to mapshup
+                                 */
+                                if (self.registerCallback) {
+                                    self.registerCallback(self);
+                                }
                             }
-                        
-                            /*
-                             * Callback to effectively add the catalog to mapshup
-                             */
-                            if (self.registerCallback) {
-                                self.registerCallback(self);
-                            }
-                            
                         }
                         
                     }
