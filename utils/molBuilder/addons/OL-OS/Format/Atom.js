@@ -26,7 +26,8 @@ OpenLayers.Format.Atom = OpenLayers.Class(OpenLayers.Format.XML, {
     namespaces: {
         atom: "http://www.w3.org/2005/Atom",
         georss: "http://www.georss.org/georss",
-		georss10: "http://www.georss.org/georss/10"
+        georss10: "http://www.georss.org/georss/10",
+        media:"http://search.yahoo.com/mrss/"
     },
     
     /**
@@ -428,6 +429,7 @@ OpenLayers.Format.Atom = OpenLayers.Class(OpenLayers.Format.XML, {
         var nodes = null;
         var attval = null;
         var atomns = this.namespaces.atom;
+        var medians = this.namespaces.media;
         
         // atomAuthor*
         this.parsePersonConstructs(node, "author", atomAttrib);
@@ -507,6 +509,40 @@ OpenLayers.Format.Atom = OpenLayers.Class(OpenLayers.Format.XML, {
             atomAttrib.links[i] = value;
         }
         
+        /*
+         * <media:group>
+                <media:content url="http://eoos.pisa.intecs.it/DREAM/instance00/ows?SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetMap&amp;BBOX=43.09902,2.938387,44.46992,4.069343&amp;CRS=EPSG:4326&amp;WIDTH=600&amp;HEIGHT=600&amp;LAYERS=SPOT4_HRVIR1_XS_20130202093948_N2A_RGB&amp;STYLES=&amp;FORMAT=image/png&amp;DPI=96&amp;TRANSPARENT=TRUE" type="image/jpeg" medium="image">
+                    <media:category scheme="http://www.opengis.net/spec/EOMPOM/1.0">QUICKLOOK</media:category>
+                </media:content>
+            </media:group>
+         */
+        nodes = this.getElementsByTagNameNS(node, medians, "content");
+        if (nodes.length > 0) {
+            atomAttrib.media = new Array(nodes.length);
+        }
+        var oAtts = ["url", "type", "medium"];
+        for (var i=0, ii=nodes.length; i<ii; i++) {
+            value = {
+                subType:this.getFirstChildValue(node, medians, "category", null)
+            };
+            for (var j=0, jj=oAtts.length; j<jj; j++) {
+                attval = nodes[i].getAttribute(oAtts[j]);
+                if (attval) {
+                    value[oAtts[j]] = attval;
+                }
+            }
+            atomAttrib.media[i] = value;
+            if (value.subType) {
+                if (value.subType === 'QUICKLOOK') {
+                    atomAttrib.quicklook = value['url'];
+                }
+                else if (value.subType === 'THUMBNAIL') {
+                    atomAttrib.thumbnail = value['url'];
+                }
+            }
+            
+        }
+        
         // atomPublished?
         value = this.getFirstChildValue(node, atomns, "published", null);
         if (value) {
@@ -539,6 +575,8 @@ OpenLayers.Format.Atom = OpenLayers.Class(OpenLayers.Format.XML, {
         
         var featureAttrib = {
             title: atomAttrib.title,
+            quicklook:atomAttrib.quicklook,
+            thumbnail:atomAttrib.thumbnail,
             description: atomAttrib.summary,
             atom: atomAttrib
         };
