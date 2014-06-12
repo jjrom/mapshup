@@ -439,6 +439,7 @@
          * @param options : {
          *                      getParams: additional parameters to add to the search service (function returning "&key1=val1&key2=val2&...")
          *                      searchTerms: bypass input searchTerms
+         *                      removeFirst: remove layer before performs search
          *                  }
          *
          */     
@@ -478,7 +479,7 @@
             */
            
             v = options.hasOwnProperty('searchTerms') ? options.searchTerms : self.getValue();
-            
+          
             /*
              * If service is added to an existing layer,
              * then the result is displayed within that layer...
@@ -486,12 +487,12 @@
             if (service.layer) {
                 
                 var sc = service.layer["_M"].searchContext;
-                
+
                 /*
                  * Clear other search parameters except Time and BBOX
                  */
                 sc.clear(true);
-                
+
                 /*
                  * Launch search with a callback function
                  */
@@ -499,23 +500,23 @@
                 sc.search({
                     callback:function(scope,layer){
                         if (layer) {
-                            
+
                             /*
                              * If only one result - select it
                              */
                             if (layer.features && layer.features.length === 1) {
                                 M.Map.featureInfo.select(layer.features[0], true);
                             }
-                        
+
                         }
                     }
                 });
-                
+
                 /*
                  * Don't forget to clear the search terms again !
                  */
                 sc.clear();
-                
+
                 return false;
             }
             
@@ -538,10 +539,15 @@
             */
             $.extend(layerDescription, service.options);
             layer = M.Map.Util.getLayerByMID((new M.Map.LayerDescription(layerDescription, M.Map)).getMID());
-
+            
             /*
             * Layer already exist -> replace features
             */
+            if (layer && options.removeFirst) {
+                M.Map.removeLayer(layer);
+                layer = null;
+            }
+            
             if (layer) {
 
                 /*
