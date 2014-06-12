@@ -471,11 +471,13 @@
             /*
              * Empty val, no search except if additional parameters are set
              */
+            /*
             if (self.getValue() === "" && a.params === "" && !options.searchTerms) {
                 return false;
             }
-            
-            v = options.searchTerms || self.getValue();
+            */
+           
+            v = options.hasOwnProperty('searchTerms') ? options.searchTerms : self.getValue();
             
             /*
              * If service is added to an existing layer,
