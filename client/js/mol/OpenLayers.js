@@ -1655,7 +1655,8 @@ return results;},isValidType:function(obj,type){var valid=false;switch(type){cas
 obj.type);}else{valid=true;}
 break;case"FeatureCollection":valid=true;break;default:if(obj.type==type){valid=true;}else{OpenLayers.Console.error("Cannot convert types from "+
 obj.type+" to "+type);}}
-return valid;},parseFeature:function(obj){var feature,geometry,attributes,bbox;attributes=(obj.properties)?obj.properties:{};bbox=(obj.geometry&&obj.geometry.bbox)||obj.bbox;try{geometry=this.parseGeometry(obj.geometry);}catch(err){throw err;}
+return valid;},parseFeature:function(obj){var feature,geometry,attributes,bbox;attributes=(obj.properties)?obj.properties:{};if(!attributes.identifier){attributes['identifier']=obj.id;}
+bbox=(obj.geometry&&obj.geometry.bbox)||obj.bbox;try{geometry=this.parseGeometry(obj.geometry);}catch(err){throw err;}
 feature=new OpenLayers.Feature.Vector(geometry,attributes);if(bbox){feature.bounds=OpenLayers.Bounds.fromArray(bbox);}
 if(obj.id){feature.fid=obj.id;}
 return feature;},parseGeometry:function(obj){if(obj==null){return null;}

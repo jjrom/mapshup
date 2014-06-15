@@ -97,6 +97,9 @@ cp -R addons/Cluster.js $oldir/lib/OpenLayers/Strategy/
 echo "Copying new class PolygonCluster.js to OpenLayers directory..."
 cp -R addons/PolygonCluster.js $oldir/lib/OpenLayers/Strategy/
 
+echo "Copying modified class GeoJSON.js to OpenLayers directory..."
+cp -R addons/GeoJSON.js $oldir/lib/OpenLayers/Formats/
+
 echo "Building OpenLayers.js..."
 cd $oldir/build
 ./build.py $here/jOpenLayers_build.cfg
