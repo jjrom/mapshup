@@ -1226,7 +1226,7 @@
              *  - a fully qualified url (i.e. starts with http:)
              *  - a base64 encoded image stream (i.e. starts with data:)
              */
-            return (!f || f.substr(0,5) ==='http:' || f.substr(0,6) ==='https:' || f.substr(0,5) ==='data:') ? f : M.Config["general"].rootUrl + M.Config["general"].themePath+"/img/"+f;
+            return (!f || f.substr(0,1) === '/' || f.substr(0,2) === './' || f.substr(0,3) === '../' || f.substr(0,5) ==='http:' || f.substr(0,6) ==='https:' || f.substr(0,5) ==='data:') ? f : M.Config["general"].rootUrl + M.Config["general"].themePath+"/img/"+f;
         },
         
         /**
