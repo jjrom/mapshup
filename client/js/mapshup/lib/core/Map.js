@@ -1696,13 +1696,6 @@
             }
             
             /*
-             * If partial is not set, assume it is true 
-             */
-            if ($.type(partial) !== "boolean") {
-                partial = true;
-            }
-            
-            /*
              * Do not zoom if input bounds intersect map bounds
              */
             if (partial && self.map.getExtent().containsBounds(bounds, true)) {
