@@ -378,6 +378,7 @@
                     }
                 });
             }
+            
             /*
              * services defines specific tools and should contains optional properties
              *      - download : to add a download action
@@ -385,72 +386,123 @@
              * These tools are displayed within the tools list
              *
              */
+            
+            /*
+            * Download feature
+            */
+            var addDownload = false;
+            
             if (feature.attributes.hasOwnProperty("services")) {
-
-                /*
-                 * Download feature
-                 */
-                if (feature.attributes["services"]["download"]) {
-                    tools.push({
-                        id: M.Util.getId(),
-                        icon: "download.png",
-                        title: "Download",
-                        tt: "Download feature",
-                        sla: function(a, f) {
-                            if (f && f["attributes"]) {
-
-                                var d = f.attributes["services"]["download"];
-
-                                /*
-                                 * Structure of d is :
-                                 * {
-                                 *      url: // url to download
-                                 *      mimeType: // if "text/html" open a new window. Otherwise set url
-                                 * }
-                                 */
-                                a.attr("href", d.url);
-
-                                if (d.mimeType && d.mimeType.toLowerCase() === "text/html") {
-                                    a.attr("target", "_blank");
-                                }
-
-                            }
-                        },
-                        callback: function(a, f) {
-                            return true;
-                        }
-                    });
-                }
                 _a = feature.attributes["services"]["browse"];
+                addDownload = feature.attributes["services"]["download"] ? true : false;
+            }
+            else if (feature.attributes['quicklook'] && feature.attributes['quicklook'].toLowerCase().indexOf('service=wms') !== -1) {
+                _a = {};
+            }
 
-                /*
-                 * Add layer action
-                 */
-                if (_a) {
-                    tools.push({
-                        id: M.Util.getId(),
-                        icon: "add.png",
-                        tt: _a["title"] || "Add to map",
-                        title: "Add",
-                        callback: function(a, f) {
+            /*
+             * ATOM case
+             */
+            if (feature.attributes.hasOwnProperty("atom")) {
+                if ($.isArray(feature.attributes.atom.links)) {
+                    for (var i = 0, l = feature.attributes.atom.links.length; i < l; i++) {
+                        if (feature.attributes.atom.links[i].rel === 'enclosure') {
+                            addDownload = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (addDownload) {
+                tools.push({
+                    id: M.Util.getId(),
+                    icon: "download.png",
+                    title: "Download",
+                    tt: "Download feature",
+                    sla: function(a, f) {
+                        if (f && f["attributes"]) {
+
+                            var d = {};
 
                             /*
-                             * Add layer obj
+                             * GeoJSON case
                              */
-                            var l = M.Map.addLayer(f.attributes["services"]["browse"]["layer"]);
-
+                            if (f.attributes.hasOwnProperty("services")) {
+                                d = f.attributes["services"]["download"];
+                            }
                             /*
-                             * Force zoom on added layer
+                             * ATOM case
                              */
-                            if (l) {
-                                M.Map.zoomTo(l.getDataExtent() || l["_M"].bounds);
+                            else if (f.attributes.hasOwnProperty("atom")) {
+                                if ($.isArray(f.attributes.atom.links)) {
+                                    for (var i = 0, l = f.attributes.atom.links.length; i < l; i++) {
+                                        if (f.attributes.atom.links[i].rel === 'enclosure') {
+                                            d.url = feature.attributes.atom.links[i].href;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            /*
+                             * Structure of d is :
+                             * {
+                             *      url: // url to download
+                             *      mimeType: // if "text/html" open a new window. Otherwise set url
+                             * }
+                             */
+                            a.attr("href", d.url);
+
+                            if (d.mimeType && d.mimeType.toLowerCase() === "text/html") {
+                                a.attr("target", "_blank");
                             }
 
-                            return false;
                         }
-                    });
+                    },
+                    callback: function(a, f) {
+                        return true;
+                    }
+                });
+            }
 
-                }
+            /*
+             * Add layer action
+             */
+            if (_a) {
+                tools.push({
+                    id: M.Util.getId(),
+                    icon: "add.png",
+                    tt: _a["title"] || "Add to map",
+                    title: "Add",
+                    callback: function(a, f) {
+
+                        /*
+                         * Add layer obj
+                         */
+                        var l;
+                        
+                        if (f.attributes.hasOwnProperty('services') && f.attributes["services"]["browse"]) {
+                            l = M.Map.addLayer(f.attributes["services"]["browse"]["layer"]);
+                        }
+                        else if (f.attributes.hasOwnProperty('quicklook') && f.attributes['quicklook'].toLowerCase().indexOf('service=wms') !== -1) {
+                            if (M.Map.layerTypes["WMS"]) {
+                                var layerDescription = M.Map.layerTypes["WMS"].getLayerDescriptionFromUrl(f.attributes['quicklook']);
+                                layerDescription.type = 'WMS';
+                                layerDescription.srs = 'EPSG:3857';
+                                l = M.Map.addLayer(layerDescription);
+                            }
+                        }
+                        
+                        /*
+                         * Force zoom on added layer
+                         */
+                        if (l) {
+                            M.Map.zoomTo(l.getDataExtent() || l["_M"].bounds);
+                        }
+
+                        return false;
+                    }
+                });
 
             }
 
