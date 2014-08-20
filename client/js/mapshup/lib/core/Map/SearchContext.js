@@ -722,7 +722,8 @@
                          * Update the totalResults value
                          * If data.totalResults is not set then set totalResults to the number of features
                          */
-                        layer["_M"].searchContext.totalResults = data.hasOwnProperty("totalResults") ? data.totalResults : l;
+                        var src = data.hasOwnProperty('properties') ? data.properties : data;
+                        layer["_M"].searchContext.totalResults = src.hasOwnProperty("totalResults") ? src.totalResults : l;
                         
                         /*
                          * Endless search - Tricky part

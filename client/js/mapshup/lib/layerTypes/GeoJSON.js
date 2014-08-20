@@ -220,7 +220,8 @@
                         * Update the totalResults value
                         * If data.totalResults is not set then set totalResults to the number of features
                         */
-                        p.totalResults = options.data.hasOwnProperty("totalResults") ? options.data.totalResults : l;
+                        var src = options.data.hasOwnProperty('properties') ? options.data.properties : options.data;
+                        p.totalResults = src.hasOwnProperty("totalResults") ? src.totalResults : l;
                         
                     }
                     
