@@ -204,7 +204,7 @@
                      */
                     if (p.numRecordsPerPage && p.nextRecord) {
                         
-                        /*
+                       /*
                         * Avoid case where server don't take care of numRecordsPerPage value
                         */
                         if (l > p.numRecordsPerPage.value) {
@@ -217,11 +217,11 @@
                         p.nextRecord.value = p.nextRecord.value + l;
 
                         /*
-                        * Update the totalResults value
-                        * If data.totalResults is not set then set totalResults to the number of features
-                        */
+                         * Update the totalResults value
+                         * If data.totalResults is not set then set totalResults is set to null
+                         */
                         var src = options.data.hasOwnProperty('properties') ? options.data.properties : options.data;
-                        p.totalResults = src.hasOwnProperty("totalResults") ? src.totalResults : l;
+                        p.totalResults = src.hasOwnProperty("totalResults") &&  src.totalResults ? src.totalResults : null;
                         
                     }
                     
@@ -297,7 +297,7 @@
             if (p.totalResults && (p.nextRecord.value > p.totalResults)) {
                 return false;
             }
-
+            
             /*
             * Retrieve FeatureCollection from server
             */

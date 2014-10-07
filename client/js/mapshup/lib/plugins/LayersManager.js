@@ -769,7 +769,7 @@
              * except for layers with paginated search (catalogs or layer with pagination)
              */
             p = item.layer["_M"].searchContext || item.layer["_M"].pagination;
-            max = p ? p.totalResults : size;
+            max = p && p.totalResults ? p.totalResults : size;
 
             /*
              * Tell user that layer is empty 
@@ -863,7 +863,7 @@
             /*
              * Add an additionnal thumb at the end of the thumbs for pagination
              */
-            if (size > 0 && max > size) {
+            if (size > 0 && max >= size) {
 
                 $ul.append('<li class="thumbs" id="' + item.id + 'mre"><span class="title">' + M.Util._('Get more results') + '</span></li>');
 
