@@ -262,13 +262,15 @@
             /*
              * Extract service information for each OpenSearch description
              */
-            for (i = 0, l = self.options.services.length; i < l ;i++){
-                d = self.options.services[i];
-                self.add(d.url,{
-                    type:d.stype,
-                    msg:false,
-                    options:d.options || {}
-                });
+            for (i = 0, l = self.options.services.length; i < l ;i++) {
+                try {
+                    d = self.options.services[i];
+                    self.add(d.url,{
+                        type:d.stype,
+                        msg:false,
+                        options:d.options || {}
+                    });
+                } catch (err) { }
             }
 
             return this;
