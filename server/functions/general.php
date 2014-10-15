@@ -214,7 +214,7 @@ function getRemoteData($url, $useragent, $info) {
  * @param <String> $url : input url to send GET request
  * @param <String> $useragent : useragent modification
  * @param <boolean> $info : set to true to return transfert info
- * @param <array> $forwared_headers
+ * @param <array> $forwarded_headers
  *
  * @return either a stringarray containing data and info if $info is set to true
  */
