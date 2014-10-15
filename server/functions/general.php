@@ -210,6 +210,35 @@ function getRemoteData($url, $useragent, $info) {
 }
 
 /**
+ * Get Remote data from url using curl
+ * @param <String> $url : input url to send GET request
+ * @param <String> $useragent : useragent modification
+ * @param <boolean> $info : set to true to return transfert info
+ * @param <array> $forwared_headers
+ *
+ * @return either a stringarray containing data and info if $info is set to true
+ */
+function getRemoteDataHeaders($url, $useragent, $info, $forwarded_headers) {
+    if (!empty($url)) {
+        $curl = initCurl($url);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, TRUE);
+        if ($useragent != null) {
+        	curl_setopt($curl, CURLOPT_USERAGENT, $useragent);
+        }
+	if (sizeof($forwarded_headers)>0){
+ 		curl_setopt($curl, CURLOPT_HTTPHEADER, $forwarded_headers);
+	}
+        $theData = curl_exec($curl);
+        $info == true ? $theInfo = curl_getinfo($curl) : "";
+        curl_close($curl);
+        return $info == true ? array("data" => $theData, "info" => $theInfo) : $theData;
+    }
+    return $info == true ? array("data" => "", "info" => "") : "";
+}
+
+/**
  * Set the proxy if needed
  * @param <type> $url Input url to proxify
  */

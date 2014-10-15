@@ -67,9 +67,16 @@ if (isset($_REQUEST["returntype"])) {
     }
 }
 
+/*
+ * Forward Authorization headers
+ */
+$headers = apache_request_headers();
+$forwarded_headers = array();
+if (isset($headers["Authorization"])){
+	array_push($forwarded_headers, "Authorization: " . $headers["Authorization"]);
+}
 
 /*
  * Send either a POST request or a GET request
  */
-echo $_SERVER['REQUEST_METHOD'] == 'POST' ? postRemoteData($_REQUEST["url"], $HTTP_RAW_POST_DATA, true) : getRemoteData($_REQUEST["url"], null, false);
-?>
+echo $_SERVER['REQUEST_METHOD'] == 'POST' ? postRemoteData($_REQUEST["url"], $HTTP_RAW_POST_DATA, true) : getRemoteDataHeaders($_REQUEST["url"], null, false, $forwarded_headers);
