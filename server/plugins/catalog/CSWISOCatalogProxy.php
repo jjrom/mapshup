@@ -312,7 +312,7 @@ $request = '<?xml version="1.0" encoding="UTF-8"?>
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://www.opengis.net/cat/csw/2.0.2
                        ../../../csw/2.0.2/CSW-discovery.xsd">
-   <Query typeNames="csw:Record">
+   <csw:Query typeNames="csw:Record">
       <ElementSetName typeNames="csw:Record">full</ElementSetName>
       <Constraint version="1.1.0">
          <ogc:Filter>';
@@ -350,7 +350,7 @@ if ($nbOfFilters > 1) {
 
 $request .= '</ogc:Filter>
       </Constraint>
-   </Query>
+   </csw:Query>
 </GetRecords>';
 
 /**
