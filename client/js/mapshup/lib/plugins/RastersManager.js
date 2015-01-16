@@ -93,6 +93,8 @@
                 onactivate: function(scope, item) {
                     scope.refresh();
                     M.sidePanel.show(scope.item);
+                    var $tbody = $("tbody", "#" + self.item.id);
+                    $tbody.height($(document).height() - $tbody.offset().top);
                 },
                 ondeactivate: function(scope, item) {
                     if (M.sidePanel.isVisible && M.sidePanel.active && scope.item.id === M.sidePanel.active.id ) {
@@ -112,6 +114,13 @@
                     }
                 }
 
+            });
+
+            $(window).resize(function () {
+                var $tbody = $("tbody", "#"+self.item.id);
+                if ($tbody.is(":visible")) {
+                    $tbody.height($(document).height() - $tbody.offset().top);
+                }
             });
 
             return self;
@@ -222,7 +231,10 @@
 
                 })(id, layer);
             }
-
+            var $tbody = $("tbody", "#"+self.item.id);
+            if ($tbody.is(":visible")) {
+                $tbody.height($(document).height() - $tbody.offset().top);
+            }
             return true;
 
         };

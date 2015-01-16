@@ -1758,11 +1758,7 @@ div.olControlMousePosition {
 }
 /* RastersManager */
 #mapshup .rm {
-    padding:30px;
-}
-#mapshup .rm table {
-    width:100%;
-    text-align:left;
+
 }
 #mapshup .rm table tr {
     border: 2px solid #fff;
@@ -1770,6 +1766,33 @@ div.olControlMousePosition {
 #mapshup .rm table tr:nth-child(even) {
     background:#666;
 }
+#mapshup .rm table tbody {
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: block;
+}
+#mapshup .rm table thead tr {
+    display: block;
+    position: relative;
+}
+#mapshup .rm table {
+    top:10px;
+    left:30px;
+    position: relative;
+    width: 345px;
+    table-layout:fixed;
+    border-collapse: collapse;
+    text-align: center;
+}
+#mapshup .rm table td:nth-child(1),
+#mapshup .rm table th:nth-child(1) { min-width: 80px; }
+#mapshup .rm table td:nth-child(2),
+#mapshup .rm table th:nth-child(2) { min-width: 121px; }
+#mapshup .rm table td:nth-child(3),
+#mapshup .rm table th:nth-child(3) { min-width: 50px; }
+#mapshup .rm table td:nth-child(4),
+#mapshup .rm table th:nth-child(4) { min-width: 50px; }
 
 /* QuickSelector */
 #mapshup .quickselector {
