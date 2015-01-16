@@ -539,6 +539,7 @@
                         $ul.css('left', moveleft + 'px');
                         self.scrollTo(f);
                     }
+                    item.leftHistory = moveleft;
                 }
 
                 e.preventDefault();
@@ -574,7 +575,7 @@
                     $ul.css('left', moveleft + 'px');
                     self.scrollTo(f);
                 }
-
+                item.leftHistory = moveleft;
             }).hide();
 
             return true;
@@ -795,6 +796,12 @@
             if (!update) {
                 $ul.empty().css({
                     'left': '0px'
+                });
+            }
+
+            if (item.leftHistory) {
+                $ul.empty().css({
+                    'left': item.leftHistory + 'px'
                 });
             }
 
