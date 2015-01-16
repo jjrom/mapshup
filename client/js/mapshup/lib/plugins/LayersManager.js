@@ -845,10 +845,14 @@
                         e.preventDefault();
                         e.stopPropagation();
 
-                        /*
-                         * Zoom on feature and select it
+                        /**
+                         * Center (if necessary) on feature and select it
                          */
-                        M.Map.zoomTo(f.geometry.getBounds());
+                        var center = f.geometry.getBounds().getCenterLonLat();
+                        if (!M.Map.map.getExtent().containsLonLat(center)) {
+                            M.Map.map.setCenter(center);
+                        }
+
                         M.Map.featureInfo.select(f, true);
                         self.hilite(f);
 
