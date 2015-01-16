@@ -90,6 +90,8 @@ then
 	/bin/cp -Rf $CLIENTDIR/js/mjquery $TARGET/js
 	/bin/cp -Rf $CLIENTDIR/js/mol $TARGET/js
         /bin/cp -Rf $CLIENTDIR/js/proj4js $TARGET/js
+    /bin/cp -Rf $CLIENTDIR/js/lodash $TARGET/js
+
 
         # Copy images files
 	/bin/cp -Rf $CLIENTDIR/img $TARGET/img
