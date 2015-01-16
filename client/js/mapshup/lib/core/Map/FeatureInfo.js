@@ -1042,7 +1042,7 @@
              */
             if (ql) {
                 
-                $('.body', $target).append('<div class="ql" style="float:left;width:49%;"><img src="' + ql + '"/></div><div class="info"></div>');
+                $('.body', $target).append('<div class="ql"><img src="' + ql + '"/></div><div class="info"></div>');
                 $('.ql img', $target).css({
                     'max-width': Math.round($('#mapshup').width() * 4 / 10),
                     'max-height': Math.round($('#mapshup').height() * 9 / 10)
@@ -1095,7 +1095,7 @@
                 /*
                  * Default feature info are set within an html table
                  */
-                $('.info', $target).html('<table style="width:' + (ql ? '45' : '95') + '%"></table>');
+                $('.info', $target).html('<table></table>');
                 $info = $('.info table', $target);
 
                 /*
@@ -1106,7 +1106,7 @@
                     /*
                      * Special keywords
                      */
-                    if (k === 'self' || k === 'identifier' || k === 'icon' || k === 'thumbnail' || k === 'quicklook' || k === 'imageUrl' || k === 'modified' || k === 'color') {
+                    if (k === 'hashes' || k === 'landUse' || k === 'self' || k === 'identifier' || k === 'icon' || k === 'thumbnail' || k === 'quicklook' || k === 'imageUrl' || k === 'modified' || k === 'color') {
                         continue;
                     }
 
@@ -1157,6 +1157,22 @@
                                 continue;
                             }
                             
+                            if (k === "keywords") {
+                                _(v)
+                                   .filter(function(keyword) { return keyword.id !== "region:_all"; })
+                                   .forEach(function(keyword) {
+                                        ts = M.Map.Util.Feature.translate(k, feature);
+                                        var str = '<tr><td title="' + ts + '">' + ts + '</td><td>&nbsp;</td><td>' + keyword.name;
+                                        if (keyword.value) {
+                                            str += ' ('+keyword.value+' %) ';
+                                        }
+                                        str += '</td></tr>';
+                                        $info.append(str);
+                                    }
+                                );
+                                continue;
+                            }
+
                             /*
                              * Roll over properties name
                              */

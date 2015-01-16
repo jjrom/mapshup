@@ -742,9 +742,10 @@
     width:100%;
     height:100%;
     text-align:center;
+    overflow-y: auto;
 }
 #mapshup .fi .header {
-    font-size:2em;
+    font-size:1.5em;
     padding:50px;
     text-transform:uppercase;
 }
@@ -753,14 +754,15 @@
     text-overflow:ellipsis;
 }
 #mapshup .fi .ql {
+    float:left;
+    width:45%;
     margin:20px;
     border-right: 3px dashed #fff;
 }
 #mapshup .fi .info {
-    font-size:1.5em;
+    font-size:1em;
     text-align: justify;
     padding:0px 30px;
-    overflow: auto;
 }
 #mapshup .fi .info table {
     margin-left:10px;
