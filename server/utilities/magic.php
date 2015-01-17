@@ -97,9 +97,16 @@ if (abcCheck($_REQUEST) && $url != '') {
                  * Rebuild url without request=GetCapabilities 
                  */
                  $url = str_replace("request=".$k[1], "", $url);
-                 break;
+                 
             }
-            
+            if ($k[0] === "service") {
+
+                /*
+                 * Rebuild url without request=GetCapabilities 
+                 */
+                 $url = str_replace("service=".$k[1], "", $url);
+                 
+            }
         }
         
     }
@@ -214,4 +221,3 @@ if (abcCheck($_REQUEST) && $url != '') {
 } else {
     echo '{"error":{"message":"Error : cannot perform action"}}';
 }
-?>
