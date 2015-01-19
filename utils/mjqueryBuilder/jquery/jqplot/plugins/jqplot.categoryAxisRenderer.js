@@ -1,18 +1,31 @@
 /**
- * Copyright (c) 2009 - 2010 Chris Leonello
+ * jqPlot
+ * Pure JavaScript plotting plugin using jQuery
+ *
+ * Version: 1.0.8
+ * Revision: 1250
+ *
+ * Copyright (c) 2009-2013 Chris Leonello
  * jqPlot is currently available for use in all personal or commercial projects 
- * under both the MIT and GPL version 2.0 licenses. This means that you can 
+ * under both the MIT (http://www.opensource.org/licenses/mit-license.php) and GPL 
+ * version 2.0 (http://www.gnu.org/licenses/gpl-2.0.html) licenses. This means that you can 
  * choose the license that best suits your project and use it accordingly. 
  *
- * The author would appreciate an email letting him know of any substantial
- * use of jqPlot.  You can reach the author at: chris at jqplot dot com 
- * or see http://www.jqplot.com/info.php .  This is, of course, 
- * not required.
+ * Although not required, the author would appreciate an email letting him 
+ * know of any substantial use of jqPlot.  You can reach the author at: 
+ * chris at jqplot dot com or see http://www.jqplot.com/info.php .
  *
  * If you are feeling kind and generous, consider supporting the project by
  * making a donation at: http://www.jqplot.com/donate.php .
  *
- * Thanks for using jqPlot!
+ * sprintf functions contained in jqplot.sprintf.js by Ash Searle:
+ *
+ *     version 2007.04.27
+ *     author Ash Searle
+ *     http://hexmen.com/blog/2007/03/printf-sprintf/
+ *     http://hexmen.com/js/sprintf.js
+ *     The author (Ash Searle) has placed this code in the public domain:
+ *     "This code is unrestricted: you are free to use it however you like."
  * 
  */
 (function($) {   
@@ -57,6 +70,7 @@
         this._groupLabels = [];
         this._grouped = false;
         this._barsPerGroup = null;
+        this.reverse = false;
         // prop: tickRenderer
         // A class of a rendering engine for creating the ticks labels displayed on the plot, 
         // See <$.jqplot.AxisTickRenderer>.
@@ -133,12 +147,12 @@
                 // need a marker before and after the tick
                 var t = new this.tickRenderer(this.tickOptions);
                 t.showLabel = false;
-                t.showMark = true;
+                // t.showMark = true;
                 t.setTick(tt, this.name);
                 this._ticks.push(t);
                 var t = new this.tickRenderer(this.tickOptions);
                 t.label = userTicks[i];
-                t.showLabel = true;
+                // t.showLabel = true;
                 t.showMark = false;
                 t.showGridline = false;
                 t.setTick(tt+0.5, this.name);
@@ -147,7 +161,7 @@
             // now add the last tick at the end
             var t = new this.tickRenderer(this.tickOptions);
             t.showLabel = false;
-            t.showMark = true;
+            // t.showMark = true;
             t.setTick(tt+1, this.name);
             this._ticks.push(t);
         }
@@ -197,7 +211,11 @@
             }
             
             if (isMerged && this.sortMergedLabels) {
-                labels.sort(function(a,b) { return a - b; });
+                if (typeof labels[0] == "string") {
+                    labels.sort();
+                } else {
+                    labels.sort(function(a,b) { return a - b; });
+                }
             }
             
             // keep a reference to these tick labels to use for redrawing plot (see bug #57)
@@ -247,7 +265,7 @@
             var track = 0;
             
             // todo: adjust this so more ticks displayed.
-            var maxVisibleTicks = parseInt(3+dim/20, 10);
+            var maxVisibleTicks = parseInt(3+dim/10, 10);
             var skip = parseInt(numcats/maxVisibleTicks, 10);
 
             if (this.tickInterval == null) {
@@ -277,13 +295,6 @@
                     t.showMark = false;
                     t.showGridline = false;
                 }
-                if (!this.showTicks) {
-                    t.showLabel = false;
-                    t.showMark = false;
-                }
-                else if (!this.showTickMarks) {
-                    t.showMark = false;
-                }
                 t.setTick(tt, this.name);
                 this._ticks.push(t);
             }
@@ -292,22 +303,24 @@
     };
     
     // called with scope of axis
-    $.jqplot.CategoryAxisRenderer.prototype.draw = function(ctx) {
+    $.jqplot.CategoryAxisRenderer.prototype.draw = function(ctx, plot) {
         if (this.show) {
             // populate the axis label and value properties.
             // createTicks is a method on the renderer, but
             // call it within the scope of the axis.
             this.renderer.createTicks.call(this);
             // fill a div with axes labels in the right direction.
-            // Need to pregenerate each axis to get it's bounds and
+            // Need to pregenerate each axis to get its bounds and
             // position it and the labels correctly on the plot.
             var dim=0;
             var temp;
             // Added for theming.
             if (this._elem) {
-                this._elem.empty();
+                // this._elem.empty();
+                // Memory Leaks patch
+                this._elem.emptyForce();
             }
-            
+
             this._elem = this._elem || $('<div class="jqplot-axis jqplot-'+this.name+'" style="position:absolute;"></div>');
             
             if (this.name == 'xaxis' || this.name == 'x2axis') {
@@ -321,18 +334,16 @@
             this.labelOptions.axis = this.name;
             this._label = new this.labelRenderer(this.labelOptions);
             if (this._label.show) {
-                var elem = this._label.draw(ctx);
+                var elem = this._label.draw(ctx, plot);
                 elem.appendTo(this._elem);
             }
     
-            if (this.showTicks) {
-                var t = this._ticks;
-                for (var i=0; i<t.length; i++) {
-                    var tick = t[i];
-                    if (tick.showLabel && (!tick.isMinorTick || this.showMinorTicks)) {
-                        var elem = tick.draw(ctx);
-                        elem.appendTo(this._elem);
-                    }
+            var t = this._ticks;
+            for (var i=0; i<t.length; i++) {
+                var tick = t[i];
+                if (tick.showLabel && (!tick.isMinorTick || this.showMinorTicks)) {
+                    var elem = tick.draw(ctx, plot);
+                    elem.appendTo(this._elem);
                 }
             }
         
@@ -356,7 +367,7 @@
         var w = 0;
         var h = 0;
         var lshow = (this._label == null) ? false : this._label.show;
-        if (this.show && this.showTicks) {
+        if (this.show) {
             var t = this._ticks;
             for (var i=0; i<t.length; i++) {
                 var tick = t[i];
@@ -424,7 +435,8 @@
         var offmax = offsets.max;
         var offmin = offsets.min;
         var lshow = (this._label == null) ? false : this._label.show;
-        
+        var i;
+
         for (var p in pos) {
             this._elem.css(p, pos[p]);
         }
@@ -434,32 +446,67 @@
         var pixellength = offmax - offmin;
         var unitlength = max - min;
         
-        // point to unit and unit to point conversions references to Plot DOM element top left corner.
-        this.p2u = function(p){
-            return (p - offmin) * unitlength / pixellength + min;
-        };
-        
-        this.u2p = function(u){
-            return (u - min) * pixellength / unitlength + offmin;
-        };
-                
-        if (this.name == 'xaxis' || this.name == 'x2axis'){
-            this.series_u2p = function(u){
-                return (u - min) * pixellength / unitlength;
+        if (!this.reverse) {
+            // point to unit and unit to point conversions references to Plot DOM element top left corner.
+            
+            this.u2p = function(u){
+                return (u - min) * pixellength / unitlength + offmin;
             };
-            this.series_p2u = function(p){
-                return p * unitlength / pixellength + min;
+
+            this.p2u = function(p){
+                return (p - offmin) * unitlength / pixellength + min;
             };
+                    
+            if (this.name == 'xaxis' || this.name == 'x2axis'){
+                this.series_u2p = function(u){
+                    return (u - min) * pixellength / unitlength;
+                };
+                this.series_p2u = function(p){
+                    return p * unitlength / pixellength + min;
+                };
+            }
+            
+            else {
+                this.series_u2p = function(u){
+                    return (u - max) * pixellength / unitlength;
+                };
+                this.series_p2u = function(p){
+                    return p * unitlength / pixellength + max;
+                };
+            }
         }
-        
+
         else {
-            this.series_u2p = function(u){
-                return (u - max) * pixellength / unitlength;
+            // point to unit and unit to point conversions references to Plot DOM element top left corner.
+            
+            this.u2p = function(u){
+                return offmin + (max - u) * pixellength / unitlength;
             };
-            this.series_p2u = function(p){
-                return p * unitlength / pixellength + max;
+
+            this.p2u = function(p){
+                return min + (p - offmin) * unitlength / pixellength;
             };
+                    
+            if (this.name == 'xaxis' || this.name == 'x2axis'){
+                this.series_u2p = function(u){
+                    return (max - u) * pixellength / unitlength;
+                };
+                this.series_p2u = function(p){
+                    return p * unitlength / pixellength + max;
+                };
+            }
+            
+            else {
+                this.series_u2p = function(u){
+                    return (min - u) * pixellength / unitlength;
+                };
+                this.series_p2u = function(p){
+                    return p * unitlength / pixellength + min;
+                };
+            }
+
         }
+            
         
         if (this.show) {
             if (this.name == 'xaxis' || this.name == 'x2axis') {
@@ -521,11 +568,12 @@
                 }
                 
                 // draw the group labels
-                var step = parseInt(this._ticks.length/this.groups, 10);
+                var step = parseInt(this._ticks.length/this.groups, 10) + 1;
                 for (i=0; i<this._groupLabels.length; i++) {
                     var mid = 0;
                     var count = 0;
-                    for (var j=i*step; j<=(i+1)*step; j++) {
+                    for (var j=i*step; j<(i+1)*step; j++) {
+                        if (j >= this._ticks.length-1) continue; // the last tick does not exist as there is no other group in order to have an empty one.
                         if (this._ticks[j]._elem && this._ticks[j].label != " ") {
                             var t = this._ticks[j]._elem;
                             var p = t.position();
@@ -605,11 +653,12 @@
                 }
                 
                 // draw the group labels, position top here, do left after label position.
-                var step = parseInt(this._ticks.length/this.groups, 10);
+                var step = parseInt(this._ticks.length/this.groups, 10) + 1; // step is one more than before as we don't want to have overlaps in loops
                 for (i=0; i<this._groupLabels.length; i++) {
                     var mid = 0;
                     var count = 0;
-                    for (var j=i*step; j<=(i+1)*step; j++) {
+                    for (var j=i*step; j<(i+1)*step; j++) { // j must never reach (i+1)*step as we don't want to have overlap between loops
+                        if (j >= this._ticks.length-1) continue; // the last tick does not exist as there is no other group in order to have an empty one.
                         if (this._ticks[j]._elem && this._ticks[j].label != " ") {
                             var t = this._ticks[j]._elem;
                             var p = t.position();
