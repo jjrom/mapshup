@@ -664,7 +664,7 @@
                  * Set searchTerms
                  */
                 if (unNameSpacedKey === 'searchTerms') {
-                    kvps[key] = encodeURIComponent(self.$input.val());
+                    kvps[key] = self.$input.val();
                 }
                 
                 /*
