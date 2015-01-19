@@ -709,7 +709,7 @@
              * Otherwise it is set on the middle of the clicked object if it is a Point and on the clicked xy
              * if it is a LineString or a Polygon
              */
-            self._p.setMapXY(self._triggered ? M.Map.map.getCenter() : (feature.geometry.CLASS_NAME === "OpenLayers.Geometry.Point" ? feature.geometry.getBounds().getCenterLonLat() : M.Map.map.getLonLatFromPixel(M.Map.mousePosition)));
+            self._p.setMapXY(feature.geometry.getBounds().getCenterLonLat());
 
             /*
              * This is a bit tricky...
