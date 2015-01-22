@@ -109,7 +109,7 @@
             M.Map.events.register("layersend", self, function(action, layer, scope) {
 
                 if (!layer.isBaseLayer && M.Map.Util.isRaster(layer)) {
-                    if (action === "add" || "remove") {
+                    if (action === "add" || action === "remove") {
                         scope.refresh();
                     }
                 }

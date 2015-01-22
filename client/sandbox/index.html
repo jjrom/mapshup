@@ -1,18 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <head>                    
         <title>mapshup</title>
         <script type="text/javascript">
             var uagent = navigator.userAgent.toLowerCase();
             if (/msie (\d+\.\d+);/.test(uagent)) { 
                 if (9 > new Number(RegExp.$1)) {
-                    window.location = 'error.html';
+                    window.location = '../error.html';
                 }
             }
  
             if (uagent.indexOf("android") > -1 || uagent.indexOf("ipad") > -1 || uagent.indexOf("iphone") > -1 || uagent.indexOf("ipod") > -1) {
-                window.location = 'indext.html' + document.location.search;
+                window.location = 'indext.html';
             }
         </script>
         <link rel="shortcut icon" href="./favicon.ico" />
@@ -23,23 +22,32 @@
         <link rel="stylesheet" type="text/css" href="../js/mjquery/mjquery.css" />
         <!-- Optional (remove if not needed) -->
         <link rel="stylesheet" type="text/css" href="../js/mjquery/mjquery.jqplot.css" />
-        <!-- Optional (remove if not needed) -->
     </head>
     <body>
+        <!-- Full screen map -->
         <div id="mapshup" style="position:absolute;left:0px;right:0px;top:0px;bottom:0px;"></div>
-        <!-- Google maps -->
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.8&sensor=false"></script>
-        <!-- Google earth  -->
+        
+        <!-- REMOVE IF GOOGLE IS NOT USED -->
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.14&sensor=false"></script>
+        
+        <!-- REMOVE IF GOOGLE EARTH IS NOT USED -->
         <script type="text/javascript" src="http://www.google.com/jsapi"></script>
         <script type="text/javascript">google.load("earth", "1");</script>
-        <!-- jquery -->
+        
         <script type="text/javascript" src="../js/mjquery/mjquery.js"></script>
-        <!-- Optional (remove if not needed) -->
+        
+        <!-- REMOVE IF DISTANCE PLUGIN AND RASTERSMANAGER PLUGINS ARE NOT USED -->
         <script type="text/javascript" src="../js/mjquery/mjquery.jqplot.js"></script>
+        
+        <!-- REMOVE IF TIMELINE IS NOT USED -->
         <script type="text/javascript" src="../js/mjquery/mjquery.ui.js"></script>
-        <!-- Optional (remove if not needed) -->
+        
+        <!-- lodash -->
+        <script type="text/javascript" src="../js/lodash/lodash.js"></script>
+        
         <!-- Openlayers -->
         <script type="text/javascript" src="../js/mol/OpenLayers.js"></script>
+       
         <!-- mapshup -->
         <script type="text/javascript" src="../js/mapshup/lib/core/mapshup.js"></script>
         <script type="text/javascript" src="../js/mapshup/lib/core/Config.js"></script>
@@ -130,7 +138,6 @@
         <script type="text/javascript" src="../js/mapshup/lib/plugins/ACAcIA.js"></script>
         <script type="text/javascript" src="../js/mapshup/lib/plugins/QuickSelector.js"></script>
         <script type="text/javascript" src="../js/mapshup/lib/plugins/API.js"></script>
-        
         <script type="text/javascript" src="../js/mapshup/config/default.js"></script>
         <script type="text/javascript" src="config/_config.js"></script>
         <script type="text/javascript">

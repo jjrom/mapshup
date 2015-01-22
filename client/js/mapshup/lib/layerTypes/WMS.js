@@ -640,7 +640,7 @@
                 return [];
             }
             
-            options = options || {};
+            options = options || {};
             
             var j, layer, layerDescription, url, result, results = [], xy = Map.map.getPixelFromLonLat(lonLat);
 
