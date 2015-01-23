@@ -1208,7 +1208,8 @@
                                 }
                                 else {
                                     ts = M.Map.Util.Feature.translate(k, feature);
-                                    $info.append('<tr><td title="' + ts + '">' + ts, 20 + ' &rarr; ' + M.Map.Util.Feature.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
+                                    //$info.append('<tr><td title="' + ts + '">' + ts, 20 + ' &rarr; ' + M.Map.Util.Feature.translate(kk, feature) + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
+                                    $info.append('<tr><td title="' + ts + '">' + ts + '</td><td>&nbsp;</td><td>' + v[kk] + '</td></tr>');
                                 }
                             }
 
