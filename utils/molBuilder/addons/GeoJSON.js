@@ -103,7 +103,10 @@ OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
                     switch(obj.type) {
                         case "Feature":
                             try {
-                                results.push(this.parseFeature(obj));
+                                var feature = this.parseFeature(obj);
+                                if (feature) {
+                                    results.push(feature);
+                                }
                             } catch(err) {
                                 results = null;
                                 OpenLayers.Console.error(err);
@@ -112,7 +115,10 @@ OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
                         case "FeatureCollection":
                             for(var i=0, len=obj.features.length; i<len; ++i) {
                                 try {
-                                    results.push(this.parseFeature(obj.features[i]));
+                                    var feature = this.parseFeature(obj.features[i]);
+                                    if (feature) {
+                                        results.push(feature);
+                                    }
                                 } catch(err) {
                                     results = null;
                                     OpenLayers.Console.error(err);
@@ -131,6 +137,7 @@ OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
                 break;
             }
         }
+        console.log(results);
         return results;
     },
     
@@ -204,6 +211,12 @@ OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
         if(obj.id) {
             feature.fid = obj.id;
         }
+        /*
+         * mapshup - 2015.01.23 : avoid issues with invalid geometries 
+         */
+        if (!feature.geometry.getBounds()) {
+            return null;
+        }
         return feature;
     },
     
@@ -218,6 +231,7 @@ OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
      * {<OpenLayers.Geometry>} A geometry.
      */
     parseGeometry: function(obj) {
+        
         if (obj == null) {
             return null;
         }
@@ -256,7 +270,7 @@ OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
         if (this.internalProjection && this.externalProjection && !collection) {
             geometry.transform(this.externalProjection, 
                                this.internalProjection); 
-        }                       
+        }        
         return geometry;
     },
     
