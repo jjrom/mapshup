@@ -124,7 +124,7 @@ if (!file_exists($mapfileurl)) {
         LAYER
           NAME "' . $layers . '"
           TYPE RASTER
-          OFFSITE 255 255 255
+          OFFSITE 0 0 0
           STATUS ON
           CONNECTION "' . $url . '"
           CONNECTIONTYPE WMS
@@ -160,4 +160,3 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 header("Cache-Control: no-cache, must-revalidate");
 header("Content-type: application/json; charset=utf-8");
 echo '{"success":true, "url":"' . $msurl . '?map=' . $mapfileurl . '&"}';
-?>
