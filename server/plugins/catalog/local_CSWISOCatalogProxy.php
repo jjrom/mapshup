@@ -111,8 +111,8 @@ function outputToGeoJSON($theData) {
          * If no footprint is found, skip the data
          */
         if ($dataObject->getElementsByTagName('LowerCorner')->length > 0 && $dataObject->getElementsByTagName('UpperCorner')->length > 0) {
-            $lowerCorner = split(' ', $dataObject->getElementsByTagName('LowerCorner')->item(0)->nodeValue);
-            $upperCorner = split(' ', $dataObject->getElementsByTagName('UpperCorner')->item(0)->nodeValue);
+            $lowerCorner = explode(' ', $dataObject->getElementsByTagName('LowerCorner')->item(0)->nodeValue);
+            $upperCorner = explode(' ', $dataObject->getElementsByTagName('UpperCorner')->item(0)->nodeValue);
 
             /*
              * Bug from INSPIRE catalog ?

@@ -112,8 +112,8 @@ function outputToGeoJSON($theData) {
          * If no footprint is found, skip the data
          */
         if ($dataObject->getElementsByTagName('LowerCorner')->length > 0 && $dataObject->getElementsByTagName('UpperCorner')->length > 0) {
-            $lowerCorner = split(' ', $dataObject->getElementsByTagName('LowerCorner')->item(0)->nodeValue);
-            $upperCorner = split(' ', $dataObject->getElementsByTagName('UpperCorner')->item(0)->nodeValue);
+            $lowerCorner = explode(' ', $dataObject->getElementsByTagName('LowerCorner')->item(0)->nodeValue);
+            $upperCorner = explode(' ', $dataObject->getElementsByTagName('UpperCorner')->item(0)->nodeValue);
 
             /*
              * Bug from INSPIRE catalog ?
@@ -123,39 +123,30 @@ function outputToGeoJSON($theData) {
             $lonmax = max(floatval($lowerCorner[0]), floatval($upperCorner[0]));
             $latmin = min(floatval($lowerCorner[1]), floatval($upperCorner[1]));
             $latmax = max(floatval($lowerCorner[1]), floatval($upperCorner[1]));
-        } else {
+        }
+        else {
             /**
              * Footprint is null => skip data
              */
             continue;
         }
 
-        /** Skip whole earth dataset */
+        /* Skip whole earth dataset
         if ($lonmin == -180 && $lonmax == 180 && $latmin == -90 && $latmax == 90) {
-            //continue;
+            continue;
         }
-
-        /**
-         * Specail CWIC
-         * This part is completely specific to CWIC ISO catalog
+        */
+        
+        /*
+         * Subject is a repeatable element
          */
-        $references = $dataObject->getElementsByTagName('references');
-        $thumbnail = "";
-        $quicklook = "";
-        $product = "";
-        foreach ($references as $reference) {
-            $attr = $reference->getAttribute('scheme');
-            if ($attr == "urn:x-cwic:Onlink:MimeType:application/x-hdfeos") {
-                $product = $reference->nodeValue;
-            } else if ($attr == "urn:x-cwic:Browse") {
-                $thumbnail = $reference->nodeValue;
-                $quicklook = $reference->nodeValue;
-            }
-            if ($thumbnail != "" && $product != "") {
-                break;
+        $subjects = array();
+        if ($dataObject->getElementsByTagName('subject')->length > 0) {
+            foreach ($dataObject->getElementsByTagName('subject') as $subject) {
+                array_push($subjects, $subject->nodeValue);
             }
         }
-
+        
         /**
          * Add feature
          */
@@ -163,22 +154,100 @@ function outputToGeoJSON($theData) {
             'type' => 'Feature',
             'geometry' => bboxToGeoJSONGeometry($lonmin, $latmin, $lonmax, $latmax),
             'properties' => array(
-                'identifier' => ($dataObject->getElementsByTagName('identifier')->length > 0 ? $dataObject->getElementsByTagName('identifier')->item(0)->nodeValue : ""),
-                'modified' => ($dataObject->getElementsByTagName('modified')->length > 0 ? $dataObject->getElementsByTagName('modified')->item(0)->nodeValue : ""),
-                'title' => ($dataObject->getElementsByTagName('title')->length > 0 ? $dataObject->getElementsByTagName('title')->item(0)->nodeValue : ""),
-                'type' => ($dataObject->getElementsByTagName('type')->length > 0 ? $dataObject->getElementsByTagName('type')->item(0)->nodeValue : ""),
-                'subject' => ($dataObject->getElementsByTagName('subject')->length > 0 ? $dataObject->getElementsByTagName('subject')->item(0)->nodeValue : ""),
-                'format' => ($dataObject->getElementsByTagName('format')->length > 0 ? $dataObject->getElementsByTagName('format')->item(0)->nodeValue : ""),
-                'creator' => ($dataObject->getElementsByTagName('creator')->length > 0 ? $dataObject->getElementsByTagName('creator')->item(0)->nodeValue : ""),
-                'publisher' => ($dataObject->getElementsByTagName('publisher')->length > 0 ? $dataObject->getElementsByTagName('publisher')->item(0)->nodeValue : ""),
-                'abstract' => str_replace($array, "", $dataObject->getElementsByTagName('abstract')->length > 0 ? $dataObject->getElementsByTagName('abstract')->item(0)->nodeValue : ""),
-                'language' => ($dataObject->getElementsByTagName('language')->length > 0 ? $dataObject->getElementsByTagName('language')->item(0)->nodeValue : ""),
-                'thumbnail' => $thumbnail,
-                'quicklook' => $quicklook,
-                'product' => $product
+                'identifier' => ($dataObject->getElementsByTagName('identifier')->length > 0 ? $dataObject->getElementsByTagName('identifier')->item(0)->nodeValue : NULL),
+                'modified' => ($dataObject->getElementsByTagName('modified')->length > 0 ? $dataObject->getElementsByTagName('modified')->item(0)->nodeValue : NULL),
+                'title' => ($dataObject->getElementsByTagName('title')->length > 0 ? $dataObject->getElementsByTagName('title')->item(0)->nodeValue : NULL),
+                'type' => ($dataObject->getElementsByTagName('type')->length > 0 ? $dataObject->getElementsByTagName('type')->item(0)->nodeValue : NULL),
+                'subject' => $subjects,
+                'source' => ($dataObject->getElementsByTagName('source')->length > 0 ? $dataObject->getElementsByTagName('source')->item(0)->nodeValue : NULL),
+                'format' => ($dataObject->getElementsByTagName('format')->length > 0 ? $dataObject->getElementsByTagName('format')->item(0)->nodeValue : NULL),
+                'creator' => ($dataObject->getElementsByTagName('creator')->length > 0 ? $dataObject->getElementsByTagName('creator')->item(0)->nodeValue : NULL),
+                'publisher' => ($dataObject->getElementsByTagName('publisher')->length > 0 ? $dataObject->getElementsByTagName('publisher')->item(0)->nodeValue : NULL),
+                'abstract' => str_replace($array, "", $dataObject->getElementsByTagName('abstract')->length > 0 ? $dataObject->getElementsByTagName('abstract')->item(0)->nodeValue : NULL),
+                'language' => ($dataObject->getElementsByTagName('language')->length > 0 ? $dataObject->getElementsByTagName('language')->item(0)->nodeValue : NULL)
             )
         );
-
+        
+        /**
+         * This part is specific to CWIC ISO catalog
+         */
+        $url = null;
+        $references = $dataObject->getElementsByTagName('references');
+        foreach ($references as $reference) {
+            $attr = $reference->getAttribute('scheme');
+            if ($attr == "urn:x-cwic:Onlink:MimeType:application/x-hdfeos") {
+                $url = $reference->nodeValue;
+                if (!isset($feature['properties']['services'])) {
+                    $feature['properties']['services'] = array();
+                }
+                if (!isset($feature['properties']['services']['download'])) {
+                    $feature['properties']['services']['download'] = array();
+                }
+                $feature['properties']['services']['download'] = array(
+                    'url' => $reference->nodeValue
+                );
+            }
+            else if ($attr == "urn:x-cwic:Browse") {
+                $feature['properties']['thumbnail'] = $reference->nodeValue;
+                $feature['properties']['quicklook'] = $reference->nodeValue;
+            }
+            if (!empty($feature['properties']['thumbnail']) && !empty($url)) {
+                break;
+            }
+        }
+        
+        /*
+         * This part is specific to I4D ISO catalog (Airbus Defense and Space)
+         * 
+         * <dc:URI protocol="OGC:WMS" name="products" description="ORT_SPOT6_20140620_101138400_000">...</dc:URI>
+         * <dc:URI protocol="CDRDMC" name="">ORT_SPOT6_20140620_101138400_0002015-01-14T15:41:54</dc:URI>
+         * <dc:URI protocol="WWW:DOWNLOAD-1.0-http--download" name="ORT_SPOT6_20140620_101138400_000.zip">...</dc:URI>
+         * <dc:URI name="thumbnail">...</dc:URI>
+         * <dc:URI name="large_thumbnail">...</dc:URI>
+         */
+        $uris = $dataObject->getElementsByTagName('URI');
+        foreach ($uris as $uri) {
+            $name = $uri->getAttribute('name');
+            $protocol = $uri->getAttribute('protocol');
+            if (!empty($name)) {
+                if ($name === "thumbnail") {
+                    $feature['properties']['thumbnail'] = $uri->nodeValue;
+                }
+                else if ($name === "large_thumbnail") {
+                    $feature['properties']['quicklook'] = $uri->nodeValue;
+                }
+            }
+            if (!empty($protocol)) {
+                if ($protocol === "WWW:DOWNLOAD-1.0-http--download") {
+                    if (!isset($feature['properties']['services'])) {
+                        $feature['properties']['services'] = array();
+                    }
+                    if (!isset($feature['properties']['services']['download'])) {
+                        $feature['properties']['services']['download'] = array();
+                    }
+                    $feature['properties']['services']['download'] = array(
+                        'url' => $uri->nodeValue
+                    );
+                }
+                else if ($protocol === "OGC:WMS") {
+                    if (!isset($feature['properties']['services'])) {
+                        $feature['properties']['services'] = array();
+                    }
+                    if (!isset($feature['properties']['services']['browse'])) {
+                        $feature['properties']['services']['browse'] = array();
+                    }
+                    $feature['properties']['services']['browse'] = array(
+                        'layer' => array(
+                            'type' => 'WMS',
+                            'title' => $uri->getAttribute('description'),
+                            'url' => $uri->nodeValue . '?dim_product=' . $uri->getAttribute('description'),
+                            'layers' => 'products'
+                        )
+                    );
+                }
+            }
+        }
+        
         // Add feature array to feature collection array
         array_push($geojson['features'], $feature);
     }
@@ -383,4 +452,3 @@ if ($error) {
 } else {
     echo outputToGeoJSON($theData);
 }
-?>
