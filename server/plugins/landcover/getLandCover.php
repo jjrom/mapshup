@@ -82,8 +82,8 @@ if (abcCheck($_REQUEST) && $json != NULL) {
      */
     foreach ($json->tiles as $row) {
         foreach ($row as $tile) {
-            $arr = split('/', $tile->url);
-            $arr = split('\.', $arr[count($arr) - 1]);
+            $arr = explode('/', $tile->url);
+            $arr = explode('\.', $arr[count($arr) - 1]);
             $name = $arr[0];
 
             /*

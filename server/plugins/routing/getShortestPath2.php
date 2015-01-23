@@ -49,13 +49,13 @@ define("TABLE", "ways");
 $counter = $pathlength = 1;
 
 // Retrieve start point
-$start = split(':', $_REQUEST['startpoint']);
+$start = explode(':', $_REQUEST['startpoint']);
 
 $startPoint = array($start[0], $start[1]);
 
 
 // Retrieve end point
-$end = split(':', $_REQUEST['endpoint']);
+$end = explode(':', $_REQUEST['endpoint']);
 
 $endPoint = array($end[0], $end[1]);
 
