@@ -186,6 +186,40 @@
         };
 
         /**
+         * This method is called by FeatureInfo actions popup
+         * 
+         * @param {OpenLayers.Feature} feature
+         */
+        this.getFeatureActions = function(feature) {
+            var self = this;
+            return {
+                id:M.Util.getId(),
+                icon:"search.png",
+                title:"Search in catalogs",
+                callback:function() {
+                    
+                    /*
+                     * Search within bbox
+                     * If bbox is a point, then add 0.1 degree in all directions
+                     */
+                    var add = 0.1,
+                    bounds = M.Map.Util.p2d(feature.geometry.getBounds().clone());
+                        
+                    if (bounds.top === bounds.bottom || bounds.right === bounds.left) {
+                        bounds = new OpenLayers.Bounds(bounds.left - add, bounds.bottom - add, bounds.right + add, bounds.top + add);
+                    }
+                    
+                    /**
+                    * Create a buffer around clicked point
+                    */
+                   self.searchAll(M.Map.Util.d2p(bounds), true);
+                   return false;
+                    
+                }
+            };
+        };
+        
+        /**
          * Add a catalog
          *
          * @param layer (type:"Catalog")
