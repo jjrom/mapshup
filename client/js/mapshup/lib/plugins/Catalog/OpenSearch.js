@@ -235,7 +235,7 @@
                                      */
                                     if (unNameSpacedKey === 'searchTerms') {
                                         self.searchKeyAlias = key;
-                                        if (!catalog["_M"].layerDescription.inactive && M.Plugins.Search && M.Plugins.Search._o) {
+                                        if (!catalog["_M"].layerDescription.notInSearchBar && M.Plugins.Search && M.Plugins.Search._o) {
                                             M.Plugins.Search._o.add(catalog["_M"].layerDescription.url, {
                                                 layer:catalog
                                             });
