@@ -137,7 +137,7 @@ OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
                 break;
             }
         }
-        console.log(results);
+        
         return results;
     },
     
