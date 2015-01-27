@@ -238,34 +238,37 @@
                             externalProjection:Map.pc
                         }).read(options.data);
                     }
-                    
-                    /*
-                     * Cluster is a bit special...needs to remove every feature
-                     * and then add it again !
-                     */
-                    if (options.layer['_M'].clusterized) {
-                        var allfeatures = Map.Util.getFeatures(options.layer),
-                            afl = allfeatures.length;
-                        for (var i = 0, l = features.length; i < l; i++) {
-                            allfeatures[afl + i] = features[i];
+                    if (features) {
+                        /*
+                         * Cluster is a bit special...needs to remove every feature
+                         * and then add it again !
+                         */
+                        if (options.layer['_M'].clusterized) {
+                            var allfeatures = Map.Util.getFeatures(options.layer),
+                                afl = allfeatures.length;
+                            for (var i = 0, l = features.length; i < l; i++) {
+                                allfeatures[afl + i] = features[i];
+                            }
+                            options.layer.destroyFeatures();
+                            options.layer.addFeatures(allfeatures);
                         }
-                        options.layer.destroyFeatures();
-                        options.layer.addFeatures(allfeatures);
+                        else {
+                            options.layer.addFeatures(features);
+                        }
+
+                        /*
+                         * Zoom on new added features otherwise zoom on layer
+                         */
+                        if (options.zoomOnNew) {
+                            Map.Util.Feature.zoomOn(features, options.zoomOnNew === 'always' ? false : true);
+                        }
+                        else {
+                            Map.Util.zoomOn(options.layer);
+                        }
                     }
                     else {
-                        options.layer.addFeatures(features);
+                        M.Util.message(M.Util._(options.layer.name)+ " : " + M.Util._("Error reading data"));
                     }
-                    
-                    /*
-                     * Zoom on new added features otherwise zoom on layer
-                     */
-                    if (options.zoomOnNew) {
-                        Map.Util.Feature.zoomOn(features, options.zoomOnNew === 'always' ? false : true);
-                    }
-                    else {
-                        Map.Util.zoomOn(options.layer);
-                    }
-                    
                 }
                 
             }
