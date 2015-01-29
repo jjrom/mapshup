@@ -394,6 +394,7 @@
                     numRecordsPerPage: _M.layerDescription.numRecordsPerPage || M.Config["general"].numRecordsPerPage,
                     numRecordsPerPageAlias: connector.numRecordsPerPageAlias,
                     callback: _M.layerDescription.hasOwnProperty("callback") ? _M.layerDescription.callback : null,
+                    transform: _M.layerDescription.hasOwnProperty("transform") ? _M.layerDescription.transform : null,
                     scope: scope
                 });
             
@@ -1040,5 +1041,5 @@
 
         return this;
 
-    }
+    };
 })(window.M);

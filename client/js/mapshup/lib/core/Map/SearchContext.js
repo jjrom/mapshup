@@ -51,6 +51,7 @@
  *      nextRecordAlias : alias name for "nextRecord" property - see OpenSearch catalog connector
  *      numRecordsPerPage : Maximum number of records per page
  *      numRecordsPerPageAlias : alias name for "numRecordsPerPage" property - see OpenSearch catalog connector
+ *      transform : function to map results
  *      callback : function to call after a successfull search
  *      scope : scope of the callback function
  * }
@@ -110,6 +111,11 @@
          * Callback function to be called when search is successfully performed
          */
         this.callback = options.callback;
+        
+        /**
+         * Callback function to be called to modify searched features
+         */
+        this.transform = options.transform;
 
         /**
          * Scope for the Callback function
@@ -528,7 +534,7 @@
              * Set local _callback
              */
             _callback = $.isFunction(options.callback) ? options.callback : null; 
-
+            
             /*
              * Set extras parameters
              */
@@ -642,6 +648,13 @@
                         }
                         else {
                             
+                           /*
+                            * Mapping function
+                            */
+                            if (self.transform) {
+                                features = self.transformt(features);
+                            }
+                        
                             /*
                              * Add features to the layer
                              * 
