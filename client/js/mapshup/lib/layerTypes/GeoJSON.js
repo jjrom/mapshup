@@ -76,7 +76,8 @@
          *      data: // A valid GeoJSON data structure
          *      hidden:false,
          *      clusterized:true,
-         *      hasIconAttribute:false // if true assume that features got a 'icon' attribute
+         *      hasIconAttribute:false // if true assume that features got a 'icon' attribute,
+         *      transform: // function
          * }
          *
          */
@@ -239,6 +240,14 @@
                         }).read(options.data);
                     }
                     if (features) {
+                        
+                        /*
+                         * Mapping function
+                         */
+                        if (options.layerDescription.hasOwnProperty('transform') && typeof options.layerDescription.transform === 'function') {
+                            features = options.layerDescription.transform(features);
+                        }
+                        
                         /*
                          * Cluster is a bit special...needs to remove every feature
                          * and then add it again !
