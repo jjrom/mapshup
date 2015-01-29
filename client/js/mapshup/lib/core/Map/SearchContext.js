@@ -652,7 +652,7 @@
                             * Mapping function
                             */
                             if (self.transform) {
-                                features = self.transformt(features);
+                                features = self.transform(features);
                             }
                         
                             /*
