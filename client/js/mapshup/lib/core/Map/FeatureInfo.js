@@ -479,10 +479,11 @@
                         /*
                          * Add layer obj
                          */
-                        var l;
+                        var l, zoomOn = false;
                         
                         if (f.attributes.hasOwnProperty('services') && f.attributes["services"]["browse"]) {
                             l = M.Map.addLayer(f.attributes["services"]["browse"]["layer"]);
+                            zoomOn = f.attributes["services"]["browse"]["layer"]["zoomOn"] ? true : false;
                         }
                         else if (f.attributes.hasOwnProperty('quicklook') && f.attributes['quicklook'].toLowerCase().indexOf('service=wms') !== -1) {
                             if (M.Map.layerTypes["WMS"]) {
@@ -496,7 +497,7 @@
                         /*
                          * Force zoom on added layer
                          */
-                        if (l) {
+                        if (l && zoomOn) {
                             M.Map.zoomTo(l.getDataExtent() || l["_M"].bounds);
                         }
 
