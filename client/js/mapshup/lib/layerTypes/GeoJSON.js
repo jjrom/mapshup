@@ -122,27 +122,41 @@
              * read from data description
              */
             if (layerDescription.hasOwnProperty("data")) {
-                newLayer.destroyFeatures();
-                if (!self.load({
-                    data:layerDescription.data,
-                    layerDescription:layerDescription, 
-                    layer:newLayer,
-                    zoomOnNew:layerDescription.zoomOnNew
-                })) {
-                   /*
-                    * Tell mapshup that layer is loaded
-                    */
-                    newLayer["_M"].isLoaded = true;
 
-                    /*
-                    * Tell mapshup that no features were added
-                    */
-                    Map.events.trigger("layersend", {
-                        action:"features",
-                        layer:newLayer
-                    });
-                    //M.Map.removeLayer(newLayer, false);
-                }
+                /*
+                 * First set the isLoaded status to false to avoid
+                 * annoying popup telling that the layer is added before
+                 * the data has been effectively retrieve from server
+                 */
+                newLayer['_M'].isLoaded = false;
+
+                /**
+                 * Execute the following function in 500ms in order to let OpenLayer properly create the layer
+                 * Otherwise the layer creation is failed
+                 */
+                window.setTimeout( function() {
+
+                    newLayer.destroyFeatures();
+                    if (!self.load({
+                        data:layerDescription.data,
+                        layerDescription:layerDescription,
+                        layer:newLayer,
+                        zoomOnNew:layerDescription.zoomOnNew
+                    })) {
+                       /*
+                        * Tell mapshup that layer is loaded
+                        */
+                        newLayer["_M"].isLoaded = true;
+
+                        /*
+                        * Tell mapshup that no features were added
+                        */
+                        Map.events.trigger("layersend", {
+                            action:"features",
+                            layer:newLayer
+                        });
+                    }
+                }, 500);
             }
             /*
              * Otherwise, read data asynchronously from url
