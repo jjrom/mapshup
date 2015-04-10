@@ -1160,10 +1160,10 @@
                             
                             if (k === "keywords") {
                                 _(v)
-                                   .filter(function(keyword) { return keyword.id !== "region:_all"; })
+                                   .filter(function(keyword) { return keyword.name !== "_all"; })
                                    .forEach(function(keyword) {
                                         ts = M.Map.Util.Feature.translate(k, feature);
-                                        var str = '<tr><td title="' + ts + '">' + ts + '</td><td>&nbsp;</td><td>' + keyword.name;
+                                        var str = '<tr><td title="' + ts + '">' + ts + '['+ keyword.type +']</td><td>&nbsp;</td><td>' + keyword.name;
                                         if (keyword.value) {
                                             str += ' ('+keyword.value+' %) ';
                                         }
