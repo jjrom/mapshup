@@ -6,7 +6,7 @@ Project info
 ------------
 
 * [Download the sources](https://github.com/jjrom/mapshup)
-* [Try the demo](http://engine.mapshup.info)
+* [Try the demo](http://mapshup.com/projects/mapshup)
 * See [mapshup in video](http://vimeo.com/45164288) or take a look at the [Keynote](https://speakerdeck.com/jjrom/mapshup)
 * Follow [mapshup on Twitter](https://twitter.com/mapshup)
 
